@@ -55,7 +55,7 @@ page.open(base, function () {
 		var top          = submitBounds.top
 		var right        = submitBounds.right
 		var bottom       = submitBounds.bottom
-		var width        = right -left
+		var width        = right - left
 		var height       = bottom - top
 		var x            = left + width / 2
 		var y            = top + height / 2
