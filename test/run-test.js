@@ -5,6 +5,7 @@
  * The server application is also designed to test the OneDrive SDK for PHP.
  */
 
+var fs       = require("fs")
 var system   = require("system")
 var LIVE     = JSON.parse(system.env["LIVE"])
 var unitName = system.args[1]
@@ -35,6 +36,7 @@ function parseQueryString(url) {
 
 page.onLoadFinished = function (status) {
 	console.log("onLoadFinished: " + page.url)
+	console.log(page.content)
 
 	// Checks whether we are back to our test application (ie. "code" must be
 	// present in the query string).
