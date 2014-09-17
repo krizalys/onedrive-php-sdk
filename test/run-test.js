@@ -34,6 +34,8 @@ function parseQueryString(url) {
 }
 
 page.onLoadFinished = function (status) {
+	console.log("onLoadFinished: " + page.url)
+
 	// Checks whether we are back to our test application (ie. "code" must be
 	// present in the query string).
 	var queryString = parseQueryString(page.url)
