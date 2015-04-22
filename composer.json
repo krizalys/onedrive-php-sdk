@@ -1,0 +1,39 @@
+{
+    "name":          "krizalys/onedrive-php-sdk",
+    "description":   "OneDrive SDK for PHP.",
+    "homepage":      "https://github.com/krizalys/onedrive-php-sdk",
+    "license":       "GPL-3.0",
+    "prefer-stable": true,
+
+    "keywords": [
+        "krizays",
+        "onedrive",
+        "php",
+        "sdk"
+    ],
+
+    "author": [
+        {
+            "name":     "Christophe Vidal",
+            "homepage": "http://www.krizalys.com/"
+        }
+    ],
+
+    "support": {
+        "email":  "support@krizalys.com",
+        "issues": "https://github.com/krizalys/onedrive-php-sdk/issues",
+        "wiki":   "https://github.com/krizalys/onedrive-php-sdk/wiki",
+        "source": "https://github.com/krizalys/onedrive-php-sdk"
+    },
+
+    "require": {
+        "php":      ">= 5.3",
+        "ext-curl": "*"
+    },
+
+    "require-dev": {
+        "phpunit/phpunit": "4.6.4"
+    },
+
+    "autoload": {}
+}
