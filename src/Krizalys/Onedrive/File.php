@@ -1,5 +1,5 @@
 <?php
-namespace Onedrive;
+namespace Krizalys\Onedrive;
 
 /*
  * A File instance is an Object instance referencing a OneDrive file. It may

@@ -84,7 +84,7 @@ like (replace `/path/to` by the appropriate values):
 ```php
 <?php
 require_once '/path/to/onedrive-config.php';
-require_once '/path/to/onedrive-php-sdk/onedrive.php';
+require_once 'vendor/autoload.php';
 
 session_start();
 
@@ -93,15 +93,15 @@ $_SESSION = array();
 
 // Instantiates a OneDrive client bound to your OneDrive application
 $onedrive = new \Onedrive\Client(array(
-	'client_id' => ONEDRIVE_CLIENT_ID
+    'client_id' => ONEDRIVE_CLIENT_ID
 ));
 
 // Gets a log in URL with sufficient privileges from the OneDrive API
 $url = $onedrive->getLogInUrl(array(
-	'wl.signin',
-	'wl.basic',
-	'wl.contacts_skydrive',
-	'wl.skydrive_update'
+    'wl.signin',
+    'wl.basic',
+    'wl.contacts_skydrive',
+    'wl.skydrive_update'
 ), ONEDRIVE_CALLBACK_URI);
 
 // Persist the OneDrive client' state for next API requests
@@ -126,13 +126,13 @@ for obtaining an access token (from the code received) and should start like
 ```php
 <?php
 require_once '/path/to/onedrive-config.php';
-require_once '/path/to/onedrive-php-sdk/onedrive.php';
+require_once 'vendor/autoload.php';
 
 // If we don't have a code in the query string (meaning that the user did not
 // log in successfully or did not grant privileges requested), we cannot proceed
 // in obtaining an access token
 if (!array_key_exists('code', $_GET)) {
-	throw new Exception('code undefined in $_GET');
+    throw new Exception('code undefined in $_GET');
 }
 
 session_start();
@@ -140,15 +140,15 @@ session_start();
 // Attempt to load the OneDrive client' state persisted from the previous
 // request
 if (!array_key_exists('onedrive.client.state', $_SESSION)) {
-	throw new Exception('onedrive.client.state undefined in $_SESSION');
+    throw new Exception('onedrive.client.state undefined in $_SESSION');
 }
 
 $onedrive = new \Onedrive\Client(array(
-	'client_id' => ONEDRIVE_CLIENT_ID,
+    'client_id' => ONEDRIVE_CLIENT_ID,
 
-	// Restore the previous state while instantiating this client to proceed in
-	// obtaining an access token
-	'state'     => $_SESSION['onedrive.client.state']
+    // Restore the previous state while instantiating this client to proceed in
+    // obtaining an access token
+    'state'     => $_SESSION['onedrive.client.state']
 ));
 
 // Obtain the token using the code received by the OneDrive API
@@ -181,6 +181,17 @@ The example files provided with the OneDrive SDK for PHP are deployed on a
 [demo website](http://demo.krizalys.com/onedrive-php-sdk/example/) for live
 demonstration purposes. A OneDrive account is needed to try out this
 demonstration.
+
+If you are using PHP 5.4 or later, you can try the examples on your own machine
+using PHP's built-in web server:
+
+```
+php -S yourdomain.com -t example
+```
+
+When using this method, be aware the Microsoft Developer platform will not let
+you use `localhost` or a non-standard port in your target domain and redirect
+URLs.
 
 License
 -------

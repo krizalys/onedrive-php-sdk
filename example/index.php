@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../onedrive-config.php';
-require_once __DIR__ . '/../onedrive.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 session_start();
 
@@ -8,7 +8,7 @@ session_start();
 $_SESSION = array();
 
 // Instantiates a OneDrive client bound to your OneDrive application
-$onedrive = new \Onedrive\Client(array(
+$onedrive = new \Krizalys\Onedrive\Client(array(
 	'client_id' => ONEDRIVE_CLIENT_ID
 ));
 

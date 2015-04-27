@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../onedrive-config.php';
-require_once __DIR__ . '/../onedrive.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 // If we don't have a code in the query string (meaning that the user did not
 // log in successfully or did not grant privileges requested), we cannot proceed
@@ -17,7 +17,7 @@ if (!array_key_exists('onedrive.client.state', $_SESSION)) {
 	throw new Exception('onedrive.client.state undefined in $_SESSION');
 }
 
-$onedrive = new \Onedrive\Client(array(
+$onedrive = new \Krizalys\Onedrive\Client(array(
 	'client_id' => ONEDRIVE_CLIENT_ID,
 
 	// Restore the previous state while instantiating this client to proceed in

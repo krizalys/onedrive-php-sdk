@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../onedrive-config.php';
-require_once __DIR__ . '/../onedrive.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 session_start();
 
@@ -12,7 +12,7 @@ if (!array_key_exists('onedrive.client.state', $_SESSION)) {
 	throw new Exception('onedrive.client.state undefined in session');
 }
 
-$onedrive = new \Onedrive\Client(array(
+$onedrive = new \Krizalys\Onedrive\Client(array(
 	'state' => $_SESSION['onedrive.client.state']
 ));
 

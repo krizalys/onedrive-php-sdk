@@ -1,5 +1,5 @@
 <?php
-namespace Onedrive;
+namespace Krizalys\Onedrive;
 
 /*
  * A Folder instance is an Object instance referencing to a OneDrive folder. It

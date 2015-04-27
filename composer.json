@@ -35,5 +35,9 @@
         "phpunit/phpunit": "4.6.4"
     },
 
-    "autoload": {}
+    "autoload": {
+        "psr-4": {
+            "Krizalys\\Onedrive\\": "src/Krizalys/Onedrive"
+        }
+    }
 }

@@ -1,5 +1,5 @@
 <?php
-namespace Onedrive;
+namespace Krizalys\Onedrive;
 
 /*
  * An Object instance is an entity that may be stored in a OneDrive account.

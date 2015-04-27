@@ -1,5 +1,5 @@
 <?php
-namespace Onedrive;
+namespace Krizalys\Onedrive;
 
 /*
  * A Client instance allows communication with the OneDrive API and perform
