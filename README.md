@@ -15,6 +15,7 @@ Using the OneDrive SDK for PHP requires the following:
 
 * [PHP](http://php.net/) 5.3 or newer
 * The [cURL extension for PHP](http://php.net/manual/en/book.curl.php)
+* [Composer](http://getcomposer.org/) 1.0.0-alpha10 or newer
 * Basic PHP knowledge
 
 Installation
