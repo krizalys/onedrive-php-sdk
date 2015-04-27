@@ -49,7 +49,20 @@ Quick start
 Once you got your *Client ID*, *Client secret* and *Callback URI*, you can get
 started using the OneDrive SDK for PHP in three steps.
 
-### Step 1: save your configuration
+### Step 1: get your dependencies through Composer
+
+From the root of this repository, get the required dependencies using
+[Composer](http://getcomposer.org/):
+
+```
+$ composer install -n
+```
+
+During the process, a `vendor/autoload.php` file will be created. It is
+mentioned in next steps and allows you to use classes from OneDrive SDK for PHP
+without needing to explicitly `require()` files that define them.
+
+### Step 2: save your configuration
 
 As you may need them from several scripts, save your *Client ID*, *Client
 secret* and *Callback URI* in a configuration file. Let's call it
@@ -74,7 +87,7 @@ define('ONEDRIVE_CALLBACK_URI',  '<http://yourdomain.com/your-callback-uri.php>'
 ?>
 ```
 
-### Step 2: direct your users to the sign in page
+### Step 3: direct your users to the sign in page
 
 This script is responsible for, given a set of privileges, fetching a login URL
 from the OneDrive API. It then needs to guide the users to this URL so they
@@ -84,7 +97,7 @@ like (replace `/path/to` by the appropriate values):
 ```php
 <?php
 require_once '/path/to/onedrive-config.php';
-require_once 'vendor/autoload.php';
+require_once '/path/to/onedrive-php-sdk/vendor/autoload.php';
 
 session_start();
 
@@ -112,7 +125,7 @@ echo "<a href='$url'>Next step</a>";
 ?>
 ```
 
-### Step 3: get an OAuth access token
+### Step 4: get an OAuth access token
 
 After the users follow this URL, they are required to sign in using a valid
 Microsoft account, and they are asked whether they agree to allow your
@@ -126,7 +139,7 @@ for obtaining an access token (from the code received) and should start like
 ```php
 <?php
 require_once '/path/to/onedrive-config.php';
-require_once 'vendor/autoload.php';
+require_once '/path/to/onedrive-php-sdk/vendor/autoload.php';
 
 // If we don't have a code in the query string (meaning that the user did not
 // log in successfully or did not grant privileges requested), we cannot proceed
@@ -186,12 +199,12 @@ If you are using PHP 5.4 or later, you can try the examples on your own machine
 using PHP's built-in web server:
 
 ```
-php -S yourdomain.com -t example
+$ php -S yourdomain.com -t example
 ```
 
-When using this method, be aware the Microsoft Developer platform will not let
-you use `localhost` or a non-standard port in your target domain and redirect
-URLs.
+When using this method, be aware that the Microsoft Developer platform will not
+let you use `localhost` or a non-standard port in your target domain and
+redirect URLs.
 
 License
 -------
