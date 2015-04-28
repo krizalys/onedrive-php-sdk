@@ -216,7 +216,7 @@ The OneDrive SDK for PHP is developed and maintained by Christophe Vidal.
 [1]:  http://php.net/
 [2]:  http://msdn.microsoft.com/en-us/library/hh826521.aspx
 [3]:  http://php.net/manual/en/book.curl.php
-[4]:  http://getcomposer.org/
+[4]:  https://getcomposer.org/
 [5]:  https://login.live.com/
 [6]:  https://account.live.com/developers/applications/index
 [7]:  https://account.live.com/developers/applications/create
