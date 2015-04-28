@@ -1,9 +1,8 @@
 OneDrive SDK for PHP
 ====================
 
-OneDrive SDK for PHP is an open source library that allows
-[PHP](http://php.net/) applications to interact programmatically with the
-[OneDrive API](http://msdn.microsoft.com/en-us/library/hh826521.aspx).
+OneDrive SDK for PHP is an open source library that allows [PHP][1] applications
+to interact programmatically with the [OneDrive API][2].
 
 It supports operations such as creating, reading, updating, deleting (CRUD)
 files and folders, as well as moving or copying them to other folders.
@@ -13,9 +12,9 @@ Requirements
 
 Using the OneDrive SDK for PHP requires the following:
 
-* [PHP](http://php.net/) 5.3 or newer
-* The [cURL extension for PHP](http://php.net/manual/en/book.curl.php)
-* [Composer](http://getcomposer.org/) 1.0.0-alpha10 or newer
+* [PHP][1] 5.3 or newer
+* The [cURL extension for PHP][3]
+* [Composer][4] 1.0.0-alpha10 or newer
 * Basic PHP knowledge
 
 Installation
@@ -29,10 +28,8 @@ Configuration
 -------------
 
 To use this SDK, you need to register a OneDrive application. To do this, first
-[sign in to your Microsoft account](https://login.live.com/), then visit your
-[application manager](https://account.live.com/developers/applications/index)
-and
-[create an application](https://account.live.com/developers/applications/create).
+[sign in to your Microsoft account][5], then visit your [application manager][6]
+and [create an application][7].
 
 Once done, your application will be assigned, among other things, a *Client ID*
 and a *Client secret*. These two values will be needed shortly to configure the
@@ -53,7 +50,7 @@ started using the OneDrive SDK for PHP in three steps.
 ### Step 1: get your dependencies through Composer
 
 From the root of this repository, get the required dependencies using
-[Composer](http://getcomposer.org/):
+[Composer][4]:
 
 ```
 $ composer install -n
@@ -175,9 +172,8 @@ $_SESSION['onedrive.client.state'] = $onedrive->getState();
 ?>
 ```
 
-For details about classes and methods available, see the
-[project page](http://www.krizalys.com/software/onedrive-php-sdk) on
-[Krizalys](http://www.krizalys.com/).
+For details about classes and methods available, see the [project page][8] on
+[Krizalys][9].
 
 Examples
 --------
@@ -192,9 +188,8 @@ Demonstration
 -------------
 
 The example files provided with the OneDrive SDK for PHP are deployed on a
-[demo website](http://demo.krizalys.com/onedrive-php-sdk/example/) for live
-demonstration purposes. A OneDrive account is needed to try out this
-demonstration.
+[demo website][10] for live demonstration purposes. A OneDrive account is needed
+to try out this demonstration.
 
 If you are using PHP 5.4 or later, you can try the examples on your own machine
 using PHP's built-in web server:
@@ -211,9 +206,21 @@ License
 -------
 
 The OneDrive SDK for PHP is licensed under the
-[GNU General Public License v3.0](http://www.gnu.org/copyleft/gpl.html).
+[GNU General Public License v3.0][11].
 
 Credits
 -------
 
 The OneDrive SDK for PHP is developed and maintained by Christophe Vidal.
+
+[1]:  http://php.net/
+[2]:  http://msdn.microsoft.com/en-us/library/hh826521.aspx
+[3]:  http://php.net/manual/en/book.curl.php
+[4]:  http://getcomposer.org/
+[5]:  https://login.live.com/
+[6]:  https://account.live.com/developers/applications/index
+[7]:  https://account.live.com/developers/applications/create
+[8]:  http://www.krizalys.com/software/onedrive-php-sdk
+[9]:  http://www.krizalys.com/
+[10]: http://demo.krizalys.com/onedrive-php-sdk/example/
+[11]: http://www.gnu.org/copyleft/gpl.html
