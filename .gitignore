@@ -1,4 +1,5 @@
 vendor/
+composer.lock
 
 # Mac OS X artifacts
 .DS_Store
