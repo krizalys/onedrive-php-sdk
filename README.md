@@ -188,7 +188,7 @@ Demonstration
 -------------
 
 The example files provided with the OneDrive SDK for PHP are deployed on a
-[demo website][krizalys-demo] for live demonstration purposes. A OneDrive
+[demo website][ondrive-php-sdk-demo] for live demonstration purposes. A OneDrive
 account is needed to try out this demonstration.
 
 If you are using PHP 5.4 or later, you can try the examples on your own machine
@@ -213,14 +213,14 @@ Credits
 
 The OneDrive SDK for PHP is developed and maintained by Christophe Vidal.
 
-[php]:             http://php.net/
-[onedrive-api]:    http://msdn.microsoft.com/en-us/library/hh826521.aspx
-[php-curl]:        http://php.net/manual/en/book.curl.php
-[composer]:        https://getcomposer.org/
-[live-login]:      https://login.live.com/
-[live-apps]:       https://account.live.com/developers/applications/index
-[live-newapp]:     https://account.live.com/developers/applications/create
-[ondrive-php-sdk]: http://www.krizalys.com/software/onedrive-php-sdk
-[krizalys]:        http://www.krizalys.com/
-[krizalys-demo]:   http://demo.krizalys.com/onedrive-php-sdk/example/
-[gpl]:             http://www.gnu.org/copyleft/gpl.html
+[php]:                  http://php.net/
+[onedrive-api]:         http://msdn.microsoft.com/en-us/library/hh826521.aspx
+[php-curl]:             http://php.net/manual/en/book.curl.php
+[composer]:             https://getcomposer.org/
+[live-login]:           https://login.live.com/
+[live-apps]:            https://account.live.com/developers/applications/index
+[live-newapp]:          https://account.live.com/developers/applications/create
+[ondrive-php-sdk]:      http://www.krizalys.com/software/onedrive-php-sdk
+[krizalys]:             http://www.krizalys.com/
+[ondrive-php-sdk-demo]: http://demo.krizalys.com/onedrive-php-sdk/example/
+[gpl]:                  http://www.gnu.org/copyleft/gpl.html
