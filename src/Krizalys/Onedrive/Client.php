@@ -688,12 +688,12 @@ class Client {
 	 * Fetches the account info of the current OneDrive account.
 	 *
 	 * @return (object) An object with the following properties:
-	 *           (string) id - OneDrive account ID
-	 *           (string) first_name - account owner's first name
-	 *           (string) last_name - account owner's last name
-	 *           (string) name - account owner's full name
-	 *           (string) gender - account owner's gender
-	 *           (string) locale - account owner's locale
+	 *           (string) id - OneDrive account ID.
+	 *           (string) first_name - account owner's first name.
+	 *           (string) last_name - account owner's last name.
+	 *           (string) name - account owner's full name.
+	 *           (string) gender - account owner's gender.
+	 *           (string) locale - account owner's locale.
 	 */
 	public function fetchAccountInfo() {
 		return $this->apiGet('me');
