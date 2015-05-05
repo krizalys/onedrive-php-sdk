@@ -457,7 +457,7 @@ class Client {
 	 * @param  (null|string) $parentId - The ID of the OneDrive folder into which
 	 *         to create the OneDrive file, or null to create it in the OneDrive
 	 *         root folder. Default: null.
-	 * @param  (string) $content - The content of the OneDrive file to be created.
+	 * @param  (string|resource) $content - The content of the OneDrive file to be created.
 	 * @return (File) The file created, as File instance referencing to the
 	 *         OneDrive file created.
 	 * @throw  (\Exception) Thrown on I/O errors.
@@ -467,26 +467,31 @@ class Client {
 			$parentId = 'me/skydrive';
 		}
 
-		$stream = fopen('php://memory', 'w+b');
-
-		if (false === $stream) {
-			throw new \Exception('fopen() failed');
-		}
-
-		if (false === fwrite($stream, $content)) {
-			fclose($stream);
-			throw new \Exception('fwrite() failed');
-		}
-
-		if (!rewind($stream)) {
-			fclose($stream);
-			throw new \Exception('rewind() failed');
+		if (is_resource($content)) {
+			$stream = $content;
+		} else {
+	
+			$stream = fopen('php://memory', 'w+b');
+	
+			if (false === $stream) {
+				throw new \Exception('fopen() failed');
+			}
+	
+			if (false === fwrite($stream, $content)) {
+				fclose($stream);
+				throw new \Exception('fwrite() failed');
+			}
+	
+			if (!rewind($stream)) {
+				fclose($stream);
+				throw new \Exception('rewind() failed');
+			}
 		}
 
 		// TODO: some versions of cURL cannot PUT memory streams? See here for a
 		// workaround: https://bugs.php.net/bug.php?id=43468
 		$file = $this->apiPut($parentId . '/files/' . urlencode($name), $stream);
-		fclose($stream);
+		if (!is_resource($content)) fclose($stream);
 		return new File($this, $file->id, $file);
 	}
 
