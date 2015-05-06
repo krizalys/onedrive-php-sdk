@@ -44,12 +44,13 @@ class Client {
 	 * Creates a base cURL object which is compatible with the OneDrive API.
 	 *
 	 * @param  (string) $path - The path of the API call (eg. me/skydrive).
+	 * @param  (array) $options - Further curl options to set.
 	 * @return (resource) A compatible cURL object.
 	 */
-	private static function _createCurl($path) {
+	private static function _createCurl($path, $options = array()) {
 		$curl = curl_init();
 
-		curl_setopt_array($curl, array(
+		$default_options = array(
 			// General options.
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_FOLLOWLOCATION => true,
@@ -58,7 +59,12 @@ class Client {
 			// SSL options.
 			CURLOPT_SSL_VERIFYHOST => false,
 			CURLOPT_SSL_VERIFYPEER => false
-		));
+		);
+
+		// See http://php.net/manual/en/function.array-merge.php for a description of the + operator (and why array_merge() would be wrong)
+		$final_options = $options + $default_options;
+
+		curl_setopt_array($curl, $final_options);
 
 		return $curl;
 	}
@@ -281,13 +287,16 @@ class Client {
 	 * Performs a call to the OneDrive API using the GET method.
 	 *
 	 * @param  (string) $path - The path of the API call (eg. me/skydrive).
+	 * @param  (array) $options - Further curl options to set.
 	 */
-	public function apiGet($path) {
+	public function apiGet($path, $options = array()) {
 		$url = self::API_URL . $path
 			. '?access_token=' . urlencode($this->_state->token->data->access_token);
 
-		$curl = self::_createCurl($path);
+		$curl = self::_createCurl($path, $options);
+		
 		curl_setopt($curl, CURLOPT_URL, $url);
+
 		return $this->_processResult($curl);
 	}
 
