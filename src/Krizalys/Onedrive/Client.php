@@ -40,25 +40,41 @@ class Client {
 	// The last Content-Type received.
 	private $_contentType;
 
+	// Verify SSL hosts and peers.
+	private $_sslVerify;
+
+	// Over-ride SSL CA path for verification (only relevant when verifying).
+	private $_sslCAPath;
+
 	/**
 	 * Creates a base cURL object which is compatible with the OneDrive API.
 	 *
 	 * @param  (string) $path - The path of the API call (eg. me/skydrive).
+	 * @param  (array) $options - Further curl options to set.
 	 * @return (resource) A compatible cURL object.
 	 */
-	private static function _createCurl($path) {
+	private function _createCurl($path, $options = array()) {
 		$curl = curl_init();
 
-		curl_setopt_array($curl, array(
+		$default_options = array(
 			// General options.
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_FOLLOWLOCATION => true,
 			CURLOPT_AUTOREFERER    => true,
 
 			// SSL options.
-			CURLOPT_SSL_VERIFYHOST => false,
-			CURLOPT_SSL_VERIFYPEER => false
-		));
+			CURLOPT_SSL_VERIFYHOST => ($this->_sslVerify ? 2 : false),
+			CURLOPT_SSL_VERIFYPEER => $this->_sslVerify,
+		);
+
+		if ($this->_sslVerify && $this->_sslCAPath) {
+			$default_options[CURLOPT_CAINFO] = $this->_sslCAPath;
+		}
+
+		// See http://php.net/manual/en/function.array-merge.php for a description of the + operator (and why array_merge() would be wrong)
+		$final_options = $options + $default_options;
+
+		curl_setopt_array($curl, $final_options);
 
 		return $curl;
 	}
@@ -109,9 +125,11 @@ class Client {
 	 * Constructor.
 	 *
 	 * @param  (array) $options. The options to use while creating this object.
-	 *         The only supported key is 'state'. When defined, it should contain
-	 *         a valid OneDrive client state, as returned by getState(). Default:
-	 *         array().
+	 *         Valid supported keys are:
+	 *         'state': When defined, it should contain a valid OneDrive client
+	 *         state, as returned by getState(). Default: array().
+	 *         (boolean)'ssl_verify': whether to verify SSL hosts and peers (default: false)
+	 *         (boolean|string)'ssl_capath': CA path to use for verifying SSL certificate chain (default: false)
 	 */
 	public function __construct(array $options = array()) {
 		$this->_clientId = array_key_exists('client_id', $options)
@@ -122,6 +140,12 @@ class Client {
 				'redirect_uri' => null,
 				'token'        => null
 			);
+
+		$this->_sslVerify = array_key_exists('ssl_verify', $options)
+			? $options['ssl_verify'] : false;
+
+		$this->_sslCAPath = array_key_exists('ssl_capath', $options)
+			? $options['ssl_capath'] : false;
 	}
 
 	/**
