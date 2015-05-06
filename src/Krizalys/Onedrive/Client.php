@@ -281,13 +281,19 @@ class Client {
 	 * Performs a call to the OneDrive API using the GET method.
 	 *
 	 * @param  (string) $path - The path of the API call (eg. me/skydrive).
+	 * @param  (array) $options - Further curl options to set.
 	 */
-	public function apiGet($path) {
+	public function apiGet($path, $options = array()) {
 		$url = self::API_URL . $path
 			. '?access_token=' . urlencode($this->_state->token->data->access_token);
 
 		$curl = self::_createCurl($path);
+		
 		curl_setopt($curl, CURLOPT_URL, $url);
+
+		foreach ($options as $option => $value) {
+			curl_setopt($curl, $option, $value);
+		}
 		return $this->_processResult($curl);
 	}
 
