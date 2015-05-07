@@ -32,13 +32,15 @@ class File extends Object {
 	/**
 	 * Fetches the content of the OneDrive file referenced by this File instance.
 	 *
+	 * @param (array) - Extra curl options to pass.
+	 *
 	 * @return (string) The content of the OneDrive file referenced by this File
 	 * instance.
 	 */
 	// TODO: should somewhat return the content-type as well; this information is
 	// not disclosed by OneDrive
-	public function fetchContent() {
-		return $this->_client->apiGet($this->_id . '/content');
+	public function fetchContent($options = array()) {
+		return $this->_client->apiGet($this->_id . '/content', $options);
 	}
 
 	/**
