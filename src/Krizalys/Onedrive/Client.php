@@ -257,6 +257,15 @@ class Client {
 		));
 
 		$result = curl_exec($curl);
+		
+		if (false === $result) {
+			if (curl_errno($curl)) {
+				throw new \Exception('Curl error: '.curl_error($curl));
+			} else {
+				throw new \Exception('Curl error: empty response');
+			}
+		}
+
 		$decoded = json_decode($result);
 
 		if (null === $decoded) {
