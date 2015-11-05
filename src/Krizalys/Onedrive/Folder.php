@@ -65,4 +65,23 @@ class Folder extends Object {
 	public function createFile($name, $content = '') {
 		return $this->_client->createFile($name, $this->_id, $content);
 	}
+
+	/**
+	 * Gets all files in the OneDrive folder referenced by this Folder instance.
+	 *
+ 	 * @return (array) The files in the OneDrive folder referenced by this
+	 *         Folder instance, as Object instances.
+	 */
+	public function fetchAllFiles(){
+		$files = [];
+
+		foreach($this->_client->fetchObjects($this->_id) as $file){
+			if ($file->isFolder()) {
+				$files = array_merge($file->fetchAllFiles(), $files);
+			} else {
+				array_push($files, $file);
+			}
+		}
+		return $files;
+	}
 }
