@@ -33,6 +33,7 @@ class Folder extends Object {
 	/**
 	 * Gets the objects in the OneDrive folder referenced by this Folder instance.
 	 *
+	 * @deprecated
 	 * @return (array) The objects in the OneDrive folder referenced by this
 	 *         Folder instance, as Object instances.
 	 */
@@ -72,10 +73,10 @@ class Folder extends Object {
  	 * @return (array) The files in the OneDrive folder referenced by this
 	 *         Folder instance, as Object instances.
 	 */
-	public function fetchAllFiles(){
+	public function fetchDescendantObjects() {
 		$files = [];
 
-		foreach($this->_client->fetchObjects($this->_id) as $file){
+		foreach ($this->_client->fetchObjects($this->_id) as $file) {
 			if ($file->isFolder()) {
 				$files = array_merge($file->fetchAllFiles(), $files);
 			} else {
@@ -83,5 +84,15 @@ class Folder extends Object {
 			}
 		}
 		return $files;
+	}
+
+	/**
+	 * Gets the objects in the OneDrive folder referenced by this Folder instance.
+	 * 
+	 * @return (array) The objects in the OneDrive folder referenced by this
+	 *         Folder instance, as Object instances.
+	 */
+	public function fetchChildObjects() {
+		return $this->fetchObjects();
 	}
 }
