@@ -29,32 +29,32 @@ abstract class Object
      * @var string The unique ID assigned by OneDrive to the parent folder of
      *             this object.
      */
-    private   $_parentId;
+    private $_parentId;
 
     /**
      * @var string The name of this object.
      */
-    private   $_name;
+    private $_name;
 
     /**
      * @var string The description of this object.
      */
-    private   $_description;
+    private $_description;
 
     /**
      * @var int The size of this object, in bytes.
      */
-    private   $_size;
+    private $_size;
 
     /**
      * @var int The creation time, in seconds since UNIX epoch.
      */
-    private   $_createdTime;
+    private $_createdTime;
 
     /**
      * @var int The last modification time, in seconds since UNIX epoch.
      */
-    private   $_updatedTime;
+    private $_updatedTime;
 
     /**
      * Constructor.

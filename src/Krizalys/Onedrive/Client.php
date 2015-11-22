@@ -583,6 +583,7 @@ class Client
      *                                 an already opened file. In the latter
      *                                 case, the responsibility to close the
      *                                 handle is left to the calling function.
+     *                                 Default: ''.
      *
      * @return File The file created, as File instance referencing to the
      *              OneDrive file created.
