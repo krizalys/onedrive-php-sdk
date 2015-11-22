@@ -684,7 +684,6 @@ class Client
      */
     public function updateObject($objectId, $properties = array())
     {
-        $objectId   = $objectId;
         $properties = (object) $properties;
         $encoded    = json_encode($properties);
         $stream     = fopen('php://memory', 'w+b');
@@ -750,7 +749,6 @@ class Client
      */
     public function deleteObject($objectId)
     {
-        $objectId = $objectId;
         $this->apiDelete($objectId);
     }
 
