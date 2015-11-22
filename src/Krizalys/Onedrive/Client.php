@@ -74,7 +74,7 @@ class Client
      * Creates a base cURL object which is compatible with the OneDrive API.
      *
      * @param string $path    The path of the API call (eg. me/skydrive).
-     * @param array  $options Further curl options to set.
+     * @param array  $options Extra cURL options to apply.
      *
      * @return resource A compatible cURL object.
      */
