@@ -40,6 +40,12 @@ class Client {
 	// The last Content-Type received.
 	private $_contentType;
 
+	// Verify SSL hosts and peers.
+	private $_sslVerify;
+
+	// Over-ride SSL CA path for verification (only relevant when verifying).
+	private $_sslCAPath;
+
 	/**
 	 * Creates a base cURL object which is compatible with the OneDrive API.
 	 *
@@ -47,7 +53,7 @@ class Client {
 	 * @param  (array) $options - Further curl options to set.
 	 * @return (resource) A compatible cURL object.
 	 */
-	private static function _createCurl($path, $options = array()) {
+	private function _createCurl($path, $options = array()) {
 		$curl = curl_init();
 
 		$default_options = array(
@@ -57,9 +63,13 @@ class Client {
 			CURLOPT_AUTOREFERER    => true,
 
 			// SSL options.
-			CURLOPT_SSL_VERIFYHOST => false,
-			CURLOPT_SSL_VERIFYPEER => false
+			CURLOPT_SSL_VERIFYHOST => ($this->_sslVerify ? 2 : false),
+			CURLOPT_SSL_VERIFYPEER => $this->_sslVerify,
 		);
+
+		if ($this->_sslVerify && $this->_sslCAPath) {
+			$default_options[CURLOPT_CAINFO] = $this->_sslCAPath;
+		}
 
 		// See http://php.net/manual/en/function.array-merge.php for a description of the + operator (and why array_merge() would be wrong)
 		$final_options = $options + $default_options;
@@ -115,9 +125,11 @@ class Client {
 	 * Constructor.
 	 *
 	 * @param  (array) $options. The options to use while creating this object.
-	 *         The only supported key is 'state'. When defined, it should contain
-	 *         a valid OneDrive client state, as returned by getState(). Default:
-	 *         array().
+	 *         Valid supported keys are:
+	 *         'state': When defined, it should contain a valid OneDrive client
+	 *         state, as returned by getState(). Default: array().
+	 *         (boolean)'ssl_verify': whether to verify SSL hosts and peers (default: false)
+	 *         (boolean|string)'ssl_capath': CA path to use for verifying SSL certificate chain (default: false)
 	 */
 	public function __construct(array $options = array()) {
 		$this->_clientId = array_key_exists('client_id', $options)
@@ -128,6 +140,12 @@ class Client {
 				'redirect_uri' => null,
 				'token'        => null
 			);
+
+		$this->_sslVerify = array_key_exists('ssl_verify', $options)
+			? $options['ssl_verify'] : false;
+
+		$this->_sslCAPath = array_key_exists('ssl_capath', $options)
+			? $options['ssl_capath'] : false;
 	}
 
 	/**
@@ -294,7 +312,7 @@ class Client {
 			. '?access_token=' . urlencode($this->_state->token->data->access_token);
 
 		$curl = self::_createCurl($path, $options);
-		
+
 		curl_setopt($curl, CURLOPT_URL, $url);
 
 		return $this->_processResult($curl);
@@ -466,7 +484,7 @@ class Client {
 	 * @param  (null|string) $parentId - The ID of the OneDrive folder into which
 	 *         to create the OneDrive file, or null to create it in the OneDrive
 	 *         root folder. Default: null.
-	 * @param  (string) $content - The content of the OneDrive file to be created.
+	 * @param  (string|resource) $content - The content of the OneDrive file to be created.
 	 * @return (File) The file created, as File instance referencing to the
 	 *         OneDrive file created.
 	 * @throw  (\Exception) Thrown on I/O errors.
@@ -476,26 +494,31 @@ class Client {
 			$parentId = 'me/skydrive';
 		}
 
-		$stream = fopen('php://memory', 'w+b');
+		if (is_resource($content)) {
+			$stream = $content;
+		} else {
 
-		if (false === $stream) {
-			throw new \Exception('fopen() failed');
-		}
+			$stream = fopen('php://memory', 'w+b');
 
-		if (false === fwrite($stream, $content)) {
-			fclose($stream);
-			throw new \Exception('fwrite() failed');
-		}
+			if (false === $stream) {
+				throw new \Exception('fopen() failed');
+			}
 
-		if (!rewind($stream)) {
-			fclose($stream);
-			throw new \Exception('rewind() failed');
+			if (false === fwrite($stream, $content)) {
+				fclose($stream);
+				throw new \Exception('fwrite() failed');
+			}
+
+			if (!rewind($stream)) {
+				fclose($stream);
+				throw new \Exception('rewind() failed');
+			}
 		}
 
 		// TODO: some versions of cURL cannot PUT memory streams? See here for a
 		// workaround: https://bugs.php.net/bug.php?id=43468
 		$file = $this->apiPut($parentId . '/files/' . urlencode($name), $stream);
-		fclose($stream);
+		if (!is_resource($content)) fclose($stream);
 		return new File($this, $file->id, $file);
 	}
 
