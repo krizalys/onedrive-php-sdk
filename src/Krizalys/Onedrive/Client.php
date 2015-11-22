@@ -2,7 +2,12 @@
 
 namespace Krizalys\Onedrive;
 
-/*
+// TODO: Support refresh tokens, see:
+// http://msdn.microsoft.com/en-us/library/live/hh243647.aspx
+// TODO: Pass parameters in POST request body when obtaining the access token.
+/**
+ * @class Client
+ *
  * A Client instance allows communication with the OneDrive API and perform
  * operations programmatically.
  *
@@ -17,43 +22,61 @@ namespace Krizalys\Onedrive;
  * For an example implementation, see here:
  * https://github.com/drumaddict/skydrive-api-yii/blob/master/SkyDriveAPI.php
  */
-// TODO: support refresh tokens: http://msdn.microsoft.com/en-us/library/live/hh243647.aspx
-// TODO: pass parameters in POST request body when obtaining the access token
 class Client
 {
-    // The base URL for API requests.
+    /**
+     * @var string The base URL for API requests.
+     */
     const API_URL = 'https://apis.live.net/v5.0/';
 
-    // The base URL for authorization requests.
+    /**
+     * @var string The base URL for authorization requests.
+     */
     const AUTH_URL = 'https://login.live.com/oauth20_authorize.srf';
 
-    // The base URL for token requests.
+    /**
+     * @var string The base URL for token requests.
+     */
     const TOKEN_URL = 'https://login.live.com/oauth20_token.srf';
 
-    // Client information.
+    /**
+     * @var string Client information.
+     */
     private $_clientId;
 
-    // OAuth state (token, etc...).
+    /**
+     * @var object OAuth state (token, etc...).
+     */
     private $_state;
 
-    // The last HTTP status received.
+    /**
+     * @var int The last HTTP status received.
+     */
     private $_httpStatus;
 
-    // The last Content-Type received.
+    /**
+     * @var string The last Content-Type received.
+     */
     private $_contentType;
 
-    // Verify SSL hosts and peers.
+    /**
+     * @var bool Verify SSL hosts and peers.
+     */
     private $_sslVerify;
 
-    // Over-ride SSL CA path for verification (only relevant when verifying).
+    /**
+     * @var null|string Over-ride SSL CA path for verification (only relevant
+     *                  when verifying).
+     */
     private $_sslCaPath;
 
     /**
      * Creates a base cURL object which is compatible with the OneDrive API.
      *
-     * @param  (string) $path - The path of the API call (eg. me/skydrive).
-     * @param  (array) $options - Further curl options to set.
-     * @return (resource) A compatible cURL object.
+     * @param string $path    The path of the API call (eg. me/skydrive).
+     * @param array  $options Extra cURL options to apply.
+     *
+     * @return resource A compatible cURL object.
      */
     private function _createCurl($path, $options = array())
     {
@@ -88,9 +111,13 @@ class Client
     /**
      * Processes a result returned by the OneDrive API call using a cURL object.
      *
-     * @param  (resource) $curl - The cURL object used to perform the call.
-     * @return (object|string) The content returned, as an object instance if
-     *         served a JSON, or as a string if served as anything else.
+     * @param resource $curl The cURL object used to perform the call.
+     *
+     * @return object|string The content returned, as an object instance if
+     *                       served a JSON, or as a string if served as anything
+     *                       else.
+     *
+     * @throws \Exception Thrown if curl_exec() fails.
      */
     private function _processResult($curl)
     {
@@ -131,14 +158,21 @@ class Client
     /**
      * Constructor.
      *
-     * @param  (array) $options. The options to use while creating this object.
-     *         Valid supported keys are:
-     *         'state': When defined, it should contain a valid OneDrive client
-     *         state, as returned by getState(). Default: array().
-     *         (boolean) 'ssl_verify': whether to verify SSL hosts and peers
-     *         (default: false)
-     *         (boolean|string) 'ssl_capath': CA path to use for verifying SSL
-     *         certificate chain (default: false)
+     * @param array $options The options to use while creating this object.
+     *                       Valid supported keys are:
+     *                         'state'      (object)      When defined, it
+     *                                                    should contain a valid
+     *                                                    OneDrive client state,
+     *                                                    as returned by
+     *                                                    getState(). Default:
+     *                                                    array().
+     *                         'ssl_verify' (bool)        Whether to verify SSL
+     *                                                    hosts and peers.
+     *                                                    Default: false.
+     *                         'ssl_capath' (bool|string) CA path to use for
+     *                                                    verifying SSL
+     *                                                    certificate chain.
+     *                                                    Default: false.
      */
     public function __construct(array $options = array())
     {
@@ -162,13 +196,14 @@ class Client
      * Gets the current state of this Client instance. Typically saved in the
      * session and passed back to the Client constructor for further requests.
      *
-     * @return (object) The state of this Client instance.
+     * @return object The state of this Client instance.
      */
     public function getState()
     {
         return $this->_state;
     }
 
+    // TODO: support $options.
     /**
      * Gets the URL of the log in form. After login, the browser is redirected to
      * the redirect URL, and a code is passed as a GET parameter to this URL.
@@ -176,14 +211,19 @@ class Client
      * The browser is also redirected to this URL if the user is already logged
      * in.
      *
-     * @param  (array) $scopes - The OneDrive scopes requested by the application.
-     *         Supported values: 'wl.signin', 'wl.basic', 'wl.contacts_skydrive',
-     *         'wl.skydrive_update'.
-     * @param  (string) $redirectUri - The URI to which to redirect to upon
-     *         successful log in.
-     * @param  (array) $options. Reserved for future use. Default: array(). TODO:
-     *         support it.
-     * @return (string) The login URL.
+     * @param array $scopes       The OneDrive scopes requested by the
+     *                            application. Supported values:
+     *                              'wl.signin'
+     *                              'wl.basic'
+     *                              'wl.contacts_skydrive'
+     *                              'wl.skydrive_update'
+     * @param string $redirectUri The URI to which to redirect to upon
+     *                            successful log in.
+     * @param array  $options     Reserved for future use. Default: array().
+     *
+     * @return string The login URL.
+     *
+     * @throws \Exception Thrown if this Client instance's clientId is not set.
      */
     public function getLogInUrl(array $scopes, $redirectUri, array $options = array())
     {
@@ -212,7 +252,7 @@ class Client
     /**
      * Gets the access token expiration delay.
      *
-     * @return (int) The token expiration delay, in seconds.
+     * @return int The token expiration delay, in seconds.
      */
     public function getTokenExpire()
     {
@@ -223,11 +263,11 @@ class Client
     /**
      * Gets the status of the current access token.
      *
-     * @return (int) The status of the current access token:
-     *          0 => no access token
-     *         -1 => access token will expire soon (1 minute or less)
-     *         -2 => access token is expired
-     *          1 => access token is valid
+     * @return int The status of the current access token:
+     *                0 No access token.
+     *               -1 Access token will expire soon (1 minute or less).
+     *               -2 Access token is expired.
+     *                1 Access token is valid.
      */
     public function getAccessTokenStatus()
     {
@@ -251,11 +291,15 @@ class Client
     /**
      * Obtains a new access token from OAuth. This token is valid for one hour.
      *
-     * @param  (string) $clientSecret - The OneDrive client secret.
-     * @param  (string) $code - The code returned by OneDrive after successful log
-     *         in.
-     * @param  (string) $redirectUri. Must be the same as the redirect URI passed
-     *         to getLoginUrl().
+     * @param string $clientSecret The OneDrive client secret.
+     * @param string $code         The code returned by OneDrive after
+     *                             successful log in.
+     * @param string $redirectUri  Must be the same as the redirect URI passed
+     *                             to getLoginUrl().
+     *
+     * @throws \Exception Thrown if this Client instance's clientId is not set.
+     * @throws \Exception Thrown if the redirect URI of this Client instance's
+     *                    state is not set.
      */
     public function obtainAccessToken($clientSecret, $code)
     {
@@ -281,6 +325,7 @@ class Client
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_AUTOREFERER    => true,
+
             // SSL options.
             CURLOPT_SSL_VERIFYHOST => false,
             CURLOPT_SSL_VERIFYPEER => false,
@@ -312,6 +357,9 @@ class Client
 
     /**
      * Renews the access token from OAuth. This token is valid for one hour.
+     *
+     * @param string $clientSecret The client secret.
+     * @param string $redirectUri  The redirect URI.
      */
     /*public function renewAccessToken($clientSecret, $redirectUri)
     {
@@ -326,8 +374,10 @@ class Client
     /**
      * Performs a call to the OneDrive API using the GET method.
      *
-     * @param  (string) $path - The path of the API call (eg. me/skydrive).
-     * @param  (array) $options - Further curl options to set.
+     * @param string $path    The path of the API call (eg. me/skydrive).
+     * @param array  $options Further curl options to set.
+     *
+     * @return object|string The response body, if any.
      */
     public function apiGet($path, $options = array())
     {
@@ -337,15 +387,16 @@ class Client
         $curl = self::_createCurl($path, $options);
 
         curl_setopt($curl, CURLOPT_URL, $url);
-
         return $this->_processResult($curl);
     }
 
     /**
      * Performs a call to the OneDrive API using the POST method.
      *
-     * @param  (string) $path - The path of the API call (eg. me/skydrive).
-     * @param  (array|object) $data - The data to pass in the body of the request.
+     * @param string       $path The path of the API call (eg. me/skydrive).
+     * @param array|object $data The data to pass in the body of the request.
+     *
+     * @return object|string The response body, if any.
      */
     public function apiPost($path, $data)
     {
@@ -371,10 +422,12 @@ class Client
     /**
      * Performs a call to the OneDrive API using the PUT method.
      *
-     * @param  (string) $path - The path of the API call (eg. me/skydrive).
-     * @param  (resource) $stream - The data stream to upload.
-     * @param  (string) $contentType - The MIME type of the data stream, or null
-     *         if unknown. Default: null.
+     * @param string   $path        The path of the API call (eg. me/skydrive).
+     * @param resource $stream      The data stream to upload.
+     * @param string   $contentType The MIME type of the data stream, or null if
+     *                              unknown. Default: null.
+     *
+     * @return object|string The response body, if any.
      */
     public function apiPut($path, $stream, $contentType = null)
     {
@@ -405,7 +458,9 @@ class Client
     /**
      * Performs a call to the OneDrive API using the DELETE method.
      *
-     * @param  (string) $path - The path of the API call (eg. me/skydrive).
+     * @param string $path The path of the API call (eg. me/skydrive).
+     *
+     * @return object|string The response body, if any.
      */
     public function apiDelete($path)
     {
@@ -425,8 +480,10 @@ class Client
     /**
      * Performs a call to the OneDrive API using the MOVE method.
      *
-     * @param  (string) $path - The path of the API call (eg. me/skydrive).
-     * @param  (array|object) $data - The data to pass in the body of the request.
+     * @param string       $path The path of the API call (eg. me/skydrive).
+     * @param array|object $data The data to pass in the body of the request.
+     *
+     * @return object|string The response body, if any.
      */
     public function apiMove($path, $data)
     {
@@ -452,8 +509,10 @@ class Client
     /**
      * Performs a call to the OneDrive API using the COPY method.
      *
-     * @param  (string) $path - The path of the API call (eg. me/skydrive).
-     * @param  (array|object) $data - The data to pass in the body of the request.
+     * @param string       $path The path of the API call (eg. me/skydrive).
+     * @param array|object $data The data to pass in the body of the request.
+     *
+     * @return object|string The response body, if any.
      */
     public function apiCopy($path, $data)
     {
@@ -479,14 +538,18 @@ class Client
     /**
      * Creates a folder in the current OneDrive account.
      *
-     * @param  (string) $name - The name of the OneDrive folder to be created.
-     * @param  (null|string) $parentId - The ID of the OneDrive folder into which
-     *         to create the OneDrive folder, or null to create it in the OneDrive
-     *         root folder. Default: null.
-     * @param  (null|string) $description - The description of the OneDrive folder to be
-     *         created, or null to create it without a description. Default: null.
-     * @return (Folder) The folder created, as a Folder instance referencing to
-     *         the OneDrive folder created.
+     * @param string      $name        The name of the OneDrive folder to be
+     *                                 created.
+     * @param null|string $parentId    The ID of the OneDrive folder into which
+     *                                 to create the OneDrive folder, or null to
+     *                                 create it in the OneDrive root folder.
+     *                                 Default: null.
+     * @param null|string $description The description of the OneDrive folder to
+     *                                 be created, or null to create it without
+     *                                 a description. Default: null.
+     *
+     * @return Folder The folder created, as a Folder instance referencing to
+     *                the OneDrive folder created.
      */
     public function createFolder($name, $parentId = null, $description = null)
     {
@@ -509,17 +572,22 @@ class Client
     /**
      * Creates a file in the current OneDrive account.
      *
-     * @param  (string) $name - The name of the OneDrive file to be created.
-     * @param  (null|string) $parentId - The ID of the OneDrive folder into which
-     *         to create the OneDrive file, or null to create it in the OneDrive
-     *         root folder. Default: null.
-     * @param  (string|resource) $content - The content of the OneDrive file to
-     *         be created, as a string or as a resource to an already opened
-     *         file. In the latter case, the responsibility to close the handle
-     *         is left to the calling function.
-     * @return (File) The file created, as File instance referencing to the
-     *         OneDrive file created.
-     * @throw  (\Exception) Thrown on I/O errors.
+     * @param string      $name        The name of the OneDrive file to be
+     *                                 created.
+     * @param null|string $parentId    The ID of the OneDrive folder into which
+     *                                 to create the OneDrive file, or null to
+     *                                 create it in the OneDrive root folder.
+     *                                 Default: null.
+     * @param string|resource $content The content of the OneDrive file to be
+     *                                 created, as a string or as a resource to
+     *                                 an already opened file. In the latter
+     *                                 case, the responsibility to close the
+     *                                 handle is left to the calling function.
+     *
+     * @return File The file created, as File instance referencing to the
+     *              OneDrive file created.
+     *
+     * @throws \Exception Thrown on I/O errors.
      */
     public function createFile($name, $parentId = null, $content = '')
     {
@@ -562,10 +630,11 @@ class Client
     /**
      * Fetches an object from the current OneDrive account.
      *
-     * @param  (null|string) The unique ID of the OneDrive object to fetch, or
-     *         null to fetch the OneDrive root folder. Default: null.
-     * @return (Object) The object fetched, as an Object instance referencing to
-     *         the OneDrive object fetched.
+     * @param null|string The unique ID of the OneDrive object to fetch, or null
+     *                    to fetch the OneDrive root folder. Default: null.
+     *
+     * @return object The object fetched, as an Object instance referencing to
+     *                the OneDrive object fetched.
      */
     public function fetchObject($objectId = null)
     {
@@ -582,7 +651,7 @@ class Client
     /**
      * Fetches the root folder from the current OneDrive account.
      *
-     * @return (Folder) The root folder, as a Folder instance referencing to the
+     * @return Folder The root folder, as a Folder instance referencing to the
      *         OneDrive root folder.
      */
     public function fetchRoot()
@@ -593,8 +662,8 @@ class Client
     /**
      * Fetches the "Camera Roll" folder from the current OneDrive account.
      *
-     * @return (Folder) The "Camera Roll" folder, as a Folder instance referencing
-     *         to the OneDrive "Camera Roll" folder.
+     * @return Folder The "Camera Roll" folder, as a Folder instance referencing
+     *                to the OneDrive "Camera Roll" folder.
      */
     public function fetchCameraRoll()
     {
@@ -604,8 +673,8 @@ class Client
     /**
      * Fetches the "Documents" folder from the current OneDrive account.
      *
-     * @return (Folder) The "Documents" folder, as a Folder instance referencing
-     *         to the OneDrive "Documents" folder.
+     * @return Folder The "Documents" folder, as a Folder instance referencing
+     *                to the OneDrive "Documents" folder.
      */
     public function fetchDocs()
     {
@@ -615,8 +684,8 @@ class Client
     /**
      * Fetches the "Pictures" folder from the current OneDrive account.
      *
-     * @return (Folder) The "Pictures" folder, as a Folder instance referencing to
-     *         the OneDrive "Pictures" folder.
+     * @return Folder The "Pictures" folder, as a Folder instance referencing to
+     *                the OneDrive "Pictures" folder.
      */
     public function fetchPics()
     {
@@ -626,8 +695,8 @@ class Client
     /**
      * Fetches the "Public" folder from the current OneDrive account.
      *
-     * @return (Folder) The "Public" folder, as a Folder instance referencing to
-     *         the OneDrive "Public" folder.
+     * @return Folder The "Public" folder, as a Folder instance referencing to
+     *                the OneDrive "Public" folder.
      */
     public function fetchPublicDocs()
     {
@@ -637,7 +706,7 @@ class Client
     /**
      * Fetches the properties of an object in the current OneDrive account.
      *
-     * @return (array) The properties of the object fetched.
+     * @return object The properties of the object fetched.
      */
     public function fetchProperties($objectId)
     {
@@ -651,8 +720,8 @@ class Client
     /**
      * Fetches the objects in a folder in the current OneDrive account.
      *
-     * @return (array) The objects in the folder fetched, as Object instances
-     *         referencing OneDrive objects.
+     * @return array The objects in the folder fetched, as Object instances
+     *               referencing OneDrive objects.
      */
     public function fetchObjects($objectId)
     {
@@ -677,10 +746,11 @@ class Client
     /**
      * Updates the properties of an object in the current OneDrive account.
      *
-     * @param  (string) $objectId - The unique ID of the object to update.
-     * @param  (array|object) $properties - The properties to update. Default:
-     *         array().
-     * @throw  (\Exception) Thrown on I/O errors.
+     * @param string       $objectId   The unique ID of the object to update.
+     * @param array|object $properties The properties to update. Default:
+     *                                 array().
+     *
+     * @throws \Exception Thrown on I/O errors.
      */
     public function updateObject($objectId, $properties = array())
     {
@@ -706,10 +776,10 @@ class Client
     /**
      * Moves an object into another folder.
      *
-     * @param  (string) The unique ID of the object to move.
-     * @param  (null|string) The unique ID of the folder into which to move the
-     *         object, or null to move it to the OneDrive root folder. Default:
-     *         null.
+     * @param string      The unique ID of the object to move.
+     * @param null|string The unique ID of the folder into which to move the
+     *                    object, or null to move it to the OneDrive root
+     *                    folder. Default: null.
      */
     public function moveObject($objectId, $destinationId = null)
     {
@@ -726,10 +796,11 @@ class Client
      * Copies a file into another folder. OneDrive does not support copying
      * folders.
      *
-     * @param  (string) The unique ID of the file to copy.
-     * @param  (null|string) The unique ID of the folder into which to copy the
-     *         file, or null to copy it to the OneDrive root folder. Default:
-     *         null.
+     * @param string      $objectId      The unique ID of the file to copy.
+     * @param null|string $destinationId The unique ID of the folder into which
+     *                                   to copy the file, or null to copy it to
+     *                                   the OneDrive root folder. Default:
+     *                                   null.
      */
     public function copyFile($objectId, $destinationId = null)
     {
@@ -745,7 +816,7 @@ class Client
     /**
      * Deletes an object in the current OneDrive account.
      *
-     * @param  (string) $objectId - The unique ID of the object to delete.
+     * @param string $objectId The unique ID of the object to delete.
      */
     public function deleteObject($objectId)
     {
@@ -755,9 +826,9 @@ class Client
     /**
      * Fetches the quota of the current OneDrive account.
      *
-     * @return (object) An object with the following properties:
-     *           (int) quota - The total space, in bytes.
-     *           (int) available - The available space, in bytes.
+     * @return object An object with the following properties:
+     *                  'quota'     (int) The total space, in bytes.
+     *                  'available' (int) The available space, in bytes.
      */
     public function fetchQuota()
     {
@@ -767,13 +838,13 @@ class Client
     /**
      * Fetches the account info of the current OneDrive account.
      *
-     * @return (object) An object with the following properties:
-     *           (string) id - OneDrive account ID.
-     *           (string) first_name - account owner's first name.
-     *           (string) last_name - account owner's last name.
-     *           (string) name - account owner's full name.
-     *           (string) gender - account owner's gender.
-     *           (string) locale - account owner's locale.
+     * @return object An object with the following properties:
+     *                  'id'         (string) OneDrive account ID.
+     *                  'first_name' (string) Account owner's first name.
+     *                  'last_name'  (string) Account owner's last name.
+     *                  'name'       (string) Account owner's full name.
+     *                  'gender'     (string) Account owner's gender.
+     *                  'locale'     (string) Account owner's locale.
      */
     public function fetchAccountInfo()
     {
@@ -783,8 +854,8 @@ class Client
     /**
      * Fetches the recent documents uploaded to the current OneDrive account.
      *
-     * @return (object) An object with the following properties:
-     *           (array) data - The list of the recent documents uploaded.
+     * @return object An object with the following properties:
+     *                  'data' (array) The list of the recent documents uploaded.
      */
     public function fetchRecentDocs()
     {
@@ -794,8 +865,8 @@ class Client
     /**
      * Fetches the objects shared with the current OneDrive account.
      *
-     * @return (object) An object with the following properties:
-     *           (array) data - The list of the shared objects.
+     * @return object An object with the following properties:
+     *                    'data' (array) The list of the shared objects.
      */
     public function fetchShared()
     {

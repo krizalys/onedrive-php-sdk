@@ -2,7 +2,9 @@
 
 namespace Krizalys\Onedrive;
 
-/*
+/**
+ * @class Object
+ *
  * An Object instance is an entity that may be stored in a OneDrive account.
  * There are two types of objects: file or a folder, each of which being a
  * subclass of the Object class.
@@ -13,48 +15,74 @@ namespace Krizalys\Onedrive;
  */
 abstract class Object
 {
-    // The owning Client instance.
+    /**
+     * @var Client The owning Client instance.
+     */
     protected $_client;
 
-    // The unique ID assigned by OneDrive to this object.
+    /**
+     * @var string The unique ID assigned by OneDrive to this object.
+     */
     protected $_id;
 
-    // The unique ID assigned by OneDrive to the parent folder of this object.
+    /**
+     * @var string The unique ID assigned by OneDrive to the parent folder of
+     *             this object.
+     */
     private   $_parentId;
 
-    // The name of this object.
+    /**
+     * @var string The name of this object.
+     */
     private   $_name;
 
-    // The description of this object.
+    /**
+     * @var string The description of this object.
+     */
     private   $_description;
 
-    // The size of this object, in bytes.
+    /**
+     * @var int The size of this object, in bytes.
+     */
     private   $_size;
 
-    // The creation time, in seconds since UNIX epoch.
+    /**
+     * @var int The creation time, in seconds since UNIX epoch.
+     */
     private   $_createdTime;
 
-    // The last modification time, in seconds since UNIX epoch.
+    /**
+     * @var int The last modification time, in seconds since UNIX epoch.
+     */
     private   $_updatedTime;
 
     /**
      * Constructor.
      *
-     * @param  (Client) $client - The Client instance owning this Object instance.
-     * @param  (null|string) $id - The unique ID of the OneDrive object referenced
-     *         by this Object instance.
-     * @param  (array|object) $options - An array/object with one or more of the
-     *         following keys/properties:
-     *           (string) parent_id - The unique ID of the parent OneDrive folder
-     *           of this object.
-     *           (string) name - The name of this object.
-     *           (string) description - The description of this object. May be
-     *           empty.
-     *           (int) size - The size of this object, in bytes.
-     *           (string) created_time - The creation time, as a RFC date/time.
-     *           (string) updated_time - The last modification time, as a RFC
-     *           date/time.
-     *         Default: array().
+     * @param Client       $client  The Client instance owning this Object
+     *                              instance.
+     * @param null|string  $id      The unique ID of the OneDrive object
+     *                              referenced by this Object instance.
+     * @param array|object $options An array/object with one or more of the
+     *                              following keys/properties:
+     *                                'parent_id'    (string) The unique ID of
+     *                                                        the parent
+     *                                                        OneDrive folder of
+     *                                                        this object.
+     *                                'name'         (string) The name of this
+     *                                                        object.
+     *                                'description'  (string) The description of
+     *                                                        this object. May
+     *                                                        be empty.
+     *                                'size'         (int)    The size of this
+     *                                                        object, in bytes.
+     *                                'created_time' (string) The creation time,
+     *                                                        as a RFC
+     *                                                        date/time.
+     *                                'updated_time' (string) The last
+     *                                                        modification time,
+     *                                                        as a RFC
+     *                                                        date/time.
      */
     public function __construct(Client $client, $id, $options = array())
     {
@@ -85,8 +113,8 @@ abstract class Object
      * Determines whether the OneDrive object referenced by this Object instance
      * is a folder.
      *
-     * @return (bool) true if the OneDrive object referenced by this Object
-     *         instance is a folder, false otherwise.
+     * @return bool true if the OneDrive object referenced by this Object
+     *              instance is a folder, false otherwise.
      */
     public function isFolder()
     {
@@ -97,8 +125,8 @@ abstract class Object
      * Fetches the properties of the OneDrive object referenced by this Object
      * instance. Some properties are cached for faster subsequent access.
      *
-     * @return (array) The properties of the OneDrive object referenced by this
-     *         Object instance.
+     * @return array The properties of the OneDrive object referenced by this
+     *               Object instance.
      */
     public function fetchProperties()
     {
@@ -122,8 +150,8 @@ abstract class Object
      * Gets the unique ID of the OneDrive object referenced by this Object
      * instance.
      *
-     * @return (string) The unique ID of the OneDrive object referenced by this
-     *         Object instance.
+     * @return string The unique ID of the OneDrive object referenced by this
+     *                Object instance.
      */
     public function getId()
     {
@@ -134,8 +162,8 @@ abstract class Object
      * Gets the unique ID of the parent folder of the OneDrive object referenced
      * by this Object instance.
      *
-     * @return (string) The unique ID of the OneDrive folder containing the object
-     *         referenced by this Object instance.
+     * @return string The unique ID of the OneDrive folder containing the object
+     *                referenced by this Object instance.
      */
     public function getParentId()
     {
@@ -149,8 +177,8 @@ abstract class Object
     /**
      * Gets the name of the OneDrive object referenced by this Object instance.
      *
-     * @return (string) The name of the OneDrive object referenced by this Object
-     *         instance.
+     * @return string The name of the OneDrive object referenced by this Object
+     *                instance.
      */
     public function getName()
     {
@@ -165,8 +193,8 @@ abstract class Object
      * Gets the description of the OneDrive object referenced by this Object
      * instance.
      *
-     * @return (string) The description of the OneDrive object referenced by this
-     *         Object instance.
+     * @return string The description of the OneDrive object referenced by this
+     *                Object instance.
      */
     public function getDescription()
     {
@@ -180,8 +208,8 @@ abstract class Object
     /**
      * Gets the size of the OneDrive object referenced by this Object instance.
      *
-     * @return (int) The size of the OneDrive object referenced by this Object
-     *         instance.
+     * @return int The size of the OneDrive object referenced by this Object
+     *             instance.
      */
     public function getSize()
     {
@@ -196,8 +224,8 @@ abstract class Object
      * Gets the creation time of the OneDrive object referenced by this Object
      * instance.
      *
-     * @return (int) The creation time of the object referenced by this Object
-     *         instance, in seconds since UNIX epoch.
+     * @return int The creation time of the object referenced by this Object
+     *             instance, in seconds since UNIX epoch.
      */
     public function getCreatedTime()
     {
@@ -212,8 +240,8 @@ abstract class Object
      * Gets the last modification time of the OneDrive object referenced by this
      * Object instance.
      *
-     * @return (int) The last modification time of the object referenced by this
-     *         Object instance, in seconds since UNIX epoch.
+     * @return int The last modification time of the object referenced by this
+     *             Object instance, in seconds since UNIX epoch.
      */
     public function getUpdatedTime()
     {
@@ -228,9 +256,10 @@ abstract class Object
      * Moves the OneDrive object referenced by this Object instance into another
      * OneDrive folder.
      *
-     * @param  (null|string) The unique ID of the OneDrive folder into which to
-     *         move the OneDrive object referenced by this Object instance, or
-     *         null to move it to the OneDrive root folder. Default: null.
+     * @param null|string The unique ID of the OneDrive folder into which to
+     *                    move the OneDrive object referenced by this Object
+     *                    instance, or null to move it to the OneDrive root
+     *                    folder. Default: null.
      */
     public function move($destinationId = null)
     {
