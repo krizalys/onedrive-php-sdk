@@ -83,7 +83,6 @@ abstract class Object
      *                                                        modification time,
      *                                                        as a RFC
      *                                                        date/time.
-     *                                                        Default: array().
      */
     public function __construct(Client $client, $id, $options = array())
     {
