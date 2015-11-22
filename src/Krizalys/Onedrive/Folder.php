@@ -43,7 +43,8 @@ class Folder extends Object
      */
     public function fetchObjects()
     {
-        return $this->_client->fetchObjects($this->_id);
+        // TODO: Log deprecation notice.
+        return $this->fetchChildObjects();
     }
 
     /**
@@ -103,6 +104,6 @@ class Folder extends Object
      */
     public function fetchChildObjects()
     {
-        return $this->fetchObjects();
+        return $this->_client->fetchObjects($this->_id);
     }
 }
