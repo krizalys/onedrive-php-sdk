@@ -91,6 +91,7 @@ class Folder extends Object
                 array_push($files, $file);
             }
         }
+
         return $files;
     }
 
