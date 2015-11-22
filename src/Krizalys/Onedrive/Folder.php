@@ -25,9 +25,9 @@ class Folder extends Object
     /**
      * Constructor.
      *
-     * @param Client      $client   The Client instance owning this Object
+     * @param Client       $client  The Client instance owning this Object
      *                              instance.
-     * @param null|string $id       The unique ID of the OneDrive object
+     * @param null|string  $id      The unique ID of the OneDrive object
      *                              referenced by this Object instance, or null
      *                              to reference the OneDrive root folder.
      *                              Default: null.
