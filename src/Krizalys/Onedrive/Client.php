@@ -44,7 +44,7 @@ class Client {
 	private $_sslVerify;
 
 	// Over-ride SSL CA path for verification (only relevant when verifying).
-	private $_sslCAPath;
+	private $_sslCaPath;
 
 	/**
 	 * Creates a base cURL object which is compatible with the OneDrive API.
@@ -56,25 +56,29 @@ class Client {
 	private function _createCurl($path, $options = array()) {
 		$curl = curl_init();
 
-		$default_options = array(
+		$defaultOptions = array(
 			// General options.
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_FOLLOWLOCATION => true,
 			CURLOPT_AUTOREFERER    => true,
 
 			// SSL options.
+			// The value 2 checks the existence of a common name and also
+			// verifies that it matches the hostname provided.
 			CURLOPT_SSL_VERIFYHOST => ($this->_sslVerify ? 2 : false),
-			CURLOPT_SSL_VERIFYPEER => $this->_sslVerify,
+
+			CURLOPT_SSL_VERIFYPEER => $this->_sslVerify
 		);
 
-		if ($this->_sslVerify && $this->_sslCAPath) {
-			$default_options[CURLOPT_CAINFO] = $this->_sslCAPath;
+		if ($this->_sslVerify && $this->_sslCaPath) {
+			$default_options[CURLOPT_CAINFO] = $this->_sslCaPath;
 		}
 
-		// See http://php.net/manual/en/function.array-merge.php for a description of the + operator (and why array_merge() would be wrong)
-		$final_options = $options + $default_options;
+		// See http://php.net/manual/en/function.array-merge.php for a
+		// description of the + operator (and why array_merge() would be wrong).
+		$finalOptions = $options + $defaultOptions;
 
-		curl_setopt_array($curl, $final_options);
+		curl_setopt_array($curl, $finalOptions);
 
 		return $curl;
 	}
@@ -128,8 +132,10 @@ class Client {
 	 *         Valid supported keys are:
 	 *         'state': When defined, it should contain a valid OneDrive client
 	 *         state, as returned by getState(). Default: array().
-	 *         (boolean)'ssl_verify': whether to verify SSL hosts and peers (default: false)
-	 *         (boolean|string)'ssl_capath': CA path to use for verifying SSL certificate chain (default: false)
+	 *         (boolean) 'ssl_verify': whether to verify SSL hosts and peers
+	 *         (default: false)
+	 *         (boolean|string) 'ssl_capath': CA path to use for verifying SSL
+	 *         certificate chain (default: false)
 	 */
 	public function __construct(array $options = array()) {
 		$this->_clientId = array_key_exists('client_id', $options)
@@ -144,7 +150,7 @@ class Client {
 		$this->_sslVerify = array_key_exists('ssl_verify', $options)
 			? $options['ssl_verify'] : false;
 
-		$this->_sslCAPath = array_key_exists('ssl_capath', $options)
+		$this->_sslCaPath = array_key_exists('ssl_capath', $options)
 			? $options['ssl_capath'] : false;
 	}
 
@@ -275,12 +281,12 @@ class Client {
 		));
 
 		$result = curl_exec($curl);
-		
+
 		if (false === $result) {
 			if (curl_errno($curl)) {
-				throw new \Exception('Curl error: '.curl_error($curl));
+				throw new \Exception('curl_setopt_array() failed: '.curl_error($curl));
 			} else {
-				throw new \Exception('Curl error: empty response');
+				throw new \Exception('curl_setopt_array(): empty response');
 			}
 		}
 
@@ -320,7 +326,7 @@ class Client {
 		$url = self::API_URL . $path
 			. '?access_token=' . urlencode($this->_state->token->data->access_token);
 
-		$curl = self::_createCurl($path, $options);
+		$curl = $this->_createCurl($path, $options);
 
 		curl_setopt($curl, CURLOPT_URL, $url);
 
@@ -336,7 +342,7 @@ class Client {
 	public function apiPost($path, $data) {
 		$url  = self::API_URL . $path;
 		$data = (object) $data;
-		$curl = self::_createCurl($path);
+		$curl = $this->_createCurl($path);
 
 		curl_setopt_array($curl, array(
 			CURLOPT_URL        => $url,
@@ -363,7 +369,7 @@ class Client {
 	 */
 	public function apiPut($path, $stream, $contentType = null) {
 		$url   = self::API_URL . $path;
-		$curl  = self::_createCurl($path);
+		$curl  = $this->_createCurl($path);
 		$stats = fstat($stream);
 
 		$headers = array(
@@ -395,7 +401,7 @@ class Client {
 		$url = self::API_URL . $path
 			. '?access_token=' . urlencode($this->_state->token->data->access_token);
 
-		$curl = self::_createCurl($path);
+		$curl = $this->_createCurl($path);
 
 		curl_setopt_array($curl, array(
 			CURLOPT_URL           => $url,
@@ -414,7 +420,7 @@ class Client {
 	public function apiMove($path, $data) {
 		$url  = self::API_URL . $path;
 		$data = (object) $data;
-		$curl = self::_createCurl($path);
+		$curl = $this->_createCurl($path);
 
 		curl_setopt_array($curl, array(
 			CURLOPT_URL           => $url,
@@ -440,7 +446,7 @@ class Client {
 	public function apiCopy($path, $data) {
 		$url  = self::API_URL . $path;
 		$data = (object) $data;
-		$curl = self::_createCurl($path);
+		$curl = $this->_createCurl($path);
 
 		curl_setopt_array($curl, array(
 			CURLOPT_URL           => $url,
@@ -493,7 +499,10 @@ class Client {
 	 * @param  (null|string) $parentId - The ID of the OneDrive folder into which
 	 *         to create the OneDrive file, or null to create it in the OneDrive
 	 *         root folder. Default: null.
-	 * @param  (string|resource) $content - The content of the OneDrive file to be created.
+	 * @param  (string|resource) $content - The content of the OneDrive file to
+	 *         be created, as a string or as a resource to an already opened
+	 *         file. In the latter case, the responsibility to close the handle
+	 *         is left to the calling function.
 	 * @return (File) The file created, as File instance referencing to the
 	 *         OneDrive file created.
 	 * @throw  (\Exception) Thrown on I/O errors.
