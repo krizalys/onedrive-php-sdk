@@ -706,7 +706,7 @@ class Client
     /**
      * Fetches the properties of an object in the current OneDrive account.
      *
-     * @return array The properties of the object fetched.
+     * @return object The properties of the object fetched.
      */
     public function fetchProperties($objectId)
     {
@@ -827,8 +827,8 @@ class Client
      * Fetches the quota of the current OneDrive account.
      *
      * @return object An object with the following properties:
-     *                  'quota'     int The total space, in bytes.
-     *                  'available' int The available space, in bytes.
+     *                  'quota'     (int) The total space, in bytes.
+     *                  'available' (int) The available space, in bytes.
      */
     public function fetchQuota()
     {
@@ -839,12 +839,12 @@ class Client
      * Fetches the account info of the current OneDrive account.
      *
      * @return object An object with the following properties:
-     *                  'id'         string OneDrive account ID.
-     *                  'first_name' string Account owner's first name.
-     *                  'last_name'  string Account owner's last name.
-     *                  'name'       string Account owner's full name.
-     *                  'gender'     string Account owner's gender.
-     *                  'locale'     string Account owner's locale.
+     *                  'id'         (string) OneDrive account ID.
+     *                  'first_name' (string) Account owner's first name.
+     *                  'last_name'  (string) Account owner's last name.
+     *                  'name'       (string) Account owner's full name.
+     *                  'gender'     (string) Account owner's gender.
+     *                  'locale'     (string) Account owner's locale.
      */
     public function fetchAccountInfo()
     {
@@ -855,7 +855,7 @@ class Client
      * Fetches the recent documents uploaded to the current OneDrive account.
      *
      * @return object An object with the following properties:
-     *                  'data' array The list of the recent documents uploaded.
+     *                  'data' (array) The list of the recent documents uploaded.
      */
     public function fetchRecentDocs()
     {
@@ -866,7 +866,7 @@ class Client
      * Fetches the objects shared with the current OneDrive account.
      *
      * @return object An object with the following properties:
-     *                    'data' array The list of the shared objects.
+     *                    'data' (array) The list of the shared objects.
      */
     public function fetchShared()
     {
