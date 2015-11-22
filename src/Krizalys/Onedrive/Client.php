@@ -1,4 +1,5 @@
 <?php
+
 namespace Krizalys\Onedrive;
 
 /*
@@ -18,7 +19,8 @@ namespace Krizalys\Onedrive;
  */
 // TODO: support refresh tokens: http://msdn.microsoft.com/en-us/library/live/hh243647.aspx
 // TODO: pass parameters in POST request body when obtaining the access token
-class Client {
+class Client
+{
 	// The base URL for API requests.
 	const API_URL   = 'https://apis.live.net/v5.0/';
 
@@ -47,7 +49,8 @@ class Client {
 	 * @param  (array) $options - Further curl options to set.
 	 * @return (resource) A compatible cURL object.
 	 */
-	private static function _createCurl($path, $options = array()) {
+	private static function _createCurl($path, $options = array())
+	{
 		$curl = curl_init();
 
 		$default_options = array(
@@ -76,7 +79,8 @@ class Client {
 	 * @return (object|string) The content returned, as an object instance if
 	 *         served a JSON, or as a string if served as anything else.
 	 */
-	private function _processResult($curl) {
+	private function _processResult($curl)
+	{
 		$result = curl_exec($curl);
 
 		if (false === $result) {
@@ -119,7 +123,8 @@ class Client {
 	 *         a valid OneDrive client state, as returned by getState(). Default:
 	 *         array().
 	 */
-	public function __construct(array $options = array()) {
+	public function __construct(array $options = array())
+	{
 		$this->_clientId = array_key_exists('client_id', $options)
 			? (string) $options['client_id'] : null;
 
@@ -136,7 +141,8 @@ class Client {
 	 *
 	 * @return (object) The state of this Client instance.
 	 */
-	public function getState() {
+	public function getState()
+	{
 		return $this->_state;
 	}
 
@@ -156,7 +162,8 @@ class Client {
 	 *         support it.
 	 * @return (string) The login URL.
 	 */
-	public function getLogInUrl(array $scopes, $redirectUri, array $options = array()) {
+	public function getLogInUrl(array $scopes, $redirectUri, array $options = array())
+	{
 		if (null === $this->_clientId) {
 			throw new \Exception('The client ID must be set to call getLoginUrl()');
 		}
@@ -184,7 +191,8 @@ class Client {
 	 *
 	 * @return (int) The token expiration delay, in seconds.
 	 */
-	public function getTokenExpire() {
+	public function getTokenExpire()
+	{
 		return $this->_state->token->obtained
 			+ $this->_state->token->data->expires_in - time();
 	}
@@ -198,7 +206,8 @@ class Client {
 	 *         -2 => access token is expired
 	 *          1 => access token is valid
 	 */
-	public function getAccessTokenStatus() {
+	public function getAccessTokenStatus()
+	{
 		if (null === $this->_state->token) {
 			return 0;
 		}
@@ -225,7 +234,8 @@ class Client {
 	 * @param  (string) $redirectUri. Must be the same as the redirect URI passed
 	 *         to getLoginUrl().
 	 */
-	public function obtainAccessToken($clientSecret, $code) {
+	public function obtainAccessToken($clientSecret, $code)
+	{
 		if (null === $this->_clientId) {
 			throw new \Exception('The client ID must be set to call obtainAccessToken()');
 		}
@@ -274,7 +284,8 @@ class Client {
 	/**
 	 * Renews the access token from OAuth. This token is valid for one hour.
 	 */
-	/*public function renewAccessToken($clientSecret, $redirectUri) {
+	/*public function renewAccessToken($clientSecret, $redirectUri)
+	{
 		$url = self::TOKEN_URL
 			. '?client_id=' . $this->_clientId
 			. '&redirect_uri=' . (string) $redirectUri
@@ -289,12 +300,13 @@ class Client {
 	 * @param  (string) $path - The path of the API call (eg. me/skydrive).
 	 * @param  (array) $options - Further curl options to set.
 	 */
-	public function apiGet($path, $options = array()) {
+	public function apiGet($path, $options = array())
+	{
 		$url = self::API_URL . $path
 			. '?access_token=' . urlencode($this->_state->token->data->access_token);
 
 		$curl = self::_createCurl($path, $options);
-		
+
 		curl_setopt($curl, CURLOPT_URL, $url);
 
 		return $this->_processResult($curl);
@@ -306,7 +318,8 @@ class Client {
 	 * @param  (string) $path - The path of the API call (eg. me/skydrive).
 	 * @param  (array|object) $data - The data to pass in the body of the request.
 	 */
-	public function apiPost($path, $data) {
+	public function apiPost($path, $data)
+	{
 		$url  = self::API_URL . $path;
 		$data = (object) $data;
 		$curl = self::_createCurl($path);
@@ -334,7 +347,8 @@ class Client {
 	 * @param  (string) $contentType - The MIME type of the data stream, or null
 	 *         if unknown. Default: null.
 	 */
-	public function apiPut($path, $stream, $contentType = null) {
+	public function apiPut($path, $stream, $contentType = null)
+	{
 		$url   = self::API_URL . $path;
 		$curl  = self::_createCurl($path);
 		$stats = fstat($stream);
@@ -364,7 +378,8 @@ class Client {
 	 *
 	 * @param  (string) $path - The path of the API call (eg. me/skydrive).
 	 */
-	public function apiDelete($path) {
+	public function apiDelete($path)
+	{
 		$url = self::API_URL . $path
 			. '?access_token=' . urlencode($this->_state->token->data->access_token);
 
@@ -384,7 +399,8 @@ class Client {
 	 * @param  (string) $path - The path of the API call (eg. me/skydrive).
 	 * @param  (array|object) $data - The data to pass in the body of the request.
 	 */
-	public function apiMove($path, $data) {
+	public function apiMove($path, $data)
+	{
 		$url  = self::API_URL . $path;
 		$data = (object) $data;
 		$curl = self::_createCurl($path);
@@ -410,7 +426,8 @@ class Client {
 	 * @param  (string) $path - The path of the API call (eg. me/skydrive).
 	 * @param  (array|object) $data - The data to pass in the body of the request.
 	 */
-	public function apiCopy($path, $data) {
+	public function apiCopy($path, $data)
+	{
 		$url  = self::API_URL . $path;
 		$data = (object) $data;
 		$curl = self::_createCurl($path);
@@ -442,7 +459,8 @@ class Client {
 	 * @return (Folder) The folder created, as a Folder instance referencing to
 	 *         the OneDrive folder created.
 	 */
-	public function createFolder($name, $parentId = null, $description = null) {
+	public function createFolder($name, $parentId = null, $description = null)
+	{
 		if (null === $parentId) {
 			$parentId = 'me/skydrive';
 		}
@@ -471,7 +489,8 @@ class Client {
 	 *         OneDrive file created.
 	 * @throw  (\Exception) Thrown on I/O errors.
 	 */
-	public function createFile($name, $parentId = null, $content = '') {
+	public function createFile($name, $parentId = null, $content = '')
+	{
 		if (null === $parentId) {
 			$parentId = 'me/skydrive';
 		}
@@ -507,7 +526,8 @@ class Client {
 	 * @return (Object) The object fetched, as an Object instance referencing to
 	 *         the OneDrive object fetched.
 	 */
-	public function fetchObject($objectId = null) {
+	public function fetchObject($objectId = null)
+	{
 		$objectId = null !== $objectId ? $objectId : 'me/skydrive';
 		$result   = $this->apiGet($objectId);
 
@@ -524,7 +544,8 @@ class Client {
 	 * @return (Folder) The root folder, as a Folder instance referencing to the
 	 *         OneDrive root folder.
 	 */
-	public function fetchRoot() {
+	public function fetchRoot()
+	{
 		return $this->fetchObject();
 	}
 
@@ -534,7 +555,8 @@ class Client {
 	 * @return (Folder) The "Camera Roll" folder, as a Folder instance referencing
 	 *         to the OneDrive "Camera Roll" folder.
 	 */
-	public function fetchCameraRoll() {
+	public function fetchCameraRoll()
+	{
 		return $this->fetchObject('me/skydrive/camera_roll');
 	}
 
@@ -544,7 +566,8 @@ class Client {
 	 * @return (Folder) The "Documents" folder, as a Folder instance referencing
 	 *         to the OneDrive "Documents" folder.
 	 */
-	public function fetchDocs() {
+	public function fetchDocs()
+	{
 		return $this->fetchObject('me/skydrive/my_documents');
 	}
 
@@ -554,7 +577,8 @@ class Client {
 	 * @return (Folder) The "Pictures" folder, as a Folder instance referencing to
 	 *         the OneDrive "Pictures" folder.
 	 */
-	public function fetchPics() {
+	public function fetchPics()
+	{
 		return $this->fetchObject('me/skydrive/my_photos');
 	}
 
@@ -564,7 +588,8 @@ class Client {
 	 * @return (Folder) The "Public" folder, as a Folder instance referencing to
 	 *         the OneDrive "Public" folder.
 	 */
-	public function fetchPublicDocs() {
+	public function fetchPublicDocs()
+	{
 		return $this->fetchObject('me/skydrive/public_documents');
 	}
 
@@ -573,7 +598,8 @@ class Client {
 	 *
 	 * @return (array) The properties of the object fetched.
 	 */
-	public function fetchProperties($objectId) {
+	public function fetchProperties($objectId)
+	{
 		if (null === $objectId) {
 			$objectId = 'me/skydrive';
 		}
@@ -587,7 +613,8 @@ class Client {
 	 * @return (array) The objects in the folder fetched, as Object instances
 	 *         referencing OneDrive objects.
 	 */
-	public function fetchObjects($objectId) {
+	public function fetchObjects($objectId)
+	{
 		if (null === $objectId) {
 			$objectId = 'me/skydrive';
 		}
@@ -614,7 +641,8 @@ class Client {
 	 *         array().
 	 * @throw  (\Exception) Thrown on I/O errors.
 	 */
-	public function updateObject($objectId, $properties = array()) {
+	public function updateObject($objectId, $properties = array())
+	{
 		$objectId   = $objectId;
 		$properties = (object) $properties;
 		$encoded    = json_encode($properties);
@@ -643,7 +671,8 @@ class Client {
 	 *         object, or null to move it to the OneDrive root folder. Default:
 	 *         null.
 	 */
-	public function moveObject($objectId, $destinationId = null) {
+	public function moveObject($objectId, $destinationId = null)
+	{
 		if (null === $destinationId) {
 			$destinationId = 'me/skydrive';
 		}
@@ -662,7 +691,8 @@ class Client {
 	 *         file, or null to copy it to the OneDrive root folder. Default:
 	 *         null.
 	 */
-	public function copyFile($objectId, $destinationId = null) {
+	public function copyFile($objectId, $destinationId = null)
+	{
 		if (null === $destinationId) {
 			$destinationId = 'me/skydrive';
 		}
@@ -677,7 +707,8 @@ class Client {
 	 *
 	 * @param  (string) $objectId - The unique ID of the object to delete.
 	 */
-	public function deleteObject($objectId) {
+	public function deleteObject($objectId)
+	{
 		$objectId = $objectId;
 		$this->apiDelete($objectId);
 	}
@@ -689,7 +720,8 @@ class Client {
 	 *           (int) quota - The total space, in bytes.
 	 *           (int) available - The available space, in bytes.
 	 */
-	public function fetchQuota() {
+	public function fetchQuota()
+	{
 		return $this->apiGet('me/skydrive/quota');
 	}
 
@@ -704,7 +736,8 @@ class Client {
 	 *           (string) gender - account owner's gender.
 	 *           (string) locale - account owner's locale.
 	 */
-	public function fetchAccountInfo() {
+	public function fetchAccountInfo()
+	{
 		return $this->apiGet('me');
 	}
 
@@ -714,7 +747,8 @@ class Client {
 	 * @return (object) An object with the following properties:
 	 *           (array) data - The list of the recent documents uploaded.
 	 */
-	public function fetchRecentDocs() {
+	public function fetchRecentDocs()
+	{
 		return $this->apiGet('me/skydrive/recent_docs');
 	}
 
@@ -724,7 +758,8 @@ class Client {
 	 * @return (object) An object with the following properties:
 	 *           (array) data - The list of the shared objects.
 	 */
-	public function fetchShared() {
+	public function fetchShared()
+	{
 		return $this->apiGet('me/skydrive/shared');
 	}
 }

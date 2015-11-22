@@ -1,4 +1,5 @@
 <?php
+
 namespace Krizalys\Onedrive;
 
 /*
@@ -10,7 +11,8 @@ namespace Krizalys\Onedrive;
  * destroying an Object instance will not delete the actual OneDrive object it
  * is referencing to).
  */
-abstract class Object {
+abstract class Object
+{
 	// The owning Client instance.
 	protected $_client;
 
@@ -54,7 +56,8 @@ abstract class Object {
 	 *           date/time.
 	 *         Default: array().
 	 */
-	public function __construct(Client $client, $id, $options = array()) {
+	public function __construct(Client $client, $id, $options = array())
+	{
 		$options       = (object) $options;
 		$this->_client = $client;
 		$this->_id     = null !== $id ? (string) $id : null;
@@ -85,7 +88,8 @@ abstract class Object {
 	 * @return (bool) true if the OneDrive object referenced by this Object
 	 *         instance is a folder, false otherwise.
 	 */
-	public function isFolder() {
+	public function isFolder()
+	{
 		return false;
 	}
 
@@ -96,7 +100,8 @@ abstract class Object {
 	 * @return (array) The properties of the OneDrive object referenced by this
 	 *         Object instance.
 	 */
-	public function fetchProperties() {
+	public function fetchProperties()
+	{
 		$result = $this->_client->fetchProperties($this->_id);
 
 		$this->_parentId = '' != $result->parent_id ?
@@ -120,7 +125,8 @@ abstract class Object {
 	 * @return (string) The unique ID of the OneDrive object referenced by this
 	 *         Object instance.
 	 */
-	public function getId() {
+	public function getId()
+	{
 		return $this->_id;
 	}
 
@@ -131,7 +137,8 @@ abstract class Object {
 	 * @return (string) The unique ID of the OneDrive folder containing the object
 	 *         referenced by this Object instance.
 	 */
-	public function getParentId() {
+	public function getParentId()
+	{
 		if (null === $this->_parentId) {
 			$this->fetchProperties();
 		}
@@ -145,7 +152,8 @@ abstract class Object {
 	 * @return (string) The name of the OneDrive object referenced by this Object
 	 *         instance.
 	 */
-	public function getName() {
+	public function getName()
+	{
 		if (null === $this->_name) {
 			$this->fetchProperties();
 		}
@@ -160,7 +168,8 @@ abstract class Object {
 	 * @return (string) The description of the OneDrive object referenced by this
 	 *         Object instance.
 	 */
-	public function getDescription() {
+	public function getDescription()
+	{
 		if (null === $this->_description) {
 			$this->fetchProperties();
 		}
@@ -174,7 +183,8 @@ abstract class Object {
 	 * @return (int) The size of the OneDrive object referenced by this Object
 	 *         instance.
 	 */
-	public function getSize() {
+	public function getSize()
+	{
 		if (null === $this->_size) {
 			$this->fetchProperties();
 		}
@@ -189,7 +199,8 @@ abstract class Object {
 	 * @return (int) The creation time of the object referenced by this Object
 	 *         instance, in seconds since UNIX epoch.
 	 */
-	public function getCreatedTime() {
+	public function getCreatedTime()
+	{
 		if (null === $this->_createdTime) {
 			$this->fetchProperties();
 		}
@@ -204,7 +215,8 @@ abstract class Object {
 	 * @return (int) The last modification time of the object referenced by this
 	 *         Object instance, in seconds since UNIX epoch.
 	 */
-	public function getUpdatedTime() {
+	public function getUpdatedTime()
+	{
 		if (null === $this->_updatedTime) {
 			$this->fetchProperties();
 		}
@@ -220,7 +232,8 @@ abstract class Object {
 	 *         move the OneDrive object referenced by this Object instance, or
 	 *         null to move it to the OneDrive root folder. Default: null.
 	 */
-	public function move($destinationId = null) {
+	public function move($destinationId = null)
+	{
 		$this->_client->moveObject($this->_id, $destinationId);
 	}
 }

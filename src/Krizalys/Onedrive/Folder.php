@@ -1,11 +1,13 @@
 <?php
+
 namespace Krizalys\Onedrive;
 
 /*
  * A Folder instance is an Object instance referencing to a OneDrive folder. It
  * may contain other OneDrive objects but may not have content.
  */
-class Folder extends Object {
+class Folder extends Object
+{
 	/**
 	 * Determines whether the OneDrive object referenced by this Object instance
 	 * is a folder.
@@ -13,7 +15,8 @@ class Folder extends Object {
 	 * @return (bool) true if the OneDrive object referenced by this Object
 	 *         instance is a folder, false otherwise.
 	 */
-	public function isFolder() {
+	public function isFolder()
+	{
 		return true;
 	}
 
@@ -26,7 +29,8 @@ class Folder extends Object {
 	 *         folder. Default: null.
 	 * @param  (array|object) $options.
 	 */
-	public function __construct(Client $client, $id = null, $options = array()) {
+	public function __construct(Client $client, $id = null, $options = array())
+	{
 		parent::__construct($client, $id, $options);
 	}
 
@@ -37,7 +41,8 @@ class Folder extends Object {
 	 * @return (array) The objects in the OneDrive folder referenced by this
 	 *         Folder instance, as Object instances.
 	 */
-	public function fetchObjects() {
+	public function fetchObjects()
+	{
 		return $this->_client->fetchObjects($this->_id);
 	}
 
@@ -50,7 +55,8 @@ class Folder extends Object {
 	 *         null.
 	 * @return (Folder) The folder created, as a Folder instance.
 	 */
-	public function createFolder($name, $description = null) {
+	public function createFolder($name, $description = null)
+	{
 		return $this->_client->createFolder($name, $this->_id, $description);
 	}
 
@@ -63,7 +69,8 @@ class Folder extends Object {
 	 * @return (File) The file created, as a File instance.
 	 * @throw  (\Exception) Thrown on I/O errors.
 	 */
-	public function createFile($name, $content = '') {
+	public function createFile($name, $content = '')
+	{
 		return $this->_client->createFile($name, $this->_id, $content);
 	}
 
@@ -73,7 +80,8 @@ class Folder extends Object {
  	 * @return (array) The files in the OneDrive folder referenced by this
 	 *         Folder instance, as Object instances.
 	 */
-	public function fetchDescendantObjects() {
+	public function fetchDescendantObjects()
+	{
 		$files = [];
 
 		foreach ($this->_client->fetchObjects($this->_id) as $file) {
@@ -88,11 +96,12 @@ class Folder extends Object {
 
 	/**
 	 * Gets the objects in the OneDrive folder referenced by this Folder instance.
-	 * 
+	 *
 	 * @return (array) The objects in the OneDrive folder referenced by this
 	 *         Folder instance, as Object instances.
 	 */
-	public function fetchChildObjects() {
+	public function fetchChildObjects()
+	{
 		return $this->fetchObjects();
 	}
 }

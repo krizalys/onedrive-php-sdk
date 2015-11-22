@@ -1,11 +1,13 @@
 <?php
+
 namespace Krizalys\Onedrive;
 
 /*
  * A File instance is an Object instance referencing a OneDrive file. It may
  * have content but may not contain other OneDrive objects.
  */
-class File extends Object {
+class File extends Object
+{
 	/**
 	 * Constructor.
 	 *
@@ -25,7 +27,8 @@ class File extends Object {
 	 *           date/time.
 	 *         Default: array().
 	 */
-	public function __construct(Client $client, $id, $options = array()) {
+	public function __construct(Client $client, $id, $options = array())
+	{
 		parent::__construct($client, $id, $options);
 	}
 
@@ -39,7 +42,8 @@ class File extends Object {
 	 */
 	// TODO: should somewhat return the content-type as well; this information is
 	// not disclosed by OneDrive
-	public function fetchContent($options = array()) {
+	public function fetchContent($options = array())
+	{
 		return $this->_client->apiGet($this->_id . '/content', $options);
 	}
 
@@ -51,7 +55,8 @@ class File extends Object {
 	 *         copy the OneDrive file referenced by this File instance, or null to
 	 *         copy it in the OneDrive root folder. Default: null.
 	 */
-	public function copy($destinationId = null) {
+	public function copy($destinationId = null)
+	{
 		$this->_client->copyFile($this->_id, $destinationId);
 	}
 }
