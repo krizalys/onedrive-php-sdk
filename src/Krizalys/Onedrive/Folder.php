@@ -44,12 +44,46 @@ class Folder extends Object
      * @return array The objects in the OneDrive folder referenced by this
      *               Folder instance, as Object instances.
      *
-     * @deprecated
+     * @deprecated Use Folder::fetchChildObjects() instead.
      */
     public function fetchObjects()
     {
         // TODO: Log deprecation notice.
         return $this->fetchChildObjects();
+    }
+
+    /**
+     * Gets the child objects in the OneDrive folder referenced by this Folder
+     * instance.
+     *
+     * @return array The objects in the OneDrive folder referenced by this
+     *               Folder instance, as Object instances.
+     */
+    public function fetchChildObjects()
+    {
+        return $this->_client->fetchObjects($this->_id);
+    }
+
+    /**
+     * Gets the descendant objects under the OneDrive folder referenced by this
+     * Folder instance.
+     *
+     * @return array The files in the OneDrive folder referenced by this Folder
+     *               instance, as Object instances.
+     */
+    public function fetchDescendantObjects()
+    {
+        $files = [];
+
+        foreach ($this->_client->fetchObjects($this->_id) as $file) {
+            if ($file->isFolder()) {
+                $files = array_merge($file->fetchAllFiles(), $files);
+            } else {
+                array_push($files, $file);
+            }
+        }
+
+        return $files;
     }
 
     /**
@@ -83,38 +117,5 @@ class Folder extends Object
     public function createFile($name, $content = '')
     {
         return $this->_client->createFile($name, $this->_id, $content);
-    }
-
-    /**
-     * Gets all files in the OneDrive folder referenced by this Folder instance.
-     *
-     * @return array The files in the OneDrive folder referenced by this Folder
-     *               instance, as Object instances.
-     */
-    public function fetchDescendantObjects()
-    {
-        $files = [];
-
-        foreach ($this->_client->fetchObjects($this->_id) as $file) {
-            if ($file->isFolder()) {
-                $files = array_merge($file->fetchAllFiles(), $files);
-            } else {
-                array_push($files, $file);
-            }
-        }
-
-        return $files;
-    }
-
-    /**
-     * Gets the objects in the OneDrive folder referenced by this Folder
-     * instance.
-     *
-     * @return array The objects in the OneDrive folder referenced by this
-     *               Folder instance, as Object instances.
-     */
-    public function fetchChildObjects()
-    {
-        return $this->_client->fetchObjects($this->_id);
     }
 }
