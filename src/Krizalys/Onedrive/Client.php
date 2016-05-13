@@ -311,12 +311,7 @@ class Client
             throw new \Exception('The state\'s redirect URI must be set to call obtainAccessToken()');
         }
 
-        $url = self::TOKEN_URL
-            . '?client_id=' . urlencode($this->_clientId)
-            . '&redirect_uri=' . urlencode($this->_state->redirect_uri)
-            . '&client_secret=' . urlencode($clientSecret)
-            . '&grant_type=authorization_code'
-            . '&code=' . urlencode($code);
+        $url = self::TOKEN_URL;
 
         $curl = curl_init();
 
@@ -325,6 +320,12 @@ class Client
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_AUTOREFERER    => true,
+            CURLOPT_POST           => 1, // i am sending post data
+            CURLOPT_POSTFIELDS     => 'client_id=' . urlencode($this->_clientId)
+                . '&redirect_uri=' . urlencode($this->_state->redirect_uri)
+                . '&client_secret=' . urlencode($clientSecret)
+                . '&grant_type=authorization_code'
+                . '&code=' . urlencode($code),
 
             // SSL options.
             CURLOPT_SSL_VERIFYHOST => false,
@@ -359,17 +360,60 @@ class Client
      * Renews the access token from OAuth. This token is valid for one hour.
      *
      * @param string $clientSecret The client secret.
-     * @param string $redirectUri  The redirect URI.
      */
-    /*public function renewAccessToken($clientSecret, $redirectUri)
+    public function renewAccessToken($clientSecret)
     {
-        $url = self::TOKEN_URL
-            . '?client_id=' . $this->_clientId
-            . '&redirect_uri=' . (string) $redirectUri
-            . '&client_secret=' . (string) $clientSecret
-            . '&grant_type=' . 'refresh_token'
-            . '&code=' . (string) $code;
-    }*/
+        if (null === $this->_clientId) {
+            throw new \Exception('The client ID must be set to call renewAccessToken()');
+        }
+
+        if (null === $this->_state->token->data->refresh_token) {
+            throw new \Exception('The refresh token not set or not permission in \'wl.offline_access\' for renew token');
+        }
+
+        $url = self::TOKEN_URL;
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            // General options.
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_AUTOREFERER    => true,
+            CURLOPT_POST           => 1, // i am sending post data
+            CURLOPT_POSTFIELDS     => 'client_id=' . urlencode($this->_clientId)
+                . '&client_secret=' . urlencode($clientSecret)
+                . '&grant_type=refresh_token'
+                . '&refresh_token=' . urlencode($this->_state->token->data->refresh_token),
+
+            // SSL options.
+            CURLOPT_SSL_VERIFYHOST => false,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_URL            => $url
+        ));
+
+        $result = curl_exec($curl);
+
+        if (false === $result) {
+            if (curl_errno($curl)) {
+                throw new \Exception('curl_setopt_array() failed: ' . curl_error($curl));
+            } else {
+                throw new \Exception('curl_setopt_array(): empty response');
+            }
+        }
+
+        $decoded = json_decode($result);
+
+        if (null === $decoded) {
+            throw new \Exception('json_decode() failed');
+        }
+
+        $this->_state->redirect_uri = null;
+        $this->_state->token = (object) array(
+            'obtained' => time(),
+            'data'     => $decoded
+        );
+    }
 
     /**
      * Performs a call to the OneDrive API using the GET method.
@@ -584,13 +628,14 @@ class Client
      *                                 case, the responsibility to close the
      *                                 handle is left to the calling function.
      *                                 Default: ''.
+     * @param boolean      $overwrite  Indicate whether you want to overwrite files with the same name.
      *
      * @return File The file created, as File instance referencing to the
      *              OneDrive file created.
      *
      * @throws \Exception Thrown on I/O errors.
      */
-    public function createFile($name, $parentId = null, $content = '')
+    public function createFile($name, $parentId = null, $content = '', $overwrite = true)
     {
         if (null === $parentId) {
             $parentId = 'me/skydrive';
@@ -599,7 +644,7 @@ class Client
         if (is_resource($content)) {
             $stream = $content;
         } else {
-            $stream = fopen('php://memory', 'w+b');
+            $stream = fopen('php://temp', 'w+b');
 
             if (false === $stream) {
                 throw new \Exception('fopen() failed');
@@ -618,7 +663,7 @@ class Client
 
         // TODO: some versions of cURL cannot PUT memory streams? See here for a
         // workaround: https://bugs.php.net/bug.php?id=43468
-        $file = $this->apiPut($parentId . '/files/' . urlencode($name), $stream);
+        $file = $this->apiPut($parentId . '/files/' . urlencode($name) . '?overwrite=' . ($overwrite ? 'true' : 'ChooseNewName'), $stream);
 
         // Close the handle only if we opened it within this function.
         if (!is_resource($content)) {
@@ -757,7 +802,7 @@ class Client
     {
         $properties = (object) $properties;
         $encoded    = json_encode($properties);
-        $stream     = fopen('php://memory', 'w+b');
+        $stream     = fopen('php://temp', 'w+b');
 
         if (false === $stream) {
             throw new \Exception('fopen() failed');
