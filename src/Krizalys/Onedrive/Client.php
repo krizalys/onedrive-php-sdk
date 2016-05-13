@@ -367,7 +367,7 @@ class Client
             throw new \Exception('The client ID must be set to call renewAccessToken()');
         }
 
-        if (null === $this->_state->token->refresh_token) {
+        if (null === $this->_state->token->data->refresh_token) {
             throw new \Exception('The refresh token not set or not permission in \'wl.offline_access\' for renew token');
         }
 
@@ -384,7 +384,7 @@ class Client
             CURLOPT_POSTFIELDS     => 'client_id=' . urlencode($this->_clientId)
                 . '&client_secret=' . urlencode($clientSecret)
                 . '&grant_type=refresh_token'
-                . '&refresh_token=' . urlencode($this->_state->token->refresh_token),
+                . '&refresh_token=' . urlencode($this->_state->token->data->refresh_token),
 
             // SSL options.
             CURLOPT_SSL_VERIFYHOST => false,
