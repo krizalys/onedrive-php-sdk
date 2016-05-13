@@ -628,13 +628,14 @@ class Client
      *                                 case, the responsibility to close the
      *                                 handle is left to the calling function.
      *                                 Default: ''.
+     * @param boolean      $overwrite  Indicate whether you want to overwrite files with the same name.
      *
      * @return File The file created, as File instance referencing to the
      *              OneDrive file created.
      *
      * @throws \Exception Thrown on I/O errors.
      */
-    public function createFile($name, $parentId = null, $content = '')
+    public function createFile($name, $parentId = null, $content = '', $overwrite = true)
     {
         if (null === $parentId) {
             $parentId = 'me/skydrive';
@@ -662,7 +663,7 @@ class Client
 
         // TODO: some versions of cURL cannot PUT memory streams? See here for a
         // workaround: https://bugs.php.net/bug.php?id=43468
-        $file = $this->apiPut($parentId . '/files/' . urlencode($name), $stream);
+        $file = $this->apiPut($parentId . '/files/' . urlencode($name) . '?overwrite=' . ($overwrite ? 'true' : 'ChooseNewName'), $stream);
 
         // Close the handle only if we opened it within this function.
         if (!is_resource($content)) {

@@ -114,13 +114,14 @@ class Folder extends Object
      *                                 case, the responsibility to close the
      *                                 handle is left to the calling function.
      *                                 Default: ''.
+     * @param boolean      $overwrite  Indicate whether you want to overwrite files with the same name.
      *
      * @return File The file created, as a File instance.
      *
      * @throws \Exception Thrown on I/O errors.
      */
-    public function createFile($name, $content = '')
+    public function createFile($name, $content = '', $overwrite = true)
     {
-        return $this->_client->createFile($name, $this->_id, $content);
+        return $this->_client->createFile($name, $this->_id, $content, $overwrite);
     }
 }
