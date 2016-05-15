@@ -103,7 +103,7 @@ session_start();
 $_SESSION = array();
 
 // Instantiates a OneDrive client bound to your OneDrive application
-$onedrive = new \Onedrive\Client(array(
+$onedrive = new \Krizalys\Onedrive\Client(array(
     'client_id' => ONEDRIVE_CLIENT_ID
 ));
 
@@ -154,7 +154,7 @@ if (!array_key_exists('onedrive.client.state', $_SESSION)) {
     throw new Exception('onedrive.client.state undefined in $_SESSION');
 }
 
-$onedrive = new \Onedrive\Client(array(
+$onedrive = new \Krizalys\Onedrive\Client(array(
     'client_id' => ONEDRIVE_CLIENT_ID,
 
     // Restore the previous state while instantiating this client to proceed in
