@@ -40,6 +40,21 @@ class Client
     const TOKEN_URL = 'https://login.live.com/oauth20_token.srf';
 
     /**
+     * @var string overwrite always option.
+     */
+	const OVERWRITE_ALWAYS = 'true';
+
+    /**
+     * @var string overwrite never option.
+     */
+	const OVERWRITE_NEVER = 'false';
+
+    /**
+     * @var string overwrite rename option.
+     */
+	const OVERWRITE_RENAME = 'ChooseNewName';
+
+    /**
      * @var string Client information.
      */
     private $_clientId;
@@ -584,14 +599,14 @@ class Client
      *                                 case, the responsibility to close the
      *                                 handle is left to the calling function.
      *                                 Default: ''.
-     * @param boolean      $overwrite  Indicate whether you want to overwrite files with the same name.
+     * @param string      $overwrite  Indicate whether you want to overwrite files with the same name. accepteds: OVERWRITE_ALWAYS, OVERWRITE_NEVER or OVERWRITE_RENAME
      *
      * @return File The file created, as File instance referencing to the
      *              OneDrive file created.
      *
      * @throws \Exception Thrown on I/O errors.
      */
-    public function createFile($name, $parentId = null, $content = '', $overwrite = true)
+    public function createFile($name, $parentId = null, $content = '', $overwrite = OVERWRITE_ALWAYS)
     {
         if (null === $parentId) {
             $parentId = 'me/skydrive';
@@ -619,7 +634,7 @@ class Client
 
         // TODO: some versions of cURL cannot PUT memory streams? See here for a
         // workaround: https://bugs.php.net/bug.php?id=43468
-        $file = $this->apiPut($parentId . '/files/' . urlencode($name) . '?overwrite=' . ($overwrite ? 'true' : 'ChooseNewName'), $stream);
+        $file = $this->apiPut($parentId . '/files/' . urlencode($name) . '?overwrite=' . $overwrite, $stream);
 
         // Close the handle only if we opened it within this function.
         if (!is_resource($content)) {
