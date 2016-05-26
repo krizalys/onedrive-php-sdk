@@ -45,6 +45,11 @@ abstract class Object
      * @var int The size of this object, in bytes.
      */
     private $_size;
+ 
+    /**
+     * @var string The source link of this object.
+     */
+    private $_source;
 
     /**
      * @var int The creation time, in seconds since UNIX epoch.
@@ -76,6 +81,8 @@ abstract class Object
      *                                                        be empty.
      *                                'size'         (int)    The size of this
      *                                                        object, in bytes.
+     *                                'source'       (string) The source link of this
+     *                                                        object.
      *                                'created_time' (string) The creation time,
      *                                                        as a RFC
      *                                                        date/time.
@@ -101,6 +108,9 @@ abstract class Object
 
         $this->_size = property_exists($options, 'size') ?
             (int) $options->size : null;
+			
+        $this->_source = property_exists($options, 'source') ?
+            (string) $options->source : null;
 
         $this->_createdTime = property_exists($options, 'created_time') ?
             strtotime($options->created_time) : null;
@@ -141,6 +151,7 @@ abstract class Object
             (string) $result->description : null;
 
         $this->_size        = (int) $result->size;
+        $this->_source      = (string) $result->source;
         $this->_createdTime = strtotime($result->created_time);
         $this->_updatedTime = strtotime($result->updated_time);
         return $result;
@@ -218,6 +229,21 @@ abstract class Object
         }
 
         return $this->_size;
+    }
+	
+    /**
+     * Gets the source link of the OneDrive object referenced by this Object instance.
+     *
+     * @return string The source link of the OneDrive object referenced by this Object
+     *             instance.
+     */
+    public function getSource()
+    {
+        if (null === $this->_source) {
+            $this->fetchProperties();
+        }
+
+        return $this->_source;
     }
 
     /**
