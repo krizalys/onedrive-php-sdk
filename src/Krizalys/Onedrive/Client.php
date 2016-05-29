@@ -584,13 +584,14 @@ class Client
      *                                 case, the responsibility to close the
      *                                 handle is left to the calling function.
      *                                 Default: ''.
+     * @param boolean      $temp       Option to allow save to a temporary file in case of large files.
      *
      * @return File The file created, as File instance referencing to the
      *              OneDrive file created.
      *
      * @throws \Exception Thrown on I/O errors.
      */
-    public function createFile($name, $parentId = null, $content = '')
+    public function createFile($name, $parentId = null, $content = '', $temp = false)
     {
         if (null === $parentId) {
             $parentId = 'me/skydrive';
@@ -599,7 +600,7 @@ class Client
         if (is_resource($content)) {
             $stream = $content;
         } else {
-            $stream = fopen('php://temp', 'w+b');
+            $stream = fopen('php://'.($temp ? 'temp' : 'memory'), 'rw+b');
 
             if (false === $stream) {
                 throw new \Exception('fopen() failed');
@@ -750,14 +751,15 @@ class Client
      * @param string       $objectId   The unique ID of the object to update.
      * @param array|object $properties The properties to update. Default:
      *                                 array().
+     * @param boolean      $temp       Option to allow save to a temporary file in case of large files.
      *
      * @throws \Exception Thrown on I/O errors.
      */
-    public function updateObject($objectId, $properties = array())
+    public function updateObject($objectId, $properties = array(), $temp = false)
     {
         $properties = (object) $properties;
         $encoded    = json_encode($properties);
-        $stream     = fopen('php://temp', 'w+b');
+		$stream     = fopen('php://'.($temp ? 'temp' : 'memory'), 'rw+b');
 
         if (false === $stream) {
             throw new \Exception('fopen() failed');
