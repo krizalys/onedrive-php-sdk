@@ -11,6 +11,21 @@ namespace Krizalys\Onedrive;
 class Folder extends Object
 {
     /**
+     * @var string overwrite always option.
+     */
+	const OVERWRITE_ALWAYS = 'true';
+
+    /**
+     * @var string overwrite never option.
+     */
+	const OVERWRITE_NEVER = 'false';
+
+    /**
+     * @var string overwrite rename option.
+     */
+	const OVERWRITE_RENAME = 'ChooseNewName';
+
+    /**
      * Determines whether the OneDrive object referenced by this Object instance
      * is a folder.
      *
@@ -114,13 +129,14 @@ class Folder extends Object
      *                                 case, the responsibility to close the
      *                                 handle is left to the calling function.
      *                                 Default: ''.
+     * @param string      $overwrite  Indicate whether you want to overwrite files with the same name. accepteds: OVERWRITE_ALWAYS, OVERWRITE_NEVER or OVERWRITE_RENAME
      *
      * @return File The file created, as a File instance.
      *
      * @throws \Exception Thrown on I/O errors.
      */
-    public function createFile($name, $content = '')
+    public function createFile($name, $content = '', $overwrite = OVERWRITE_ALWAYS)
     {
-        return $this->_client->createFile($name, $this->_id, $content);
+        return $this->_client->createFile($name, $this->_id, $content, $overwrite);
     }
 }
