@@ -367,7 +367,7 @@ class Client
         }
 
         if (null === $this->_state->token->refresh_token) {
-            throw new \Exception('The refresh token not set or not permission in \'wl.offline_access\' for renew token');
+            throw new \Exception('The refresh token is not set or no permission for \'wl.offline_access\' was given to renew the token');
         }
 
         $url = self::TOKEN_URL;
