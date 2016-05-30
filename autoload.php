@@ -15,10 +15,10 @@ namespace Krizalys\Onedrive;
 function autoload($name)
 {
     // If the name doesn't start with "Krizalys\Onedrive\", then it's not one of our classes.
-    if (substr_compare($name, 'Krizalys\\Onedrive\\', 0, 19) !== 0) return;
+    if (substr_compare($name, 'Krizalys\\Onedrive\\', 0, 18) !== 0) return;
 
-    // Take the "Krizalys\\Onedrive\" prefix off.
-    $stem = substr($name, 19);
+    // Take the "Krizalys\Onedrive\" prefix off.
+    $stem = substr($name, 18);
 
     // Convert "\" and "_" to path separators.
     $pathifiedStem = str_replace(array('\\', '_'), '/', $stem);
@@ -29,4 +29,4 @@ function autoload($name)
     }
 }
 
-spl_autoload_register('Onedrive\autoload');
+spl_autoload_register('Krizalys\Onedrive\autoload');
