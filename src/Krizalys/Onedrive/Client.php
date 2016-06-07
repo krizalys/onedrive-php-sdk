@@ -375,17 +375,59 @@ class Client
      * Renews the access token from OAuth. This token is valid for one hour.
      *
      * @param string $clientSecret The client secret.
-     * @param string $redirectUri  The redirect URI.
      */
-    /*public function renewAccessToken($clientSecret, $redirectUri)
+    public function renewAccessToken($clientSecret)
     {
-        $url = self::TOKEN_URL
-            . '?client_id=' . $this->_clientId
-            . '&redirect_uri=' . (string) $redirectUri
-            . '&client_secret=' . (string) $clientSecret
-            . '&grant_type=' . 'refresh_token'
-            . '&code=' . (string) $code;
-    }*/
+        if (null === $this->_clientId) {
+            throw new \Exception('The client ID must be set to call renewAccessToken()');
+        }
+
+        if (null === $this->_state->token->refresh_token) {
+            throw new \Exception('The refresh token is not set or no permission for \'wl.offline_access\' was given to renew the token');
+        }
+
+        $url = self::TOKEN_URL;
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            // General options.
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_AUTOREFERER    => true,
+            CURLOPT_POST           => 1, // i am sending post data
+            CURLOPT_POSTFIELDS     => 'client_id=' . urlencode($this->_clientId)
+                . '&client_secret=' . urlencode($clientSecret)
+                . '&grant_type=refresh_token'
+                . '&refresh_token=' . urlencode($this->_state->token->refresh_token),
+
+            // SSL options.
+            CURLOPT_SSL_VERIFYHOST => false,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_URL            => $url
+        ));
+
+        $result = curl_exec($curl);
+
+        if (false === $result) {
+            if (curl_errno($curl)) {
+                throw new \Exception('curl_setopt_array() failed: ' . curl_error($curl));
+            } else {
+                throw new \Exception('curl_setopt_array(): empty response');
+            }
+        }
+
+        $decoded = json_decode($result);
+
+        if (null === $decoded) {
+            throw new \Exception('json_decode() failed');
+        }
+
+        $this->_state->token = (object) array(
+            'obtained' => time(),
+            'data'     => $decoded
+        );
+    }
 
     /**
      * Performs a call to the OneDrive API using the GET method.
