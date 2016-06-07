@@ -643,13 +643,14 @@ class Client
      *                                 handle is left to the calling function.
      *                                 Default: ''.
      * @param string      $overwrite  Indicate whether you want to overwrite files with the same name. accepteds: OVERWRITE_ALWAYS, OVERWRITE_NEVER or OVERWRITE_RENAME
+	 * @param boolean     $temp       Option to allow save to a temporary file in case of large files.
      *
      * @return File The file created, as File instance referencing to the
      *              OneDrive file created.
      *
      * @throws \Exception Thrown on I/O errors.
      */
-    public function createFile($name, $parentId = null, $content = '', $overwrite = OVERWRITE_ALWAYS)
+    public function createFile($name, $parentId = null, $content = '', $overwrite = OVERWRITE_ALWAYS, $temp = false)
     {
         if (null === $parentId) {
             $parentId = 'me/skydrive';
@@ -658,7 +659,7 @@ class Client
         if (is_resource($content)) {
             $stream = $content;
         } else {
-            $stream = fopen('php://memory', 'w+b');
+            $stream = fopen('php://'.($temp ? 'temp' : 'memory'), 'rw+b');
 
             if (false === $stream) {
                 throw new \Exception('fopen() failed');
@@ -809,14 +810,15 @@ class Client
      * @param string       $objectId   The unique ID of the object to update.
      * @param array|object $properties The properties to update. Default:
      *                                 array().
+	 * @param boolean     $temp       Option to allow save to a temporary file in case of large files.
      *
      * @throws \Exception Thrown on I/O errors.
      */
-    public function updateObject($objectId, $properties = array())
+    public function updateObject($objectId, $properties = array(), $temp = false)
     {
         $properties = (object) $properties;
         $encoded    = json_encode($properties);
-        $stream     = fopen('php://memory', 'w+b');
+        $stream     = fopen('php://'.($temp ? 'temp' : 'memory'), 'rw+b');
 
         if (false === $stream) {
             throw new \Exception('fopen() failed');
