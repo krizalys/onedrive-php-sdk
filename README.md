@@ -12,7 +12,7 @@ Requirements
 
 Using the OneDrive SDK for PHP requires the following:
 
-* [PHP][php] 5.3 or newer
+* [PHP][php] 5.6 or newer
 * The [cURL extension for PHP][php-curl]
 * [Composer][composer] 1.0.0-alpha10 or newer
 * Basic PHP knowledge
