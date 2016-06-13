@@ -1,6 +1,8 @@
 OneDrive SDK for PHP
 ====================
 
+[![Build Status](https://travis-ci.org/krizalys/onedrive-php-sdk.svg?branch=master)](https://travis-ci.org/krizalys/onedrive-php-sdk)
+
 OneDrive SDK for PHP is an open source library that allows [PHP][php]
 applications to interact programmatically with the [OneDrive API][onedrive-api].
 
