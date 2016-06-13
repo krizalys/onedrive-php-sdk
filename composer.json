@@ -32,7 +32,7 @@
     },
 
     "require-dev": {
-        "phpunit/phpunit": "4.6.4"
+        "phpunit/phpunit": "5.4.4"
     },
 
     "autoload": {
