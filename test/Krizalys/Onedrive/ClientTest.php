@@ -8,7 +8,7 @@ namespace Test\Krizalys\Onedrive
     {
         public static function mockTokenData($prefix = 'OlD')
         {
-            return (object) [
+            return (object) array(
                 'token_type'           => 'bearer',
                 'expires_in'           => 3600,
                 'scope'                => 'wl.signin wl.basic wl.contacts_skydrive wl.skydrive_update wl.offline_access',
@@ -16,7 +16,7 @@ namespace Test\Krizalys\Onedrive
                 'refresh_token'        => "$prefix!ReFrEsH*ToKeN",
                 'authentication_token' => "$prefix.AuThEnTiCaTiOn_ToKeN",
                 'user_id'              => 'ffffffffffffffffffffffffffffffff',
-            ];
+            );
         }
 
         public function testRenewAccessToken()
@@ -37,9 +37,9 @@ namespace Test\Krizalys\Onedrive
 
             $this->assertEquals((object) array(
                 'redirect_uri' => null,
-                'token'        => (object) [
+                'token'        => (object) array(
                     'obtained' => strtotime('1999-12-01Z'),
-                    'data'     =>  (object) [
+                    'data'     =>  (object) array(
                         'token_type'           => 'bearer',
                         'expires_in'           => 3600,
                         'scope'                => 'wl.signin wl.basic wl.contacts_skydrive wl.skydrive_update wl.offline_access',
@@ -47,8 +47,8 @@ namespace Test\Krizalys\Onedrive
                         'refresh_token'        => "NeW!ReFrEsH*ToKeN",
                         'authentication_token' => "NeW.AuThEnTiCaTiOn_ToKeN",
                         'user_id'              => 'ffffffffffffffffffffffffffffffff',
-                    ],
-                ],
+                    ),
+                ),
             ), $actual);
         }
     }
