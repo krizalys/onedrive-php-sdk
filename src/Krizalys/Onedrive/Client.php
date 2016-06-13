@@ -659,7 +659,7 @@ class Client
         if (is_resource($content)) {
             $stream = $content;
         } else {
-            $stream = fopen('php://'.($temp ? 'temp' : 'memory'), 'rw+b');
+            $stream = fopen('php://' . ($temp ? 'temp' : 'memory'), 'rw+b');
 
             if (false === $stream) {
                 throw new \Exception('fopen() failed');
@@ -818,7 +818,7 @@ class Client
     {
         $properties = (object) $properties;
         $encoded    = json_encode($properties);
-        $stream     = fopen('php://'.($temp ? 'temp' : 'memory'), 'rw+b');
+        $stream     = fopen('php://' . ($temp ? 'temp' : 'memory'), 'rw+b');
 
         if (false === $stream) {
             throw new \Exception('fopen() failed');

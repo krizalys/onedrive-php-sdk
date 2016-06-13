@@ -15,7 +15,9 @@ namespace Krizalys\Onedrive;
 function autoload($name)
 {
     // If the name doesn't start with "Krizalys\Onedrive\", then it's not one of our classes.
-    if (substr_compare($name, 'Krizalys\\Onedrive\\', 0, 18) !== 0) return;
+    if (substr_compare($name, 'Krizalys\\Onedrive\\', 0, 18) !== 0) {
+        return;
+    }
 
     // Take the "Krizalys\Onedrive\" prefix off.
     $stem = substr($name, 18);
@@ -24,6 +26,7 @@ function autoload($name)
     $pathifiedStem = str_replace(array('\\', '_'), '/', $stem);
 
     $path = __DIR__ . '/src/Krizalys/Onedrive/' . $pathifiedStem . '.php';
+
     if (is_file($path)) {
         require_once $path;
     }
