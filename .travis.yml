@@ -3,9 +3,9 @@ language: php
 php:
  - "5.3"
 
-env:
- secure: "fahV+AjOpZzSsleCp2CJcieuL+t8WkeDXTt4dDiobfbvDKycu0jyKfBG3x04YMpL3ic+zYTSELyFtDLVDY5nd2aNvi0fPpgiMkCp4YxhXfRL8d0GvOSYoSEXwIQieTZ1F6+Rn7/19db3APFnHywXAie2cI8sKUIvEbAIefycOLQ="
+#env:
+# secure: "fahV+AjOpZzSsleCp2CJcieuL+t8WkeDXTt4dDiobfbvDKycu0jyKfBG3x04YMpL3ic+zYTSELyFtDLVDY5nd2aNvi0fPpgiMkCp4YxhXfRL8d0GvOSYoSEXwIQieTZ1F6+Rn7/19db3APFnHywXAie2cI8sKUIvEbAIefycOLQ="
 
-before_install: phantomjs --version
+before_install: composer install
 
-script: cd test; ./run-tests.sh
+script: ./vendor/bin/phpunit
