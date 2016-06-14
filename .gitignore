@@ -1,5 +1,6 @@
 vendor/
 composer.lock
+coverage.xml
 
 # Mac OS X artifacts
 .DS_Store

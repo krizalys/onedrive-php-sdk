@@ -9,4 +9,13 @@
             <directory>test</directory>
         </testsuite>
     </testsuites>
+
+    <filter>
+        <whitelist>
+            <directory>src</directory>
+            <exclude>
+                <directory>test</directory>
+            </exclude>
+        </whitelist>
+    </filter>
 </phpunit>
