@@ -29,6 +29,30 @@ namespace Test\Krizalys\Onedrive
             return 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
         }
 
+        public function testGetLogInUrl()
+        {
+            $client = new Client(array(
+                'client_id' => $this->mockClientId(),
+                'state'     => (object) array(
+                    'redirect_uri' => null,
+                    'token'        => null,
+                ),
+            ));
+
+            $scopes = array(
+                'test_scope_1',
+                'test_scope_2',
+            );
+
+            $opts = array(
+                'unused'   => 'useless',
+                'reserved' => 'future',
+            );
+
+            $actual = $client->getLogInUrl($scopes, 'http://te.st/callback', $opts);
+            $this->assertEquals('https://login.live.com/oauth20_authorize.srf?client_id=9999999999999999&scope=test_scope_1%2Ctest_scope_2&response_type=code&redirect_uri=http%3A%2F%2Fte.st%2Fcallback&display=popup&locale=en', $actual);
+        }
+
         public function testObtainAccessToken()
         {
             $client = new Client(array(
