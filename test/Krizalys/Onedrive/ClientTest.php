@@ -19,10 +19,51 @@ namespace Test\Krizalys\Onedrive
             );
         }
 
+        private function mockClientId()
+        {
+            return '9999999999999999';
+        }
+
+        private function mockClientSecret()
+        {
+            return 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
+        }
+
+        public function testObtainAccessToken()
+        {
+            $client = new Client(array(
+                'client_id' => $this->mockClientId(),
+                'state'     => (object) array(
+                    'redirect_uri' => 'http://te.st/callback',
+                    'token'        => null,
+                ),
+            ));
+
+            $secret = $this->mockClientSecret();
+            $client->obtainAccessToken($secret, 'X99ffffff-ffff-ffff-ffff-ffffffffffff');
+            $actual = $client->getState();
+
+            $this->assertEquals((object) array(
+                'redirect_uri' => null,
+                'token'        => (object) array(
+                    'obtained' => strtotime('1999-12-01Z'),
+                    'data'     => (object) array(
+                        'token_type'           => 'bearer',
+                        'expires_in'           => 3600,
+                        'scope'                => 'wl.signin wl.basic wl.contacts_skydrive wl.skydrive_update wl.offline_access',
+                        'access_token'         => 'NeW/AcCeSs+ToKeN',
+                        'refresh_token'        => 'NeW!ReFrEsH*ToKeN',
+                        'authentication_token' => 'NeW.AuThEnTiCaTiOn_ToKeN',
+                        'user_id'              => 'ffffffffffffffffffffffffffffffff',
+                    ),
+                ),
+            ), $actual);
+        }
+
         public function testRenewAccessToken()
         {
             $client = new Client(array(
-                'client_id' => '9999999999999999',
+                'client_id' => $this->mockClientId(),
                 'state'     => (object) array(
                     'redirect_uri' => null,
                     'token'        => (object) array(
@@ -32,7 +73,8 @@ namespace Test\Krizalys\Onedrive
                 ),
             ));
 
-            $client->renewAccessToken('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
+            $secret = $this->mockClientSecret();
+            $client->renewAccessToken($secret);
             $actual = $client->getState();
 
             $this->assertEquals((object) array(
