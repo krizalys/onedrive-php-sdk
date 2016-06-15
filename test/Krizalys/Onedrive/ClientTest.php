@@ -134,6 +134,10 @@ namespace Test\Krizalys\Onedrive
                 ->shouldReceive('time')
                 ->andReturn(strtotime('1999-01-01Z'));
 
+            self::$functions
+                ->shouldReceive('curl_exec')
+                ->andReturn(json_encode(ClientTest::mockTokenData('NeW')));
+
             $client = new Client(array(
                 'client_id' => $this->mockClientId(),
                 'state'     => (object) array(
@@ -169,6 +173,10 @@ namespace Test\Krizalys\Onedrive
                 ->shouldReceive('time')
                 ->andReturn(strtotime('1999-12-31Z'));
 
+            self::$functions
+                ->shouldReceive('curl_exec')
+                ->andReturn(json_encode(ClientTest::mockTokenData('NeW')));
+
             $client = new Client(array(
                 'client_id' => $this->mockClientId(),
                 'state'     => (object) array(
@@ -200,6 +208,38 @@ namespace Test\Krizalys\Onedrive
                 ),
             ), $actual);
         }
+
+        public function testApiGet()
+        {
+            self::$functions
+                ->shouldReceive('curl_exec')
+                ->andReturn(json_encode(array(
+                    'key' => 'value',
+                )));
+
+            self::$functions
+                ->shouldReceive('curl_getinfo')
+                ->andReturn(array(
+                    'content_type' => 'application/json',
+                ));
+
+            $client = new Client(array(
+                'client_id' => $this->mockClientId(),
+                'state'     => (object) array(
+                    'redirect_uri' => null,
+                    'token'        => (object) array(
+                        'obtained' => strtotime('1999-01-01Z'),
+                        'data'     => self::mockTokenData(),
+                    ),
+                ),
+            ));
+
+            $actual = $client->apiGet('/path/to/resource');
+
+            $this->assertEquals((object) array(
+                'key' => 'value',
+            ), $actual);
+        }
     }
 }
 
@@ -220,13 +260,21 @@ namespace Krizalys\Onedrive
         return null;
     }
 
+    function curl_setopt()
+    {
+    }
+
     function curl_setopt_array()
     {
     }
 
-    function curl_exec()
+    function curl_exec($curl)
     {
-        $data = ClientTest::mockTokenData('NeW');
-        return json_encode($data);
+        return ClientTest::$functions->curl_exec($curl);
+    }
+
+    function curl_getinfo($curl, $option = 0)
+    {
+        return ClientTest::$functions->curl_getinfo($curl, $option);
     }
 }
