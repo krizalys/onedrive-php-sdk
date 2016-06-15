@@ -84,6 +84,50 @@ namespace Test\Krizalys\Onedrive
             $this->assertEquals($expected, $actual);
         }
 
+        public function provideGetAccessTokenStatus()
+        {
+            return array(
+                'Fresh token' => array(
+                    'time'     => strtotime('1999-01-01T00:58:59Z'),
+                    'expected' => 1,
+                ),
+
+                'Expiring token' => array(
+                    'time'     => strtotime('1999-01-01T00:59:00Z'),
+                    'expected' => -1,
+                ),
+
+                'Expired token' => array(
+                    'time'     => strtotime('1999-01-01T01:00:00Z'),
+                    'expected' => -2,
+                ),
+            );
+        }
+
+        /**
+         * @dataProvider provideGetAccessTokenStatus
+         */
+        public function testGetAccessTokenStatus($time, $expected)
+        {
+            self::$functions
+                ->shouldReceive('time')
+                ->andReturn($time);
+
+            $client = new Client(array(
+                'client_id' => $this->mockClientId(),
+                'state'     => (object) array(
+                    'redirect_uri' => null,
+                    'token'        => (object) array(
+                        'obtained' => strtotime('1999-01-01T00:00:00Z'),
+                        'data'     => self::mockTokenData(),
+                    ),
+                ),
+            ));
+
+            $actual = $client->getAccessTokenStatus();
+            $this->assertEquals($expected, $actual);
+        }
+
         public function testObtainAccessToken()
         {
             self::$functions
