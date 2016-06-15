@@ -2,9 +2,6 @@
 
 namespace Krizalys\Onedrive;
 
-// TODO: Support refresh tokens, see:
-// http://msdn.microsoft.com/en-us/library/live/hh243647.aspx
-// TODO: Pass parameters in POST request body when obtaining the access token.
 /**
  * @class Client
  *
