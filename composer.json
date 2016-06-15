@@ -32,6 +32,7 @@
     },
 
     "require-dev": {
+        "mockery/mockery": "0.9.5",
         "phpunit/phpunit": "4.8.26 || 5.4.4"
     },
 
