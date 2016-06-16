@@ -266,9 +266,9 @@ namespace Test\Krizalys\Onedrive
                 ),
             ));
 
-            $actual = $client->apiPost('/path/to/resource', [
+            $actual = $client->apiPost('/path/to/resource', array(
                 'input_key' => 'input_value',
-            ]);
+            ));
 
             $this->assertEquals((object) array(
                 'output_key' => 'output_value',
@@ -365,9 +365,9 @@ namespace Test\Krizalys\Onedrive
                 ),
             ));
 
-            $actual = $client->apiMove('/path/to/resource', [
+            $actual = $client->apiMove('/path/to/resource', array(
                 'input_key' => 'input_value',
-            ]);
+            ));
 
             $this->assertEquals((object) array(
                 'output_key' => 'output_value',
@@ -399,9 +399,9 @@ namespace Test\Krizalys\Onedrive
                 ),
             ));
 
-            $actual = $client->apiCopy('/path/to/resource', [
+            $actual = $client->apiCopy('/path/to/resource', array(
                 'input_key' => 'input_value',
-            ]);
+            ));
 
             $this->assertEquals((object) array(
                 'output_key' => 'output_value',
@@ -424,9 +424,9 @@ namespace Krizalys\Onedrive
 
     function fstat()
     {
-        return [
+        return array(
             /* Size */ 7 => 123,
-        ];
+        );
     }
 
     function curl_init()
