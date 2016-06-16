@@ -280,7 +280,7 @@ namespace Test\Krizalys\Onedrive
             self::$functions
                 ->shouldReceive('curl_exec')
                 ->andReturn(json_encode(array(
-                    'output_key' => 'output_value',
+                    'key' => 'value',
                 )));
 
             self::$functions
@@ -304,7 +304,39 @@ namespace Test\Krizalys\Onedrive
             $actual = $client->apiPut('/path/to/resource', $stream, 'text/plain');
 
             $this->assertEquals((object) array(
-                'output_key' => 'output_value',
+                'key' => 'value',
+            ), $actual);
+        }
+
+        public function testApiDelete()
+        {
+            self::$functions
+                ->shouldReceive('curl_exec')
+                ->andReturn(json_encode(array(
+                    'key' => 'value',
+                )));
+
+            self::$functions
+                ->shouldReceive('curl_getinfo')
+                ->andReturn(array(
+                    'content_type' => 'application/json',
+                ));
+
+            $client = new Client(array(
+                'client_id' => $this->mockClientId(),
+                'state'     => (object) array(
+                    'redirect_uri' => null,
+                    'token'        => (object) array(
+                        'obtained' => strtotime('1999-01-01Z'),
+                        'data'     => self::mockTokenData(),
+                    ),
+                ),
+            ));
+
+            $actual = $client->apiDelete('/path/to/resource');
+
+            $this->assertEquals((object) array(
+                'key' => 'value',
             ), $actual);
         }
     }
