@@ -339,6 +339,40 @@ namespace Test\Krizalys\Onedrive
                 'key' => 'value',
             ), $actual);
         }
+
+        public function testApiMove()
+        {
+            self::$functions
+                ->shouldReceive('curl_exec')
+                ->andReturn(json_encode(array(
+                    'output_key' => 'output_value',
+                )));
+
+            self::$functions
+                ->shouldReceive('curl_getinfo')
+                ->andReturn(array(
+                    'content_type' => 'application/json',
+                ));
+
+            $client = new Client(array(
+                'client_id' => $this->mockClientId(),
+                'state'     => (object) array(
+                    'redirect_uri' => null,
+                    'token'        => (object) array(
+                        'obtained' => strtotime('1999-01-01Z'),
+                        'data'     => self::mockTokenData(),
+                    ),
+                ),
+            ));
+
+            $actual = $client->apiMove('/path/to/resource', [
+                'input_key' => 'input_value',
+            ]);
+
+            $this->assertEquals((object) array(
+                'output_key' => 'output_value',
+            ), $actual);
+        }
     }
 }
 
