@@ -274,6 +274,39 @@ namespace Test\Krizalys\Onedrive
                 'output_key' => 'output_value',
             ), $actual);
         }
+
+        public function testApiPut()
+        {
+            self::$functions
+                ->shouldReceive('curl_exec')
+                ->andReturn(json_encode(array(
+                    'output_key' => 'output_value',
+                )));
+
+            self::$functions
+                ->shouldReceive('curl_getinfo')
+                ->andReturn(array(
+                    'content_type' => 'application/json',
+                ));
+
+            $client = new Client(array(
+                'client_id' => $this->mockClientId(),
+                'state'     => (object) array(
+                    'redirect_uri' => null,
+                    'token'        => (object) array(
+                        'obtained' => strtotime('1999-01-01Z'),
+                        'data'     => self::mockTokenData(),
+                    ),
+                ),
+            ));
+
+            $stream = null;
+            $actual = $client->apiPut('/path/to/resource', $stream, 'text/plain');
+
+            $this->assertEquals((object) array(
+                'output_key' => 'output_value',
+            ), $actual);
+        }
     }
 }
 
@@ -287,6 +320,13 @@ namespace Krizalys\Onedrive
     function time()
     {
         return ClientTest::$functions->time();
+    }
+
+    function fstat()
+    {
+        return [
+            /* Size */ 7 => 123,
+        ];
     }
 
     function curl_init()
