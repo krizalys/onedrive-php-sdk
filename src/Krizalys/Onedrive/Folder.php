@@ -92,7 +92,7 @@ class Folder extends Object
 
         foreach ($this->_client->fetchObjects($this->_id) as $file) {
             if ($file->isFolder()) {
-                $files = array_merge($file->fetchAllFiles(), $files);
+                $files = array_merge($file->fetchDescendantObjects(), $files);
             } else {
                 array_push($files, $file);
             }
