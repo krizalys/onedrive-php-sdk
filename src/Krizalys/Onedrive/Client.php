@@ -327,17 +327,24 @@ class Client
 
         $curl = curl_init();
 
+        $fields = http_build_query(
+            [
+                'client_id'     => $this->_clientId,
+                'redirect_uri'  => $this->_state->redirect_uri,
+                'client_secret' => $clientSecret,
+                'code'          => $code,
+                'grant_type'    => 'authorization_code',
+            ]
+        );
+
         curl_setopt_array($curl, array(
             // General options.
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_AUTOREFERER    => true,
-            CURLOPT_POST           => 1, // i am sending post data
-            CURLOPT_POSTFIELDS     => 'client_id=' . urlencode($this->_clientId)
-                . '&redirect_uri=' . urlencode($this->_state->redirect_uri)
-                . '&client_secret=' . urlencode($clientSecret)
-                . '&grant_type=authorization_code'
-                . '&code=' . urlencode($code),
+            CURLOPT_POST           => 1,
+            CURLOPT_POSTFIELDS     => $fields,
+            CURLOPT_HTTPHEADER     => ['Content-Length: ' . strlen($fields)],
 
             // SSL options.
             CURLOPT_SSL_VERIFYHOST => false,
