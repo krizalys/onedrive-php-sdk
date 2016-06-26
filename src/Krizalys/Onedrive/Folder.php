@@ -90,7 +90,7 @@ class Folder extends Object
     {
         $objects = array();
 
-        foreach ($this->_client->fetchObjects($this->_id) as $object) {
+        foreach ($this->fetchChildObjects() as $object) {
             if ($object->isFolder()) {
                 $objects = array_merge($object->fetchDescendantObjects(), $objects);
             } else {
