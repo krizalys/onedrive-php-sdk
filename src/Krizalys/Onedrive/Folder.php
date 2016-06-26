@@ -73,17 +73,17 @@ class Folder extends Object
      */
     public function fetchDescendantObjects()
     {
-        $files = [];
+        $objects = array();
 
-        foreach ($this->_client->fetchObjects($this->_id) as $file) {
-            if ($file->isFolder()) {
-                $files = array_merge($file->fetchAllFiles(), $files);
+        foreach ($this->_client->fetchObjects($this->_id) as $object) {
+            if ($object->isFolder()) {
+                $objects = array_merge($object->fetchDescendantObjects(), $objects);
             } else {
-                array_push($files, $file);
+                array_push($objects, $object);
             }
         }
 
-        return $files;
+        return $objects;
     }
 
     /**
