@@ -328,13 +328,13 @@ class Client
         $curl = curl_init();
 
         $fields = http_build_query(
-            [
+            array(
                 'client_id'     => $this->_clientId,
                 'redirect_uri'  => $this->_state->redirect_uri,
                 'client_secret' => $clientSecret,
                 'code'          => $code,
                 'grant_type'    => 'authorization_code',
-            ]
+            )
         );
 
         curl_setopt_array($curl, array(
@@ -344,7 +344,9 @@ class Client
             CURLOPT_AUTOREFERER    => true,
             CURLOPT_POST           => 1,
             CURLOPT_POSTFIELDS     => $fields,
-            CURLOPT_HTTPHEADER     => ['Content-Length: ' . strlen($fields)],
+            CURLOPT_HTTPHEADER     => array(
+                'Content-Length: ' . strlen($fields)
+            ),
 
             // SSL options.
             CURLOPT_SSL_VERIFYHOST => false,
