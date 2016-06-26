@@ -39,17 +39,17 @@ class Client
     /**
      * @var string overwrite always option.
      */
-	const OVERWRITE_ALWAYS = 'true';
+    const OVERWRITE_ALWAYS = 'true';
 
     /**
      * @var string overwrite never option.
      */
-	const OVERWRITE_NEVER = 'false';
+    const OVERWRITE_NEVER = 'false';
 
     /**
      * @var string overwrite rename option.
      */
-	const OVERWRITE_RENAME = 'ChooseNewName';
+    const OVERWRITE_RENAME = 'ChooseNewName';
 
     /**
      * @var string Client information.
@@ -649,7 +649,7 @@ class Client
      *                                 handle is left to the calling function.
      *                                 Default: ''.
      * @param string      $overwrite  Indicate whether you want to overwrite files with the same name. accepteds: OVERWRITE_ALWAYS, OVERWRITE_NEVER or OVERWRITE_RENAME
-	 * @param boolean     $temp       Option to allow save to a temporary file in case of large files.
+     * @param boolean     $temp       Option to allow save to a temporary file in case of large files.
      *
      * @return File The file created, as File instance referencing to the
      *              OneDrive file created.
@@ -816,7 +816,7 @@ class Client
      * @param string       $objectId   The unique ID of the object to update.
      * @param array|object $properties The properties to update. Default:
      *                                 array().
-	 * @param boolean     $temp       Option to allow save to a temporary file in case of large files.
+     * @param boolean     $temp       Option to allow save to a temporary file in case of large files.
      *
      * @throws \Exception Thrown on I/O errors.
      */
