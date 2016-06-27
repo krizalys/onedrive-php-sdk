@@ -65,24 +65,17 @@ abstract class Object
      *                              referenced by this Object instance.
      * @param array|object $options An array/object with one or more of the
      *                              following keys/properties:
-     *                                'parent_id'    (string) The unique ID of
-     *                                                        the parent
-     *                                                        OneDrive folder of
-     *                                                        this object.
-     *                                'name'         (string) The name of this
-     *                                                        object.
-     *                                'description'  (string) The description of
-     *                                                        this object. May
-     *                                                        be empty.
-     *                                'size'         (int)    The size of this
-     *                                                        object, in bytes.
-     *                                'created_time' (string) The creation time,
-     *                                                        as a RFC
-     *                                                        date/time.
-     *                                'updated_time' (string) The last
-     *                                                        modification time,
-     *                                                        as a RFC
-     *                                                        date/time.
+     *                              - 'parent_id'    (string) The unique ID of
+     *                              the parent OneDrive folder of this object.
+     *                              - 'name' (string) The name of this object.
+     *                              - 'description' (string) The description of
+     *                              this object. May be empty.
+     *                              - 'size' (int) The size of this object, in
+     *                              bytes.
+     *                              - 'created_time' (string) The creation time,
+     *                              as a RFC date/time.
+     *                              - 'updated_time' (string) The last
+     *                              modification time, as a RFC date/time.
      */
     public function __construct(Client $client, $id, $options = array())
     {
@@ -143,6 +136,7 @@ abstract class Object
         $this->_size        = (int) $result->size;
         $this->_createdTime = strtotime($result->created_time);
         $this->_updatedTime = strtotime($result->updated_time);
+
         return $result;
     }
 

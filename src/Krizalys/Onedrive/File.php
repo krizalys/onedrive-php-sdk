@@ -19,33 +19,23 @@ class File extends Object
      *                              referenced by this Object instance.
      * @param array|object $options An array/object with one or more of the
      *                              following keys/properties:
-     *                                'parent_id'    (string) The unique ID of
-     *                                                        the parent
-     *                                                        OneDrive folder of
-     *                                                        this object.
-     *                                'name'         (string) The name of this
-     *                                                        object.
-     *                                'description'  (string) The description of
-     *                                                        this object. May
-     *                                                        be empty.
-     *                                'size'         (int)    The size of this
-     *                                                        object, in bytes.
-     *                                'created_time' (string) The creation time,
-     *                                                        as a RFC
-     *                                                        date/time.
-     *                                'updated_time' (string) The last
-     *                                                        modification time,
-     *                                                        as a RFC
-     *                                                        date/time.
-     *
+     *                              - 'parent_id' (string) The unique ID of the
+     *                              parent OneDrive folder of this object.
+     *                              - 'name' (string) The name of this object.
+     *                              - 'description'  (string) The description of
+     *                              this object. May be empty.
+     *                              - 'size' (int) The size of this object, in
+     *                              bytes.
+     *                              - 'created_time' (string) The creation time,
+     *                              as a RFC date/time.
+     *                              - 'updated_time' (string) The last
+     *                              modification time, as a RFC date/time.
      */
     public function __construct(Client $client, $id, $options = array())
     {
         parent::__construct($client, $id, $options);
     }
 
-    // TODO: should somewhat return the content-type as well; this information
-    // is not disclosed by OneDrive.
     /**
      * Fetches the content of the OneDrive file referenced by this File
      * instance.
@@ -54,6 +44,9 @@ class File extends Object
      *
      * @return string The content of the OneDrive file referenced by this File
      *                instance.
+     *
+     * @todo Should somewhat return the content-type as well; this information
+     *       is not disclosed by OneDrive.
      */
     public function fetchContent($options = array())
     {
