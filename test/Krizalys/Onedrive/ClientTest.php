@@ -41,8 +41,7 @@ namespace Test\Krizalys\Onedrive
         private function mockCurlSetoptArray(
             $return           = true,
             array &$arguments = array()
-        )
-        {
+        ) {
             self::$functions
                 ->shouldReceive('curl_setopt_array')
                 ->andReturnUsing(function ($ch, $options) use ($return, &$arguments) {
@@ -58,12 +57,12 @@ namespace Test\Krizalys\Onedrive
         private function mockCurlExec(
             $return,
             array &$arguments = array()
-        )
-        {
+        ) {
             self::$functions
                 ->shouldReceive('curl_exec')
                 ->andReturnUsing(function ($ch) use ($return, &$arguments) {
                     $arguments = array('ch' => $ch);
+
                     return $return;
                 });
         }
@@ -71,8 +70,7 @@ namespace Test\Krizalys\Onedrive
         private function mockCurlInfo(
             $return           = array('content_type' => 'application/json'),
             array &$arguments = array()
-        )
-        {
+        ) {
             self::$functions
                 ->shouldReceive('curl_getinfo')
                 ->andReturnUsing(function ($curl, $opt) use ($return, &$arguments) {
@@ -183,7 +181,7 @@ namespace Test\Krizalys\Onedrive
                 ->shouldReceive('time')
                 ->andReturn(strtotime('1999-01-01Z'));
 
-            $this->mockCurlExec(json_encode(ClientTest::mockTokenData('NeW')));
+            $this->mockCurlExec(json_encode(self::mockTokenData('NeW')));
 
             $client = new Client(array(
                 'client_id' => $this->mockClientId(),
@@ -222,7 +220,7 @@ namespace Test\Krizalys\Onedrive
                 ->shouldReceive('time')
                 ->andReturn(strtotime('1999-12-31Z'));
 
-            $this->mockCurlExec(json_encode(ClientTest::mockTokenData('NeW')));
+            $this->mockCurlExec(json_encode(self::mockTokenData('NeW')));
 
             $client = new Client(array(
                 'client_id' => $this->mockClientId(),
@@ -243,7 +241,7 @@ namespace Test\Krizalys\Onedrive
                 'redirect_uri' => null,
                 'token'        => (object) array(
                     'obtained' => strtotime('1999-12-31Z'),
-                    'data'     =>  (object) array(
+                    'data'     => (object) array(
                         'token_type'           => 'bearer',
                         'expires_in'           => 3600,
                         'scope'                => 'wl.signin wl.basic wl.contacts_skydrive wl.skydrive_update wl.offline_access',
@@ -549,8 +547,7 @@ namespace Test\Krizalys\Onedrive
             $overwrite,
             $temp,
             $expected
-        )
-        {
+        ) {
             $arguments = array();
             $this->mockCurlSetoptArray(true, $arguments);
 
@@ -599,11 +596,12 @@ namespace Krizalys\Onedrive
 
     function curl_init()
     {
-        return null;
+        // Nothing for now (return null).
     }
 
     function curl_setopt()
     {
+        // Nothing for now.
     }
 
     function curl_setopt_array($ch, array $options)

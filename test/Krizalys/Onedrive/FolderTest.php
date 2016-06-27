@@ -12,7 +12,7 @@ namespace Test\Krizalys\Onedrive
             $file2 = $this->getFileMock('file2');
             $file3 = $this->getFileMock('file3');
             $file4 = $this->getFileMock('file4');
-            
+
             $folderMock = $this->getFolderMock(
                 array(
                     $file1,
@@ -25,15 +25,16 @@ namespace Test\Krizalys\Onedrive
                     $file4,
                 )
             );
-            
+
             $expected = array($file2, $file3, $file1, $file4);
-            $actual = $folderMock->fetchDescendantObjects();
-            
+            $actual   = $folderMock->fetchDescendantObjects();
+
             $this->assertEquals($expected, $actual);
         }
-        
+
         /**
-         * @param Object[] $childObjects
+         * @param object[] $childObjects
+         *
          * @return \PHPUnit_Framework_MockObject_MockObject|Folder
          */
         protected function getFolderMock($childObjects)
@@ -42,15 +43,16 @@ namespace Test\Krizalys\Onedrive
                 ->disableOriginalConstructor()
                 ->setMethods(array('fetchChildObjects'))
                 ->getMock();
-            
+
             $mock->method('fetchChildObjects')
                 ->willReturn($childObjects);
-            
+
             return $mock;
         }
-        
+
         /**
          * @param mixed $fileId
+         *
          * @return \PHPUnit_Framework_MockObject_MockObject|File
          */
         protected function getFileMock($fileId)
@@ -58,9 +60,8 @@ namespace Test\Krizalys\Onedrive
             $mock = $this->getMockBuilder('\\Krizalys\\Onedrive\\File')
                 ->disableOriginalConstructor()
                 ->getMock();
-            
+
             $mock->id = $fileId;
-            
             return $mock;
         }
     }

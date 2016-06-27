@@ -121,15 +121,18 @@ class Folder extends Object
     /**
      * Creates a file in the OneDrive folder referenced by this Folder instance.
      *
-     * @param string          $name    The name of the OneDrive file to be
-     *                                 created.
-     * @param string|resource $content The content of the OneDrive file to be
-     *                                 created, as a string or handle to an
-     *                                 already opened file.  In the latter
-     *                                 case, the responsibility to close the
-     *                                 handle is left to the calling function.
-     *                                 Default: ''.
-     * @param string      $overwrite  Indicate whether you want to overwrite files with the same name. accepteds: OVERWRITE_ALWAYS, OVERWRITE_NEVER or OVERWRITE_RENAME
+     * @param string          $name      The name of the OneDrive file to be
+     *                                   created.
+     * @param string|resource $content   The content of the OneDrive file to be
+     *                                   created, as a string or handle to an
+     *                                   already opened file.  In the latter
+     *                                   case, the responsibility to close the
+     *                                   handle is left to the calling function.
+     *                                   Default: ''.
+     * @param string          $overwrite Indicate whether you want to overwrite
+     *                                   files with the same name. accepteds:
+     *                                   OVERWRITE_ALWAYS, OVERWRITE_NEVER or
+     *                                   OVERWRITE_RENAME
      *
      * @return File The file created, as a File instance.
      *

@@ -6,7 +6,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 // log in successfully or did not grant privileges requested), we cannot proceed
 // in obtaining an access token
 if (!array_key_exists('code', $_GET)) {
-	throw new Exception('code undefined in $_GET');
+    throw new Exception('code undefined in $_GET');
 }
 
 session_start();
@@ -14,7 +14,7 @@ session_start();
 // Attempt to load the OneDrive client' state persisted from the previous
 // request
 if (!array_key_exists('onedrive.client.state', $_SESSION)) {
-	throw new Exception('onedrive.client.state undefined in $_SESSION');
+    throw new Exception('onedrive.client.state undefined in $_SESSION');
 }
 
 $onedrive = new \Krizalys\Onedrive\Client(array(
@@ -22,7 +22,7 @@ $onedrive = new \Krizalys\Onedrive\Client(array(
 
 	// Restore the previous state while instantiating this client to proceed in
 	// obtaining an access token
-	'state'     => $_SESSION['onedrive.client.state']
+	'state'     => $_SESSION['onedrive.client.state'],
 ));
 
 // Obtain the token using the code received by the OneDrive API
