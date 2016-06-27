@@ -479,6 +479,102 @@ namespace Test\Krizalys\Onedrive
             $actual = $arguments['options'][CURLOPT_URL];
             $this->assertEquals($expected, $actual);
         }
+
+        public function provideCreateFileUrl()
+        {
+            return array(
+                'Parent omitted, OVERWRITE_ALWAYS' => array(
+                    'name'       => 'test-file.txt',
+                    'parentId'   => null,
+                    'content'    => 'Some test content',
+                    'overwrite'  => Client::OVERWRITE_ALWAYS,
+                    'temp'       => false,
+                    'expected'   => 'https://apis.live.net/v5.0/me/skydrive/files/test-file.txt?overwrite=true',
+                ),
+
+                'Parent given, OVERWRITE_ALWAYS' => array(
+                    'name'      => 'test-file.txt',
+                    'parentId'  => 'path/to/parent',
+                    'content'   => 'Some test content',
+                    'overwrite' => Client::OVERWRITE_ALWAYS,
+                    'temp'      => false,
+                    'expected'  => 'https://apis.live.net/v5.0/path/to/parent/files/test-file.txt?overwrite=true',
+                ),
+
+                'Parent omitted, OVERWRITE_NEVER' => array(
+                    'name'       => 'test-file.txt',
+                    'parentId'   => null,
+                    'content'    => 'Some test content',
+                    'overwrite'  => Client::OVERWRITE_NEVER,
+                    'temp'       => false,
+                    'expected'   => 'https://apis.live.net/v5.0/me/skydrive/files/test-file.txt?overwrite=false',
+                ),
+
+                'Parent given, OVERWRITE_NEVER' => array(
+                    'name'      => 'test-file.txt',
+                    'parentId'  => 'path/to/parent',
+                    'content'   => 'Some test content',
+                    'overwrite' => Client::OVERWRITE_NEVER,
+                    'temp'      => false,
+                    'expected'  => 'https://apis.live.net/v5.0/path/to/parent/files/test-file.txt?overwrite=false',
+                ),
+
+                'Parent omitted, OVERWRITE_NEVER' => array(
+                    'name'       => 'test-file.txt',
+                    'parentId'   => null,
+                    'content'    => 'Some test content',
+                    'overwrite'  => Client::OVERWRITE_RENAME,
+                    'temp'       => false,
+                    'expected'   => 'https://apis.live.net/v5.0/me/skydrive/files/test-file.txt?overwrite=ChooseNewName',
+                ),
+
+                'Parent given, OVERWRITE_NEVER' => array(
+                    'name'      => 'test-file.txt',
+                    'parentId'  => 'path/to/parent',
+                    'content'   => 'Some test content',
+                    'overwrite' => Client::OVERWRITE_RENAME,
+                    'temp'      => false,
+                    'expected'  => 'https://apis.live.net/v5.0/path/to/parent/files/test-file.txt?overwrite=ChooseNewName',
+                ),
+            );
+        }
+
+        /**
+         * @dataProvider provideCreateFileUrl
+         */
+        public function testCreateFileUrl(
+            $name,
+            $parentId,
+            $content,
+            $overwrite,
+            $temp,
+            $expected
+        )
+        {
+            $arguments = array();
+            $this->mockCurlSetoptArray(true, $arguments);
+
+            $this->mockCurlExec(json_encode(array(
+                'id' => '123ABC',
+            )));
+
+            $this->mockCurlInfo();
+
+            $client = new Client(array(
+                'client_id' => $this->mockClientId(),
+                'state'     => (object) array(
+                    'redirect_uri' => null,
+                    'token'        => (object) array(
+                        'obtained' => strtotime('1999-01-01Z'),
+                        'data'     => self::mockTokenData(),
+                    ),
+                ),
+            ));
+
+            $client->createFile($name, $parentId, $content, $overwrite, $temp);
+            $actual = $arguments['options'][CURLOPT_URL];
+            $this->assertEquals($expected, $actual);
+        }
     }
 }
 
