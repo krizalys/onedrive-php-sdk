@@ -13,17 +13,17 @@ class Folder extends Object
     /**
      * @var string overwrite always option.
      */
-	const OVERWRITE_ALWAYS = 'true';
+    const OVERWRITE_ALWAYS = 'true';
 
     /**
      * @var string overwrite never option.
      */
-	const OVERWRITE_NEVER = 'false';
+    const OVERWRITE_NEVER = 'false';
 
     /**
      * @var string overwrite rename option.
      */
-	const OVERWRITE_RENAME = 'ChooseNewName';
+    const OVERWRITE_RENAME = 'ChooseNewName';
 
     /**
      * Determines whether the OneDrive object referenced by this Object instance
@@ -88,17 +88,17 @@ class Folder extends Object
      */
     public function fetchDescendantObjects()
     {
-        $files = [];
+        $objects = array();
 
-        foreach ($this->_client->fetchObjects($this->_id) as $file) {
-            if ($file->isFolder()) {
-                $files = array_merge($file->fetchAllFiles(), $files);
+        foreach ($this->fetchChildObjects() as $object) {
+            if ($object->isFolder()) {
+                $objects = array_merge($object->fetchDescendantObjects(), $objects);
             } else {
-                array_push($files, $file);
+                array_push($objects, $object);
             }
         }
 
-        return $files;
+        return $objects;
     }
 
     /**

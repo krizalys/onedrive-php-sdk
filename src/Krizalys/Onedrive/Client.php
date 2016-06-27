@@ -39,17 +39,17 @@ class Client
     /**
      * @var string overwrite always option.
      */
-	const OVERWRITE_ALWAYS = 'true';
+    const OVERWRITE_ALWAYS = 'true';
 
     /**
      * @var string overwrite never option.
      */
-	const OVERWRITE_NEVER = 'false';
+    const OVERWRITE_NEVER = 'false';
 
     /**
      * @var string overwrite rename option.
      */
-	const OVERWRITE_RENAME = 'ChooseNewName';
+    const OVERWRITE_RENAME = 'ChooseNewName';
 
     /**
      * @var string Client information.
@@ -327,17 +327,26 @@ class Client
 
         $curl = curl_init();
 
+        $fields = http_build_query(
+            array(
+                'client_id'     => $this->_clientId,
+                'redirect_uri'  => $this->_state->redirect_uri,
+                'client_secret' => $clientSecret,
+                'code'          => $code,
+                'grant_type'    => 'authorization_code',
+            )
+        );
+
         curl_setopt_array($curl, array(
             // General options.
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_AUTOREFERER    => true,
-            CURLOPT_POST           => 1, // i am sending post data
-            CURLOPT_POSTFIELDS     => 'client_id=' . urlencode($this->_clientId)
-                . '&redirect_uri=' . urlencode($this->_state->redirect_uri)
-                . '&client_secret=' . urlencode($clientSecret)
-                . '&grant_type=authorization_code'
-                . '&code=' . urlencode($code),
+            CURLOPT_POST           => 1,
+            CURLOPT_POSTFIELDS     => $fields,
+            CURLOPT_HTTPHEADER     => array(
+                'Content-Length: ' . strlen($fields)
+            ),
 
             // SSL options.
             CURLOPT_SSL_VERIFYHOST => false,
@@ -640,7 +649,7 @@ class Client
      *                                 handle is left to the calling function.
      *                                 Default: ''.
      * @param string      $overwrite  Indicate whether you want to overwrite files with the same name. accepteds: OVERWRITE_ALWAYS, OVERWRITE_NEVER or OVERWRITE_RENAME
-	 * @param boolean     $temp       Option to allow save to a temporary file in case of large files.
+     * @param boolean     $temp       Option to allow save to a temporary file in case of large files.
      *
      * @return File The file created, as File instance referencing to the
      *              OneDrive file created.
@@ -807,7 +816,7 @@ class Client
      * @param string       $objectId   The unique ID of the object to update.
      * @param array|object $properties The properties to update. Default:
      *                                 array().
-	 * @param boolean     $temp       Option to allow save to a temporary file in case of large files.
+     * @param boolean     $temp       Option to allow save to a temporary file in case of large files.
      *
      * @throws \Exception Thrown on I/O errors.
      */

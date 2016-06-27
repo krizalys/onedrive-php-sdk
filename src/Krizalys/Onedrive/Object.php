@@ -108,7 +108,7 @@ abstract class Object
 
         $this->_size = property_exists($options, 'size') ?
             (int) $options->size : null;
-			
+            
         $this->_source = property_exists($options, 'source') ?
             (string) $options->source : null;
 
@@ -230,7 +230,7 @@ abstract class Object
 
         return $this->_size;
     }
-	
+    
     /**
      * Gets the source link of the OneDrive object referenced by this Object instance.
      *
