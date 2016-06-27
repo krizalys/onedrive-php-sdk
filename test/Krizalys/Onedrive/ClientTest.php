@@ -38,6 +38,53 @@ namespace Test\Krizalys\Onedrive
             return 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
         }
 
+        private function mockCurlSetoptArray(
+            $return           = true,
+            array &$arguments = array()
+        )
+        {
+            self::$functions
+                ->shouldReceive('curl_setopt_array')
+                ->andReturnUsing(function ($ch, $options) use ($return, &$arguments) {
+                    $arguments = array(
+                        'ch'      => $ch,
+                        'options' => $options,
+                    );
+
+                    return $return;
+                });
+        }
+
+        private function mockCurlExec(
+            $return,
+            array &$arguments = array()
+        )
+        {
+            self::$functions
+                ->shouldReceive('curl_exec')
+                ->andReturnUsing(function ($ch) use ($return, &$arguments) {
+                    $arguments = array('ch' => $ch);
+                    return $return;
+                });
+        }
+
+        private function mockCurlInfo(
+            $return           = array('content_type' => 'application/json'),
+            array &$arguments = array()
+        )
+        {
+            self::$functions
+                ->shouldReceive('curl_getinfo')
+                ->andReturnUsing(function ($curl, $opt) use ($return, &$arguments) {
+                    $arguments = array(
+                        'ch'  => $curl,
+                        'opt' => $opt,
+                    );
+
+                    return $return;
+                });
+        }
+
         public function testGetLogInUrl()
         {
             $client = new Client(array(
@@ -130,13 +177,13 @@ namespace Test\Krizalys\Onedrive
 
         public function testObtainAccessToken()
         {
+            $this->mockCurlSetoptArray();
+
             self::$functions
                 ->shouldReceive('time')
                 ->andReturn(strtotime('1999-01-01Z'));
 
-            self::$functions
-                ->shouldReceive('curl_exec')
-                ->andReturn(json_encode(ClientTest::mockTokenData('NeW')));
+            $this->mockCurlExec(json_encode(ClientTest::mockTokenData('NeW')));
 
             $client = new Client(array(
                 'client_id' => $this->mockClientId(),
@@ -169,13 +216,13 @@ namespace Test\Krizalys\Onedrive
 
         public function testRenewAccessToken()
         {
+            $this->mockCurlSetoptArray();
+
             self::$functions
                 ->shouldReceive('time')
                 ->andReturn(strtotime('1999-12-31Z'));
 
-            self::$functions
-                ->shouldReceive('curl_exec')
-                ->andReturn(json_encode(ClientTest::mockTokenData('NeW')));
+            $this->mockCurlExec(json_encode(ClientTest::mockTokenData('NeW')));
 
             $client = new Client(array(
                 'client_id' => $this->mockClientId(),
@@ -211,17 +258,13 @@ namespace Test\Krizalys\Onedrive
 
         public function testApiGet()
         {
-            self::$functions
-                ->shouldReceive('curl_exec')
-                ->andReturn(json_encode(array(
-                    'key' => 'value',
-                )));
+            $this->mockCurlSetoptArray();
 
-            self::$functions
-                ->shouldReceive('curl_getinfo')
-                ->andReturn(array(
-                    'content_type' => 'application/json',
-                ));
+            $this->mockCurlExec(json_encode(array(
+                'key' => 'value',
+            )));
+
+            $this->mockCurlInfo();
 
             $client = new Client(array(
                 'client_id' => $this->mockClientId(),
@@ -243,17 +286,13 @@ namespace Test\Krizalys\Onedrive
 
         public function testApiPost()
         {
-            self::$functions
-                ->shouldReceive('curl_exec')
-                ->andReturn(json_encode(array(
-                    'output_key' => 'output_value',
-                )));
+            $this->mockCurlSetoptArray();
 
-            self::$functions
-                ->shouldReceive('curl_getinfo')
-                ->andReturn(array(
-                    'content_type' => 'application/json',
-                ));
+            $this->mockCurlExec(json_encode(array(
+                'output_key' => 'output_value',
+            )));
+
+            $this->mockCurlInfo();
 
             $client = new Client(array(
                 'client_id' => $this->mockClientId(),
@@ -277,17 +316,13 @@ namespace Test\Krizalys\Onedrive
 
         public function testApiPut()
         {
-            self::$functions
-                ->shouldReceive('curl_exec')
-                ->andReturn(json_encode(array(
-                    'key' => 'value',
-                )));
+            $this->mockCurlSetoptArray();
 
-            self::$functions
-                ->shouldReceive('curl_getinfo')
-                ->andReturn(array(
-                    'content_type' => 'application/json',
-                ));
+            $this->mockCurlExec(json_encode(array(
+                'key' => 'value',
+            )));
+
+            $this->mockCurlInfo();
 
             $client = new Client(array(
                 'client_id' => $this->mockClientId(),
@@ -310,17 +345,13 @@ namespace Test\Krizalys\Onedrive
 
         public function testApiDelete()
         {
-            self::$functions
-                ->shouldReceive('curl_exec')
-                ->andReturn(json_encode(array(
-                    'key' => 'value',
-                )));
+            $this->mockCurlSetoptArray();
 
-            self::$functions
-                ->shouldReceive('curl_getinfo')
-                ->andReturn(array(
-                    'content_type' => 'application/json',
-                ));
+            $this->mockCurlExec(json_encode(array(
+                'key' => 'value',
+            )));
+
+            $this->mockCurlInfo();
 
             $client = new Client(array(
                 'client_id' => $this->mockClientId(),
@@ -342,17 +373,13 @@ namespace Test\Krizalys\Onedrive
 
         public function testApiMove()
         {
-            self::$functions
-                ->shouldReceive('curl_exec')
-                ->andReturn(json_encode(array(
-                    'output_key' => 'output_value',
-                )));
+            $this->mockCurlSetoptArray();
 
-            self::$functions
-                ->shouldReceive('curl_getinfo')
-                ->andReturn(array(
-                    'content_type' => 'application/json',
-                ));
+            $this->mockCurlExec(json_encode(array(
+                'output_key' => 'output_value',
+            )));
+
+            $this->mockCurlInfo();
 
             $client = new Client(array(
                 'client_id' => $this->mockClientId(),
@@ -376,17 +403,13 @@ namespace Test\Krizalys\Onedrive
 
         public function testApiCopy()
         {
-            self::$functions
-                ->shouldReceive('curl_exec')
-                ->andReturn(json_encode(array(
-                    'output_key' => 'output_value',
-                )));
+            $this->mockCurlSetoptArray();
 
-            self::$functions
-                ->shouldReceive('curl_getinfo')
-                ->andReturn(array(
-                    'content_type' => 'application/json',
-                ));
+            $this->mockCurlExec(json_encode(array(
+                'output_key' => 'output_value',
+            )));
+
+            $this->mockCurlInfo();
 
             $client = new Client(array(
                 'client_id' => $this->mockClientId(),
@@ -406,6 +429,55 @@ namespace Test\Krizalys\Onedrive
             $this->assertEquals((object) array(
                 'output_key' => 'output_value',
             ), $actual);
+        }
+
+        public function provideCreateFolderUrl()
+        {
+            return array(
+                'Parent omitted' => array(
+                    'name'        => 'test-folder',
+                    'parentId'    => null,
+                    'description' => 'Some test description',
+                    'expected'    => 'https://apis.live.net/v5.0/me/skydrive',
+                ),
+
+                'Parent given' => array(
+                    'name'        => 'test-folder',
+                    'parentId'    => 'path/to/parent',
+                    'description' => 'Some test description',
+                    'expected'    => 'https://apis.live.net/v5.0/path/to/parent',
+                ),
+            );
+        }
+
+        /**
+         * @dataProvider provideCreateFolderUrl
+         */
+        public function testCreateFolderUrl($name, $parentId, $description, $expected)
+        {
+            $arguments = array();
+            $this->mockCurlSetoptArray(true, $arguments);
+
+            $this->mockCurlExec(json_encode(array(
+                'id' => '123ABC',
+            )));
+
+            $this->mockCurlInfo();
+
+            $client = new Client(array(
+                'client_id' => $this->mockClientId(),
+                'state'     => (object) array(
+                    'redirect_uri' => null,
+                    'token'        => (object) array(
+                        'obtained' => strtotime('1999-01-01Z'),
+                        'data'     => self::mockTokenData(),
+                    ),
+                ),
+            ));
+
+            $client->createFolder($name, $parentId, $description);
+            $actual = $arguments['options'][CURLOPT_URL];
+            $this->assertEquals($expected, $actual);
         }
     }
 }
@@ -438,17 +510,18 @@ namespace Krizalys\Onedrive
     {
     }
 
-    function curl_setopt_array()
+    function curl_setopt_array($ch, array $options)
     {
+        return ClientTest::$functions->curl_setopt_array($ch, $options);
     }
 
-    function curl_exec($curl)
+    function curl_exec($ch)
     {
-        return ClientTest::$functions->curl_exec($curl);
+        return ClientTest::$functions->curl_exec($ch);
     }
 
-    function curl_getinfo($curl, $option = 0)
+    function curl_getinfo($ch, $opt = 0)
     {
-        return ClientTest::$functions->curl_getinfo($curl, $option);
+        return ClientTest::$functions->curl_getinfo($ch, $opt);
     }
 }
