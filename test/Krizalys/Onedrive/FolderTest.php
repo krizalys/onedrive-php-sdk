@@ -39,7 +39,7 @@ namespace Test\Krizalys\Onedrive
          */
         protected function getFolderMock($childObjects)
         {
-            $mock = $this->getMockBuilder('\\Krizalys\\Onedrive\\Folder')
+            $mock = $this->getMockBuilder('Krizalys\Onedrive\Folder')
                 ->disableOriginalConstructor()
                 ->setMethods(array('fetchChildObjects'))
                 ->getMock();
@@ -57,7 +57,7 @@ namespace Test\Krizalys\Onedrive
          */
         protected function getFileMock($fileId)
         {
-            $mock = $this->getMockBuilder('\\Krizalys\\Onedrive\\File')
+            $mock = $this->getMockBuilder('Krizalys\Onedrive\File')
                 ->disableOriginalConstructor()
                 ->getMock();
 
