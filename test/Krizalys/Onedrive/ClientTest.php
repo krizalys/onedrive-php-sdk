@@ -38,6 +38,23 @@ namespace Test\Krizalys\Onedrive
             return 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
         }
 
+        private function mockCurlSetopt(
+            $return           = true,
+            array &$arguments = array()
+        ) {
+            self::$functions
+                ->shouldReceive('curl_setopt')
+                ->andReturnUsing(function ($ch, $option, $value) use ($return, &$arguments) {
+                    $arguments = array(
+                        'ch'     => $ch,
+                        'option' => $option,
+                        'value'  => $value,
+                    );
+
+                    return $return;
+                });
+        }
+
         private function mockCurlSetoptArray(
             $return           = true,
             array &$arguments = array()
@@ -257,6 +274,7 @@ namespace Test\Krizalys\Onedrive
         public function testApiGet()
         {
             $this->mockCurlSetoptArray();
+            $this->mockCurlSetopt();
 
             $this->mockCurlExec(json_encode(array(
                 'key' => 'value',
@@ -599,6 +617,7 @@ namespace Test\Krizalys\Onedrive
         public function testFetchObjectType($type, $expected)
         {
             $this->mockCurlSetoptArray();
+            $this->mockCurlSetopt();
 
             $this->mockCurlExec(json_encode(array(
                 'type' => $type,
@@ -620,6 +639,36 @@ namespace Test\Krizalys\Onedrive
             $resource = $client->fetchObject('some-resource');
             $actual   = get_class($resource);
             $this->assertEquals("Krizalys\Onedrive\\$expected", $actual);
+        }
+
+        public function testFetchRootUrl()
+        {
+            $this->mockCurlSetoptArray();
+
+            $arguments = array();
+            $this->mockCurlSetopt(true, $arguments);
+
+            $this->mockCurlExec(json_encode(array(
+                'id'   => '123ABC',
+                'type' => 'folder',
+            )));
+
+            $this->mockCurlInfo();
+
+            $client = new Client(array(
+                'client_id' => $this->mockClientId(),
+                'state'     => (object) array(
+                    'redirect_uri' => null,
+                    'token'        => (object) array(
+                        'obtained' => strtotime('1999-01-01Z'),
+                        'data'     => self::mockTokenData(),
+                    ),
+                ),
+            ));
+
+            $client->fetchRoot();
+            $actual = $arguments['value'];
+            $this->assertEquals('https://apis.live.net/v5.0/me/skydrive?access_token=OlD%2FAcCeSs%2BToKeN', $actual);
         }
     }
 }
@@ -648,9 +697,9 @@ namespace Krizalys\Onedrive
         // Nothing for now (return null).
     }
 
-    function curl_setopt()
+    function curl_setopt($ch, $option, $value)
     {
-        // Nothing for now.
+        return ClientTest::$functions->curl_setopt($ch, $option, $value);
     }
 
     function curl_setopt_array($ch, array $options)
