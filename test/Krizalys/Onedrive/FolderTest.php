@@ -23,12 +23,12 @@ class FolderTest extends \PHPUnit_Framework_TestCase
      */
     private function mockFile($fileId)
     {
-        $mock = m::mock('Krizalys\Onedrive\File', array(
+        $file = m::mock('Krizalys\Onedrive\File', array(
             'isFolder' => false,
         ));
 
-        $mock->id = $fileId;
-        return $mock;
+        $file->id = $fileId;
+        return $file;
     }
 
     public function testFetchDescendantObjects()
