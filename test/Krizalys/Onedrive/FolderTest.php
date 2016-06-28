@@ -3,6 +3,7 @@
 namespace Test\Krizalys\Onedrive;
 
 use Krizalys\Onedrive\Folder;
+use Mockery as m;
 
 class FolderTest extends \PHPUnit_Framework_TestCase
 {
@@ -13,55 +14,39 @@ class FolderTest extends \PHPUnit_Framework_TestCase
         $file3 = $this->getFileMock('file3');
         $file4 = $this->getFileMock('file4');
 
-        $folderMock = $this->getFolderMock(
-            array(
-                $file1,
-                $this->getFolderMock(
-                    array(
-                        $file2,
-                        $file3,
-                    )
-                ),
-                $file4,
-            )
-        );
+        $folder = new Folder($this->mockClient(array(
+            $file1,
+            new Folder($this->mockClient(array(
+                $file2,
+                $file3,
+            ))),
+            $file4,
+        )));
 
         $expected = array($file2, $file3, $file1, $file4);
-        $actual   = $folderMock->fetchDescendantObjects();
+        $actual   = $folder->fetchDescendantObjects();
         $this->assertEquals($expected, $actual);
     }
 
-    /**
-     * @param object[] $childObjects
-     *
-     * @return \PHPUnit_Framework_MockObject_MockObject|Folder
-     */
-    protected function getFolderMock($childObjects)
+    private function mockClient($objects)
     {
-        $mock = $this
-            ->getMockBuilder('Krizalys\Onedrive\Folder')
-            ->disableOriginalConstructor()
-            ->setMethods(array('fetchChildObjects'))
-            ->getMock();
+        $client = m::mock('Krizalys\Onedrive\Client[fetchObjects]');
 
-        $mock
-            ->method('fetchChildObjects')
-            ->willReturn($childObjects);
+        $client
+            ->shouldReceive('fetchObjects')
+            ->andReturn($objects);
 
-        return $mock;
+        return $client;
     }
 
     /**
      * @param mixed $fileId
-     *
-     * @return \PHPUnit_Framework_MockObject_MockObject|File
      */
     protected function getFileMock($fileId)
     {
-        $mock = $this
-            ->getMockBuilder('Krizalys\Onedrive\File')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $mock = m::mock('Krizalys\Onedrive\File', array(
+            'isFolder' => false,
+        ));
 
         $mock->id = $fileId;
         return $mock;
