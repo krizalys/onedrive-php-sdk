@@ -144,7 +144,7 @@ abstract class Object
             (string) $result->description : null;
 
         $this->_size        = (int) $result->size;
-        $this->_source      = (string) $result->source;
+        $this->_source      = (string) $result->source; // TODO: Handle volatile existence (eg. present only for files).
         $this->_createdTime = strtotime($result->created_time);
         $this->_updatedTime = strtotime($result->updated_time);
 
