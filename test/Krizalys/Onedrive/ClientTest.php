@@ -475,7 +475,7 @@ namespace Test\Krizalys\Onedrive
             $this->mockCurlSetoptArray(true, $arguments);
 
             $this->mockCurlExec(json_encode(array(
-                'id' => '123ABC',
+                'id' => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
             )));
 
             $this->mockCurlInfo();
@@ -570,7 +570,7 @@ namespace Test\Krizalys\Onedrive
             $this->mockCurlSetoptArray(true, $arguments);
 
             $this->mockCurlExec(json_encode(array(
-                'id' => '123ABC',
+                'id' => 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
             )));
 
             $this->mockCurlInfo();
@@ -649,7 +649,7 @@ namespace Test\Krizalys\Onedrive
             $this->mockCurlSetopt(true, $arguments);
 
             $this->mockCurlExec(json_encode(array(
-                'id'   => '123ABC',
+                'id'   => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
                 'type' => 'folder',
             )));
 
@@ -679,7 +679,7 @@ namespace Test\Krizalys\Onedrive
             $this->mockCurlSetopt(true, $arguments);
 
             $this->mockCurlExec(json_encode(array(
-                'id'   => '123ABC',
+                'id'   => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
                 'type' => 'folder',
             )));
 
@@ -709,7 +709,7 @@ namespace Test\Krizalys\Onedrive
             $this->mockCurlSetopt(true, $arguments);
 
             $this->mockCurlExec(json_encode(array(
-                'id'   => '123ABC',
+                'id'   => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
                 'type' => 'folder',
             )));
 
@@ -739,7 +739,7 @@ namespace Test\Krizalys\Onedrive
             $this->mockCurlSetopt(true, $arguments);
 
             $this->mockCurlExec(json_encode(array(
-                'id'   => '123ABC',
+                'id'   => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
                 'type' => 'folder',
             )));
 
@@ -769,7 +769,7 @@ namespace Test\Krizalys\Onedrive
             $this->mockCurlSetopt(true, $arguments);
 
             $this->mockCurlExec(json_encode(array(
-                'id'   => '123ABC',
+                'id'   => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
                 'type' => 'folder',
             )));
 
