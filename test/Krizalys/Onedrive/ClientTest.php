@@ -671,7 +671,7 @@ namespace Test\Krizalys\Onedrive
             $this->assertEquals('https://apis.live.net/v5.0/me/skydrive?access_token=OlD%2FAcCeSs%2BToKeN', $actual);
         }
 
-        public function testFetchCameraRoll()
+        public function testFetchCameraRollUrl()
         {
             $this->mockCurlSetoptArray();
 
@@ -701,7 +701,7 @@ namespace Test\Krizalys\Onedrive
             $this->assertEquals('https://apis.live.net/v5.0/me/skydrive/camera_roll?access_token=OlD%2FAcCeSs%2BToKeN', $actual);
         }
 
-        public function testFetchCameraDocs()
+        public function testFetchDocsUrl()
         {
             $this->mockCurlSetoptArray();
 
