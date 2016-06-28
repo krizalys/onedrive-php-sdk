@@ -572,6 +572,55 @@ namespace Test\Krizalys\Onedrive
             $actual = $arguments['options'][CURLOPT_URL];
             $this->assertEquals($expected, $actual);
         }
+
+        public function provideFetchObjectType()
+        {
+            return array(
+                'File' => array(
+                    'type'     => 'file',
+                    'expected' => 'File',
+                ),
+
+                'Folder' => array(
+                    'type'     => 'folder',
+                    'expected' => 'Folder',
+                ),
+
+                'Album' => array(
+                    'type'     => 'album',
+                    'expected' => 'Folder',
+                ),
+            );
+        }
+
+        /**
+         * @dataProvider provideFetchObjectType
+         */
+        public function testFetchObjectType($type, $expected)
+        {
+            $this->mockCurlSetoptArray();
+
+            $this->mockCurlExec(json_encode(array(
+                'type' => $type,
+            )));
+
+            $this->mockCurlInfo();
+
+            $client = new Client(array(
+                'client_id' => $this->mockClientId(),
+                'state'     => (object) array(
+                    'redirect_uri' => null,
+                    'token'        => (object) array(
+                        'obtained' => strtotime('1999-01-01Z'),
+                        'data'     => self::mockTokenData(),
+                    ),
+                ),
+            ));
+
+            $resource = $client->fetchObject('some-resource');
+            $actual   = get_class($resource);
+            $this->assertEquals("Krizalys\Onedrive\\$expected", $actual);
+        }
     }
 }
 
