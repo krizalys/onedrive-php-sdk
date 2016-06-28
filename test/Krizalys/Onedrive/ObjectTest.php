@@ -24,7 +24,7 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         ), $values);
     }
 
-    private function mockClient($methods = array())
+    private function mockClient(array $methods = array())
     {
         $names  = implode(',', array_keys($methods));
         $client = m::mock("Krizalys\Onedrive\Client[$names]");

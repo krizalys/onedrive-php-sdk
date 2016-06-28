@@ -636,8 +636,8 @@ namespace Test\Krizalys\Onedrive
                 ),
             ));
 
-            $resource = $client->fetchObject('some-resource');
-            $actual   = get_class($resource);
+            $object = $client->fetchObject('some-resource');
+            $actual = get_class($object);
             $this->assertEquals("Krizalys\Onedrive\\$expected", $actual);
         }
 

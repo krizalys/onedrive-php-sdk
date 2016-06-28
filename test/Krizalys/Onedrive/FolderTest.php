@@ -7,13 +7,20 @@ use Mockery as m;
 
 class FolderTest extends \PHPUnit_Framework_TestCase
 {
-    private function mockClient($objects)
+    /**
+     * "public" is required to be called from within anonymous functions in
+     * PHP 5.3.
+     */
+    public function mockClient(array $methods = array())
     {
-        $client = m::mock('Krizalys\Onedrive\Client[fetchObjects]');
+        $names  = implode(',', array_keys($methods));
+        $client = m::mock("Krizalys\Onedrive\Client[$names]");
 
-        $client
-            ->shouldReceive('fetchObjects')
-            ->andReturn($objects);
+        foreach ($methods as $name => $method) {
+            $client
+                ->shouldReceive($name)
+                ->andReturnUsing($method);
+        }
 
         return $client;
     }
@@ -33,18 +40,27 @@ class FolderTest extends \PHPUnit_Framework_TestCase
 
     public function testFetchDescendantObjects()
     {
+        $self  = $this;
         $file1 = $this->mockFile('file1');
         $file2 = $this->mockFile('file2');
         $file3 = $this->mockFile('file3');
         $file4 = $this->mockFile('file4');
 
-        $folder = new Folder($this->mockClient(array(
-            $file1,
-            new Folder($this->mockClient(array(
-                $file2,
-                $file3,
-            ))),
-            $file4,
+        $folder = new Folder($self->mockClient(array(
+            'fetchObjects' => function ($objectId) use ($self, $file1, $file2, $file3, $file4) {
+                return array(
+                    $file1,
+                    new Folder($self->mockClient(array(
+                        'fetchObjects' => function ($objectId) use ($file2, $file3) {
+                            return array(
+                                $file2,
+                                $file3,
+                            );
+                        },
+                    ))),
+                    $file4,
+                );
+            },
         )));
 
         $expected = array($file2, $file3, $file1, $file4);
