@@ -700,6 +700,36 @@ namespace Test\Krizalys\Onedrive
             $actual = $arguments['value'];
             $this->assertEquals('https://apis.live.net/v5.0/me/skydrive/camera_roll?access_token=OlD%2FAcCeSs%2BToKeN', $actual);
         }
+
+        public function testFetchCameraDocs()
+        {
+            $this->mockCurlSetoptArray();
+
+            $arguments = array();
+            $this->mockCurlSetopt(true, $arguments);
+
+            $this->mockCurlExec(json_encode(array(
+                'id'   => '123ABC',
+                'type' => 'folder',
+            )));
+
+            $this->mockCurlInfo();
+
+            $client = new Client(array(
+                'client_id' => $this->mockClientId(),
+                'state'     => (object) array(
+                    'redirect_uri' => null,
+                    'token'        => (object) array(
+                        'obtained' => strtotime('1999-01-01Z'),
+                        'data'     => self::mockTokenData(),
+                    ),
+                ),
+            ));
+
+            $client->fetchDocs();
+            $actual = $arguments['value'];
+            $this->assertEquals('https://apis.live.net/v5.0/me/skydrive/my_documents?access_token=OlD%2FAcCeSs%2BToKeN', $actual);
+        }
     }
 }
 
