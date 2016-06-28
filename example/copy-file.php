@@ -5,32 +5,32 @@ require_once __DIR__ . '/../vendor/autoload.php';
 session_start();
 
 if (!array_key_exists('onedrive.client.state', $_SESSION)) {
-	throw new Exception('onedrive.client.state undefined in session');
+    throw new Exception('onedrive.client.state undefined in session');
 }
 
 $onedrive = new \Krizalys\Onedrive\Client(array(
-	'state' => $_SESSION['onedrive.client.state']
+	'state' => $_SESSION['onedrive.client.state'],
 ));
 
 if (!array_key_exists('id', $_GET)) {
-	throw new Exception('id undefined in $_GET');
+    throw new Exception('id undefined in $_GET');
 }
 
 $properties = array();
 
 if (!empty($_GET['id'])) {
-	$properties['id'] = $_GET['id'];
+    $properties['id'] = $_GET['id'];
 }
 
 if (!empty($_GET['destination_id'])) {
-	$properties['destination_id'] = $_GET['destination_id'];
+    $properties['destination_id'] = $_GET['destination_id'];
 }
 
 $id   = $_GET['id'];
 $file = $onedrive->fetchObject($id);
 
 if ($file->isFolder()) {
-	throw new Exception('OneDrive does not support copying folders');
+    throw new Exception('OneDrive does not support copying folders');
 }
 
 $file->copy($_GET['destination_id']);

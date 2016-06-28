@@ -5,19 +5,19 @@ require_once __DIR__ . '/../vendor/autoload.php';
 session_start();
 
 if (!array_key_exists('onedrive.client.state', $_SESSION)) {
-	throw new Exception('onedrive.client.state undefined in session');
+    throw new Exception('onedrive.client.state undefined in session');
 }
 
 $onedrive = new \Krizalys\Onedrive\Client(array(
-	'state' => $_SESSION['onedrive.client.state']
+	'state' => $_SESSION['onedrive.client.state'],
 ));
 
 if (!array_key_exists('name', $_GET)) {
-	throw new Exception('name undefined in $_GET');
+    throw new Exception('name undefined in $_GET');
 }
 
 if (!array_key_exists('content', $_GET)) {
-	throw new Exception('content undefined in $_GET');
+    throw new Exception('content undefined in $_GET');
 }
 
 $parentId    = empty($_GET['parent_id']) ? null : $_GET['parent_id'];

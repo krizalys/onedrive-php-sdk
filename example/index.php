@@ -9,7 +9,7 @@ $_SESSION = array();
 
 // Instantiates a OneDrive client bound to your OneDrive application
 $onedrive = new \Krizalys\Onedrive\Client(array(
-	'client_id' => ONEDRIVE_CLIENT_ID
+	'client_id' => ONEDRIVE_CLIENT_ID,
 ));
 
 // Gets a log in URL with sufficient privileges from the OneDrive API
@@ -17,7 +17,7 @@ $url = $onedrive->getLogInUrl(array(
 	'wl.signin',
 	'wl.basic',
 	'wl.contacts_skydrive',
-	'wl.skydrive_update'
+	'wl.skydrive_update',
 ), ONEDRIVE_CALLBACK_URI);
 
 // Persist the OneDrive client' state for next API requests

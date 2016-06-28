@@ -105,7 +105,7 @@ class Client
             // verifies that it matches the hostname provided.
             CURLOPT_SSL_VERIFYHOST => ($this->_sslVerify ? 2 : false),
 
-            CURLOPT_SSL_VERIFYPEER => $this->_sslVerify
+            CURLOPT_SSL_VERIFYPEER => $this->_sslVerify,
         );
 
         if ($this->_sslVerify && $this->_sslCaPath) {
@@ -117,6 +117,7 @@ class Client
         $finalOptions = $options + $defaultOptions;
 
         curl_setopt_array($curl, $finalOptions);
+
         return $curl;
     }
 
@@ -172,19 +173,13 @@ class Client
      *
      * @param array $options The options to use while creating this object.
      *                       Valid supported keys are:
-     *                         'state'      (object)      When defined, it
-     *                                                    should contain a valid
-     *                                                    OneDrive client state,
-     *                                                    as returned by
-     *                                                    getState(). Default:
-     *                                                    array().
-     *                         'ssl_verify' (bool)        Whether to verify SSL
-     *                                                    hosts and peers.
-     *                                                    Default: false.
-     *                         'ssl_capath' (bool|string) CA path to use for
-     *                                                    verifying SSL
-     *                                                    certificate chain.
-     *                                                    Default: false.
+     *                       - 'state' (object) When defined, it should contain
+     *                       a valid OneDrive client state, as returned by
+     *                       getState(). Default: array().
+     *                       - 'ssl_verify' (bool) Whether to verify SSL hosts
+     *                       and peers. Default: false.
+     *                       - 'ssl_capath' (bool|string) CA path to use for
+     *                       verifying SSL certificate chain. Default: false.
      */
     public function __construct(array $options = array())
     {
@@ -194,7 +189,7 @@ class Client
         $this->_state = array_key_exists('state', $options)
             ? $options['state'] : (object) array(
                 'redirect_uri' => null,
-                'token'        => null
+                'token'        => null,
             );
 
         $this->_sslVerify = array_key_exists('ssl_verify', $options)
@@ -215,7 +210,6 @@ class Client
         return $this->_state;
     }
 
-    // TODO: support $options.
     /**
      * Gets the URL of the log in form. After login, the browser is redirected to
      * the redirect URL, and a code is passed as a GET parameter to this URL.
@@ -223,12 +217,12 @@ class Client
      * The browser is also redirected to this URL if the user is already logged
      * in.
      *
-     * @param array $scopes       The OneDrive scopes requested by the
+     * @param array  $scopes      The OneDrive scopes requested by the
      *                            application. Supported values:
-     *                              'wl.signin'
-     *                              'wl.basic'
-     *                              'wl.contacts_skydrive'
-     *                              'wl.skydrive_update'
+     *                            - 'wl.signin'
+     *                            - 'wl.basic'
+     *                            - 'wl.contacts_skydrive'
+     *                            - 'wl.skydrive_update'
      * @param string $redirectUri The URI to which to redirect to upon
      *                            successful log in.
      * @param array  $options     Reserved for future use. Default: array().
@@ -236,6 +230,8 @@ class Client
      * @return string The login URL.
      *
      * @throws \Exception Thrown if this Client instance's clientId is not set.
+     *
+     * @todo Support $options.
      */
     public function getLogInUrl(array $scopes, $redirectUri, array $options = array())
     {
@@ -243,8 +239,8 @@ class Client
             throw new \Exception('The client ID must be set to call getLoginUrl()');
         }
 
-        $imploded    = implode(',', $scopes);
-        $redirectUri = (string) $redirectUri;
+        $imploded                   = implode(',', $scopes);
+        $redirectUri                = (string) $redirectUri;
         $this->_state->redirect_uri = $redirectUri;
 
         // When using this URL, the browser will eventually be redirected to the
@@ -276,10 +272,10 @@ class Client
      * Gets the status of the current access token.
      *
      * @return int The status of the current access token:
-     *                0 No access token.
-     *               -1 Access token will expire soon (1 minute or less).
-     *               -2 Access token is expired.
-     *                1 Access token is valid.
+     *             -  0 No access token.
+     *             - -1 Access token will expire soon (1 minute or less).
+     *             - -2 Access token is expired.
+     *             -  1 Access token is valid.
      */
     public function getAccessTokenStatus()
     {
@@ -344,14 +340,15 @@ class Client
             CURLOPT_AUTOREFERER    => true,
             CURLOPT_POST           => 1,
             CURLOPT_POSTFIELDS     => $fields,
-            CURLOPT_HTTPHEADER     => array(
-                'Content-Length: ' . strlen($fields)
+
+            CURLOPT_HTTPHEADER => array(
+                'Content-Length: ' . strlen($fields),
             ),
 
             // SSL options.
             CURLOPT_SSL_VERIFYHOST => false,
             CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_URL            => $url
+            CURLOPT_URL            => $url,
         ));
 
         $result = curl_exec($curl);
@@ -371,9 +368,10 @@ class Client
         }
 
         $this->_state->redirect_uri = null;
+
         $this->_state->token = (object) array(
             'obtained' => time(),
-            'data'     => $decoded
+            'data'     => $decoded,
         );
     }
 
@@ -410,7 +408,7 @@ class Client
             // SSL options.
             CURLOPT_SSL_VERIFYHOST => false,
             CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_URL            => $url
+            CURLOPT_URL            => $url,
         ));
 
         $result = curl_exec($curl);
@@ -431,7 +429,7 @@ class Client
 
         $this->_state->token = (object) array(
             'obtained' => time(),
-            'data'     => $decoded
+            'data'     => $decoded,
         );
     }
 
@@ -449,7 +447,6 @@ class Client
             . '?access_token=' . urlencode($this->_state->token->data->access_token);
 
         $curl = self::_createCurl($path, $options);
-
         curl_setopt($curl, CURLOPT_URL, $url);
         return $this->_processResult($curl);
     }
@@ -474,10 +471,10 @@ class Client
 
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json', // The data is sent as JSON as per OneDrive documentation
-                'Authorization: Bearer ' . $this->_state->token->data->access_token
+                'Authorization: Bearer ' . $this->_state->token->data->access_token,
             ),
 
-            CURLOPT_POSTFIELDS => json_encode($data)
+            CURLOPT_POSTFIELDS => json_encode($data),
         ));
 
         return $this->_processResult($curl);
@@ -500,7 +497,7 @@ class Client
         $stats = fstat($stream);
 
         $headers = array(
-            'Authorization: Bearer ' . $this->_state->token->data->access_token
+            'Authorization: Bearer ' . $this->_state->token->data->access_token,
         );
 
         if (null !== $contentType) {
@@ -512,7 +509,7 @@ class Client
             CURLOPT_HTTPHEADER => $headers,
             CURLOPT_PUT        => true,
             CURLOPT_INFILE     => $stream,
-            CURLOPT_INFILESIZE => $stats[7] // Size
+            CURLOPT_INFILESIZE => $stats[7], // Size
         );
 
         curl_setopt_array($curl, $options);
@@ -535,7 +532,7 @@ class Client
 
         curl_setopt_array($curl, array(
             CURLOPT_URL           => $url,
-            CURLOPT_CUSTOMREQUEST => 'DELETE'
+            CURLOPT_CUSTOMREQUEST => 'DELETE',
         ));
 
         return $this->_processResult($curl);
@@ -561,10 +558,10 @@ class Client
 
             CURLOPT_HTTPHEADER    => array(
                 'Content-Type: application/json', // The data is sent as JSON as per OneDrive documentation
-                'Authorization: Bearer ' . $this->_state->token->data->access_token
+                'Authorization: Bearer ' . $this->_state->token->data->access_token,
             ),
 
-            CURLOPT_POSTFIELDS    => json_encode($data)
+            CURLOPT_POSTFIELDS    => json_encode($data),
         ));
 
         return $this->_processResult($curl);
@@ -590,10 +587,10 @@ class Client
 
             CURLOPT_HTTPHEADER    => array(
                 'Content-Type: application/json', // The data is sent as JSON as per OneDrive documentation
-                'Authorization: Bearer ' . $this->_state->token->data->access_token
+                'Authorization: Bearer ' . $this->_state->token->data->access_token,
             ),
 
-            CURLOPT_POSTFIELDS    => json_encode($data)
+            CURLOPT_POSTFIELDS    => json_encode($data),
         ));
 
         return $this->_processResult($curl);
@@ -622,7 +619,7 @@ class Client
         }
 
         $properties = array(
-            'name' => (string) $name
+            'name' => (string) $name,
         );
 
         if (null !== $description) {
@@ -630,26 +627,31 @@ class Client
         }
 
         $folder = $this->apiPost($parentId, (object) $properties);
+
         return new Folder($this, $folder->id, $folder);
     }
 
     /**
      * Creates a file in the current OneDrive account.
      *
-     * @param string      $name        The name of the OneDrive file to be
-     *                                 created.
-     * @param null|string $parentId    The ID of the OneDrive folder into which
-     *                                 to create the OneDrive file, or null to
-     *                                 create it in the OneDrive root folder.
-     *                                 Default: null.
-     * @param string|resource $content The content of the OneDrive file to be
-     *                                 created, as a string or as a resource to
-     *                                 an already opened file. In the latter
-     *                                 case, the responsibility to close the
-     *                                 handle is left to the calling function.
-     *                                 Default: ''.
-     * @param string      $overwrite  Indicate whether you want to overwrite files with the same name. accepteds: OVERWRITE_ALWAYS, OVERWRITE_NEVER or OVERWRITE_RENAME
-     * @param boolean     $temp       Option to allow save to a temporary file in case of large files.
+     * @param string          $name      The name of the OneDrive file to be
+     *                                   created.
+     * @param null|string     $parentId  The ID of the OneDrive folder into which
+     *                                   to create the OneDrive file, or null to
+     *                                   create it in the OneDrive root folder.
+     *                                   Default: null.
+     * @param string|resource $content   The content of the OneDrive file to be
+     *                                   created, as a string or as a resource to
+     *                                   an already opened file. In the latter
+     *                                   case, the responsibility to close the
+     *                                   handle is left to the calling function.
+     *                                   Default: ''.
+     * @param string          $overwrite Indicate whether you want to overwrite
+     *                                   files with the same name. accepteds:
+     *                                   OVERWRITE_ALWAYS, OVERWRITE_NEVER or
+     *                                   OVERWRITE_RENAME
+     * @param bool            $temp      Option to allow save to a temporary
+     *                                   file in case of large files.
      *
      * @return File The file created, as File instance referencing to the
      *              OneDrive file created.
@@ -719,7 +721,7 @@ class Client
      * Fetches the root folder from the current OneDrive account.
      *
      * @return Folder The root folder, as a Folder instance referencing to the
-     *         OneDrive root folder.
+     *                OneDrive root folder.
      */
     public function fetchRoot()
     {
@@ -816,7 +818,8 @@ class Client
      * @param string       $objectId   The unique ID of the object to update.
      * @param array|object $properties The properties to update. Default:
      *                                 array().
-     * @param boolean     $temp       Option to allow save to a temporary file in case of large files.
+     * @param bool         $temp       Option to allow save to a temporary file
+     *                                 in case of large files.
      *
      * @throws \Exception Thrown on I/O errors.
      */
@@ -856,7 +859,7 @@ class Client
         }
 
         $this->apiMove($objectId, array(
-            'destination' => $destinationId
+            'destination' => $destinationId,
         ));
     }
 
@@ -877,7 +880,7 @@ class Client
         }
 
         $this->apiCopy($objectId, array(
-            'destination' => $destinationId
+            'destination' => $destinationId,
         ));
     }
 
@@ -895,8 +898,8 @@ class Client
      * Fetches the quota of the current OneDrive account.
      *
      * @return object An object with the following properties:
-     *                  'quota'     (int) The total space, in bytes.
-     *                  'available' (int) The available space, in bytes.
+     *                - 'quota' (int) The total space, in bytes.
+     *                - 'available' (int) The available space, in bytes.
      */
     public function fetchQuota()
     {
@@ -907,12 +910,12 @@ class Client
      * Fetches the account info of the current OneDrive account.
      *
      * @return object An object with the following properties:
-     *                  'id'         (string) OneDrive account ID.
-     *                  'first_name' (string) Account owner's first name.
-     *                  'last_name'  (string) Account owner's last name.
-     *                  'name'       (string) Account owner's full name.
-     *                  'gender'     (string) Account owner's gender.
-     *                  'locale'     (string) Account owner's locale.
+     *                - 'id' (string) OneDrive account ID.
+     *                - 'first_name' (string) Account owner's first name.
+     *                - 'last_name' (string) Account owner's last name.
+     *                - 'name' (string) Account owner's full name.
+     *                - 'gender' (string) Account owner's gender.
+     *                - 'locale' (string) Account owner's locale.
      */
     public function fetchAccountInfo()
     {
@@ -923,7 +926,8 @@ class Client
      * Fetches the recent documents uploaded to the current OneDrive account.
      *
      * @return object An object with the following properties:
-     *                  'data' (array) The list of the recent documents uploaded.
+     *                - 'data' (array) The list of the recent documents
+     *                uploaded.
      */
     public function fetchRecentDocs()
     {
@@ -934,7 +938,7 @@ class Client
      * Fetches the objects shared with the current OneDrive account.
      *
      * @return object An object with the following properties:
-     *                    'data' (array) The list of the shared objects.
+     *                - 'data' (array) The list of the shared objects.
      */
     public function fetchShared()
     {
