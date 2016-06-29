@@ -798,8 +798,8 @@ class Client
             $objectId = 'me/skydrive';
         }
 
-        $result   = $this->apiGet($objectId . '/files');
-        $objects  = array();
+        $result  = $this->apiGet($objectId . '/files');
+        $objects = array();
 
         foreach ($result->data as $data) {
             $object = in_array($data->type, array('folder', 'album')) ?
