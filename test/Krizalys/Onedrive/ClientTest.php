@@ -276,7 +276,7 @@ namespace Test\Krizalys\Onedrive
             $this->mockCurlSetoptArray();
             $this->mockCurlSetopt();
 
-            $this->mockCurlExec(json_encode(array(
+            $this->mockCurlExec(json_encode((object) array(
                 'key' => 'value',
             )));
 
@@ -304,7 +304,7 @@ namespace Test\Krizalys\Onedrive
         {
             $this->mockCurlSetoptArray();
 
-            $this->mockCurlExec(json_encode(array(
+            $this->mockCurlExec(json_encode((object) array(
                 'output_key' => 'output_value',
             )));
 
@@ -334,7 +334,7 @@ namespace Test\Krizalys\Onedrive
         {
             $this->mockCurlSetoptArray();
 
-            $this->mockCurlExec(json_encode(array(
+            $this->mockCurlExec(json_encode((object) array(
                 'key' => 'value',
             )));
 
@@ -363,7 +363,7 @@ namespace Test\Krizalys\Onedrive
         {
             $this->mockCurlSetoptArray();
 
-            $this->mockCurlExec(json_encode(array(
+            $this->mockCurlExec(json_encode((object) array(
                 'key' => 'value',
             )));
 
@@ -391,7 +391,7 @@ namespace Test\Krizalys\Onedrive
         {
             $this->mockCurlSetoptArray();
 
-            $this->mockCurlExec(json_encode(array(
+            $this->mockCurlExec(json_encode((object) array(
                 'output_key' => 'output_value',
             )));
 
@@ -421,7 +421,7 @@ namespace Test\Krizalys\Onedrive
         {
             $this->mockCurlSetoptArray();
 
-            $this->mockCurlExec(json_encode(array(
+            $this->mockCurlExec(json_encode((object) array(
                 'output_key' => 'output_value',
             )));
 
@@ -474,7 +474,7 @@ namespace Test\Krizalys\Onedrive
             $arguments = array();
             $this->mockCurlSetoptArray(true, $arguments);
 
-            $this->mockCurlExec(json_encode(array(
+            $this->mockCurlExec(json_encode((object) array(
                 'id' => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
             )));
 
@@ -569,7 +569,7 @@ namespace Test\Krizalys\Onedrive
             $arguments = array();
             $this->mockCurlSetoptArray(true, $arguments);
 
-            $this->mockCurlExec(json_encode(array(
+            $this->mockCurlExec(json_encode((object) array(
                 'id' => 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
             )));
 
@@ -619,7 +619,7 @@ namespace Test\Krizalys\Onedrive
             $this->mockCurlSetoptArray();
             $this->mockCurlSetopt();
 
-            $this->mockCurlExec(json_encode(array(
+            $this->mockCurlExec(json_encode((object) array(
                 'type' => $type,
             )));
 
@@ -648,7 +648,7 @@ namespace Test\Krizalys\Onedrive
             $arguments = array();
             $this->mockCurlSetopt(true, $arguments);
 
-            $this->mockCurlExec(json_encode(array(
+            $this->mockCurlExec(json_encode((object) array(
                 'id'   => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
                 'type' => 'folder',
             )));
@@ -678,7 +678,7 @@ namespace Test\Krizalys\Onedrive
             $arguments = array();
             $this->mockCurlSetopt(true, $arguments);
 
-            $this->mockCurlExec(json_encode(array(
+            $this->mockCurlExec(json_encode((object) array(
                 'id'   => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
                 'type' => 'folder',
             )));
@@ -708,7 +708,7 @@ namespace Test\Krizalys\Onedrive
             $arguments = array();
             $this->mockCurlSetopt(true, $arguments);
 
-            $this->mockCurlExec(json_encode(array(
+            $this->mockCurlExec(json_encode((object) array(
                 'id'   => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
                 'type' => 'folder',
             )));
@@ -738,7 +738,7 @@ namespace Test\Krizalys\Onedrive
             $arguments = array();
             $this->mockCurlSetopt(true, $arguments);
 
-            $this->mockCurlExec(json_encode(array(
+            $this->mockCurlExec(json_encode((object) array(
                 'id'   => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
                 'type' => 'folder',
             )));
@@ -768,7 +768,7 @@ namespace Test\Krizalys\Onedrive
             $arguments = array();
             $this->mockCurlSetopt(true, $arguments);
 
-            $this->mockCurlExec(json_encode(array(
+            $this->mockCurlExec(json_encode((object) array(
                 'id'   => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
                 'type' => 'folder',
             )));
@@ -789,6 +789,49 @@ namespace Test\Krizalys\Onedrive
             $client->fetchPublicDocs();
             $actual = $arguments['value'];
             $this->assertEquals('https://apis.live.net/v5.0/me/skydrive/public_documents?access_token=OlD%2FAcCeSs%2BToKeN', $actual);
+        }
+
+        public function provideFetchPropertiesUrl()
+        {
+            return array(
+                'Null object ID' => array(
+                    'objectId' => null,
+                    'expected' => 'https://apis.live.net/v5.0/me/skydrive?access_token=OlD%2FAcCeSs%2BToKeN',
+                ),
+
+                'Non-null object ID' => array(
+                    'objectId' => 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
+                    'expected' => 'https://apis.live.net/v5.0/file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123?access_token=OlD%2FAcCeSs%2BToKeN',
+                ),
+            );
+        }
+
+        /**
+         * @dataProvider provideFetchPropertiesUrl
+         */
+        public function testFetchPropertiesUrl($objectId, $expected)
+        {
+            $this->mockCurlSetoptArray();
+
+            $arguments = array();
+            $this->mockCurlSetopt(true, $arguments);
+            $this->mockCurlExec(json_encode((object) array()));
+            $this->mockCurlInfo();
+
+            $client = new Client(array(
+                'client_id' => $this->mockClientId(),
+                'state'     => (object) array(
+                    'redirect_uri' => null,
+                    'token'        => (object) array(
+                        'obtained' => strtotime('1999-01-01Z'),
+                        'data'     => self::mockTokenData(),
+                    ),
+                ),
+            ));
+
+            $client->fetchProperties($objectId);
+            $actual = $arguments['value'];
+            $this->assertEquals($expected, $actual);
         }
     }
 }
