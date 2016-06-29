@@ -833,6 +833,53 @@ namespace Test\Krizalys\Onedrive
             $actual = $arguments['value'];
             $this->assertEquals($expected, $actual);
         }
+
+        public function provideFetchObjectsUrl()
+        {
+            return array(
+                'Null object ID' => array(
+                    'objectId' => null,
+                    'expected' => 'https://apis.live.net/v5.0/me/skydrive/files?access_token=OlD%2FAcCeSs%2BToKeN',
+                ),
+
+                'Non-null object ID' => array(
+                    'objectId' => 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
+                    'expected' => 'https://apis.live.net/v5.0/file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123/files?access_token=OlD%2FAcCeSs%2BToKeN',
+                ),
+            );
+        }
+
+        /**
+         * @dataProvider provideFetchObjectsUrl
+         */
+        public function testFetchObjectsUrl($objectId, $expected)
+        {
+            $this->mockCurlSetoptArray();
+
+            $arguments = array();
+            $this->mockCurlSetopt(true, $arguments);
+
+            $this->mockCurlExec(json_encode((object) array(
+                'data' => array(),
+            )));
+
+            $this->mockCurlInfo();
+
+            $client = new Client(array(
+                'client_id' => $this->mockClientId(),
+                'state'     => (object) array(
+                    'redirect_uri' => null,
+                    'token'        => (object) array(
+                        'obtained' => strtotime('1999-01-01Z'),
+                        'data'     => self::mockTokenData(),
+                    ),
+                ),
+            ));
+
+            $client->fetchObjects($objectId);
+            $actual = $arguments['value'];
+            $this->assertEquals($expected, $actual);
+        }
     }
 }
 
