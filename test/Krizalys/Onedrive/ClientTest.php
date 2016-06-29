@@ -904,6 +904,49 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $actual = $arguments['options'][CURLOPT_URL];
         $this->assertEquals('https://apis.live.net/v5.0/file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', $actual);
     }
+
+    public function provideMoveObjectDestinationUrl()
+    {
+        return array(
+            'Null destination ID' => array(
+                'destinationId' => null,
+                'expected'      => 'me/skydrive',
+            ),
+
+            'Non-null destination ID' => array(
+                'destinationId' => 'path/to/object',
+                'expected'      => 'path/to/object',
+            ),
+        );
+    }
+
+    /**
+     * @dataProvider provideMoveObjectDestinationUrl
+     */
+    public function testMoveObjectDestinationUrl($destinationId, $expected)
+    {
+        $arguments = array();
+        $this->mockCurlSetoptArray(true, $arguments);
+
+        $this->mockCurlExec(json_encode((object) array()));
+        $this->mockCurlInfo();
+
+        $client = new Client(array(
+            'client_id' => $this->mockClientId(),
+            'state'     => (object) array(
+                'redirect_uri' => null,
+                'token'        => (object) array(
+                    'obtained' => strtotime('1999-01-01Z'),
+                    'data'     => self::mockTokenData(),
+                ),
+            ),
+        ));
+
+        $client->moveObject('file.ffffffffffffffff.FFFFFFFFFFFFFFFF!456', $destinationId);
+        $payload = json_decode($arguments['options'][CURLOPT_POSTFIELDS]);
+        $actual  = $payload->destination;
+        $this->assertEquals($expected, $actual);
+    }
 }
 
 /**
