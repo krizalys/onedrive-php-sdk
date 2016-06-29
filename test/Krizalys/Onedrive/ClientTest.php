@@ -880,6 +880,30 @@ namespace Test\Krizalys\Onedrive
             $actual = $arguments['value'];
             $this->assertEquals($expected, $actual);
         }
+
+        public function testUpdateObjectUrl()
+        {
+            $arguments = array();
+            $this->mockCurlSetoptArray(true, $arguments);
+
+            $this->mockCurlExec(json_encode((object) array()));
+            $this->mockCurlInfo();
+
+            $client = new Client(array(
+                'client_id' => $this->mockClientId(),
+                'state'     => (object) array(
+                    'redirect_uri' => null,
+                    'token'        => (object) array(
+                        'obtained' => strtotime('1999-01-01Z'),
+                        'data'     => self::mockTokenData(),
+                    ),
+                ),
+            ));
+
+            $client->updateObject('file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
+            $actual = $arguments['options'][CURLOPT_URL];
+            $this->assertEquals('https://apis.live.net/v5.0/file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', $actual);
+        }
     }
 }
 
