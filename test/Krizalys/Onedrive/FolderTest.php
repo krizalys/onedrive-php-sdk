@@ -11,15 +11,14 @@ class FolderTest extends \PHPUnit_Framework_TestCase
      * "public" is required to be called from within anonymous functions in
      * PHP 5.3.
      */
-    public function mockClient(array $methods = array())
+    public function mockClient(array $expectations = array())
     {
-        $names  = implode(',', array_keys($methods));
+        $names  = implode(',', array_keys($expectations));
         $client = m::mock("Krizalys\Onedrive\Client[$names]");
 
-        foreach ($methods as $name => $method) {
-            $client
-                ->shouldReceive($name)
-                ->andReturnUsing($method);
+        foreach ($expectations as $name => $callback) {
+            $expectation = $client->shouldReceive($name);
+            $callback($expectation);
         }
 
         return $client;
@@ -47,19 +46,19 @@ class FolderTest extends \PHPUnit_Framework_TestCase
         $file4 = $this->mockFile('file4');
 
         $folder = new Folder($self->mockClient(array(
-            'fetchObjects' => function ($objectId) use ($self, $file1, $file2, $file3, $file4) {
-                return array(
+            'fetchObjects' => function ($expectation) use ($self, $file1, $file2, $file3, $file4) {
+                $expectation->andReturn(array(
                     $file1,
                     new Folder($self->mockClient(array(
-                        'fetchObjects' => function ($objectId) use ($file2, $file3) {
-                            return array(
+                        'fetchObjects' => function ($expectation) use ($file2, $file3) {
+                            $expectation->andReturn(array(
                                 $file2,
                                 $file3,
-                            );
+                            ));
                         },
                     ))),
                     $file4,
-                );
+                ));
             },
         )));
 
