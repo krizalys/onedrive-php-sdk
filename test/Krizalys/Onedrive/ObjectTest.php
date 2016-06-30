@@ -24,15 +24,14 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         ), $values);
     }
 
-    private function mockClient(array $methods = array())
+    private function mockClient(array $expectations = array())
     {
-        $names  = implode(',', array_keys($methods));
+        $names  = implode(',', array_keys($expectations));
         $client = m::mock("Krizalys\Onedrive\Client[$names]");
 
-        foreach ($methods as $name => $method) {
-            $client
-                ->shouldReceive($name)
-                ->andReturnUsing($method);
+        foreach ($expectations as $name => $callback) {
+            $expectation = $client->shouldReceive($name);
+            $callback($expectation);
         }
 
         return $client;
@@ -53,8 +52,8 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         ));
 
         $client = $this->mockClient(array(
-            'fetchProperties' => function ($objectId) use ($payload) {
-                return $payload;
+            'fetchProperties' => function ($expectation) use ($payload) {
+                $expectation->andReturn($payload);
             },
         ));
 
@@ -71,8 +70,8 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         ));
 
         $client = $this->mockClient(array(
-            'fetchProperties' => function ($objectId) use ($payload) {
-                return $payload;
+            'fetchProperties' => function ($expectation) use ($payload) {
+                $expectation->andReturn($payload);
             },
         ));
 
@@ -89,8 +88,8 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         ));
 
         $client = $this->mockClient(array(
-            'fetchProperties' => function ($objectId) use ($payload) {
-                return $payload;
+            'fetchProperties' => function ($expectation) use ($payload) {
+                $expectation->andReturn($payload);
             },
         ));
 
@@ -107,8 +106,8 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         ));
 
         $client = $this->mockClient(array(
-            'fetchProperties' => function ($objectId) use ($payload) {
-                return $payload;
+            'fetchProperties' => function ($expectation) use ($payload) {
+                $expectation->andReturn($payload);
             },
         ));
 
@@ -125,8 +124,8 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         ));
 
         $client = $this->mockClient(array(
-            'fetchProperties' => function ($objectId) use ($payload) {
-                return $payload;
+            'fetchProperties' => function ($expectation) use ($payload) {
+                $expectation->andReturn($payload);
             },
         ));
 
@@ -143,8 +142,8 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         ));
 
         $client = $this->mockClient(array(
-            'fetchProperties' => function ($objectId) use ($payload) {
-                return $payload;
+            'fetchProperties' => function ($expectation) use ($payload) {
+                $expectation->andReturn($payload);
             },
         ));
 
@@ -161,8 +160,8 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         ));
 
         $client = $this->mockClient(array(
-            'fetchProperties' => function ($objectId) use ($payload) {
-                return $payload;
+            'fetchProperties' => function ($expectation) use ($payload) {
+                $expectation->andReturn($payload);
             },
         ));
 
@@ -170,5 +169,17 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         $object->fetchProperties();
         $actual = $object->getUpdatedTime();
         $this->assertEquals(strtotime('1999-12-31T23:59:59+0000'), $actual);
+    }
+
+    public function testMoveShouldCallOnceClientMoveObject()
+    {
+        $client = $this->mockClient(array(
+            'moveObject' => function ($expectation) {
+                $expectation->once();
+            },
+        ));
+
+        $object = new TestObject($client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!456');
+        $object->move('path/to/file');
     }
 }
