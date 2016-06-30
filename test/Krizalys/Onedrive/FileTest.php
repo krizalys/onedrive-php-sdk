@@ -23,9 +23,9 @@ class FileTest extends \PHPUnit_Framework_TestCase
             ),
         ));
 
-        foreach ($methods as $name => $method) {
+        foreach ($methods as $name => $callback) {
             $expectation = $client->shouldReceive($name);
-            $method($expectation);
+            $callback($expectation);
         }
 
         return $client;
