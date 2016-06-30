@@ -9,6 +9,8 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 {
     public static $functions;
 
+    private $client;
+
     public static function mockTokenData($prefix = 'OlD')
     {
         return (object) array(
@@ -26,6 +28,17 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
         self::$functions = m::mock();
+
+        $this->client = new Client(array(
+            'client_id' => $this->mockClientId(),
+            'state'     => (object) array(
+                'redirect_uri' => null,
+                'token'        => (object) array(
+                    'obtained' => strtotime('1999-01-01Z'),
+                    'data'     => self::mockTokenData(),
+                ),
+            ),
+        ));
     }
 
     private function mockClientId()
@@ -130,19 +143,12 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             ->shouldReceive('time')
             ->andReturn(strtotime('1999-01-01T00:00:01Z'));
 
-        $client = new Client(array(
-            'client_id' => $this->mockClientId(),
-            'state'     => (object) array(
-                'redirect_uri' => null,
-                'token'        => (object) array(
-                    'obtained' => strtotime('1999-01-01T00:00:00Z'),
-                    'data'     => self::mockTokenData(),
-                ),
-            ),
-        ));
-
         $expected = 3599;
-        $actual   = $client->getTokenExpire();
+
+        $actual = $this
+            ->client
+            ->getTokenExpire();
+
         $this->assertEquals($expected, $actual);
     }
 
@@ -175,18 +181,10 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             ->shouldReceive('time')
             ->andReturn($time);
 
-        $client = new Client(array(
-            'client_id' => $this->mockClientId(),
-            'state'     => (object) array(
-                'redirect_uri' => null,
-                'token'        => (object) array(
-                    'obtained' => strtotime('1999-01-01T00:00:00Z'),
-                    'data'     => self::mockTokenData(),
-                ),
-            ),
-        ));
+        $actual = $this
+            ->client
+            ->getAccessTokenStatus();
 
-        $actual = $client->getAccessTokenStatus();
         $this->assertEquals($expected, $actual);
     }
 
@@ -238,19 +236,8 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             ->andReturn(strtotime('1999-12-31Z'));
 
         $this->mockCurlExec(json_encode(self::mockTokenData('NeW')));
-
-        $client = new Client(array(
-            'client_id' => $this->mockClientId(),
-            'state'     => (object) array(
-                'redirect_uri' => null,
-                'token'        => (object) array(
-                    'obtained' => strtotime('1999-01-01Z'),
-                    'data'     => self::mockTokenData(),
-                ),
-            ),
-        ));
-
         $secret = $this->mockClientSecret();
+        $client = $this->client;
         $client->renewAccessToken($secret);
         $actual = $client->getState();
 
@@ -281,19 +268,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         )));
 
         $this->mockCurlInfo();
-
-        $client = new Client(array(
-            'client_id' => $this->mockClientId(),
-            'state'     => (object) array(
-                'redirect_uri' => null,
-                'token'        => (object) array(
-                    'obtained' => strtotime('1999-01-01Z'),
-                    'data'     => self::mockTokenData(),
-                ),
-            ),
-        ));
-
-        $actual = $client->apiGet('/path/to/resource');
+        $actual = $this->client->apiGet('/path/to/resource');
 
         $this->assertEquals((object) array(
             'key' => 'value',
@@ -310,18 +285,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $this->mockCurlInfo();
 
-        $client = new Client(array(
-            'client_id' => $this->mockClientId(),
-            'state'     => (object) array(
-                'redirect_uri' => null,
-                'token'        => (object) array(
-                    'obtained' => strtotime('1999-01-01Z'),
-                    'data'     => self::mockTokenData(),
-                ),
-            ),
-        ));
-
-        $actual = $client->apiPost('/path/to/resource', array(
+        $actual = $this->client->apiPost('/path/to/resource', array(
             'input_key' => 'input_value',
         ));
 
@@ -339,20 +303,11 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         )));
 
         $this->mockCurlInfo();
-
-        $client = new Client(array(
-            'client_id' => $this->mockClientId(),
-            'state'     => (object) array(
-                'redirect_uri' => null,
-                'token'        => (object) array(
-                    'obtained' => strtotime('1999-01-01Z'),
-                    'data'     => self::mockTokenData(),
-                ),
-            ),
-        ));
-
         $stream = null;
-        $actual = $client->apiPut('/path/to/resource', $stream, 'text/plain');
+
+        $actual = $this
+            ->client
+            ->apiPut('/path/to/resource', $stream, 'text/plain');
 
         $this->assertEquals((object) array(
             'key' => 'value',
@@ -369,18 +324,9 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $this->mockCurlInfo();
 
-        $client = new Client(array(
-            'client_id' => $this->mockClientId(),
-            'state'     => (object) array(
-                'redirect_uri' => null,
-                'token'        => (object) array(
-                    'obtained' => strtotime('1999-01-01Z'),
-                    'data'     => self::mockTokenData(),
-                ),
-            ),
-        ));
-
-        $actual = $client->apiDelete('/path/to/resource');
+        $actual = $this
+            ->client
+            ->apiDelete('/path/to/resource');
 
         $this->assertEquals((object) array(
             'key' => 'value',
@@ -397,20 +343,11 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $this->mockCurlInfo();
 
-        $client = new Client(array(
-            'client_id' => $this->mockClientId(),
-            'state'     => (object) array(
-                'redirect_uri' => null,
-                'token'        => (object) array(
-                    'obtained' => strtotime('1999-01-01Z'),
-                    'data'     => self::mockTokenData(),
-                ),
-            ),
-        ));
-
-        $actual = $client->apiMove('/path/to/resource', array(
-            'input_key' => 'input_value',
-        ));
+        $actual = $this
+            ->client
+            ->apiMove('/path/to/resource', array(
+                'input_key' => 'input_value',
+            ));
 
         $this->assertEquals((object) array(
             'output_key' => 'output_value',
@@ -427,20 +364,11 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $this->mockCurlInfo();
 
-        $client = new Client(array(
-            'client_id' => $this->mockClientId(),
-            'state'     => (object) array(
-                'redirect_uri' => null,
-                'token'        => (object) array(
-                    'obtained' => strtotime('1999-01-01Z'),
-                    'data'     => self::mockTokenData(),
-                ),
-            ),
-        ));
-
-        $actual = $client->apiCopy('/path/to/resource', array(
-            'input_key' => 'input_value',
-        ));
+        $actual = $this
+            ->client
+            ->apiCopy('/path/to/resource', array(
+                'input_key' => 'input_value',
+            ));
 
         $this->assertEquals((object) array(
             'output_key' => 'output_value',
@@ -480,18 +408,10 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $this->mockCurlInfo();
 
-        $client = new Client(array(
-            'client_id' => $this->mockClientId(),
-            'state'     => (object) array(
-                'redirect_uri' => null,
-                'token'        => (object) array(
-                    'obtained' => strtotime('1999-01-01Z'),
-                    'data'     => self::mockTokenData(),
-                ),
-            ),
-        ));
+        $this
+            ->client
+            ->createFolder($name, $parentId, $description);
 
-        $client->createFolder($name, $parentId, $description);
         $actual = $arguments['options'][CURLOPT_URL];
         $this->assertEquals($expected, $actual);
     }
@@ -575,18 +495,10 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $this->mockCurlInfo();
 
-        $client = new Client(array(
-            'client_id' => $this->mockClientId(),
-            'state'     => (object) array(
-                'redirect_uri' => null,
-                'token'        => (object) array(
-                    'obtained' => strtotime('1999-01-01Z'),
-                    'data'     => self::mockTokenData(),
-                ),
-            ),
-        ));
+        $this
+            ->client
+            ->createFile($name, $parentId, $content, $overwrite, $temp);
 
-        $client->createFile($name, $parentId, $content, $overwrite, $temp);
         $actual = $arguments['options'][CURLOPT_URL];
         $this->assertEquals($expected, $actual);
     }
@@ -625,18 +537,10 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $this->mockCurlInfo();
 
-        $client = new Client(array(
-            'client_id' => $this->mockClientId(),
-            'state'     => (object) array(
-                'redirect_uri' => null,
-                'token'        => (object) array(
-                    'obtained' => strtotime('1999-01-01Z'),
-                    'data'     => self::mockTokenData(),
-                ),
-            ),
-        ));
+        $object = $this
+            ->client
+            ->fetchObject('some-resource');
 
-        $object = $client->fetchObject('some-resource');
         $actual = get_class($object);
         $this->assertEquals("Krizalys\Onedrive\\$expected", $actual);
     }
@@ -655,18 +559,10 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $this->mockCurlInfo();
 
-        $client = new Client(array(
-            'client_id' => $this->mockClientId(),
-            'state'     => (object) array(
-                'redirect_uri' => null,
-                'token'        => (object) array(
-                    'obtained' => strtotime('1999-01-01Z'),
-                    'data'     => self::mockTokenData(),
-                ),
-            ),
-        ));
+        $this
+            ->client
+            ->fetchRoot();
 
-        $client->fetchRoot();
         $actual = $arguments['value'];
         $this->assertEquals('https://apis.live.net/v5.0/me/skydrive?access_token=OlD%2FAcCeSs%2BToKeN', $actual);
     }
@@ -685,18 +581,10 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $this->mockCurlInfo();
 
-        $client = new Client(array(
-            'client_id' => $this->mockClientId(),
-            'state'     => (object) array(
-                'redirect_uri' => null,
-                'token'        => (object) array(
-                    'obtained' => strtotime('1999-01-01Z'),
-                    'data'     => self::mockTokenData(),
-                ),
-            ),
-        ));
+        $this
+            ->client
+            ->fetchCameraRoll();
 
-        $client->fetchCameraRoll();
         $actual = $arguments['value'];
         $this->assertEquals('https://apis.live.net/v5.0/me/skydrive/camera_roll?access_token=OlD%2FAcCeSs%2BToKeN', $actual);
     }
@@ -715,18 +603,10 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $this->mockCurlInfo();
 
-        $client = new Client(array(
-            'client_id' => $this->mockClientId(),
-            'state'     => (object) array(
-                'redirect_uri' => null,
-                'token'        => (object) array(
-                    'obtained' => strtotime('1999-01-01Z'),
-                    'data'     => self::mockTokenData(),
-                ),
-            ),
-        ));
+        $this
+            ->client
+            ->fetchDocs();
 
-        $client->fetchDocs();
         $actual = $arguments['value'];
         $this->assertEquals('https://apis.live.net/v5.0/me/skydrive/my_documents?access_token=OlD%2FAcCeSs%2BToKeN', $actual);
     }
@@ -745,18 +625,10 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $this->mockCurlInfo();
 
-        $client = new Client(array(
-            'client_id' => $this->mockClientId(),
-            'state'     => (object) array(
-                'redirect_uri' => null,
-                'token'        => (object) array(
-                    'obtained' => strtotime('1999-01-01Z'),
-                    'data'     => self::mockTokenData(),
-                ),
-            ),
-        ));
+        $this
+            ->client
+            ->fetchPics();
 
-        $client->fetchPics();
         $actual = $arguments['value'];
         $this->assertEquals('https://apis.live.net/v5.0/me/skydrive/my_photos?access_token=OlD%2FAcCeSs%2BToKeN', $actual);
     }
@@ -775,18 +647,10 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $this->mockCurlInfo();
 
-        $client = new Client(array(
-            'client_id' => $this->mockClientId(),
-            'state'     => (object) array(
-                'redirect_uri' => null,
-                'token'        => (object) array(
-                    'obtained' => strtotime('1999-01-01Z'),
-                    'data'     => self::mockTokenData(),
-                ),
-            ),
-        ));
+        $this
+            ->client
+            ->fetchPublicDocs();
 
-        $client->fetchPublicDocs();
         $actual = $arguments['value'];
         $this->assertEquals('https://apis.live.net/v5.0/me/skydrive/public_documents?access_token=OlD%2FAcCeSs%2BToKeN', $actual);
     }
@@ -818,18 +682,10 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->mockCurlExec(json_encode((object) array()));
         $this->mockCurlInfo();
 
-        $client = new Client(array(
-            'client_id' => $this->mockClientId(),
-            'state'     => (object) array(
-                'redirect_uri' => null,
-                'token'        => (object) array(
-                    'obtained' => strtotime('1999-01-01Z'),
-                    'data'     => self::mockTokenData(),
-                ),
-            ),
-        ));
+        $this
+            ->client
+            ->fetchProperties($objectId);
 
-        $client->fetchProperties($objectId);
         $actual = $arguments['value'];
         $this->assertEquals($expected, $actual);
     }
@@ -865,18 +721,10 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $this->mockCurlInfo();
 
-        $client = new Client(array(
-            'client_id' => $this->mockClientId(),
-            'state'     => (object) array(
-                'redirect_uri' => null,
-                'token'        => (object) array(
-                    'obtained' => strtotime('1999-01-01Z'),
-                    'data'     => self::mockTokenData(),
-                ),
-            ),
-        ));
+        $this
+            ->client
+            ->fetchObjects($objectId);
 
-        $client->fetchObjects($objectId);
         $actual = $arguments['value'];
         $this->assertEquals($expected, $actual);
     }
@@ -889,18 +737,10 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->mockCurlExec(json_encode((object) array()));
         $this->mockCurlInfo();
 
-        $client = new Client(array(
-            'client_id' => $this->mockClientId(),
-            'state'     => (object) array(
-                'redirect_uri' => null,
-                'token'        => (object) array(
-                    'obtained' => strtotime('1999-01-01Z'),
-                    'data'     => self::mockTokenData(),
-                ),
-            ),
-        ));
+        $this
+            ->client
+            ->updateObject('file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
 
-        $client->updateObject('file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
         $actual = $arguments['options'][CURLOPT_URL];
         $this->assertEquals('https://apis.live.net/v5.0/file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', $actual);
     }
@@ -931,18 +771,10 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->mockCurlExec(json_encode((object) array()));
         $this->mockCurlInfo();
 
-        $client = new Client(array(
-            'client_id' => $this->mockClientId(),
-            'state'     => (object) array(
-                'redirect_uri' => null,
-                'token'        => (object) array(
-                    'obtained' => strtotime('1999-01-01Z'),
-                    'data'     => self::mockTokenData(),
-                ),
-            ),
-        ));
+        $this
+            ->client
+            ->moveObject('file.ffffffffffffffff.FFFFFFFFFFFFFFFF!456', $destinationId);
 
-        $client->moveObject('file.ffffffffffffffff.FFFFFFFFFFFFFFFF!456', $destinationId);
         $payload = json_decode($arguments['options'][CURLOPT_POSTFIELDS]);
         $actual  = $payload->destination;
         $this->assertEquals($expected, $actual);
@@ -974,18 +806,10 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->mockCurlExec(json_encode((object) array()));
         $this->mockCurlInfo();
 
-        $client = new Client(array(
-            'client_id' => $this->mockClientId(),
-            'state'     => (object) array(
-                'redirect_uri' => null,
-                'token'        => (object) array(
-                    'obtained' => strtotime('1999-01-01Z'),
-                    'data'     => self::mockTokenData(),
-                ),
-            ),
-        ));
+        $this
+            ->client
+            ->copyFile('file.ffffffffffffffff.FFFFFFFFFFFFFFFF!456', $destinationId);
 
-        $client->copyFile('file.ffffffffffffffff.FFFFFFFFFFFFFFFF!456', $destinationId);
         $payload = json_decode($arguments['options'][CURLOPT_POSTFIELDS]);
         $actual  = $payload->destination;
         $this->assertEquals($expected, $actual);
