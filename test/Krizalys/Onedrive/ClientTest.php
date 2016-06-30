@@ -268,7 +268,10 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         )));
 
         $this->mockCurlGetinfo();
-        $actual = $this->client->apiGet('/path/to/resource');
+
+        $actual = $this
+            ->client
+            ->apiGet('/path/to/resource');
 
         $this->assertEquals((object) array(
             'key' => 'value',
@@ -285,9 +288,11 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $this->mockCurlGetinfo();
 
-        $actual = $this->client->apiPost('/path/to/resource', array(
-            'input_key' => 'input_value',
-        ));
+        $actual = $this
+            ->client
+            ->apiPost('/path/to/resource', array(
+                'input_key' => 'input_value',
+            ));
 
         $this->assertEquals((object) array(
             'output_key' => 'output_value',
