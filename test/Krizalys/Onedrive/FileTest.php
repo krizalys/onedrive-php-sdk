@@ -7,9 +7,9 @@ use Mockery as m;
 
 class FileTest extends \PHPUnit_Framework_TestCase
 {
-    private function mockClient(array $methods = array())
+    private function mockClient(array $expectations = array())
     {
-        $names = implode(',', array_keys($methods));
+        $names = implode(',', array_keys($expectations));
 
         $client = m::mock("Krizalys\Onedrive\Client[$names]", array(
             array(
@@ -23,7 +23,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
             ),
         ));
 
-        foreach ($methods as $name => $callback) {
+        foreach ($expectations as $name => $callback) {
             $expectation = $client->shouldReceive($name);
             $callback($expectation);
         }
