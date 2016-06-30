@@ -852,6 +852,28 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $actual = $arguments['value'];
         $this->assertEquals('https://apis.live.net/v5.0/me/skydrive/quota?access_token=OlD%2FAcCeSs%2BToKeN', $actual);
     }
+
+    public function testFetchAccountInfoUrl()
+    {
+        $this->mockCurlSetoptArray();
+
+        $arguments = array();
+        $this->mockCurlSetopt(true, $arguments);
+
+        $this->mockCurlExec(json_encode((object) array(
+            'id'   => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
+            'type' => 'folder',
+        )));
+
+        $this->mockCurlGetinfo();
+
+        $this
+            ->client
+            ->fetchAccountInfo();
+
+        $actual = $arguments['value'];
+        $this->assertEquals('https://apis.live.net/v5.0/me?access_token=OlD%2FAcCeSs%2BToKeN', $actual);
+    }
 }
 
 /**
