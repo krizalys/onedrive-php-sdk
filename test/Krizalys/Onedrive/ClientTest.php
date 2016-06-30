@@ -97,7 +97,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             });
     }
 
-    private function mockCurlInfo(
+    private function mockCurlGetinfo(
         $return           = array('content_type' => 'application/json'),
         array &$arguments = array()
     ) {
@@ -267,7 +267,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             'key' => 'value',
         )));
 
-        $this->mockCurlInfo();
+        $this->mockCurlGetinfo();
         $actual = $this->client->apiGet('/path/to/resource');
 
         $this->assertEquals((object) array(
@@ -283,7 +283,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             'output_key' => 'output_value',
         )));
 
-        $this->mockCurlInfo();
+        $this->mockCurlGetinfo();
 
         $actual = $this->client->apiPost('/path/to/resource', array(
             'input_key' => 'input_value',
@@ -302,7 +302,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             'key' => 'value',
         )));
 
-        $this->mockCurlInfo();
+        $this->mockCurlGetinfo();
         $stream = null;
 
         $actual = $this
@@ -322,7 +322,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             'key' => 'value',
         )));
 
-        $this->mockCurlInfo();
+        $this->mockCurlGetinfo();
 
         $actual = $this
             ->client
@@ -341,7 +341,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             'output_key' => 'output_value',
         )));
 
-        $this->mockCurlInfo();
+        $this->mockCurlGetinfo();
 
         $actual = $this
             ->client
@@ -362,7 +362,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             'output_key' => 'output_value',
         )));
 
-        $this->mockCurlInfo();
+        $this->mockCurlGetinfo();
 
         $actual = $this
             ->client
@@ -406,7 +406,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             'id' => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
         )));
 
-        $this->mockCurlInfo();
+        $this->mockCurlGetinfo();
 
         $this
             ->client
@@ -493,7 +493,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             'id' => 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
         )));
 
-        $this->mockCurlInfo();
+        $this->mockCurlGetinfo();
 
         $this
             ->client
@@ -535,7 +535,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             'type' => $type,
         )));
 
-        $this->mockCurlInfo();
+        $this->mockCurlGetinfo();
 
         $object = $this
             ->client
@@ -557,7 +557,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             'type' => 'folder',
         )));
 
-        $this->mockCurlInfo();
+        $this->mockCurlGetinfo();
 
         $this
             ->client
@@ -579,7 +579,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             'type' => 'folder',
         )));
 
-        $this->mockCurlInfo();
+        $this->mockCurlGetinfo();
 
         $this
             ->client
@@ -601,7 +601,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             'type' => 'folder',
         )));
 
-        $this->mockCurlInfo();
+        $this->mockCurlGetinfo();
 
         $this
             ->client
@@ -623,7 +623,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             'type' => 'folder',
         )));
 
-        $this->mockCurlInfo();
+        $this->mockCurlGetinfo();
 
         $this
             ->client
@@ -645,7 +645,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             'type' => 'folder',
         )));
 
-        $this->mockCurlInfo();
+        $this->mockCurlGetinfo();
 
         $this
             ->client
@@ -680,7 +680,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $arguments = array();
         $this->mockCurlSetopt(true, $arguments);
         $this->mockCurlExec(json_encode((object) array()));
-        $this->mockCurlInfo();
+        $this->mockCurlGetinfo();
 
         $this
             ->client
@@ -719,7 +719,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             'data' => array(),
         )));
 
-        $this->mockCurlInfo();
+        $this->mockCurlGetinfo();
 
         $this
             ->client
@@ -735,7 +735,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->mockCurlSetoptArray(true, $arguments);
 
         $this->mockCurlExec(json_encode((object) array()));
-        $this->mockCurlInfo();
+        $this->mockCurlGetinfo();
 
         $this
             ->client
@@ -769,7 +769,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->mockCurlSetoptArray(true, $arguments);
 
         $this->mockCurlExec(json_encode((object) array()));
-        $this->mockCurlInfo();
+        $this->mockCurlGetinfo();
 
         $this
             ->client
@@ -804,7 +804,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->mockCurlSetoptArray(true, $arguments);
 
         $this->mockCurlExec(json_encode((object) array()));
-        $this->mockCurlInfo();
+        $this->mockCurlGetinfo();
 
         $this
             ->client
