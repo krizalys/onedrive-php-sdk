@@ -814,6 +814,22 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $actual  = $payload->destination;
         $this->assertEquals($expected, $actual);
     }
+
+    public function testDeleteObjectUrl()
+    {
+        $arguments = array();
+        $this->mockCurlSetoptArray(true, $arguments);
+
+        $this->mockCurlExec(json_encode((object) array()));
+        $this->mockCurlGetinfo();
+
+        $this
+            ->client
+            ->deleteObject('file.ffffffffffffffff.FFFFFFFFFFFFFFFF!456');
+
+        $actual = $arguments['options'][CURLOPT_URL];
+        $this->assertEquals('https://apis.live.net/v5.0/file.ffffffffffffffff.FFFFFFFFFFFFFFFF!456?access_token=OlD%2FAcCeSs%2BToKeN', $actual);
+    }
 }
 
 /**
