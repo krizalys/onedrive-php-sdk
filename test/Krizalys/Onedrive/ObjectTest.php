@@ -45,6 +45,14 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($actual);
     }
 
+    public function testGetIdShouldReturnExpectedValue()
+    {
+        $client = $this->mockClient();
+        $object = new TestObject($client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
+        $actual = $object->getId();
+        $this->assertEquals('file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', $actual);
+    }
+
     public function testFetchPropertiesShouldSetParentId()
     {
         $payload = $this->mockPayloadFolder(array(
