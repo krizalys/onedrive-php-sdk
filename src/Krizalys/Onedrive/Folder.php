@@ -138,7 +138,7 @@ class Folder extends Object
      *
      * @throws \Exception Thrown on I/O errors.
      */
-    public function createFile($name, $content = '', $overwrite = OVERWRITE_ALWAYS)
+    public function createFile($name, $content = '', $overwrite = self::OVERWRITE_ALWAYS)
     {
         return $this->_client->createFile($name, $this->_id, $content, $overwrite);
     }

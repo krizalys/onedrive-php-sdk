@@ -7,6 +7,18 @@ use Mockery as m;
 
 class FolderTest extends \PHPUnit_Framework_TestCase
 {
+    private $folder;
+
+    private $client;
+
+    public function setUp()
+    {
+        parent::setUp();
+        $client       = $this->mockClient();
+        $this->folder = new Folder($client);
+        $this->client = $client;
+    }
+
     /**
      * "public" is required to be called from within anonymous functions in
      * PHP 5.3.
@@ -37,7 +49,40 @@ class FolderTest extends \PHPUnit_Framework_TestCase
         return $file;
     }
 
-    public function testFetchDescendantObjects()
+    public function testIsFolderShouldReturnExpectedValue()
+    {
+        $actual = $this
+            ->folder
+            ->isFolder();
+
+        $this->assertEquals(true, $actual);
+    }
+
+    public function testFetchObjectsShouldCallOnceClientFetchObjects()
+    {
+        $client = $this->mockClient(array(
+            'fetchObjects' => function ($expectation) {
+                $expectation->once();
+            },
+        ));
+
+        $folder = new Folder($client);
+        $folder->fetchObjects();
+    }
+
+    public function testFetchChildObjectsShouldCallOnceClientFetchObjects()
+    {
+        $client = $this->mockClient(array(
+            'fetchObjects' => function ($expectation) {
+                $expectation->once();
+            },
+        ));
+
+        $folder = new Folder($client);
+        $folder->fetchChildObjects();
+    }
+
+    public function testFetchDescendantObjectsShouldReturnExpectedValue()
     {
         $self  = $this;
         $file1 = $this->mockFile('file1');
@@ -65,5 +110,29 @@ class FolderTest extends \PHPUnit_Framework_TestCase
         $expected = array($file2, $file3, $file1, $file4);
         $actual   = $folder->fetchDescendantObjects();
         $this->assertEquals($expected, $actual);
+    }
+
+    public function testCreateFolderShouldCallOnceClientCreateFolder()
+    {
+        $client = $this->mockClient(array(
+            'createFolder' => function ($expectation) {
+                $expectation->once();
+            },
+        ));
+
+        $folder = new Folder($client);
+        $folder->createFolder('test-folder', 'Some test description');
+    }
+
+    public function testCreateFileShouldCallOnceClientCreateFile()
+    {
+        $client = $this->mockClient(array(
+            'createFile' => function ($expectation) {
+                $expectation->once();
+            },
+        ));
+
+        $folder = new Folder($client);
+        $folder->createFile('test-file', 'Some test content', Folder::OVERWRITE_ALWAYS);
     }
 }

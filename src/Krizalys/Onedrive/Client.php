@@ -658,7 +658,7 @@ class Client
      *
      * @throws \Exception Thrown on I/O errors.
      */
-    public function createFile($name, $parentId = null, $content = '', $overwrite = OVERWRITE_ALWAYS, $temp = false)
+    public function createFile($name, $parentId = null, $content = '', $overwrite = self::OVERWRITE_ALWAYS, $temp = false)
     {
         if (null === $parentId) {
             $parentId = 'me/skydrive';
