@@ -69,7 +69,7 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
 
     public function testGetParentIdWithParentIdShouldReturnExpectedValue()
     {
-        $object = new TestObject($this->client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!456', array(
+        $object = new TestObject($this->client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', array(
             'parent_id' => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
         ));
 
@@ -143,7 +143,7 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
             },
         ));
 
-        $object = new TestObject($client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!456');
+        $object = new TestObject($client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
         $actual = $object->getDescription();
         $this->assertEquals('Some test description', $actual);
     }
@@ -264,7 +264,7 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
             },
         ));
 
-        $object = new TestObject($client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!456');
+        $object = new TestObject($client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
         $object->move('path/to/file');
     }
 }
