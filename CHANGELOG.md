@@ -10,4 +10,7 @@ Change log
 - Standalone autoloader.
 - Basic test suite & code coverage.
 
+### Removed
+- Support for PHP 5.3.
+
 [unreleased]: https://github.com/krizalys/onedrive-php-sdk/compare/1.0.0...HEAD
