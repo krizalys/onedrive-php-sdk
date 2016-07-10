@@ -3,9 +3,11 @@
 namespace Test\Krizalys\Onedrive;
 
 use Krizalys\Onedrive\Client;
-use Mockery as m;
+use Krizalys\Onedrive\NameConflictBehavior;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
+use Test\Mock\GlobalNamespace;
 
-class ClientTest extends \PHPUnit_Framework_TestCase
+class ClientTest extends MockeryTestCase
 {
     public static $functions;
 
@@ -27,7 +29,6 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         parent::setUp();
-        self::$functions = m::mock();
 
         $this->client = new Client(array(
             'client_id' => $this->mockClientId(),
@@ -49,68 +50,6 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     private function mockClientSecret()
     {
         return 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
-    }
-
-    private function mockCurlSetopt(
-        $return           = true,
-        array &$arguments = array()
-    ) {
-        self::$functions
-            ->shouldReceive('curl_setopt')
-            ->andReturnUsing(function ($ch, $option, $value) use ($return, &$arguments) {
-                $arguments = array(
-                    'ch'     => $ch,
-                    'option' => $option,
-                    'value'  => $value,
-                );
-
-                return $return;
-            });
-    }
-
-    private function mockCurlSetoptArray(
-        $return           = true,
-        array &$arguments = array()
-    ) {
-        self::$functions
-            ->shouldReceive('curl_setopt_array')
-            ->andReturnUsing(function ($ch, $options) use ($return, &$arguments) {
-                $arguments = array(
-                    'ch'      => $ch,
-                    'options' => $options,
-                );
-
-                return $return;
-            });
-    }
-
-    private function mockCurlExec(
-        $return,
-        array &$arguments = array()
-    ) {
-        self::$functions
-            ->shouldReceive('curl_exec')
-            ->andReturnUsing(function ($ch) use ($return, &$arguments) {
-                $arguments = array('ch' => $ch);
-
-                return $return;
-            });
-    }
-
-    private function mockCurlGetinfo(
-        $return           = array('content_type' => 'application/json'),
-        array &$arguments = array()
-    ) {
-        self::$functions
-            ->shouldReceive('curl_getinfo')
-            ->andReturnUsing(function ($curl, $opt) use ($return, &$arguments) {
-                $arguments = array(
-                    'ch'  => $curl,
-                    'opt' => $opt,
-                );
-
-                return $return;
-            });
     }
 
     public function testGetLogInUrl()
@@ -139,9 +78,11 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
     public function testGetTokenExpire()
     {
-        self::$functions
-            ->shouldReceive('time')
-            ->andReturn(strtotime('1999-01-01T00:00:01Z'));
+        GlobalNamespace::reset(array(
+            'time' => function ($expectation) {
+                $expectation->andReturn(strtotime('1999-01-01T00:00:01Z'));
+            },
+        ));
 
         $expected = 3599;
 
@@ -177,9 +118,11 @@ class ClientTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetAccessTokenStatus($time, $expected)
     {
-        self::$functions
-            ->shouldReceive('time')
-            ->andReturn($time);
+        GlobalNamespace::reset(array(
+            'time' => function ($expectation) use ($time) {
+                $expectation->andReturn($time);
+            },
+        ));
 
         $actual = $this
             ->client
@@ -190,13 +133,15 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
     public function testObtainAccessToken()
     {
-        $this->mockCurlSetoptArray();
+        GlobalNamespace::reset(array(
+            'time' => function ($expectation) {
+                $expectation->andReturn(strtotime('1999-01-01Z'));
+            },
 
-        self::$functions
-            ->shouldReceive('time')
-            ->andReturn(strtotime('1999-01-01Z'));
-
-        $this->mockCurlExec(json_encode(self::mockTokenData('NeW')));
+            'curl_exec' => function ($expectation) {
+                $expectation->andReturn(json_encode(self::mockTokenData('NeW')));
+            },
+        ));
 
         $client = new Client(array(
             'client_id' => $this->mockClientId(),
@@ -229,13 +174,16 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
     public function testRenewAccessToken()
     {
-        $this->mockCurlSetoptArray();
+        GlobalNamespace::reset(array(
+            'time' => function ($expectation) {
+                $expectation->andReturn(strtotime('1999-12-31Z'));
+            },
 
-        self::$functions
-            ->shouldReceive('time')
-            ->andReturn(strtotime('1999-12-31Z'));
+            'curl_exec' => function ($expectation) {
+                $expectation->andReturn(json_encode(self::mockTokenData('NeW')));
+            },
+        ));
 
-        $this->mockCurlExec(json_encode(self::mockTokenData('NeW')));
         $secret = $this->mockClientSecret();
         $client = $this->client;
         $client->renewAccessToken($secret);
@@ -260,14 +208,13 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
     public function testApiGet()
     {
-        $this->mockCurlSetoptArray();
-        $this->mockCurlSetopt();
-
-        $this->mockCurlExec(json_encode((object) array(
-            'key' => 'value',
-        )));
-
-        $this->mockCurlGetinfo();
+        GlobalNamespace::reset(array(
+            'curl_exec' => function ($expectation) {
+                $expectation->andReturn(json_encode((object) array(
+                    'key' => 'value',
+                )));
+            },
+        ));
 
         $actual = $this
             ->client
@@ -280,13 +227,13 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
     public function testApiPost()
     {
-        $this->mockCurlSetoptArray();
-
-        $this->mockCurlExec(json_encode((object) array(
-            'output_key' => 'output_value',
-        )));
-
-        $this->mockCurlGetinfo();
+        GlobalNamespace::reset(array(
+            'curl_exec' => function ($expectation) {
+                $expectation->andReturn(json_encode((object) array(
+                    'output_key' => 'output_value',
+                )));
+            },
+        ));
 
         $actual = $this
             ->client
@@ -301,13 +248,14 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
     public function testApiPut()
     {
-        $this->mockCurlSetoptArray();
+        GlobalNamespace::reset(array(
+            'curl_exec' => function ($expectation) {
+                $expectation->andReturn(json_encode((object) array(
+                    'key' => 'value',
+                )));
+            },
+        ));
 
-        $this->mockCurlExec(json_encode((object) array(
-            'key' => 'value',
-        )));
-
-        $this->mockCurlGetinfo();
         $stream = null;
 
         $actual = $this
@@ -321,13 +269,13 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
     public function testApiDelete()
     {
-        $this->mockCurlSetoptArray();
-
-        $this->mockCurlExec(json_encode((object) array(
-            'key' => 'value',
-        )));
-
-        $this->mockCurlGetinfo();
+        GlobalNamespace::reset(array(
+            'curl_exec' => function ($expectation) {
+                $expectation->andReturn(json_encode((object) array(
+                    'key' => 'value',
+                )));
+            },
+        ));
 
         $actual = $this
             ->client
@@ -340,13 +288,13 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
     public function testApiMove()
     {
-        $this->mockCurlSetoptArray();
-
-        $this->mockCurlExec(json_encode((object) array(
-            'output_key' => 'output_value',
-        )));
-
-        $this->mockCurlGetinfo();
+        GlobalNamespace::reset(array(
+            'curl_exec' => function ($expectation) {
+                $expectation->andReturn(json_encode((object) array(
+                    'output_key' => 'output_value',
+                )));
+            },
+        ));
 
         $actual = $this
             ->client
@@ -361,13 +309,13 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
     public function testApiCopy()
     {
-        $this->mockCurlSetoptArray();
-
-        $this->mockCurlExec(json_encode((object) array(
-            'output_key' => 'output_value',
-        )));
-
-        $this->mockCurlGetinfo();
+        GlobalNamespace::reset(array(
+            'curl_exec' => function ($expectation) {
+                $expectation->andReturn(json_encode((object) array(
+                    'output_key' => 'output_value',
+                )));
+            },
+        ));
 
         $actual = $this
             ->client
@@ -404,78 +352,83 @@ class ClientTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateFolderUrl($name, $parentId, $description, $expected)
     {
-        $arguments = array();
-        $this->mockCurlSetoptArray(true, $arguments);
+        GlobalNamespace::reset(array(
+            'curl_setopt_array' => array(
+                function ($expectation) {
+                    $expectation
+                        ->once()
+                        ->andReturn(true);
+                },
+                function ($expectation) use ($expected) {
+                    $expectation
+                        ->once()
+                        ->withArgs(function ($ch, $options) use ($expected) {
+                            return array_key_exists(CURLOPT_URL, $options) && $options[CURLOPT_URL] == $expected;
+                        });
+                },
+            ),
 
-        $this->mockCurlExec(json_encode((object) array(
-            'id' => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
-        )));
-
-        $this->mockCurlGetinfo();
+            'curl_exec' => function ($expectation) {
+                $expectation->andReturn(json_encode((object) array(
+                    'id' => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
+                )));
+            },
+        ));
 
         $this
             ->client
             ->createFolder($name, $parentId, $description);
-
-        $actual = $arguments['options'][CURLOPT_URL];
-        $this->assertEquals($expected, $actual);
     }
 
     public function provideCreateFileUrl()
     {
         return array(
-            'Parent omitted, OVERWRITE_ALWAYS' => array(
-                'name'       => 'test-file.txt',
-                'parentId'   => null,
-                'content'    => 'Some test content',
-                'overwrite'  => Client::OVERWRITE_ALWAYS,
-                'temp'       => false,
-                'expected'   => 'https://apis.live.net/v5.0/me/skydrive/files/test-file.txt?overwrite=true',
+            'Parent omitted, FAIL name conflict behavior' => array(
+                'name'     => 'test-file.txt',
+                'parentId' => null,
+                'content'  => 'Some test content',
+                'options'  => array('name_conflict_behavior' => NameConflictBehavior::FAIL),
+                'expected' => 'https://apis.live.net/v5.0/me/skydrive/files/test-file.txt?overwrite=false',
             ),
 
-            'Parent given, OVERWRITE_ALWAYS' => array(
-                'name'      => 'test-file.txt',
-                'parentId'  => 'path/to/parent',
-                'content'   => 'Some test content',
-                'overwrite' => Client::OVERWRITE_ALWAYS,
-                'temp'      => false,
-                'expected'  => 'https://apis.live.net/v5.0/path/to/parent/files/test-file.txt?overwrite=true',
+            'Parent given, FAIL name conflict behavior' => array(
+                'name'     => 'test-file.txt',
+                'parentId' => 'path/to/parent',
+                'content'  => 'Some test content',
+                'options'  => array('name_conflict_behavior' => NameConflictBehavior::FAIL),
+                'expected' => 'https://apis.live.net/v5.0/path/to/parent/files/test-file.txt?overwrite=false',
             ),
 
-            'Parent omitted, OVERWRITE_NEVER' => array(
-                'name'       => 'test-file.txt',
-                'parentId'   => null,
-                'content'    => 'Some test content',
-                'overwrite'  => Client::OVERWRITE_NEVER,
-                'temp'       => false,
-                'expected'   => 'https://apis.live.net/v5.0/me/skydrive/files/test-file.txt?overwrite=false',
+            'Parent omitted, RENAME name conflict behavior' => array(
+                'name'     => 'test-file.txt',
+                'parentId' => null,
+                'content'  => 'Some test content',
+                'options'  => array('name_conflict_behavior' => NameConflictBehavior::RENAME),
+                'expected' => 'https://apis.live.net/v5.0/me/skydrive/files/test-file.txt?overwrite=ChooseNewName',
             ),
 
-            'Parent given, OVERWRITE_NEVER' => array(
-                'name'      => 'test-file.txt',
-                'parentId'  => 'path/to/parent',
-                'content'   => 'Some test content',
-                'overwrite' => Client::OVERWRITE_NEVER,
-                'temp'      => false,
-                'expected'  => 'https://apis.live.net/v5.0/path/to/parent/files/test-file.txt?overwrite=false',
+            'Parent given, RENAME name conflict behavior' => array(
+                'name'     => 'test-file.txt',
+                'parentId' => 'path/to/parent',
+                'content'  => 'Some test content',
+                'options'  => array('name_conflict_behavior' => NameConflictBehavior::RENAME),
+                'expected' => 'https://apis.live.net/v5.0/path/to/parent/files/test-file.txt?overwrite=ChooseNewName',
             ),
 
-            'Parent omitted, OVERWRITE_NEVER' => array(
-                'name'       => 'test-file.txt',
-                'parentId'   => null,
-                'content'    => 'Some test content',
-                'overwrite'  => Client::OVERWRITE_RENAME,
-                'temp'       => false,
-                'expected'   => 'https://apis.live.net/v5.0/me/skydrive/files/test-file.txt?overwrite=ChooseNewName',
+            'Parent omitted, REPLACE name conflict behavior' => array(
+                'name'     => 'test-file.txt',
+                'parentId' => null,
+                'content'  => 'Some test content',
+                'options'  => array('name_conflict_behavior' => NameConflictBehavior::REPLACE),
+                'expected' => 'https://apis.live.net/v5.0/me/skydrive/files/test-file.txt?overwrite=true',
             ),
 
-            'Parent given, OVERWRITE_NEVER' => array(
-                'name'      => 'test-file.txt',
-                'parentId'  => 'path/to/parent',
-                'content'   => 'Some test content',
-                'overwrite' => Client::OVERWRITE_RENAME,
-                'temp'      => false,
-                'expected'  => 'https://apis.live.net/v5.0/path/to/parent/files/test-file.txt?overwrite=ChooseNewName',
+            'Parent given, REPLACE name conflict behavior' => array(
+                'name'     => 'test-file.txt',
+                'parentId' => 'path/to/parent',
+                'content'  => 'Some test content',
+                'options'  => array('name_conflict_behavior' => NameConflictBehavior::REPLACE),
+                'expected' => 'https://apis.live.net/v5.0/path/to/parent/files/test-file.txt?overwrite=true',
             ),
         );
     }
@@ -487,25 +440,35 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $name,
         $parentId,
         $content,
-        $overwrite,
-        $temp,
+        $options,
         $expected
     ) {
-        $arguments = array();
-        $this->mockCurlSetoptArray(true, $arguments);
+        GlobalNamespace::reset(array(
+            'curl_setopt_array' => array(
+                function ($expectation) {
+                    $expectation
+                        ->once()
+                        ->andReturn(true);
+                },
+                function ($expectation) use ($expected) {
+                    $expectation
+                        ->once()
+                        ->withArgs(function ($ch, $options) use ($expected) {
+                            return array_key_exists(CURLOPT_URL, $options) && $options[CURLOPT_URL] == $expected;
+                        });
+                },
+            ),
 
-        $this->mockCurlExec(json_encode((object) array(
-            'id' => 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
-        )));
-
-        $this->mockCurlGetinfo();
+            'curl_exec' => function ($expectation) {
+                $expectation->andReturn(json_encode((object) array(
+                    'id' => 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
+                )));
+            },
+        ));
 
         $this
             ->client
-            ->createFile($name, $parentId, $content, $overwrite, $temp);
-
-        $actual = $arguments['options'][CURLOPT_URL];
-        $this->assertEquals($expected, $actual);
+            ->createFile($name, $parentId, $content, $options);
     }
 
     public function provideFetchObjectType()
@@ -533,14 +496,13 @@ class ClientTest extends \PHPUnit_Framework_TestCase
      */
     public function testFetchObjectType($type, $expected)
     {
-        $this->mockCurlSetoptArray();
-        $this->mockCurlSetopt();
-
-        $this->mockCurlExec(json_encode((object) array(
-            'type' => $type,
-        )));
-
-        $this->mockCurlGetinfo();
+        GlobalNamespace::reset(array(
+            'curl_exec' => function ($expectation) use ($type) {
+                $expectation->andReturn(json_encode((object) array(
+                    'type' => $type,
+                )));
+            },
+        ));
 
         $object = $this
             ->client
@@ -552,112 +514,122 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
     public function testFetchRootUrl()
     {
-        $this->mockCurlSetoptArray();
+        GlobalNamespace::reset(array(
+            'curl_setopt' => function ($expectation) {
+                $expectation
+                    ->once()
+                    ->withArgs(function ($ch, $opt, $value) {
+                        return CURLOPT_URL == $opt && 'https://apis.live.net/v5.0/me/skydrive?access_token=OlD%2FAcCeSs%2BToKeN' == $value;
+                    });
+            },
 
-        $arguments = array();
-        $this->mockCurlSetopt(true, $arguments);
-
-        $this->mockCurlExec(json_encode((object) array(
-            'id'   => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
-            'type' => 'folder',
-        )));
-
-        $this->mockCurlGetinfo();
+            'curl_exec' => function ($expectation) {
+                $expectation->andReturn(json_encode((object) array(
+                    'id'   => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
+                    'type' => 'folder',
+                )));
+            },
+        ));
 
         $this
             ->client
             ->fetchRoot();
-
-        $actual = $arguments['value'];
-        $this->assertEquals('https://apis.live.net/v5.0/me/skydrive?access_token=OlD%2FAcCeSs%2BToKeN', $actual);
     }
 
     public function testFetchCameraRollUrl()
     {
-        $this->mockCurlSetoptArray();
+        GlobalNamespace::reset(array(
+            'curl_setopt' => function ($expectation) {
+                $expectation
+                    ->once()
+                    ->withArgs(function ($ch, $opt, $value) {
+                        return CURLOPT_URL == $opt && 'https://apis.live.net/v5.0/me/skydrive/camera_roll?access_token=OlD%2FAcCeSs%2BToKeN' == $value;
+                    });
+            },
 
-        $arguments = array();
-        $this->mockCurlSetopt(true, $arguments);
-
-        $this->mockCurlExec(json_encode((object) array(
-            'id'   => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
-            'type' => 'folder',
-        )));
-
-        $this->mockCurlGetinfo();
+            'curl_exec' => function ($expectation) {
+                $expectation->andReturn(json_encode((object) array(
+                    'id'   => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
+                    'type' => 'folder',
+                )));
+            },
+        ));
 
         $this
             ->client
             ->fetchCameraRoll();
-
-        $actual = $arguments['value'];
-        $this->assertEquals('https://apis.live.net/v5.0/me/skydrive/camera_roll?access_token=OlD%2FAcCeSs%2BToKeN', $actual);
     }
 
     public function testFetchDocsUrl()
     {
-        $this->mockCurlSetoptArray();
+        GlobalNamespace::reset(array(
+            'curl_setopt' => function ($expectation) {
+                $expectation
+                    ->once()
+                    ->withArgs(function ($ch, $opt, $value) {
+                        return CURLOPT_URL == $opt && 'https://apis.live.net/v5.0/me/skydrive/my_documents?access_token=OlD%2FAcCeSs%2BToKeN' == $value;
+                    });
+            },
 
-        $arguments = array();
-        $this->mockCurlSetopt(true, $arguments);
-
-        $this->mockCurlExec(json_encode((object) array(
-            'id'   => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
-            'type' => 'folder',
-        )));
-
-        $this->mockCurlGetinfo();
+            'curl_exec' => function ($expectation) {
+                $expectation->andReturn(json_encode((object) array(
+                    'id'   => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
+                    'type' => 'folder',
+                )));
+            },
+        ));
 
         $this
             ->client
             ->fetchDocs();
-
-        $actual = $arguments['value'];
-        $this->assertEquals('https://apis.live.net/v5.0/me/skydrive/my_documents?access_token=OlD%2FAcCeSs%2BToKeN', $actual);
     }
 
     public function testFetchCameraPicsUrl()
     {
-        $this->mockCurlSetoptArray();
+        GlobalNamespace::reset(array(
+            'curl_setopt' => function ($expectation) {
+                $expectation
+                    ->once()
+                    ->withArgs(function ($ch, $opt, $value) {
+                        return CURLOPT_URL == $opt && 'https://apis.live.net/v5.0/me/skydrive/my_photos?access_token=OlD%2FAcCeSs%2BToKeN' == $value;
+                    });
+            },
 
-        $arguments = array();
-        $this->mockCurlSetopt(true, $arguments);
-
-        $this->mockCurlExec(json_encode((object) array(
-            'id'   => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
-            'type' => 'folder',
-        )));
-
-        $this->mockCurlGetinfo();
+            'curl_exec' => function ($expectation) {
+                $expectation->andReturn(json_encode((object) array(
+                    'id'   => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
+                    'type' => 'folder',
+                )));
+            },
+        ));
 
         $this
             ->client
             ->fetchPics();
-
-        $actual = $arguments['value'];
-        $this->assertEquals('https://apis.live.net/v5.0/me/skydrive/my_photos?access_token=OlD%2FAcCeSs%2BToKeN', $actual);
     }
 
     public function testFetchPublicDocsUrl()
     {
-        $this->mockCurlSetoptArray();
+        GlobalNamespace::reset(array(
+            'curl_setopt' => function ($expectation) {
+                $expectation
+                    ->once()
+                    ->withArgs(function ($ch, $opt, $value) {
+                        return CURLOPT_URL == $opt && 'https://apis.live.net/v5.0/me/skydrive/public_documents?access_token=OlD%2FAcCeSs%2BToKeN' == $value;
+                    });
+            },
 
-        $arguments = array();
-        $this->mockCurlSetopt(true, $arguments);
-
-        $this->mockCurlExec(json_encode((object) array(
-            'id'   => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
-            'type' => 'folder',
-        )));
-
-        $this->mockCurlGetinfo();
+            'curl_exec' => function ($expectation) {
+                $expectation->andReturn(json_encode((object) array(
+                    'id'   => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
+                    'type' => 'folder',
+                )));
+            },
+        ));
 
         $this
             ->client
             ->fetchPublicDocs();
-
-        $actual = $arguments['value'];
-        $this->assertEquals('https://apis.live.net/v5.0/me/skydrive/public_documents?access_token=OlD%2FAcCeSs%2BToKeN', $actual);
     }
 
     public function provideFetchPropertiesUrl()
@@ -680,19 +652,23 @@ class ClientTest extends \PHPUnit_Framework_TestCase
      */
     public function testFetchPropertiesUrl($objectId, $expected)
     {
-        $this->mockCurlSetoptArray();
+        GlobalNamespace::reset(array(
+            'curl_setopt' => function ($expectation) use ($expected) {
+                $expectation
+                    ->once()
+                    ->withArgs(function ($ch, $opt, $value) use ($expected) {
+                        return CURLOPT_URL == $opt && $expected == $value;
+                    });
+            },
 
-        $arguments = array();
-        $this->mockCurlSetopt(true, $arguments);
-        $this->mockCurlExec(json_encode((object) array()));
-        $this->mockCurlGetinfo();
+            'curl_exec' => function ($expectation) {
+                $expectation->andReturn(json_encode((object) array()));
+            },
+        ));
 
         $this
             ->client
             ->fetchProperties($objectId);
-
-        $actual = $arguments['value'];
-        $this->assertEquals($expected, $actual);
     }
 
     public function provideFetchObjectsUrl()
@@ -715,39 +691,53 @@ class ClientTest extends \PHPUnit_Framework_TestCase
      */
     public function testFetchObjectsUrl($objectId, $expected)
     {
-        $this->mockCurlSetoptArray();
+        GlobalNamespace::reset(array(
+            'curl_setopt' => function ($expectation) use ($expected) {
+                $expectation
+                    ->once()
+                    ->withArgs(function ($ch, $opt, $value) use ($expected) {
+                        return CURLOPT_URL == $opt && $expected == $value;
+                    });
+            },
 
-        $arguments = array();
-        $this->mockCurlSetopt(true, $arguments);
-
-        $this->mockCurlExec(json_encode((object) array(
-            'data' => array(),
-        )));
-
-        $this->mockCurlGetinfo();
+            'curl_exec' => function ($expectation) {
+                $expectation->andReturn(json_encode((object) array(
+                    'data' => array(),
+                )));
+            },
+        ));
 
         $this
             ->client
             ->fetchObjects($objectId);
-
-        $actual = $arguments['value'];
-        $this->assertEquals($expected, $actual);
     }
 
     public function testUpdateObjectUrl()
     {
-        $arguments = array();
-        $this->mockCurlSetoptArray(true, $arguments);
+        GlobalNamespace::reset(array(
+            'curl_setopt_array' => array(
+                function ($expectation) {
+                    $expectation
+                        ->once()
+                        ->andReturn(true);
+                },
+                function ($expectation) {
+                    $expectation
+                        ->once()
+                        ->withArgs(function ($ch, $options) {
+                            return array_key_exists(CURLOPT_URL, $options) && 'https://apis.live.net/v5.0/file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123' == $options[CURLOPT_URL];
+                        });
+                },
+            ),
 
-        $this->mockCurlExec(json_encode((object) array()));
-        $this->mockCurlGetinfo();
+            'curl_exec' => function ($expectation) {
+                $expectation->andReturn(json_encode((object) array()));
+            },
+        ));
 
         $this
             ->client
             ->updateObject('file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
-
-        $actual = $arguments['options'][CURLOPT_URL];
-        $this->assertEquals('https://apis.live.net/v5.0/file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', $actual);
     }
 
     public function provideMoveObjectDestinationUrl()
@@ -770,19 +760,30 @@ class ClientTest extends \PHPUnit_Framework_TestCase
      */
     public function testMoveObjectDestinationUrl($destinationId, $expected)
     {
-        $arguments = array();
-        $this->mockCurlSetoptArray(true, $arguments);
+        GlobalNamespace::reset(array(
+            'curl_setopt_array' => array(
+                function ($expectation) {
+                    $expectation
+                        ->once()
+                        ->andReturn(true);
+                },
+                function ($expectation) use ($expected) {
+                    $expectation
+                        ->once()
+                        ->withArgs(function ($ch, $options) use ($expected) {
+                            return array_key_exists(CURLOPT_POSTFIELDS, $options) && $expected == json_decode($options[CURLOPT_POSTFIELDS])->destination;
+                        });
+                },
+            ),
 
-        $this->mockCurlExec(json_encode((object) array()));
-        $this->mockCurlGetinfo();
+            'curl_exec' => function ($expectation) {
+                $expectation->andReturn(json_encode((object) array()));
+            },
+        ));
 
         $this
             ->client
             ->moveObject('file.ffffffffffffffff.FFFFFFFFFFFFFFFF!456', $destinationId);
-
-        $payload = json_decode($arguments['options'][CURLOPT_POSTFIELDS]);
-        $actual  = $payload->destination;
-        $this->assertEquals($expected, $actual);
     }
 
     public function provideCopyFileDestinationUrl()
@@ -805,166 +806,153 @@ class ClientTest extends \PHPUnit_Framework_TestCase
      */
     public function testCopyFileDestinationUrl($destinationId, $expected)
     {
-        $arguments = array();
-        $this->mockCurlSetoptArray(true, $arguments);
+        GlobalNamespace::reset(array(
+            'curl_setopt_array' => array(
+                function ($expectation) {
+                    $expectation
+                        ->once()
+                        ->andReturn(true);
+                },
+                function ($expectation) use ($expected) {
+                    $expectation
+                        ->once()
+                        ->withArgs(function ($ch, $options) use ($expected) {
+                            return array_key_exists(CURLOPT_POSTFIELDS, $options) && $expected == json_decode($options[CURLOPT_POSTFIELDS])->destination;
+                        });
+                },
+            ),
 
-        $this->mockCurlExec(json_encode((object) array()));
-        $this->mockCurlGetinfo();
+            'curl_exec' => function ($expectation) {
+                $expectation->andReturn(json_encode((object) array()));
+            },
+        ));
 
         $this
             ->client
             ->copyFile('file.ffffffffffffffff.FFFFFFFFFFFFFFFF!456', $destinationId);
-
-        $payload = json_decode($arguments['options'][CURLOPT_POSTFIELDS]);
-        $actual  = $payload->destination;
-        $this->assertEquals($expected, $actual);
     }
 
     public function testDeleteObjectUrl()
     {
-        $arguments = array();
-        $this->mockCurlSetoptArray(true, $arguments);
+        GlobalNamespace::reset(array(
+            'curl_setopt_array' => array(
+                function ($expectation) {
+                    $expectation
+                        ->once()
+                        ->andReturn(true);
+                },
+                function ($expectation) {
+                    $expectation
+                        ->once()
+                        ->withArgs(function ($ch, $options) {
+                            return array_key_exists(CURLOPT_URL, $options) && 'https://apis.live.net/v5.0/file.ffffffffffffffff.FFFFFFFFFFFFFFFF!456?access_token=OlD%2FAcCeSs%2BToKeN' == $options[CURLOPT_URL];
+                        });
+                },
+            ),
 
-        $this->mockCurlExec(json_encode((object) array()));
-        $this->mockCurlGetinfo();
+            'curl_exec' => function ($expectation) {
+                $expectation->andReturn(json_encode((object) array()));
+            },
+        ));
 
         $this
             ->client
             ->deleteObject('file.ffffffffffffffff.FFFFFFFFFFFFFFFF!456');
-
-        $actual = $arguments['options'][CURLOPT_URL];
-        $this->assertEquals('https://apis.live.net/v5.0/file.ffffffffffffffff.FFFFFFFFFFFFFFFF!456?access_token=OlD%2FAcCeSs%2BToKeN', $actual);
     }
 
     public function testFetchQuotaUrl()
     {
-        $this->mockCurlSetoptArray();
+        GlobalNamespace::reset(array(
+            'curl_setopt' => function ($expectation) {
+                $expectation
+                    ->once()
+                    ->withArgs(function ($ch, $opt, $value) {
+                        return CURLOPT_URL == $opt && 'https://apis.live.net/v5.0/me/skydrive/quota?access_token=OlD%2FAcCeSs%2BToKeN' == $value;
+                    });
+            },
 
-        $arguments = array();
-        $this->mockCurlSetopt(true, $arguments);
-
-        $this->mockCurlExec(json_encode((object) array(
-            'id'   => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
-            'type' => 'folder',
-        )));
-
-        $this->mockCurlGetinfo();
+            'curl_exec' => function ($expectation) {
+                $expectation->andReturn(json_encode((object) array(
+                    'id'   => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
+                    'type' => 'folder',
+                )));
+            },
+        ));
 
         $this
             ->client
             ->fetchQuota();
-
-        $actual = $arguments['value'];
-        $this->assertEquals('https://apis.live.net/v5.0/me/skydrive/quota?access_token=OlD%2FAcCeSs%2BToKeN', $actual);
     }
 
     public function testFetchAccountInfoUrl()
     {
-        $this->mockCurlSetoptArray();
+        GlobalNamespace::reset(array(
+            'curl_setopt' => function ($expectation) {
+                $expectation
+                    ->once()
+                    ->withArgs(function ($ch, $opt, $value) {
+                        return CURLOPT_URL == $opt && 'https://apis.live.net/v5.0/me?access_token=OlD%2FAcCeSs%2BToKeN' == $value;
+                    });
+            },
 
-        $arguments = array();
-        $this->mockCurlSetopt(true, $arguments);
-
-        $this->mockCurlExec(json_encode((object) array(
-            'id'   => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
-            'type' => 'folder',
-        )));
-
-        $this->mockCurlGetinfo();
+            'curl_exec' => function ($expectation) {
+                $expectation->andReturn(json_encode((object) array(
+                    'id'   => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
+                    'type' => 'folder',
+                )));
+            },
+        ));
 
         $this
             ->client
             ->fetchAccountInfo();
-
-        $actual = $arguments['value'];
-        $this->assertEquals('https://apis.live.net/v5.0/me?access_token=OlD%2FAcCeSs%2BToKeN', $actual);
     }
 
     public function testFetchRecentDocsUrl()
     {
-        $this->mockCurlSetoptArray();
+        GlobalNamespace::reset(array(
+            'curl_setopt' => function ($expectation) {
+                $expectation
+                    ->once()
+                    ->withArgs(function ($ch, $opt, $value) {
+                        return CURLOPT_URL == $opt && 'https://apis.live.net/v5.0/me/skydrive/recent_docs?access_token=OlD%2FAcCeSs%2BToKeN' == $value;
+                    });
+            },
 
-        $arguments = array();
-        $this->mockCurlSetopt(true, $arguments);
-
-        $this->mockCurlExec(json_encode((object) array(
-            'id'   => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
-            'type' => 'folder',
-        )));
-
-        $this->mockCurlGetinfo();
+            'curl_exec' => function ($expectation) {
+                $expectation->andReturn(json_encode((object) array(
+                    'id'   => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
+                    'type' => 'folder',
+                )));
+            },
+        ));
 
         $this
             ->client
             ->fetchRecentDocs();
-
-        $actual = $arguments['value'];
-        $this->assertEquals('https://apis.live.net/v5.0/me/skydrive/recent_docs?access_token=OlD%2FAcCeSs%2BToKeN', $actual);
     }
 
     public function testFetchSharedUrl()
     {
-        $this->mockCurlSetoptArray();
+        GlobalNamespace::reset(array(
+            'curl_setopt' => function ($expectation) {
+                $expectation
+                    ->once()
+                    ->withArgs(function ($ch, $opt, $value) {
+                        return CURLOPT_URL == $opt && 'https://apis.live.net/v5.0/me/skydrive/shared?access_token=OlD%2FAcCeSs%2BToKeN' == $value;
+                    });
+            },
 
-        $arguments = array();
-        $this->mockCurlSetopt(true, $arguments);
-
-        $this->mockCurlExec(json_encode((object) array(
-            'id'   => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
-            'type' => 'folder',
-        )));
-
-        $this->mockCurlGetinfo();
+            'curl_exec' => function ($expectation) {
+                $expectation->andReturn(json_encode((object) array(
+                    'id'   => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
+                    'type' => 'folder',
+                )));
+            },
+        ));
 
         $this
             ->client
             ->fetchShared();
-
-        $actual = $arguments['value'];
-        $this->assertEquals('https://apis.live.net/v5.0/me/skydrive/shared?access_token=OlD%2FAcCeSs%2BToKeN', $actual);
     }
-}
-
-/**
- * Global function mocks.
- */
-namespace Krizalys\Onedrive;
-
-use Test\Krizalys\Onedrive\ClientTest;
-
-function time()
-{
-    return ClientTest::$functions->time();
-}
-
-function fstat()
-{
-    return array(
-        /* Size */ 7 => 123,
-    );
-}
-
-function curl_init()
-{
-    // Nothing for now (return null).
-}
-
-function curl_setopt($ch, $option, $value)
-{
-    return ClientTest::$functions->curl_setopt($ch, $option, $value);
-}
-
-function curl_setopt_array($ch, array $options)
-{
-    return ClientTest::$functions->curl_setopt_array($ch, $options);
-}
-
-function curl_exec($ch)
-{
-    return ClientTest::$functions->curl_exec($ch);
-}
-
-function curl_getinfo($ch, $opt = 0)
-{
-    return ClientTest::$functions->curl_getinfo($ch, $opt);
 }

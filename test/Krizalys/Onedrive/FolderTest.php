@@ -3,6 +3,7 @@
 namespace Test\Krizalys\Onedrive;
 
 use Krizalys\Onedrive\Folder;
+use Krizalys\Onedrive\NameConflictBehavior;
 use Mockery as m;
 
 class FolderTest extends \PHPUnit_Framework_TestCase
@@ -133,6 +134,11 @@ class FolderTest extends \PHPUnit_Framework_TestCase
         ));
 
         $folder = new Folder($client);
-        $folder->createFile('test-file', 'Some test content', Folder::OVERWRITE_ALWAYS);
+
+        $folder->createFile(
+            'test-file',
+            'Some test content',
+            array('name_conflict_behavior', NameConflictBehavior::REPLACE)
+        );
     }
 }
