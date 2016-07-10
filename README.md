@@ -73,20 +73,22 @@ secret* and *Callback URI* in a configuration file. Let's call it
 
 ```php
 <?php
-/*
- * Your OneDrive client ID.
- */
-define('ONEDRIVE_CLIENT_ID', '<YOUR_CLIENT_ID>');
+return [
+    /*
+     * Your OneDrive client ID.
+     */
+    'ONEDRIVE_CLIENT_ID' => '<YOUR_CLIENT_ID>',
 
-/*
- * Your OneDrive client secret.
- */
-define('ONEDRIVE_CLIENT_SECRET', '<YOUR_CLIENT_SECRET>');
+    /*
+     * Your OneDrive client secret.
+     */
+    'ONEDRIVE_CLIENT_SECRET' => '<YOUR_CLIENT_SECRET>',
 
-/*
- * Your OneDrive callback URI.
- */
-define('ONEDRIVE_CALLBACK_URI', '<http://yourdomain.com/your-callback-uri.php>');
+    /*
+     * Your OneDrive callback URI.
+     */
+    'ONEDRIVE_CALLBACK_URI' => '<http://your.domain.com/your-callback.php>',
+];
 ?>
 ```
 
@@ -99,31 +101,32 @@ like (replace `/path/to` by the appropriate values):
 
 ```php
 <?php
-require_once '/path/to/onedrive-config.php';
+($config = include '/path/to/config.php') or die('Configuration file not found');
 require_once '/path/to/onedrive-php-sdk/vendor/autoload.php';
 
-session_start();
+use Krizalys\Onedrive\Client;
 
-// Clears the session and restarts the whole authentication process
-$_SESSION = array();
-
-// Instantiates a OneDrive client bound to your OneDrive application
-$onedrive = new \Krizalys\Onedrive\Client(array(
-    'client_id' => ONEDRIVE_CLIENT_ID
+// Instantiates a OneDrive client bound to your OneDrive application.
+$onedrive = new Client(array(
+    'client_id' => $config['ONEDRIVE_CLIENT_ID'],
 ));
 
-// Gets a log in URL with sufficient privileges from the OneDrive API
+// Gets a log in URL with sufficient privileges from the OneDrive API.
 $url = $onedrive->getLogInUrl(array(
     'wl.signin',
     'wl.basic',
     'wl.contacts_skydrive',
-    'wl.skydrive_update'
-), ONEDRIVE_CALLBACK_URI);
+    'wl.skydrive_update',
+), $config['ONEDRIVE_CALLBACK_URI']);
 
-// Persist the OneDrive client' state for next API requests
-$_SESSION['onedrive.client.state'] = $onedrive->getState();
+session_start();
 
-// Guide the user to the log in URL (you may also use an HTTP/JS redirect)
+// Persist the OneDrive client' state for next API requests.
+$_SESSION = array(
+    'onedrive.client.state' => $onedrive->getState(),
+);
+
+// Guide the user to the log in URL (you may also use an HTTP/JS redirect).
 echo "<a href='$url'>Next step</a>";
 ?>
 ```
@@ -141,39 +144,41 @@ for obtaining an access token (from the code received) and should start like
 
 ```php
 <?php
-require_once '/path/to/onedrive-config.php';
+($config = include '/path/to/config.php') or die('Configuration file not found');
 require_once '/path/to/onedrive-php-sdk/vendor/autoload.php';
+
+use Krizalys\Onedrive\Client;
 
 // If we don't have a code in the query string (meaning that the user did not
 // log in successfully or did not grant privileges requested), we cannot proceed
-// in obtaining an access token
+// in obtaining an access token.
 if (!array_key_exists('code', $_GET)) {
-    throw new Exception('code undefined in $_GET');
+    throw new \Exception('code undefined in $_GET');
 }
 
 session_start();
 
 // Attempt to load the OneDrive client' state persisted from the previous
-// request
+// request.
 if (!array_key_exists('onedrive.client.state', $_SESSION)) {
-    throw new Exception('onedrive.client.state undefined in $_SESSION');
+    throw new \Exception('onedrive.client.state undefined in $_SESSION');
 }
 
-$onedrive = new \Krizalys\Onedrive\Client(array(
-    'client_id' => ONEDRIVE_CLIENT_ID,
+$onedrive = new Client(array(
+    'client_id' => $config['ONEDRIVE_CLIENT_ID'],
 
     // Restore the previous state while instantiating this client to proceed in
-    // obtaining an access token
-    'state'     => $_SESSION['onedrive.client.state']
+    // obtaining an access token.
+    'state' => $_SESSION['onedrive.client.state']
 ));
 
-// Obtain the token using the code received by the OneDrive API
-$onedrive->obtainAccessToken(ONEDRIVE_CLIENT_SECRET, $_GET['code']);
+// Obtain the token using the code received by the OneDrive API.
+$onedrive->obtainAccessToken($config['ONEDRIVE_CLIENT_SECRET'], $_GET['code']);
 
-// Persist the OneDrive client' state for next API requests
+// Persist the OneDrive client' state for next API requests.
 $_SESSION['onedrive.client.state'] = $onedrive->getState();
 
-// Past this point, you can start using file/folder functions from the SDK
+// Past this point, you can start using file/folder functions from the SDK.
 ?>
 ```
 
