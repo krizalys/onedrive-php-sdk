@@ -37,21 +37,6 @@ class Client
     const TOKEN_URL = 'https://login.live.com/oauth20_token.srf';
 
     /**
-     * @var string overwrite always option.
-     */
-    const OVERWRITE_ALWAYS = 'true';
-
-    /**
-     * @var string overwrite never option.
-     */
-    const OVERWRITE_NEVER = 'false';
-
-    /**
-     * @var string overwrite rename option.
-     */
-    const OVERWRITE_RENAME = 'ChooseNewName';
-
-    /**
      * @var string Client information.
      */
     private $_clientId;
@@ -81,6 +66,27 @@ class Client
      *                  when verifying).
      */
     private $_sslCaPath;
+
+    /**
+     * @var int The name conflict behavior.
+     */
+    private $_nameConflictBehavior;
+
+    /**
+     * @var int The stream back end.
+     */
+    private $_streamBackEnd;
+
+    /**
+     * @var NameConflictBehaviorParameterizer The name conflict behavior
+     * parameterizer.
+     */
+    private $_nameConflictBehaviorParameterizer;
+
+    /**
+     * @var StreamOpener The stream opener.
+     */
+    private $_streamOpener;
 
     /**
      * Creates a base cURL object which is compatible with the OneDrive API.
@@ -117,7 +123,6 @@ class Client
         $finalOptions = $options + $defaultOptions;
 
         curl_setopt_array($curl, $finalOptions);
-
         return $curl;
     }
 
@@ -162,7 +167,8 @@ class Client
         $vars    = get_object_vars($decoded);
 
         if (array_key_exists('error', $vars)) {
-            throw new \Exception($decoded->error->message, (int) $decoded->error->code);
+            throw new \Exception($decoded->error->message,
+                (int) $decoded->error->code);
         }
 
         return $decoded;
@@ -180,6 +186,19 @@ class Client
      *                       and peers. Default: false.
      *                       - 'ssl_capath' (bool|string) CA path to use for
      *                       verifying SSL certificate chain. Default: false.
+     *                       - 'name_conflict_behavior' (int) Default name
+     *                       conflict behavior. Either:
+     *                       NameConflictBehavior::FAIL,
+     *                       NameConflictBehavior::RENAME or
+     *                       NameConflictBehavior::REPLACE. Default:
+     *                       NameConflictBehavior::REPLACE.
+     *                       - 'stream_back_end' (int) Default stream back end.
+     *                       Either StreamBackEnd::MEMORY or
+     *                       StreamBackEnd::TEMP. Default:
+     *                       StreamBackEnd::MEMORY.
+     *                       Using temporary files is recommended when uploading
+     *                       big files.
+     *                       Default: StreamBackEnd::MEMORY.
      */
     public function __construct(array $options = array())
     {
@@ -197,6 +216,25 @@ class Client
 
         $this->_sslCaPath = array_key_exists('ssl_capath', $options)
             ? $options['ssl_capath'] : false;
+
+        $this->_nameConflictBehavior = array_key_exists('name_conflict_behavior', $options)
+            ? $options['name_conflict_behavior'] : NameConflictBehavior::REPLACE;
+
+        $this->_streamBackEnd = array_key_exists('stream_back_end', $options)
+            ? $options['stream_back_end'] : StreamBackEnd::MEMORY;
+
+        $this->_nameConflictBehaviorParameterizer = new NameConflictBehaviorParameterizer();
+        $this->_streamOpener                      = new StreamOpener();
+    }
+
+    /**
+     * Gets the name conflict behavior of this client instance.
+     *
+     * @return int
+     */
+    public function getNameConflictBehavior()
+    {
+        return $this->_nameConflictBehavior;
     }
 
     /**
@@ -211,8 +249,8 @@ class Client
     }
 
     /**
-     * Gets the URL of the log in form. After login, the browser is redirected to
-     * the redirect URL, and a code is passed as a GET parameter to this URL.
+     * Gets the URL of the log in form. After login, the browser is redirected
+     * to the redirect URL, and a code is passed as a GET parameter to this URL.
      *
      * The browser is also redirected to this URL if the user is already logged
      * in.
@@ -233,8 +271,11 @@ class Client
      *
      * @todo Support $options.
      */
-    public function getLogInUrl(array $scopes, $redirectUri, array $options = array())
-    {
+    public function getLogInUrl(
+        array $scopes,
+        $redirectUri,
+        array $options = array()
+    ) {
         if (null === $this->_clientId) {
             throw new \Exception('The client ID must be set to call getLoginUrl()');
         }
@@ -244,8 +285,8 @@ class Client
         $this->_state->redirect_uri = $redirectUri;
 
         // When using this URL, the browser will eventually be redirected to the
-        // callback URL with a code passed in the URL query string (the name of the
-        // variable is "code"). This is suitable for PHP.
+        // callback URL with a code passed in the URL query string (the name of
+        // the variable is "code"). This is suitable for PHP.
         $url = self::AUTH_URL
             . '?client_id=' . urlencode($this->_clientId)
             . '&scope=' . urlencode($imploded)
@@ -355,7 +396,8 @@ class Client
 
         if (false === $result) {
             if (curl_errno($curl)) {
-                throw new \Exception('curl_setopt_array() failed: ' . curl_error($curl));
+                throw new \Exception('curl_setopt_array() failed: '
+                    . curl_error($curl));
             } else {
                 throw new \Exception('curl_setopt_array(): empty response');
             }
@@ -470,7 +512,9 @@ class Client
             CURLOPT_POST       => true,
 
             CURLOPT_HTTPHEADER => array(
-                'Content-Type: application/json', // The data is sent as JSON as per OneDrive documentation
+                // The data is sent as JSON as per OneDrive documentation.
+                'Content-Type: application/json',
+
                 'Authorization: Bearer ' . $this->_state->token->data->access_token,
             ),
 
@@ -557,7 +601,9 @@ class Client
             CURLOPT_CUSTOMREQUEST => 'MOVE',
 
             CURLOPT_HTTPHEADER    => array(
-                'Content-Type: application/json', // The data is sent as JSON as per OneDrive documentation
+                // The data is sent as JSON as per OneDrive documentation.
+                'Content-Type: application/json',
+
                 'Authorization: Bearer ' . $this->_state->token->data->access_token,
             ),
 
@@ -586,7 +632,9 @@ class Client
             CURLOPT_CUSTOMREQUEST => 'COPY',
 
             CURLOPT_HTTPHEADER    => array(
-                'Content-Type: application/json', // The data is sent as JSON as per OneDrive documentation
+                // The data is sent as JSON as per OneDrive documentation.
+                'Content-Type: application/json',
+
                 'Authorization: Bearer ' . $this->_state->token->data->access_token,
             ),
 
@@ -634,31 +682,26 @@ class Client
     /**
      * Creates a file in the current OneDrive account.
      *
-     * @param string          $name      The name of the OneDrive file to be
-     *                                   created.
-     * @param null|string     $parentId  The ID of the OneDrive folder into which
-     *                                   to create the OneDrive file, or null to
-     *                                   create it in the OneDrive root folder.
-     *                                   Default: null.
-     * @param string|resource $content   The content of the OneDrive file to be
-     *                                   created, as a string or as a resource to
-     *                                   an already opened file. In the latter
-     *                                   case, the responsibility to close the
-     *                                   handle is left to the calling function.
-     *                                   Default: ''.
-     * @param string          $overwrite Indicate whether you want to overwrite
-     *                                   files with the same name. accepteds:
-     *                                   OVERWRITE_ALWAYS, OVERWRITE_NEVER or
-     *                                   OVERWRITE_RENAME
-     * @param bool            $temp      Option to allow save to a temporary
-     *                                   file in case of large files.
+     * @param string          $name     The name of the OneDrive file to be
+     *                                  created.
+     * @param null|string     $parentId The ID of the OneDrive folder into which
+     *                                  to create the OneDrive file, or null to
+     *                                  create it in the OneDrive root folder.
+     *                                  Default: null.
+     * @param string|resource $content  The content of the OneDrive file to be
+     *                                  created, as a string or as a resource to
+     *                                  an already opened file. In the latter
+     *                                  case, the responsibility to close the
+     *                                  handle is left to the calling function.
+     *                                  Default: ''.
+     * @param array           $options  The options.
      *
      * @return File The file created, as File instance referencing to the
      *              OneDrive file created.
      *
      * @throws \Exception Thrown on I/O errors.
      */
-    public function createFile($name, $parentId = null, $content = '', $overwrite = self::OVERWRITE_ALWAYS, $temp = false)
+    public function createFile($name, $parentId = null, $content = '', array $options = array())
     {
         if (null === $parentId) {
             $parentId = 'me/skydrive';
@@ -667,7 +710,9 @@ class Client
         if (is_resource($content)) {
             $stream = $content;
         } else {
-            $stream = fopen('php://' . ($temp ? 'temp' : 'memory'), 'rw+b');
+            $stream = $this
+                ->_streamOpener
+                ->open($this->_streamBackEnd);
 
             if (false === $stream) {
                 throw new \Exception('fopen() failed');
@@ -684,9 +729,19 @@ class Client
             }
         }
 
+        $options = array_merge(array(
+            'name_conflict_behavior' => $this->_nameConflictBehavior,
+        ), $options);
+
+        $params = $this
+            ->_nameConflictBehaviorParameterizer
+            ->parameterize(array(), $options['name_conflict_behavior']);
+
+        $query = http_build_query($params);
+
         // TODO: some versions of cURL cannot PUT memory streams? See here for a
         // workaround: https://bugs.php.net/bug.php?id=43468
-        $file = $this->apiPut($parentId . '/files/' . urlencode($name) . '?overwrite=' . $overwrite, $stream);
+        $file = $this->apiPut($parentId . '/files/' . urlencode($name) . "?$query", $stream);
 
         // Close the handle only if we opened it within this function.
         if (!is_resource($content)) {

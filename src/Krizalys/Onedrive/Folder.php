@@ -11,21 +11,6 @@ namespace Krizalys\Onedrive;
 class Folder extends Object
 {
     /**
-     * @var string overwrite always option.
-     */
-    const OVERWRITE_ALWAYS = 'true';
-
-    /**
-     * @var string overwrite never option.
-     */
-    const OVERWRITE_NEVER = 'false';
-
-    /**
-     * @var string overwrite rename option.
-     */
-    const OVERWRITE_RENAME = 'ChooseNewName';
-
-    /**
      * Determines whether the OneDrive object referenced by this Object instance
      * is a folder.
      *
@@ -121,25 +106,26 @@ class Folder extends Object
     /**
      * Creates a file in the OneDrive folder referenced by this Folder instance.
      *
-     * @param string          $name      The name of the OneDrive file to be
-     *                                   created.
-     * @param string|resource $content   The content of the OneDrive file to be
-     *                                   created, as a string or handle to an
-     *                                   already opened file.  In the latter
-     *                                   case, the responsibility to close the
-     *                                   handle is left to the calling function.
-     *                                   Default: ''.
-     * @param string          $overwrite Indicate whether you want to overwrite
-     *                                   files with the same name. accepteds:
-     *                                   OVERWRITE_ALWAYS, OVERWRITE_NEVER or
-     *                                   OVERWRITE_RENAME
+     * @param string          $name    The name of the OneDrive file to be
+     *                                 created.
+     * @param string|resource $content The content of the OneDrive file to be
+     *                                 created, as a string or handle to an
+     *                                 already opened file.  In the latter case,
+     *                                 the responsibility to close the handle is
+     *                                 is left to the calling function. Default:
+     *                                 ''.
+     * @param array           $options The options.
      *
      * @return File The file created, as a File instance.
      *
      * @throws \Exception Thrown on I/O errors.
      */
-    public function createFile($name, $content = '', $overwrite = self::OVERWRITE_ALWAYS)
+    public function createFile($name, $content = '', array $options = array())
     {
-        return $this->_client->createFile($name, $this->_id, $content, $overwrite);
+        $options = array_merge(array(
+            'name_conflict_behavior' => $this->_client->getNameConflictBehavior(),
+        ), $options);
+
+        return $this->_client->createFile($name, $this->_id, $content, $options);
     }
 }
