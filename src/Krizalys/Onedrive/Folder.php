@@ -122,8 +122,11 @@ class Folder extends Object
      */
     public function createFile($name, $content = '', array $options = array())
     {
+        $client = $this->_client;
+
         $options = array_merge(array(
-            'name_conflict_behavior' => $this->_client->getNameConflictBehavior(),
+            'name_conflict_behavior' => $client->getNameConflictBehavior(),
+            'stream_back_end'        => $client->getStreamBackEnd(),
         ), $options);
 
         return $this->_client->createFile($name, $this->_id, $content, $options);

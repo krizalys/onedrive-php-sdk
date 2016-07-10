@@ -4,6 +4,7 @@ namespace Test\Krizalys\Onedrive;
 
 use Krizalys\Onedrive\Client;
 use Krizalys\Onedrive\NameConflictBehavior;
+use Krizalys\Onedrive\StreamBackEnd;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Test\Mock\GlobalNamespace;
 
@@ -29,17 +30,26 @@ class ClientTest extends MockeryTestCase
     public function setUp()
     {
         parent::setUp();
+        $this->client = $this->getClient();
+    }
 
-        $this->client = new Client(array(
-            'client_id' => $this->mockClientId(),
-            'state'     => (object) array(
-                'redirect_uri' => null,
-                'token'        => (object) array(
-                    'obtained' => strtotime('1999-01-01Z'),
-                    'data'     => self::mockTokenData(),
+    private function getClient(array $options = array())
+    {
+        $options = array_merge(
+            array(
+                'client_id' => $this->mockClientId(),
+                'state'     => (object) array(
+                    'redirect_uri' => null,
+                    'token'        => (object) array(
+                        'obtained' => strtotime('1999-01-01Z'),
+                        'data'     => self::mockTokenData(),
+                    ),
                 ),
             ),
-        ));
+            $options
+        );
+
+        return new Client($options);
     }
 
     private function mockClientId()
@@ -469,6 +479,60 @@ class ClientTest extends MockeryTestCase
         $this
             ->client
             ->createFile($name, $parentId, $content, $options);
+    }
+
+    public function provideCreateFileShouldCallOnceFopenWithExpectedArguments()
+    {
+        return array(
+            'MEMORY back end' => array(
+                'options'  => array('stream_back_end' => StreamBackEnd::MEMORY),
+                'expected' => array(
+                    'filename' => 'php://memory',
+                    'mode'     => 'rw+b',
+                ),
+            ),
+
+            'TEMP back end' => array(
+                'options'  => array('stream_back_end' => StreamBackEnd::TEMP),
+                'expected' => array(
+                    'filename' => 'php://temp',
+                    'mode'     => 'rw+b',
+                ),
+            ),
+        );
+    }
+
+    /**
+     * @dataProvider provideCreateFileShouldCallOnceFopenWithExpectedArguments
+     */
+    public function testCreateFileShouldCallOnceFopenWithExpectedArguments(
+        $options,
+        $expected
+    ) {
+        GlobalNamespace::reset(array(
+            'fopen' => function ($expectation) use ($expected) {
+                $expectation
+                    ->once()
+                    ->withArgs(function ($filename, $mode) use ($expected) {
+                        return $expected['filename'] == $filename && $expected['mode'] == $mode;
+                    });
+            },
+
+            'curl_exec' => function ($expectation) {
+                $expectation->andReturn(json_encode((object) array(
+                    'id' => 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
+                )));
+            },
+        ));
+
+        $client = $this->getClient($options);
+
+        $client->createFile(
+            'test-file.txt',
+            'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
+            'Some test content',
+            $options
+        );
     }
 
     public function provideFetchObjectType()

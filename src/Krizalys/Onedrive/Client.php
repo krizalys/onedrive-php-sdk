@@ -238,6 +238,16 @@ class Client
     }
 
     /**
+     * Gets the stream back end of this client instance.
+     *
+     * @return int
+     */
+    public function getStreamBackEnd()
+    {
+        return $this->_streamBackEnd;
+    }
+
+    /**
      * Gets the current state of this Client instance. Typically saved in the
      * session and passed back to the Client constructor for further requests.
      *
@@ -710,9 +720,13 @@ class Client
         if (is_resource($content)) {
             $stream = $content;
         } else {
+            $options = array_merge(array(
+                'stream_back_end' => $this->_streamBackEnd,
+            ), $options);
+
             $stream = $this
                 ->_streamOpener
-                ->open($this->_streamBackEnd);
+                ->open($options['stream_back_end']);
 
             if (false === $stream) {
                 throw new \Exception('fopen() failed');
