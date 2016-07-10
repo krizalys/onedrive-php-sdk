@@ -4,7 +4,7 @@ namespace Krizalys\Onedrive;
 
 class StreamOpener
 {
-    const URIS = array(
+    private static $uris = array(
         StreamBackEnd::MEMORY => 'php://memory',
         StreamBackEnd::TEMP   => 'php://temp',
     );
@@ -20,11 +20,11 @@ class StreamOpener
      */
     public function open($streamBackEnd)
     {
-        if (!array_key_exists($streamBackEnd, self::URIS)) {
+        if (!array_key_exists($streamBackEnd, self::$uris)) {
             throw new \Exception("Unsupported stream back end: $streamBackEnd");
         }
 
-        $uri = self::URIS[$streamBackEnd];
+        $uri = self::$uris[$streamBackEnd];
         return fopen($uri, 'rw+b');
     }
 }
