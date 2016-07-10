@@ -9,7 +9,7 @@ class GlobalNamespace
     /**
      * @var \Mockery\Mock
      */
-    static $functions;
+    public static $functions;
 
     /**
      * Stubs global functions and force them to behave as if they were
@@ -17,7 +17,7 @@ class GlobalNamespace
      *
      * @param array $expectations
      */
-    static function reset(array $expectations = array())
+    public static function reset(array $expectations = array())
     {
         $expectations = array_merge(array(
             'time' => function ($expectation) {

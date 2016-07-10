@@ -17,9 +17,9 @@ class NameConflictBehaviorParameterizerTest extends \PHPUnit_Framework_TestCase
             ),
 
             'RENAME' => array(
-                'params'         => array('key' => 'value'),
+                'params'               => array('key' => 'value'),
                 'nameConflictBehavior' => NameConflictBehavior::RENAME,
-                'expected'       => array('key' => 'value', 'overwrite' => 'ChooseNewName'),
+                'expected'             => array('key' => 'value', 'overwrite' => 'ChooseNewName'),
             ),
 
             'REPLACE' => array(

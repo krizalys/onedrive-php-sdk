@@ -4,7 +4,6 @@ namespace Test\Krizalys\Onedrive;
 
 use Krizalys\Onedrive\StreamBackEnd;
 use Krizalys\Onedrive\StreamOpener;
-use Mockery as m;
 use Test\Mock\GlobalNamespace;
 
 class StreamOpenerTest /*extends \PHPUnit_Framework_TestCase*/

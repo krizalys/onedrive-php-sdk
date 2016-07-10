@@ -79,7 +79,7 @@ class Client
 
     /**
      * @var NameConflictBehaviorParameterizer The name conflict behavior
-     * parameterizer.
+     *                                        parameterizer.
      */
     private $_nameConflictBehaviorParameterizer;
 
