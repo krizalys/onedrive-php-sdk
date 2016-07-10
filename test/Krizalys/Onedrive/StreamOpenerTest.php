@@ -6,7 +6,7 @@ use Krizalys\Onedrive\StreamBackEnd;
 use Krizalys\Onedrive\StreamOpener;
 use Test\Mock\GlobalNamespace;
 
-class StreamOpenerTest /*extends \PHPUnit_Framework_TestCase*/
+class StreamOpenerTest extends \PHPUnit_Framework_TestCase
 {
     public function provideOpenShouldCallOnceFopenWithExpectedArguments()
     {
@@ -45,7 +45,7 @@ class StreamOpenerTest /*extends \PHPUnit_Framework_TestCase*/
     /**
      * @expectedException \Exception
      */
-    public function testOpenShouldWithUnsupportedSourceThrowException()
+    public function testOpenWithUnsupportedBackEndShouldThrowException()
     {
         $opener = new StreamOpener();
         $opener->open(0);
