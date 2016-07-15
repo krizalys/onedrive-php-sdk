@@ -1,6 +1,6 @@
 <?php
 
-require_once sprintf('%s/vendor/autoload.php', dirname(__DIR__));
+require_once sprintf('%s/../../vendor/autoload.php', __DIR__);
 require_once sprintf('%s/Krizalys/Onedrive/functions.php', __DIR__);
 
 spl_autoload_register(function ($class) {
