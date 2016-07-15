@@ -1,20 +1,19 @@
 <phpunit
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/5.4/phpunit.xsd"
-    bootstrap="test/bootstrap.php"
+    bootstrap="./bootstrap.php"
     colors="true"
 >
     <testsuites>
-        <testsuite name="OneDrive SDK for PHP test suite">
-            <directory>test</directory>
+        <testsuite name="Unit test suite">
+            <directory>.</directory>
         </testsuite>
     </testsuites>
 
     <filter>
         <whitelist>
-            <directory>src</directory>
             <exclude>
-                <directory>test</directory>
+                <directory>.</directory>
             </exclude>
         </whitelist>
     </filter>
