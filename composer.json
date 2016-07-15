@@ -33,6 +33,7 @@
     },
 
     "require-dev": {
+        "ext-sockets":     "*",
         "mockery/mockery": "dev-master",
         "phpunit/phpunit": "4.8.26 || 5.4.4"
     },
