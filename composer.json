@@ -28,8 +28,10 @@
     },
 
     "require": {
-        "php":      ">= 5.4 || >= 7.0",
-        "ext-curl": "*"
+        "php":             ">= 5.4 || >= 7.0",
+        "ext-curl":        "*",
+        "monolog/monolog": "1.20.0",
+        "psr/log":         "1.0.0"
     },
 
     "require-dev": {
