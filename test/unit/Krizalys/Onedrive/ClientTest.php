@@ -62,7 +62,7 @@ class ClientTest extends MockeryTestCase
         return 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
     }
 
-    public function testGetLogInUrl()
+    public function testGetLogInUrlShouldReturnExpectedValue()
     {
         $client = new Client(array(
             'client_id' => $this->mockClientId(),
@@ -86,7 +86,7 @@ class ClientTest extends MockeryTestCase
         $this->assertEquals('https://login.live.com/oauth20_authorize.srf?client_id=9999999999999999&scope=test_scope_1%2Ctest_scope_2&response_type=code&redirect_uri=http%3A%2F%2Fte.st%2Fcallback&display=popup&locale=en', $actual);
     }
 
-    public function testGetTokenExpire()
+    public function testGetTokenExpireShouldReturnExpectedValue()
     {
         GlobalNamespace::reset(array(
             'time' => function ($expectation) {
@@ -103,7 +103,7 @@ class ClientTest extends MockeryTestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function provideGetAccessTokenStatus()
+    public function provideGetAccessTokenStatusShouldReturnExpectedValue()
     {
         return array(
             'Fresh token' => array(
@@ -124,10 +124,12 @@ class ClientTest extends MockeryTestCase
     }
 
     /**
-     * @dataProvider provideGetAccessTokenStatus
+     * @dataProvider provideGetAccessTokenStatusShouldReturnExpectedValue
      */
-    public function testGetAccessTokenStatus($time, $expected)
-    {
+    public function testGetAccessTokenStatusShouldReturnExpectedValue(
+        $time,
+        $expected
+    ) {
         GlobalNamespace::reset(array(
             'time' => function ($expectation) use ($time) {
                 $expectation->andReturn($time);
@@ -141,7 +143,7 @@ class ClientTest extends MockeryTestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testObtainAccessToken()
+    public function testObtainAccessTokenShouldSetExpectedState()
     {
         GlobalNamespace::reset(array(
             'time' => function ($expectation) {
@@ -182,7 +184,7 @@ class ClientTest extends MockeryTestCase
         ), $actual);
     }
 
-    public function testRenewAccessToken()
+    public function testRenewAccessTokenShouldSetExpectedState()
     {
         GlobalNamespace::reset(array(
             'time' => function ($expectation) {
@@ -216,7 +218,7 @@ class ClientTest extends MockeryTestCase
         ), $actual);
     }
 
-    public function testApiGet()
+    public function testApiGetShouldReturnExpectedValue()
     {
         GlobalNamespace::reset(array(
             'curl_exec' => function ($expectation) {
@@ -235,7 +237,7 @@ class ClientTest extends MockeryTestCase
         ), $actual);
     }
 
-    public function testApiPost()
+    public function testApiPostShouldReturnExpectedValue()
     {
         GlobalNamespace::reset(array(
             'curl_exec' => function ($expectation) {
@@ -256,7 +258,7 @@ class ClientTest extends MockeryTestCase
         ), $actual);
     }
 
-    public function testApiPut()
+    public function testApiPutShouldReturnExpectedValue()
     {
         GlobalNamespace::reset(array(
             'curl_exec' => function ($expectation) {
@@ -277,7 +279,7 @@ class ClientTest extends MockeryTestCase
         ), $actual);
     }
 
-    public function testApiDelete()
+    public function testApiDeleteShouldReturnExpectedValue()
     {
         GlobalNamespace::reset(array(
             'curl_exec' => function ($expectation) {
@@ -296,7 +298,7 @@ class ClientTest extends MockeryTestCase
         ), $actual);
     }
 
-    public function testApiMove()
+    public function testApiMoveShouldReturnExpectedValue()
     {
         GlobalNamespace::reset(array(
             'curl_exec' => function ($expectation) {
@@ -317,7 +319,7 @@ class ClientTest extends MockeryTestCase
         ), $actual);
     }
 
-    public function testApiCopy()
+    public function testApiCopyShouldReturnExpectedValue()
     {
         GlobalNamespace::reset(array(
             'curl_exec' => function ($expectation) {
@@ -338,7 +340,7 @@ class ClientTest extends MockeryTestCase
         ), $actual);
     }
 
-    public function provideCreateFolderUrl()
+    public function provideCreateFolderShouldCallOnceCurlSetoptArrayWithExpectedUrl()
     {
         return array(
             'Parent omitted' => array(
@@ -358,10 +360,14 @@ class ClientTest extends MockeryTestCase
     }
 
     /**
-     * @dataProvider provideCreateFolderUrl
+     * @dataProvider provideCreateFolderShouldCallOnceCurlSetoptArrayWithExpectedUrl
      */
-    public function testCreateFolderUrl($name, $parentId, $description, $expected)
-    {
+    public function testCreateFolderShouldCallOnceCurlSetoptArrayWithExpectedUrl(
+        $name,
+        $parentId,
+        $description,
+        $expected
+    ) {
         GlobalNamespace::reset(array(
             'curl_setopt_array' => array(
                 function ($expectation) {
@@ -390,7 +396,7 @@ class ClientTest extends MockeryTestCase
             ->createFolder($name, $parentId, $description);
     }
 
-    public function provideCreateFileUrl()
+    public function provideCreateFileShouldCallOnceCurlSetoptArrayWithExpectedUrl()
     {
         return array(
             'Parent omitted, FAIL name conflict behavior' => array(
@@ -444,9 +450,9 @@ class ClientTest extends MockeryTestCase
     }
 
     /**
-     * @dataProvider provideCreateFileUrl
+     * @dataProvider provideCreateFileShouldCallOnceCurlSetoptArrayWithExpectedUrl
      */
-    public function testCreateFileUrl(
+    public function testCreateFileShouldCallOnceCurlSetoptArrayWithExpectedUrl(
         $name,
         $parentId,
         $content,
@@ -535,7 +541,7 @@ class ClientTest extends MockeryTestCase
         );
     }
 
-    public function provideFetchObjectType()
+    public function provideFetchObjectShouldReturnExpectedType()
     {
         return array(
             'File' => array(
@@ -556,9 +562,9 @@ class ClientTest extends MockeryTestCase
     }
 
     /**
-     * @dataProvider provideFetchObjectType
+     * @dataProvider provideFetchObjectShouldReturnExpectedType
      */
-    public function testFetchObjectType($type, $expected)
+    public function testFetchObjectShouldReturnExpectedType($type, $expected)
     {
         GlobalNamespace::reset(array(
             'curl_exec' => function ($expectation) use ($type) {
@@ -576,7 +582,7 @@ class ClientTest extends MockeryTestCase
         $this->assertEquals("Krizalys\Onedrive\\$expected", $actual);
     }
 
-    public function testFetchRootUrl()
+    public function testFetchRootShouldCallOnceCurlSetoptWithExpectedUrl()
     {
         GlobalNamespace::reset(array(
             'curl_setopt' => function ($expectation) {
@@ -600,7 +606,7 @@ class ClientTest extends MockeryTestCase
             ->fetchRoot();
     }
 
-    public function testFetchCameraRollUrl()
+    public function testFetchCameraRollShouldCallOnceCurlSetoptWithExpectedUrl()
     {
         GlobalNamespace::reset(array(
             'curl_setopt' => function ($expectation) {
@@ -624,7 +630,7 @@ class ClientTest extends MockeryTestCase
             ->fetchCameraRoll();
     }
 
-    public function testFetchDocsUrl()
+    public function testFetchDocsShouldCallOnceCurlSetoptWithExpectedUrl()
     {
         GlobalNamespace::reset(array(
             'curl_setopt' => function ($expectation) {
@@ -648,7 +654,7 @@ class ClientTest extends MockeryTestCase
             ->fetchDocs();
     }
 
-    public function testFetchCameraPicsUrl()
+    public function testFetchCameraPicsShouldCallOnceCurlSetoptWithExpectedUrl()
     {
         GlobalNamespace::reset(array(
             'curl_setopt' => function ($expectation) {
@@ -672,7 +678,7 @@ class ClientTest extends MockeryTestCase
             ->fetchPics();
     }
 
-    public function testFetchPublicDocsUrl()
+    public function testFetchPublicDocsShouldCallOnceCurlSetoptWithExpectedUrl()
     {
         GlobalNamespace::reset(array(
             'curl_setopt' => function ($expectation) {
@@ -696,7 +702,7 @@ class ClientTest extends MockeryTestCase
             ->fetchPublicDocs();
     }
 
-    public function provideFetchPropertiesUrl()
+    public function provideFetchPropertiesShouldCallOnceCurlSetoptWithExpectedUrl()
     {
         return array(
             'Null object ID' => array(
@@ -712,10 +718,12 @@ class ClientTest extends MockeryTestCase
     }
 
     /**
-     * @dataProvider provideFetchPropertiesUrl
+     * @dataProvider provideFetchPropertiesShouldCallOnceCurlSetoptWithExpectedUrl
      */
-    public function testFetchPropertiesUrl($objectId, $expected)
-    {
+    public function testFetchPropertiesShouldCallOnceCurlSetoptWithExpectedUrl(
+        $objectId,
+        $expected
+    ) {
         GlobalNamespace::reset(array(
             'curl_setopt' => function ($expectation) use ($expected) {
                 $expectation
@@ -735,7 +743,7 @@ class ClientTest extends MockeryTestCase
             ->fetchProperties($objectId);
     }
 
-    public function provideFetchObjectsUrl()
+    public function provideFetchObjectsShouldCallOnceCurlSetoptWithExpectedUrl()
     {
         return array(
             'Null object ID' => array(
@@ -751,10 +759,12 @@ class ClientTest extends MockeryTestCase
     }
 
     /**
-     * @dataProvider provideFetchObjectsUrl
+     * @dataProvider provideFetchObjectsShouldCallOnceCurlSetoptWithExpectedUrl
      */
-    public function testFetchObjectsUrl($objectId, $expected)
-    {
+    public function testFetchObjectsShouldCallOnceCurlSetoptWithExpectedUrl(
+        $objectId,
+        $expected
+    ) {
         GlobalNamespace::reset(array(
             'curl_setopt' => function ($expectation) use ($expected) {
                 $expectation
@@ -776,7 +786,7 @@ class ClientTest extends MockeryTestCase
             ->fetchObjects($objectId);
     }
 
-    public function testUpdateObjectUrl()
+    public function testUpdateObjectShouldCallOnceCurlSetoptArrayWithExpectedUrl()
     {
         GlobalNamespace::reset(array(
             'curl_setopt_array' => array(
@@ -804,7 +814,7 @@ class ClientTest extends MockeryTestCase
             ->updateObject('file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
     }
 
-    public function provideMoveObjectDestinationUrl()
+    public function provideMoveObjectShouldCallOnceCurlSetoptArrayWithExpectedDestinationUrl()
     {
         return array(
             'Null destination ID' => array(
@@ -820,10 +830,12 @@ class ClientTest extends MockeryTestCase
     }
 
     /**
-     * @dataProvider provideMoveObjectDestinationUrl
+     * @dataProvider provideMoveObjectShouldCallOnceCurlSetoptArrayWithExpectedDestinationUrl
      */
-    public function testMoveObjectDestinationUrl($destinationId, $expected)
-    {
+    public function testMoveObjectShouldCallOnceCurlSetoptArrayWithExpectedDestinationUrl(
+        $destinationId,
+        $expected
+    ) {
         GlobalNamespace::reset(array(
             'curl_setopt_array' => array(
                 function ($expectation) {
@@ -850,7 +862,7 @@ class ClientTest extends MockeryTestCase
             ->moveObject('file.ffffffffffffffff.FFFFFFFFFFFFFFFF!456', $destinationId);
     }
 
-    public function provideCopyFileDestinationUrl()
+    public function provideCopyFileShouldCallOnceCurlSetoptArrayWithExpectedDestinationUrl()
     {
         return array(
             'Null destination ID' => array(
@@ -866,10 +878,12 @@ class ClientTest extends MockeryTestCase
     }
 
     /**
-     * @dataProvider provideCopyFileDestinationUrl
+     * @dataProvider provideCopyFileShouldCallOnceCurlSetoptArrayWithExpectedDestinationUrl
      */
-    public function testCopyFileDestinationUrl($destinationId, $expected)
-    {
+    public function testCopyFileShouldCallOnceCurlSetoptArrayWithExpectedDestinationUrl(
+        $destinationId,
+        $expected
+    ) {
         GlobalNamespace::reset(array(
             'curl_setopt_array' => array(
                 function ($expectation) {
@@ -896,7 +910,7 @@ class ClientTest extends MockeryTestCase
             ->copyFile('file.ffffffffffffffff.FFFFFFFFFFFFFFFF!456', $destinationId);
     }
 
-    public function testDeleteObjectUrl()
+    public function testDeleteObjectShouldCallOnceCurlSetoptArrayWithExpectedUrl()
     {
         GlobalNamespace::reset(array(
             'curl_setopt_array' => array(
@@ -924,7 +938,7 @@ class ClientTest extends MockeryTestCase
             ->deleteObject('file.ffffffffffffffff.FFFFFFFFFFFFFFFF!456');
     }
 
-    public function testFetchQuotaUrl()
+    public function testFetchQuotaShouldCallOnceCurlSetoptWithExpectedUrl()
     {
         GlobalNamespace::reset(array(
             'curl_setopt' => function ($expectation) {
@@ -948,7 +962,7 @@ class ClientTest extends MockeryTestCase
             ->fetchQuota();
     }
 
-    public function testFetchAccountInfoUrl()
+    public function testFetchAccountInfoShouldCallOnceCurlSetoptWithExpectedUrl()
     {
         GlobalNamespace::reset(array(
             'curl_setopt' => function ($expectation) {
@@ -972,7 +986,7 @@ class ClientTest extends MockeryTestCase
             ->fetchAccountInfo();
     }
 
-    public function testFetchRecentDocsUrl()
+    public function testFetchRecentDocsShouldCallOnceCurlSetoptWithExpectedUrl()
     {
         GlobalNamespace::reset(array(
             'curl_setopt' => function ($expectation) {
@@ -996,7 +1010,7 @@ class ClientTest extends MockeryTestCase
             ->fetchRecentDocs();
     }
 
-    public function testFetchSharedUrl()
+    public function testFetchSharedShouldCallOnceCurlSetoptWithExpectedUrl()
     {
         GlobalNamespace::reset(array(
             'curl_setopt' => function ($expectation) {
