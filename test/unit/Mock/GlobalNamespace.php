@@ -81,7 +81,10 @@ class GlobalNamespace
 
             foreach ($callbacks as $callback) {
                 $expectation = $functions->shouldReceive($name);
-                $callback($expectation);
+
+                if (is_callable($callback)) {
+                    $callback($expectation);
+                }
             }
         }
 
