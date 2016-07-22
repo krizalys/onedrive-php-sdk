@@ -2,6 +2,9 @@
 
 namespace Krizalys\Onedrive;
 
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
 /**
  * @class Client
  *
@@ -45,6 +48,11 @@ class Client
      * @var object OAuth state (token, etc...).
      */
     private $_state;
+
+    /**
+     * @var Logger
+     */
+    private $_logger;
 
     /**
      * @var int The last HTTP status received.
@@ -182,6 +190,9 @@ class Client
      *                       - 'state' (object) When defined, it should contain
      *                       a valid OneDrive client state, as returned by
      *                       getState(). Default: array().
+     *                       - 'logger' (Logger) A LoggerInterface instance.
+     *                       Default: new Logger('Krizalys\Onedrive\Client')
+     *                       which logs every message to 'php://stderr'.
      *                       - 'ssl_verify' (bool) Whether to verify SSL hosts
      *                       and peers. Default: false.
      *                       - 'ssl_capath' (bool|string) CA path to use for
@@ -210,6 +221,15 @@ class Client
                 'redirect_uri' => null,
                 'token'        => null,
             );
+
+        if (array_key_exists('logger', $options)) {
+            $logger = $options['logger'];
+        } else {
+            $logger = new Logger('Krizalys\Onedrive\Client');
+            $logger->pushHandler(new StreamHandler('php://stderr'));
+        }
+
+        $this->_logger = $logger;
 
         $this->_sslVerify = array_key_exists('ssl_verify', $options)
             ? $options['ssl_verify'] : false;
@@ -1012,5 +1032,17 @@ class Client
     public function fetchShared()
     {
         return $this->apiGet('me/skydrive/shared');
+    }
+
+    /**
+     * Logs with an arbitrary level.
+     *
+     * @param mixed  $level
+     * @param string $message
+     * @param array  $context
+     */
+    public function log($level, $message, array $context = array())
+    {
+        $this->_logger->log($level, $message, $context);
     }
 }
