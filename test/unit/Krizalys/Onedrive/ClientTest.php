@@ -27,7 +27,7 @@ class ClientTest extends MockeryTestCase
         ];
     }
 
-    public function setUp()
+    protected function setUp()
     {
         parent::setUp();
         $this->client = $this->getClient();
