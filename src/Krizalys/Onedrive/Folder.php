@@ -2,6 +2,8 @@
 
 namespace Krizalys\Onedrive;
 
+use Psr\Log\LogLevel;
+
 /**
  * @class Folder
  *
@@ -48,7 +50,13 @@ class Folder extends Object
      */
     public function fetchObjects()
     {
-        // TODO: Log deprecation notice.
+        $message = sprintf(
+            '%s() is deprecated and will be removed in a future version; use %s::fetchChildObject() instead',
+            __METHOD__,
+            __CLASS__
+        );
+
+        $this->_client->log(LogLevel::WARNING, $message);
         return $this->fetchChildObjects();
     }
 
