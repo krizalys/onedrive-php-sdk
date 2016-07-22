@@ -5,8 +5,9 @@ namespace Test\Krizalys\Onedrive;
 use Krizalys\Onedrive\Folder;
 use Krizalys\Onedrive\NameConflictBehavior;
 use Mockery as m;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 
-class FolderTest extends \PHPUnit_Framework_TestCase
+class FolderTest extends MockeryTestCase
 {
     private $folder;
 

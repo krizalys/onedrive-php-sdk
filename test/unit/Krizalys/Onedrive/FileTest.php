@@ -4,8 +4,9 @@ namespace Test\Krizalys\Onedrive;
 
 use Krizalys\Onedrive\File;
 use Mockery as m;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 
-class FileTest extends \PHPUnit_Framework_TestCase
+class FileTest extends MockeryTestCase
 {
     private function mockClient(array $expectations = array())
     {

@@ -4,12 +4,13 @@ namespace Test\Krizalys\Onedrive;
 
 use Krizalys\Onedrive\Object;
 use Mockery as m;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 
 class TestObject extends Object
 {
 }
 
-class ObjectTest extends \PHPUnit_Framework_TestCase
+class ObjectTest extends MockeryTestCase
 {
     private $object;
 
