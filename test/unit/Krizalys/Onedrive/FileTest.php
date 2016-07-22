@@ -3,8 +3,8 @@
 namespace Test\Krizalys\Onedrive;
 
 use Krizalys\Onedrive\File;
-use Mockery as m;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
+use Mockery as m;
 
 class FileTest extends MockeryTestCase
 {
