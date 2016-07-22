@@ -25,7 +25,7 @@ Change log
 - Support for multiple naming conflict behaviors when uploading files.
 - Support for multiple PHP stream back ends when uploading files.
 - Standalone autoloader.
-- Test suite & code coverage.
+- Unit test suite & code coverage.
 
 ### Removed
 
