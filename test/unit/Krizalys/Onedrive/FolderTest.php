@@ -6,6 +6,7 @@ use Krizalys\Onedrive\Folder;
 use Krizalys\Onedrive\NameConflictBehavior;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Mockery as m;
+use Psr\Log\LogLevel;
 
 class FolderTest extends MockeryTestCase
 {
@@ -28,7 +29,10 @@ class FolderTest extends MockeryTestCase
 
         foreach ($expectations as $name => $callback) {
             $expectation = $client->shouldReceive($name);
-            $callback($expectation);
+
+            if (is_callable($callback)) {
+                $callback($expectation);
+            }
         }
 
         return $client;
@@ -56,9 +60,29 @@ class FolderTest extends MockeryTestCase
         $this->assertEquals(true, $actual);
     }
 
+    public function testFetchObjectsShouldCallOnceClientLogWithExpectedLevel()
+    {
+        $client = $this->mockClient(array(
+            'log' => function ($expectation) {
+                $expectation
+                    ->once()
+                    ->withArgs(function ($level, $message, $context = array()) {
+                        return LogLevel::WARNING == $level;
+                    });
+            },
+
+            'fetchObjects' => null,
+        ));
+
+        $folder = new Folder($client);
+        $folder->fetchObjects();
+    }
+
     public function testFetchObjectsShouldCallOnceClientFetchObjects()
     {
         $client = $this->mockClient(array(
+            'log' => null,
+
             'fetchObjects' => function ($expectation) {
                 $expectation->once();
             },
