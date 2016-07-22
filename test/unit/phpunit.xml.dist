@@ -12,6 +12,7 @@
 
     <filter>
         <whitelist>
+            <directory>../../src</directory>
             <exclude>
                 <directory>.</directory>
             </exclude>
