@@ -5,8 +5,8 @@ namespace Test\Krizalys\Onedrive;
 use Krizalys\Onedrive\Client;
 use Krizalys\Onedrive\NameConflictBehavior;
 use Krizalys\Onedrive\StreamBackEnd;
-use Mockery as m;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
+use Mockery as m;
 use Test\Mock\GlobalNamespace;
 
 class ClientTest extends MockeryTestCase
