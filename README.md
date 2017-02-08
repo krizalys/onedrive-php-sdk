@@ -65,6 +65,8 @@ During the process, a `vendor/autoload.php` file will be created. It is
 mentioned in next steps and allows you to use classes from OneDrive SDK for PHP
 without needing to explicitly `require()` files that define them.
 
+> Windows users must make sure `extension=php_sockets.dll` is uncommented in the `php.ini` file
+
 ### Step 2: save your configuration
 
 As you may need them from several scripts, save your *Client ID*, *Client
