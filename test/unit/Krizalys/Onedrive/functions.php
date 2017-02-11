@@ -3,6 +3,7 @@
 /**
  * Global function mocks.
  */
+
 namespace Krizalys\Onedrive;
 
 use Test\Mock\GlobalNamespace;
