@@ -3,6 +3,7 @@ language: php
 php:
     - '5.6'
     - '7.0'
+    - '7.1'
 
 #env:
 #    secure: 'fahV+AjOpZzSsleCp2CJcieuL+t8WkeDXTt4dDiobfbvDKycu0jyKfBG3x04YMpL3ic+zYTSELyFtDLVDY5nd2aNvi0fPpgiMkCp4YxhXfRL8d0GvOSYoSEXwIQieTZ1F6+Rn7/19db3APFnHywXAie2cI8sKUIvEbAIefycOLQ='

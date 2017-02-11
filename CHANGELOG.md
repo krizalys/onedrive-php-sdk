@@ -6,6 +6,7 @@ Change log
 
 ### Added
 
+- Support for PHP 7.1.
 - Support for logging, using [monolog/monolog][monolog] by default.
 - Integration test suite.
 
