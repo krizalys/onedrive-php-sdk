@@ -22,6 +22,13 @@ Using the OneDrive SDK for PHP requires the following:
 * [Composer][composer] 1.0.0-alpha10 or newer
 * Basic PHP knowledge
 
+### Testing
+
+When installing the development dependencies (eg. for testing purposes), you
+also require:
+
+* [PHP' Sockets extension][php-sockets]
+
 Installation
 ------------
 
@@ -58,7 +65,7 @@ From the root of this repository, get the required dependencies using
 [Composer][composer]:
 
 ```
-$ composer install -n
+$ composer install -n --no-dev
 ```
 
 During the process, a `vendor/autoload.php` file will be created. It is
@@ -235,6 +242,7 @@ The OneDrive SDK for PHP is developed and maintained by Christophe Vidal.
 [onedrive-api]:         http://msdn.microsoft.com/en-us/library/hh826521.aspx
 [php-curl]:             http://php.net/manual/en/book.curl.php
 [composer]:             https://getcomposer.org/
+[php-sockets]:          http://php.net/manual/en/book.sockets.php
 [live-login]:           https://login.live.com/
 [live-apps]:            https://account.live.com/developers/applications/index
 [live-newapp]:          https://account.live.com/developers/applications/create
