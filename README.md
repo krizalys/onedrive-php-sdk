@@ -138,9 +138,17 @@ Microsoft account, and they are asked whether they agree to allow your
 application to access their OneDrive account.
 
 If they do, they are redirected back to your *Callback URI* and a code is passed
-in the query string of this URL. The script residing at this URL is responsible
-for obtaining an access token (from the code received) and should start like
-(replace `/path/to` by the appropriate values):
+in the query string of this URL. The script residing at this URL essentially:
+
+1. Instantiates a `Client` from your configuration and the state from previous
+instantiations
+2. Obtains an OAuth access token using `Client::obtainAccessToken()`
+passing it the code received
+3. May start interacting with the files and folders stored in their OneDrive
+account, or delegates this responsibility to other scripts instantiating a
+`Client` from the same state
+
+It typically looks like (replace `/path/to` by the appropriate values):
 
 ```php
 <?php
