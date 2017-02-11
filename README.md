@@ -42,15 +42,15 @@ OneDrive SDK for PHP.
 
 You also need to create a web page where users will get redirected after they
 successfully signed in to their OneDrive account using this SDK. Typically, this
-will page will be a PHP script where you will start to interact with the files
-and folders stored in their OneDrive account. The URL of this page is the
+page will be a PHP script where you will start to interact with the files and
+folders stored in their OneDrive account. The URL of this page is the
 *Callback URI* and will also be needed to configure the OneDrive SDK for PHP.
 
 Quick start
 -----------
 
 Once you got your *Client ID*, *Client secret* and *Callback URI*, you can get
-started using the OneDrive SDK for PHP in three steps.
+started using the OneDrive SDK for PHP in four steps.
 
 ### Step 1: get your dependencies through Composer
 
