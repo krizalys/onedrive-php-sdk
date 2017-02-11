@@ -1,6 +1,14 @@
 Change log
 ==========
 
+[Unreleased][unreleased]
+------------------------
+
+### Added
+
+- Support for PHP 7.1.
+- Integration test suite.
+
 [1.1.1] - 2017-03-26
 --------------------
 
