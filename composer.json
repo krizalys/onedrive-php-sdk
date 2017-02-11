@@ -30,14 +30,14 @@
     "require": {
         "php":             ">= 5.6 || >= 7.0",
         "ext-curl":        "*",
-        "monolog/monolog": "1.20.0",
-        "psr/log":         "1.0.0"
+        "monolog/monolog": "1.22.0",
+        "psr/log":         "1.0.2"
     },
 
     "require-dev": {
         "ext-sockets":     "*",
-        "mockery/mockery": "dev-master",
-        "phpunit/phpunit": "4.8.26 || 5.4.4"
+        "mockery/mockery": "1.0.0-alpha1",
+        "phpunit/phpunit": "5.7.13"
     },
 
     "autoload": {
