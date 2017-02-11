@@ -9,6 +9,10 @@ Change log
 - Support for logging, using [monolog/monolog][monolog] by default.
 - Integration test suite.
 
+### Removed
+
+- Support for PHP 5.4 and PHP 5.5.
+
 [1.1.0] - 2016-07-10
 --------------------
 
