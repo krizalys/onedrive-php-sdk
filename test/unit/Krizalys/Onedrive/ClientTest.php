@@ -46,6 +46,8 @@ class ClientTest extends MockeryTestCase
                         'data'     => self::mockTokenData(),
                     ),
                 ),
+                'ssl_verify' => true,
+                'ssl_capath' => '/path/to/ca',
             ),
             $options
         );

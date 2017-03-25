@@ -123,7 +123,7 @@ class Client
         );
 
         if ($this->_sslVerify && $this->_sslCaPath) {
-            $default_options[CURLOPT_CAINFO] = $this->_sslCaPath;
+            $defaultOptions[CURLOPT_CAINFO] = $this->_sslCaPath;
         }
 
         // See http://php.net/manual/en/function.array-merge.php for a
