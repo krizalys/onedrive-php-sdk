@@ -1,11 +1,11 @@
 <?php
 
-namespace Test\Integration\Krizalys;
+namespace Test\Functional\Krizalys;
 
 use Krizalys\Onedrive\Client;
 
 /**
- * @group integration
+ * @group functional
  */
 class ClientTest extends \PHPUnit_Framework_TestCase
 {
@@ -24,7 +24,7 @@ EOF;
         // string causes the authentication process to not be initiated.
         $url = $client->getLoginUrl(array('wl.skydrive_update'), '');
 
-        echo "Integration test suite started.\n\nPlease sign into your OneDrive account from this page and grant to the app all\nthe privileges requested:\n\n\t$url\n\nThis process will then resume, do not interrupt it.\n";
+        echo "Functional test suite started.\n\nPlease sign into your OneDrive account from this page and grant to the app all\nthe privileges requested:\n\n\t$url\n\nThis process will then resume, do not interrupt it.\n";
 
         $server = @socket_create_listen(self::PORT, 1);
 
@@ -54,7 +54,7 @@ EOF;
             'HTTP/1.1 200 OK',
             'Content-Type: text/html; charset=utf-8',
             '',
-            '<!DOCTYPE html><h1>Thank you</h1><p>The integration test suite started running. You can close this window.</p>',
+            '<!DOCTYPE html><h1>Thank you</h1><p>The functional test suite started running. You can close this window.</p>',
         )));
 
         if (false === $size) {

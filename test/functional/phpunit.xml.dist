@@ -5,7 +5,7 @@
     colors="true"
 >
     <testsuites>
-        <testsuite name="Integration test suite">
+        <testsuite name="Functional test suite">
             <directory>.</directory>
         </testsuite>
     </testsuites>
