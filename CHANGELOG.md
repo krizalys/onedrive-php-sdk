@@ -14,6 +14,10 @@ Change log
 
 - Support for PHP 5.4 and PHP 5.5.
 
+### Fixed
+
+- Support for SSL.
+
 [1.1.0] - 2016-07-10
 --------------------
 
