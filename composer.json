@@ -33,7 +33,7 @@
     },
 
     "require-dev": {
-        "mockery/mockery": "dev-master",
+        "mockery/mockery": "0.9.x-dev#418b58f5884197bc7fd437f5c5358625813d9aa0",
         "phpunit/phpunit": "4.8.26 || 5.4.4"
     },
 
