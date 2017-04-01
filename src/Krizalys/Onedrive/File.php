@@ -57,10 +57,11 @@ class File extends Object
      * Copies the OneDrive file referenced by this File instance into another
      * OneDrive folder.
      *
-     * @param null|string The unique ID of the OneDrive folder into which to
-     *                    copy the OneDrive file referenced by this File
-     *                    instance, or null to copy it in the OneDrive root
-     *                    folder. Default: null.
+     * @param null|string $destinationId The unique ID of the OneDrive folder
+     *                                   into which to copy the OneDrive file
+     *                                   referenced by this File instance, or
+     *                                   null to copy it in the OneDrive root
+     *                                   folder. Default: null.
      */
     public function copy($destinationId = null)
     {

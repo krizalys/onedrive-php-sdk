@@ -10,6 +10,8 @@ namespace Krizalys\Onedrive;
 //     require_once __DIR__ . '/Onedrive/autoload.php'
 
 /**
+ * @param string $name The name.
+ *
  * @internal
  */
 function autoload($name)
