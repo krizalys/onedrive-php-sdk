@@ -280,10 +280,11 @@ abstract class Object
      * Moves the OneDrive object referenced by this Object instance into another
      * OneDrive folder.
      *
-     * @param null|string The unique ID of the OneDrive folder into which to
-     *                    move the OneDrive object referenced by this Object
-     *                    instance, or null to move it to the OneDrive root
-     *                    folder. Default: null.
+     * @param null|string $destinationId The unique ID of the OneDrive folder
+     *                                   into which to move the OneDrive object
+     *                                   referenced by this Object instance, or
+     *                                   null to move it to the OneDrive root
+     *                                   folder. Default: null.
      */
     public function move($destinationId = null)
     {

@@ -886,6 +886,8 @@ class Client
     /**
      * Fetches the properties of an object in the current OneDrive account.
      *
+     * @param string $objectId The object ID.
+     *
      * @return object The properties of the object fetched.
      */
     public function fetchProperties($objectId)
@@ -899,6 +901,8 @@ class Client
 
     /**
      * Fetches the objects in a folder in the current OneDrive account.
+     *
+     * @param string $objectId The object ID.
      *
      * @return array The objects in the folder fetched, as Object instances
      *               referencing OneDrive objects.
@@ -957,10 +961,11 @@ class Client
     /**
      * Moves an object into another folder.
      *
-     * @param string      The unique ID of the object to move.
-     * @param null|string The unique ID of the folder into which to move the
-     *                    object, or null to move it to the OneDrive root
-     *                    folder. Default: null.
+     * @param string      $objectId      The unique ID of the object to move.
+     * @param null|string $destinationId The unique ID of the folder into which
+     *                                   to move the object, or null to move it
+     *                                   to the OneDrive root folder. Default:
+     *                                   null.
      */
     public function moveObject($objectId, $destinationId = null)
     {
