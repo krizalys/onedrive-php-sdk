@@ -1,6 +1,6 @@
 <?php
 
-namespace Test\Krizalys\Onedrive;
+namespace Test\Unit\Krizalys\Onedrive;
 
 use Krizalys\Onedrive\NameConflictBehavior;
 use Krizalys\Onedrive\NameConflictBehaviorParameterizer;

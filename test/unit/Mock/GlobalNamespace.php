@@ -1,6 +1,6 @@
 <?php
 
-namespace Test\Mock;
+namespace Test\Unit\Mock;
 
 use Mockery as m;
 

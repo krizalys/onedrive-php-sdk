@@ -6,7 +6,7 @@
 
 namespace Krizalys\Onedrive;
 
-use Test\Mock\GlobalNamespace;
+use Test\Unit\Mock\GlobalNamespace;
 
 function time()
 {
