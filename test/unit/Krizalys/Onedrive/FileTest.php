@@ -8,21 +8,21 @@ use Mockery as m;
 
 class FileTest extends MockeryTestCase
 {
-    private function mockClient(array $expectations = array())
+    private function mockClient(array $expectations = [])
     {
         $names = implode(',', array_keys($expectations));
 
-        $client = m::mock("Krizalys\Onedrive\Client[$names]", array(
-            array(
-                'state' => (object) array(
-                    'token' => (object) array(
-                        'data' => (object) array(
+        $client = m::mock("Krizalys\Onedrive\Client[$names]", [
+            [
+                'state' => (object) [
+                    'token' => (object) [
+                        'data' => (object) [
                             'access_token' => 'TeSt/AcCeSs+ToKeN',
-                        ),
-                    ),
-                ),
-            ),
-        ));
+                        ],
+                    ],
+                ],
+            ],
+        ]);
 
         foreach ($expectations as $name => $callback) {
             $expectation = $client->shouldReceive($name);
@@ -34,11 +34,11 @@ class FileTest extends MockeryTestCase
 
     public function testFetchContentShouldCallOnceClientApiGet()
     {
-        $client = $this->mockClient(array(
+        $client = $this->mockClient([
             'apiGet' => function ($expectation) {
                 $expectation->once();
             },
-        ));
+        ]);
 
         $file = new File($client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
         $file->fetchContent();
@@ -46,11 +46,11 @@ class FileTest extends MockeryTestCase
 
     public function testCopyShouldCallOnceClientCopyFile()
     {
-        $client = $this->mockClient(array(
+        $client = $this->mockClient([
             'copyFile' => function ($expectation) {
                 $expectation->once();
             },
-        ));
+        ]);
 
         $file = new File($client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
         $file->copy('path/to/file');

@@ -23,7 +23,7 @@ function autoload($name)
     $stem = substr($name, 18);
 
     // Convert "\" and "_" to path separators.
-    $pathifiedStem = str_replace(array('\\', '_'), '/', $stem);
+    $pathifiedStem = str_replace(['\\', '_'], '/', $stem);
 
     $path = __DIR__ . '/src/Krizalys/Onedrive/' . $pathifiedStem . '.php';
 

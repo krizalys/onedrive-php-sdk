@@ -9,25 +9,25 @@ class NameConflictBehaviorParameterizerTest extends \PHPUnit_Framework_TestCase
 {
     public function provideParameterizeShouldReturnExpectedValue()
     {
-        return array(
-            'FAIL' => array(
-                'params'               => array('key' => 'value'),
+        return [
+            'FAIL' => [
+                'params'               => ['key' => 'value'],
                 'nameConflictBehavior' => NameConflictBehavior::FAIL,
-                'expected'             => array('key' => 'value', 'overwrite' => 'false'),
-            ),
+                'expected'             => ['key' => 'value', 'overwrite' => 'false'],
+            ],
 
-            'RENAME' => array(
-                'params'               => array('key' => 'value'),
+            'RENAME' => [
+                'params'               => ['key' => 'value'],
                 'nameConflictBehavior' => NameConflictBehavior::RENAME,
-                'expected'             => array('key' => 'value', 'overwrite' => 'ChooseNewName'),
-            ),
+                'expected'             => ['key' => 'value', 'overwrite' => 'ChooseNewName'],
+            ],
 
-            'REPLACE' => array(
-                'params'               => array('key' => 'value'),
+            'REPLACE' => [
+                'params'               => ['key' => 'value'],
                 'nameConflictBehavior' => NameConflictBehavior::REPLACE,
-                'expected'             => array('key' => 'value', 'overwrite' => 'true'),
-            ),
-        );
+                'expected'             => ['key' => 'value', 'overwrite' => 'true'],
+            ],
+        ];
     }
 
     /**
@@ -49,6 +49,6 @@ class NameConflictBehaviorParameterizerTest extends \PHPUnit_Framework_TestCase
     public function testParameterizeWithUnsupportedBehaviorShouldThrowException()
     {
         $parameterizer = new NameConflictBehaviorParameterizer();
-        $actual        = $parameterizer->parameterize(array(), 0);
+        $actual        = $parameterizer->parameterize([], 0);
     }
 }

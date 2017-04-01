@@ -6,24 +6,24 @@ use Krizalys\Onedrive\Client;
 
 try {
     // Instantiates a OneDrive client bound to your OneDrive application.
-    $onedrive = new Client(array(
+    $onedrive = new Client([
         'client_id' => $config['ONEDRIVE_CLIENT_ID'],
-    ));
+    ]);
 
     // Gets a log in URL with sufficient privileges from the OneDrive API.
-    $url = $onedrive->getLogInUrl(array(
+    $url = $onedrive->getLogInUrl([
         'wl.signin',
         'wl.basic',
         'wl.contacts_skydrive',
         'wl.skydrive_update',
-    ), $config['ONEDRIVE_CALLBACK_URI']);
+    ], $config['ONEDRIVE_CALLBACK_URI']);
 
     session_start();
 
     // Persist the OneDrive client' state for next API requests.
-    $_SESSION = array(
+    $_SESSION = [
         'onedrive.client.state' => $onedrive->getState(),
-    );
+    ];
 } catch (\Exception $e) {
     $status = sprintf('<p>Reason: <cite>%s</cite></p>', htmlspecialchars($e->getMesssage()));
     $url    = null;

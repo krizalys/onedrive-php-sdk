@@ -10,9 +10,9 @@ try {
         throw new \Exception('onedrive.client.state undefined in session');
     }
 
-    $onedrive = new Client(array(
+    $onedrive = new Client([
         'state' => $_SESSION['onedrive.client.state'],
-    ));
+    ]);
 
     if (!array_key_exists('id', $_GET)) {
         throw new \Exception('id undefined in $_GET');

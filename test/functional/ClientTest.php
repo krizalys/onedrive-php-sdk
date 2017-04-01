@@ -22,7 +22,7 @@ EOF;
         // TODO: Figure out why the callback URL (passed as the second
         // parameter) does not seem to matter here, but passing a non-empty
         // string causes the authentication process to not be initiated.
-        $url = $client->getLoginUrl(array('wl.skydrive_update'), '');
+        $url = $client->getLoginUrl(['wl.skydrive_update'], '');
 
         echo "Functional test suite started.\n\nPlease sign into your OneDrive account from this page and grant to the app all\nthe privileges requested:\n\n\t$url\n\nThis process will then resume, do not interrupt it.\n";
 
@@ -50,12 +50,12 @@ EOF;
             throw new \Exception($message);
         }
 
-        $size = @socket_write($socketRemote, implode("\r\n", array(
+        $size = @socket_write($socketRemote, implode("\r\n", [
             'HTTP/1.1 200 OK',
             'Content-Type: text/html; charset=utf-8',
             '',
             '<!DOCTYPE html><h1>Thank you</h1><p>The functional test suite started running. You can close this window.</p>',
-        )));
+        ]));
 
         if (false === $size) {
             $message = socket_strerror(socket_last_error());
@@ -79,7 +79,7 @@ EOF;
         $components = parse_url($url);
         $query      = $components['query'];
         $params     = explode('&', $query);
-        $query      = array();
+        $query      = [];
 
         array_map(function ($param) use (&$query) {
             list($key, $value) = explode('=', $param);
@@ -105,9 +105,9 @@ EOF;
         $config = require $config;
         $url    = sprintf('http://localhost:%u/', self::PORT);
 
-        $client = new Client(array(
+        $client = new Client([
             'client_id' => $config['CLIENT_ID'],
-        ), $url);
+        ], $url);
 
         try {
             $code = self::getAuthenticationCode($client);
@@ -127,7 +127,7 @@ EOF;
         $folder2 = self::$client->createFolder('Test folder #2');
         $this->assertNotNull($folder2);
 
-        return array($folder1, $folder2);
+        return [$folder1, $folder2];
     }
 
     /**
@@ -152,7 +152,7 @@ EOF;
         $file2 = self::$client->createFile('Test file #2.png', $folder2->getId(), base64_decode(self::PHP_LOGO_PNG_BASE64));
         $this->assertNotNull($file2);
 
-        return array($folder1, $folder2, $file1);
+        return [$folder1, $folder2, $file1];
     }
 
     /**
@@ -166,7 +166,7 @@ EOF;
 
         self::$client->moveObject($file1->getId(), $folder2->getId());
 
-        return array($folder1, $folder2, $file1);
+        return [$folder1, $folder2, $file1];
     }
 
     /**
@@ -180,7 +180,7 @@ EOF;
 
         self::$client->copyFile($file1->getId(), $folder1->getId());
 
-        return array($folder1, $folder2);
+        return [$folder1, $folder2];
     }
 
     /**

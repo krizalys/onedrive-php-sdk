@@ -20,13 +20,13 @@ try {
         throw new \Exception('onedrive.client.state undefined in $_SESSION');
     }
 
-    $onedrive = new Client(array(
+    $onedrive = new Client([
         'client_id' => $config['ONEDRIVE_CLIENT_ID'],
 
         // Restore the previous state while instantiating this client to proceed
         // in obtaining an access token.
         'state'     => $_SESSION['onedrive.client.state'],
-    ));
+    ]);
 
     // Obtain the token using the code received by the OneDrive API.
     $onedrive->obtainAccessToken($config['ONEDRIVE_CLIENT_SECRET'], $_GET['code']);

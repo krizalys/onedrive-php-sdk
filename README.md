@@ -114,24 +114,24 @@ require_once '/path/to/onedrive-php-sdk/vendor/autoload.php';
 use Krizalys\Onedrive\Client;
 
 // Instantiates a OneDrive client bound to your OneDrive application.
-$onedrive = new Client(array(
+$onedrive = new Client([
     'client_id' => $config['ONEDRIVE_CLIENT_ID'],
-));
+]);
 
 // Gets a log in URL with sufficient privileges from the OneDrive API.
-$url = $onedrive->getLogInUrl(array(
+$url = $onedrive->getLogInUrl([
     'wl.signin',
     'wl.basic',
     'wl.contacts_skydrive',
     'wl.skydrive_update',
-), $config['ONEDRIVE_CALLBACK_URI']);
+], $config['ONEDRIVE_CALLBACK_URI']);
 
 session_start();
 
 // Persist the OneDrive client' state for next API requests.
-$_SESSION = array(
+$_SESSION = [
     'onedrive.client.state' => $onedrive->getState(),
-);
+];
 
 // Guide the user to the log in URL (you may also use an HTTP/JS redirect).
 echo "<a href='$url'>Next step</a>";
@@ -179,13 +179,13 @@ if (!array_key_exists('onedrive.client.state', $_SESSION)) {
     throw new \Exception('onedrive.client.state undefined in $_SESSION');
 }
 
-$onedrive = new Client(array(
+$onedrive = new Client([
     'client_id' => $config['ONEDRIVE_CLIENT_ID'],
 
     // Restore the previous state while instantiating this client to proceed in
     // obtaining an access token.
     'state' => $_SESSION['onedrive.client.state']
-));
+]);
 
 // Obtain the token using the code received by the OneDrive API.
 $onedrive->obtainAccessToken($config['ONEDRIVE_CLIENT_SECRET'], $_GET['code']);

@@ -31,7 +31,7 @@ class File extends Object
      *                              - 'updated_time' (string) The last
      *                              modification time, as a RFC date/time.
      */
-    public function __construct(Client $client, $id, $options = array())
+    public function __construct(Client $client, $id, $options = [])
     {
         parent::__construct($client, $id, $options);
     }
@@ -48,7 +48,7 @@ class File extends Object
      * @todo Should somewhat return the content-type as well; this information
      *       is not disclosed by OneDrive.
      */
-    public function fetchContent($options = array())
+    public function fetchContent($options = [])
     {
         return $this->_client->apiGet($this->_id . '/content', $options);
     }

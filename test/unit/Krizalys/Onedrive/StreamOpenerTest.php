@@ -10,17 +10,17 @@ class StreamOpenerTest extends \PHPUnit_Framework_TestCase
 {
     public function provideOpenShouldCallOnceFopenWithExpectedArguments()
     {
-        return array(
-            'MEMORY' => array(
+        return [
+            'MEMORY' => [
                 'streamBackEnd' => StreamBackEnd::MEMORY,
-                'expected'      => array('php://memory', 'rw+b', false, null),
-            ),
+                'expected'      => ['php://memory', 'rw+b', false, null],
+            ],
 
-            'TEMP' => array(
+            'TEMP' => [
                 'streamBackEnd' => StreamBackEnd::TEMP,
-                'expected'      => array('php://temp', 'rw+b', false, null),
-            ),
-        );
+                'expected'      => ['php://temp', 'rw+b', false, null],
+            ],
+        ];
     }
 
     /**
@@ -30,13 +30,13 @@ class StreamOpenerTest extends \PHPUnit_Framework_TestCase
         $streamBackEnd,
         $expected
     ) {
-        GlobalNamespace::reset(array(
+        GlobalNamespace::reset([
             'fopen' => function ($expectation) use ($expected) {
                 $expectation
                     ->once()
                     ->withArgs($expected);
             },
-        ));
+        ]);
 
         $opener = new StreamOpener();
         $opener->open($streamBackEnd);

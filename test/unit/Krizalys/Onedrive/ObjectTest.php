@@ -24,9 +24,9 @@ class ObjectTest extends MockeryTestCase
         $this->client = $client;
     }
 
-    private function mockPayloadFolder(array $values = array())
+    private function mockPayloadFolder(array $values = [])
     {
-        return (object) array_merge(array(
+        return (object) array_merge([
             'parent_id'    => 'folder.0000000000000000.0000000000000000!000',
             'name'         => '',
             'description'  => '',
@@ -34,10 +34,10 @@ class ObjectTest extends MockeryTestCase
             'source'       => 'http://localhost/',
             'created_time' => '1970-01-01T00:00:00+0000',
             'updated_time' => '1970-01-01T00:00:00+0000',
-        ), $values);
+        ], $values);
     }
 
-    private function mockClient(array $expectations = array())
+    private function mockClient(array $expectations = [])
     {
         $names  = implode(',', array_keys($expectations));
         $client = m::mock("Krizalys\Onedrive\Client[$names]");
@@ -70,9 +70,9 @@ class ObjectTest extends MockeryTestCase
 
     public function testGetParentIdWithParentIdShouldReturnExpectedValue()
     {
-        $object = new TestObject($this->client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', array(
+        $object = new TestObject($this->client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', [
             'parent_id' => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
-        ));
+        ]);
 
         $actual = $object->getParentId();
         $this->assertEquals('folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', $actual);
@@ -80,15 +80,15 @@ class ObjectTest extends MockeryTestCase
 
     public function testGetParentIdWithoutParentIdShouldReturnExpectedValue()
     {
-        $payload = $this->mockPayloadFolder(array(
+        $payload = $this->mockPayloadFolder([
             'parent_id' => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
-        ));
+        ]);
 
-        $client = $this->mockClient(array(
+        $client = $this->mockClient([
             'fetchProperties' => function ($expectation) use ($payload) {
                 $expectation->andReturn($payload);
             },
-        ));
+        ]);
 
         $object = new TestObject($client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
         $actual = $object->getParentId();
@@ -97,9 +97,9 @@ class ObjectTest extends MockeryTestCase
 
     public function testGetNameWithNameShouldReturnExpectedValue()
     {
-        $object = new TestObject($this->client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', array(
+        $object = new TestObject($this->client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', [
             'name' => 'test-object',
-        ));
+        ]);
 
         $actual = $object->getName();
         $this->assertEquals('test-object', $actual);
@@ -107,15 +107,15 @@ class ObjectTest extends MockeryTestCase
 
     public function testGetNameWithoutNameShouldReturnExpectedValue()
     {
-        $payload = $this->mockPayloadFolder(array(
+        $payload = $this->mockPayloadFolder([
             'name' => 'test-object',
-        ));
+        ]);
 
-        $client = $this->mockClient(array(
+        $client = $this->mockClient([
             'fetchProperties' => function ($expectation) use ($payload) {
                 $expectation->andReturn($payload);
             },
-        ));
+        ]);
 
         $object = new TestObject($client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
         $actual = $object->getName();
@@ -124,9 +124,9 @@ class ObjectTest extends MockeryTestCase
 
     public function testGetDescriptionWithDescriptionShouldReturnExpectedValue()
     {
-        $object = new TestObject($this->client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', array(
+        $object = new TestObject($this->client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', [
             'description' => 'Some test description',
-        ));
+        ]);
 
         $actual = $object->getDescription();
         $this->assertEquals('Some test description', $actual);
@@ -134,15 +134,15 @@ class ObjectTest extends MockeryTestCase
 
     public function testGetDescriptionWithoutDescriptionShouldReturnExpectedValue()
     {
-        $payload = $this->mockPayloadFolder(array(
+        $payload = $this->mockPayloadFolder([
             'description' => 'Some test description',
-        ));
+        ]);
 
-        $client = $this->mockClient(array(
+        $client = $this->mockClient([
             'fetchProperties' => function ($expectation) use ($payload) {
                 $expectation->andReturn($payload);
             },
-        ));
+        ]);
 
         $object = new TestObject($client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
         $actual = $object->getDescription();
@@ -151,9 +151,9 @@ class ObjectTest extends MockeryTestCase
 
     public function testGetSizeWithSizeShouldReturnExpectedValue()
     {
-        $object = new TestObject($this->client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', array(
+        $object = new TestObject($this->client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', [
             'size' => 123,
-        ));
+        ]);
 
         $actual = $object->getSize();
         $this->assertEquals(123, $actual);
@@ -161,15 +161,15 @@ class ObjectTest extends MockeryTestCase
 
     public function testGetSizeWithoutSizeShouldReturnExpectedValue()
     {
-        $payload = $this->mockPayloadFolder(array(
+        $payload = $this->mockPayloadFolder([
             'size' => 123,
-        ));
+        ]);
 
-        $client = $this->mockClient(array(
+        $client = $this->mockClient([
             'fetchProperties' => function ($expectation) use ($payload) {
                 $expectation->andReturn($payload);
             },
-        ));
+        ]);
 
         $object = new TestObject($client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
         $actual = $object->getSize();
@@ -178,9 +178,9 @@ class ObjectTest extends MockeryTestCase
 
     public function testGetSourceWithSourceShouldReturnExpectedValue()
     {
-        $object = new TestObject($this->client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', array(
+        $object = new TestObject($this->client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', [
             'source' => 'http://te.st/123/source',
-        ));
+        ]);
 
         $actual = $object->getSource();
         $this->assertEquals('http://te.st/123/source', $actual);
@@ -188,15 +188,15 @@ class ObjectTest extends MockeryTestCase
 
     public function testGetSourceWithoutSourceShouldReturnExpectedValue()
     {
-        $payload = $this->mockPayloadFolder(array(
+        $payload = $this->mockPayloadFolder([
             'source' => 'http://te.st/123/source',
-        ));
+        ]);
 
-        $client = $this->mockClient(array(
+        $client = $this->mockClient([
             'fetchProperties' => function ($expectation) use ($payload) {
                 $expectation->andReturn($payload);
             },
-        ));
+        ]);
 
         $object = new TestObject($client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
         $actual = $object->getSource();
@@ -205,9 +205,9 @@ class ObjectTest extends MockeryTestCase
 
     public function testGetCreatedTimeWithCreatedTimeShouldReturnExpectedValue()
     {
-        $object = new TestObject($this->client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', array(
+        $object = new TestObject($this->client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', [
             'created_time' => '1999-12-31T23:59:59+0000',
-        ));
+        ]);
 
         $actual = $object->getCreatedTime();
         $this->assertEquals(strtotime('1999-12-31T23:59:59+0000'), $actual);
@@ -215,15 +215,15 @@ class ObjectTest extends MockeryTestCase
 
     public function testGetCreatedTimeWithoutCreatedTimeShouldReturnExpectedValue()
     {
-        $payload = $this->mockPayloadFolder(array(
+        $payload = $this->mockPayloadFolder([
             'created_time' => '1999-12-31T23:59:59+0000',
-        ));
+        ]);
 
-        $client = $this->mockClient(array(
+        $client = $this->mockClient([
             'fetchProperties' => function ($expectation) use ($payload) {
                 $expectation->andReturn($payload);
             },
-        ));
+        ]);
 
         $object = new TestObject($client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
         $actual = $object->getCreatedTime();
@@ -232,9 +232,9 @@ class ObjectTest extends MockeryTestCase
 
     public function testGetUpdatedTimeWithUpdatedTimeShouldReturnExpectedValue()
     {
-        $object = new TestObject($this->client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', array(
+        $object = new TestObject($this->client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', [
             'updated_time' => '1999-12-31T23:59:59+0000',
-        ));
+        ]);
 
         $actual = $object->getUpdatedTime();
         $this->assertEquals(strtotime('1999-12-31T23:59:59+0000'), $actual);
@@ -242,15 +242,15 @@ class ObjectTest extends MockeryTestCase
 
     public function testGetUpdatedTimeWithoutUpdatedTimeShouldReturnExpectedValue()
     {
-        $payload = $this->mockPayloadFolder(array(
+        $payload = $this->mockPayloadFolder([
             'updated_time' => '1999-12-31T23:59:59+0000',
-        ));
+        ]);
 
-        $client = $this->mockClient(array(
+        $client = $this->mockClient([
             'fetchProperties' => function ($expectation) use ($payload) {
                 $expectation->andReturn($payload);
             },
-        ));
+        ]);
 
         $object = new TestObject($client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
         $actual = $object->getUpdatedTime();
@@ -259,11 +259,11 @@ class ObjectTest extends MockeryTestCase
 
     public function testMoveShouldCallOnceClientMoveObject()
     {
-        $client = $this->mockClient(array(
+        $client = $this->mockClient([
             'moveObject' => function ($expectation) {
                 $expectation->once();
             },
-        ));
+        ]);
 
         $object = new TestObject($client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
         $object->move('path/to/file');

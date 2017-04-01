@@ -35,7 +35,7 @@ class Folder extends Object
      *                              Default: null.
      * @param array|object $options Options to pass to the Object constructor.
      */
-    public function __construct(Client $client, $id = null, $options = array())
+    public function __construct(Client $client, $id = null, $options = [])
     {
         parent::__construct($client, $id, $options);
     }
@@ -81,7 +81,7 @@ class Folder extends Object
      */
     public function fetchDescendantObjects()
     {
-        $objects = array();
+        $objects = [];
 
         foreach ($this->fetchChildObjects() as $object) {
             if ($object->isFolder()) {
@@ -128,14 +128,14 @@ class Folder extends Object
      *
      * @throws \Exception Thrown on I/O errors.
      */
-    public function createFile($name, $content = '', array $options = array())
+    public function createFile($name, $content = '', array $options = [])
     {
         $client = $this->_client;
 
-        $options = array_merge(array(
+        $options = array_merge([
             'name_conflict_behavior' => $client->getNameConflictBehavior(),
             'stream_back_end'        => $client->getStreamBackEnd(),
-        ), $options);
+        ], $options);
 
         return $this->_client->createFile($name, $this->_id, $content, $options);
     }
