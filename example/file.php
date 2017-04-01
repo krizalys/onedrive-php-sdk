@@ -14,9 +14,9 @@ try {
         throw new \Exception('onedrive.client.state undefined in session');
     }
 
-    $onedrive = new Client(array(
+    $onedrive = new Client([
         'state' => $_SESSION['onedrive.client.state'],
-    ));
+    ]);
 
     $id   = $_GET['id'];
     $file = $onedrive->fetchObject($id);

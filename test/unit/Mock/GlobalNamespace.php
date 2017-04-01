@@ -17,9 +17,9 @@ class GlobalNamespace
      *
      * @param array $expectations
      */
-    public static function reset(array $expectations = array())
+    public static function reset(array $expectations = [])
     {
-        $expectations = array_merge(array(
+        $expectations = array_merge([
             'time' => function ($expectation) {
                 $expectation->andReturn(strtotime('1970-01-01T00:00:00Z'));
             },
@@ -43,9 +43,9 @@ class GlobalNamespace
             },
 
             'fstat' => function ($expectation) {
-                $expectation->andReturn(array(
+                $expectation->andReturn([
                     /* Size */ 7 => 0,
-                ));
+                ]);
             },
 
             'curl_init' => function ($expectation) {
@@ -65,18 +65,18 @@ class GlobalNamespace
             },
 
             'curl_getinfo' => function ($expectation) {
-                $expectation->andReturn(array(
+                $expectation->andReturn([
                     'http_code'    => 200,
                     'content_type' => 'application/json',
-                ));
+                ]);
             },
-        ), $expectations);
+        ], $expectations);
 
         $functions = m::mock();
 
         foreach ($expectations as $name => $callbacks) {
             if (!is_array($callbacks)) {
-                $callbacks = array($callbacks);
+                $callbacks = [$callbacks];
             }
 
             foreach ($callbacks as $callback) {

@@ -84,7 +84,7 @@ abstract class Object
      *                              - 'updated_time' (string) The last
      *                              modification time, as a RFC date/time.
      */
-    public function __construct(Client $client, $id, $options = array())
+    public function __construct(Client $client, $id, $options = [])
     {
         $options       = (object) $options;
         $this->_client = $client;

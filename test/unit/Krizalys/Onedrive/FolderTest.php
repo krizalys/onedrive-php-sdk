@@ -20,7 +20,7 @@ class FolderTest extends \PHPUnit_Framework_TestCase
         $this->client = $client;
     }
 
-    private function mockClient(array $expectations = array())
+    private function mockClient(array $expectations = [])
     {
         $names  = implode(',', array_keys($expectations));
         $client = m::mock("Krizalys\Onedrive\Client[$names]");
@@ -38,9 +38,9 @@ class FolderTest extends \PHPUnit_Framework_TestCase
      */
     private function mockFile($fileId)
     {
-        $file = m::mock('Krizalys\Onedrive\File', array(
+        $file = m::mock('Krizalys\Onedrive\File', [
             'isFolder' => false,
-        ));
+        ]);
 
         $file->id = $fileId;
         return $file;
@@ -57,11 +57,11 @@ class FolderTest extends \PHPUnit_Framework_TestCase
 
     public function testFetchObjectsShouldCallOnceClientFetchObjects()
     {
-        $client = $this->mockClient(array(
+        $client = $this->mockClient([
             'fetchObjects' => function ($expectation) {
                 $expectation->once();
             },
-        ));
+        ]);
 
         $folder = new Folder($client);
         $folder->fetchObjects();
@@ -69,11 +69,11 @@ class FolderTest extends \PHPUnit_Framework_TestCase
 
     public function testFetchChildObjectsShouldCallOnceClientFetchObjects()
     {
-        $client = $this->mockClient(array(
+        $client = $this->mockClient([
             'fetchObjects' => function ($expectation) {
                 $expectation->once();
             },
-        ));
+        ]);
 
         $folder = new Folder($client);
         $folder->fetchChildObjects();
@@ -86,35 +86,35 @@ class FolderTest extends \PHPUnit_Framework_TestCase
         $file3 = $this->mockFile('file3');
         $file4 = $this->mockFile('file4');
 
-        $folder = new Folder($this->mockClient(array(
+        $folder = new Folder($this->mockClient([
             'fetchObjects' => function ($expectation) use ($file1, $file2, $file3, $file4) {
-                $expectation->andReturn(array(
+                $expectation->andReturn([
                     $file1,
-                    new Folder($this->mockClient(array(
+                    new Folder($this->mockClient([
                         'fetchObjects' => function ($expectation) use ($file2, $file3) {
-                            $expectation->andReturn(array(
+                            $expectation->andReturn([
                                 $file2,
                                 $file3,
-                            ));
+                            ]);
                         },
-                    ))),
+                    ])),
                     $file4,
-                ));
+                ]);
             },
-        )));
+        ]));
 
-        $expected = array($file2, $file3, $file1, $file4);
+        $expected = [$file2, $file3, $file1, $file4];
         $actual   = $folder->fetchDescendantObjects();
         $this->assertEquals($expected, $actual);
     }
 
     public function testCreateFolderShouldCallOnceClientCreateFolder()
     {
-        $client = $this->mockClient(array(
+        $client = $this->mockClient([
             'createFolder' => function ($expectation) {
                 $expectation->once();
             },
-        ));
+        ]);
 
         $folder = new Folder($client);
         $folder->createFolder('test-folder', 'Some test description');
@@ -122,18 +122,18 @@ class FolderTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateFileShouldCallOnceClientCreateFile()
     {
-        $client = $this->mockClient(array(
+        $client = $this->mockClient([
             'createFile' => function ($expectation) {
                 $expectation->once();
             },
-        ));
+        ]);
 
         $folder = new Folder($client);
 
         $folder->createFile(
             'test-file',
             'Some test content',
-            array('name_conflict_behavior', NameConflictBehavior::REPLACE)
+            ['name_conflict_behavior', NameConflictBehavior::REPLACE]
         );
     }
 }

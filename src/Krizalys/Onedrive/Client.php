@@ -96,11 +96,11 @@ class Client
      *
      * @return resource A compatible cURL object.
      */
-    private function _createCurl($path, $options = array())
+    private function _createCurl($path, $options = [])
     {
         $curl = curl_init();
 
-        $defaultOptions = array(
+        $defaultOptions = [
             // General options.
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_FOLLOWLOCATION => true,
@@ -112,7 +112,7 @@ class Client
             CURLOPT_SSL_VERIFYHOST => ($this->_sslVerify ? 2 : false),
 
             CURLOPT_SSL_VERIFYPEER => $this->_sslVerify,
-        );
+        ];
 
         if ($this->_sslVerify && $this->_sslCaPath) {
             $defaultOptions[CURLOPT_CAINFO] = $this->_sslCaPath;
@@ -160,7 +160,7 @@ class Client
 
         // Empty JSON string is returned as an empty object.
         if ('' == $result) {
-            return (object) array();
+            return (object) [];
         }
 
         $decoded = json_decode($result);
@@ -181,7 +181,7 @@ class Client
      *                       Valid supported keys are:
      *                       - 'state' (object) When defined, it should contain
      *                       a valid OneDrive client state, as returned by
-     *                       getState(). Default: array().
+     *                       getState(). Default: [].
      *                       - 'ssl_verify' (bool) Whether to verify SSL hosts
      *                       and peers. Default: false.
      *                       - 'ssl_capath' (bool|string) CA path to use for
@@ -200,16 +200,16 @@ class Client
      *                       big files.
      *                       Default: StreamBackEnd::MEMORY.
      */
-    public function __construct(array $options = array())
+    public function __construct(array $options = [])
     {
         $this->_clientId = array_key_exists('client_id', $options)
             ? (string) $options['client_id'] : null;
 
         $this->_state = array_key_exists('state', $options)
-            ? $options['state'] : (object) array(
+            ? $options['state'] : (object) [
                 'redirect_uri' => null,
                 'token'        => null,
-            );
+            ];
 
         $this->_sslVerify = array_key_exists('ssl_verify', $options)
             ? $options['ssl_verify'] : false;
@@ -273,7 +273,7 @@ class Client
      *                            - 'wl.skydrive_update'
      * @param string $redirectUri The URI to which to redirect to upon
      *                            successful log in.
-     * @param array  $options     Reserved for future use. Default: array().
+     * @param array  $options     Reserved for future use. Default: [].
      *
      * @return string The login URL.
      *
@@ -284,7 +284,7 @@ class Client
     public function getLogInUrl(
         array $scopes,
         $redirectUri,
-        array $options = array()
+        array $options = []
     ) {
         if (null === $this->_clientId) {
             throw new \Exception('The client ID must be set to call getLoginUrl()');
@@ -375,16 +375,16 @@ class Client
         $curl = curl_init();
 
         $fields = http_build_query(
-            array(
+            [
                 'client_id'     => $this->_clientId,
                 'redirect_uri'  => $this->_state->redirect_uri,
                 'client_secret' => $clientSecret,
                 'code'          => $code,
                 'grant_type'    => 'authorization_code',
-            )
+            ]
         );
 
-        curl_setopt_array($curl, array(
+        curl_setopt_array($curl, [
             // General options.
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_FOLLOWLOCATION => true,
@@ -392,15 +392,15 @@ class Client
             CURLOPT_POST           => 1,
             CURLOPT_POSTFIELDS     => $fields,
 
-            CURLOPT_HTTPHEADER => array(
+            CURLOPT_HTTPHEADER => [
                 'Content-Length: ' . strlen($fields),
-            ),
+            ],
 
             // SSL options.
             CURLOPT_SSL_VERIFYHOST => false,
             CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_URL            => $url,
-        ));
+        ]);
 
         $result = curl_exec($curl);
 
@@ -421,10 +421,10 @@ class Client
 
         $this->_state->redirect_uri = null;
 
-        $this->_state->token = (object) array(
+        $this->_state->token = (object) [
             'obtained' => time(),
             'data'     => $decoded,
-        );
+        ];
     }
 
     /**
@@ -446,7 +446,7 @@ class Client
 
         $curl = curl_init();
 
-        curl_setopt_array($curl, array(
+        curl_setopt_array($curl, [
             // General options.
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_FOLLOWLOCATION => true,
@@ -461,7 +461,7 @@ class Client
             CURLOPT_SSL_VERIFYHOST => false,
             CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_URL            => $url,
-        ));
+        ]);
 
         $result = curl_exec($curl);
 
@@ -479,10 +479,10 @@ class Client
             throw new \Exception('json_decode() failed');
         }
 
-        $this->_state->token = (object) array(
+        $this->_state->token = (object) [
             'obtained' => time(),
             'data'     => $decoded,
-        );
+        ];
     }
 
     /**
@@ -493,7 +493,7 @@ class Client
      *
      * @return object|string The response body, if any.
      */
-    public function apiGet($path, $options = array())
+    public function apiGet($path, $options = [])
     {
         $url = self::API_URL . $path
             . '?access_token=' . urlencode($this->_state->token->data->access_token);
@@ -517,19 +517,19 @@ class Client
         $data = (object) $data;
         $curl = self::_createCurl($path);
 
-        curl_setopt_array($curl, array(
+        curl_setopt_array($curl, [
             CURLOPT_URL        => $url,
             CURLOPT_POST       => true,
 
-            CURLOPT_HTTPHEADER => array(
+            CURLOPT_HTTPHEADER => [
                 // The data is sent as JSON as per OneDrive documentation.
                 'Content-Type: application/json',
 
                 'Authorization: Bearer ' . $this->_state->token->data->access_token,
-            ),
+            ],
 
             CURLOPT_POSTFIELDS => json_encode($data),
-        ));
+        ]);
 
         return $this->_processResult($curl);
     }
@@ -550,21 +550,21 @@ class Client
         $curl  = self::_createCurl($path);
         $stats = fstat($stream);
 
-        $headers = array(
+        $headers = [
             'Authorization: Bearer ' . $this->_state->token->data->access_token,
-        );
+        ];
 
         if (null !== $contentType) {
             $headers[] = 'Content-Type: ' . $contentType;
         }
 
-        $options = array(
+        $options = [
             CURLOPT_URL        => $url,
             CURLOPT_HTTPHEADER => $headers,
             CURLOPT_PUT        => true,
             CURLOPT_INFILE     => $stream,
             CURLOPT_INFILESIZE => $stats[7], // Size
-        );
+        ];
 
         curl_setopt_array($curl, $options);
         return $this->_processResult($curl);
@@ -584,10 +584,10 @@ class Client
 
         $curl = self::_createCurl($path);
 
-        curl_setopt_array($curl, array(
+        curl_setopt_array($curl, [
             CURLOPT_URL           => $url,
             CURLOPT_CUSTOMREQUEST => 'DELETE',
-        ));
+        ]);
 
         return $this->_processResult($curl);
     }
@@ -606,19 +606,19 @@ class Client
         $data = (object) $data;
         $curl = self::_createCurl($path);
 
-        curl_setopt_array($curl, array(
+        curl_setopt_array($curl, [
             CURLOPT_URL           => $url,
             CURLOPT_CUSTOMREQUEST => 'MOVE',
 
-            CURLOPT_HTTPHEADER    => array(
+            CURLOPT_HTTPHEADER    => [
                 // The data is sent as JSON as per OneDrive documentation.
                 'Content-Type: application/json',
 
                 'Authorization: Bearer ' . $this->_state->token->data->access_token,
-            ),
+            ],
 
             CURLOPT_POSTFIELDS    => json_encode($data),
-        ));
+        ]);
 
         return $this->_processResult($curl);
     }
@@ -637,19 +637,19 @@ class Client
         $data = (object) $data;
         $curl = self::_createCurl($path);
 
-        curl_setopt_array($curl, array(
+        curl_setopt_array($curl, [
             CURLOPT_URL           => $url,
             CURLOPT_CUSTOMREQUEST => 'COPY',
 
-            CURLOPT_HTTPHEADER    => array(
+            CURLOPT_HTTPHEADER    => [
                 // The data is sent as JSON as per OneDrive documentation.
                 'Content-Type: application/json',
 
                 'Authorization: Bearer ' . $this->_state->token->data->access_token,
-            ),
+            ],
 
             CURLOPT_POSTFIELDS    => json_encode($data),
-        ));
+        ]);
 
         return $this->_processResult($curl);
     }
@@ -676,9 +676,9 @@ class Client
             $parentId = 'me/skydrive';
         }
 
-        $properties = array(
+        $properties = [
             'name' => (string) $name,
-        );
+        ];
 
         if (null !== $description) {
             $properties['description'] = (string) $description;
@@ -711,7 +711,7 @@ class Client
      *
      * @throws \Exception Thrown on I/O errors.
      */
-    public function createFile($name, $parentId = null, $content = '', array $options = array())
+    public function createFile($name, $parentId = null, $content = '', array $options = [])
     {
         if (null === $parentId) {
             $parentId = 'me/skydrive';
@@ -720,9 +720,9 @@ class Client
         if (is_resource($content)) {
             $stream = $content;
         } else {
-            $options = array_merge(array(
+            $options = array_merge([
                 'stream_back_end' => $this->_streamBackEnd,
-            ), $options);
+            ], $options);
 
             $stream = $this
                 ->_streamOpener
@@ -743,13 +743,13 @@ class Client
             }
         }
 
-        $options = array_merge(array(
+        $options = array_merge([
             'name_conflict_behavior' => $this->_nameConflictBehavior,
-        ), $options);
+        ], $options);
 
         $params = $this
             ->_nameConflictBehaviorParameterizer
-            ->parameterize(array(), $options['name_conflict_behavior']);
+            ->parameterize([], $options['name_conflict_behavior']);
 
         $query = http_build_query($params);
 
@@ -779,7 +779,7 @@ class Client
         $objectId = null !== $objectId ? $objectId : 'me/skydrive';
         $result   = $this->apiGet($objectId);
 
-        if (in_array($result->type, array('folder', 'album'))) {
+        if (in_array($result->type, ['folder', 'album'])) {
             return new Folder($this, $objectId, $result);
         }
 
@@ -868,10 +868,10 @@ class Client
         }
 
         $result  = $this->apiGet($objectId . '/files');
-        $objects = array();
+        $objects = [];
 
         foreach ($result->data as $data) {
-            $object = in_array($data->type, array('folder', 'album')) ?
+            $object = in_array($data->type, ['folder', 'album']) ?
                 new Folder($this, $data->id, $data)
                 : new File($this, $data->id, $data);
 
@@ -885,14 +885,13 @@ class Client
      * Updates the properties of an object in the current OneDrive account.
      *
      * @param string       $objectId   The unique ID of the object to update.
-     * @param array|object $properties The properties to update. Default:
-     *                                 array().
+     * @param array|object $properties The properties to update. Default: [].
      * @param bool         $temp       Option to allow save to a temporary file
      *                                 in case of large files.
      *
      * @throws \Exception Thrown on I/O errors.
      */
-    public function updateObject($objectId, $properties = array(), $temp = false)
+    public function updateObject($objectId, $properties = [], $temp = false)
     {
         $properties = (object) $properties;
         $encoded    = json_encode($properties);
@@ -927,9 +926,9 @@ class Client
             $destinationId = 'me/skydrive';
         }
 
-        $this->apiMove($objectId, array(
+        $this->apiMove($objectId, [
             'destination' => $destinationId,
-        ));
+        ]);
     }
 
     /**
@@ -948,9 +947,9 @@ class Client
             $destinationId = 'me/skydrive';
         }
 
-        $this->apiCopy($objectId, array(
+        $this->apiCopy($objectId, [
             'destination' => $destinationId,
-        ));
+        ]);
     }
 
     /**

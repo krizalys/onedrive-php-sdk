@@ -4,10 +4,10 @@ namespace Krizalys\Onedrive;
 
 class StreamOpener
 {
-    private static $uris = array(
+    private static $uris = [
         StreamBackEnd::MEMORY => 'php://memory',
         StreamBackEnd::TEMP   => 'php://temp',
-    );
+    ];
 
     /**
      * Opens a stream given a stream back end.

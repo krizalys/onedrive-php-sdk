@@ -10,9 +10,9 @@ try {
         throw new \Exception('onedrive.client.state undefined in session');
     }
 
-    $onedrive = new Client(array(
+    $onedrive = new Client([
         'state' => $_SESSION['onedrive.client.state'],
-    ));
+    ]);
 
     $publicDocs = $onedrive->fetchPublicDocs();
 } catch (\Exception $e) {

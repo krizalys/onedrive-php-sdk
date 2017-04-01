@@ -9,9 +9,9 @@ if (!array_key_exists('onedrive.client.state', $_SESSION)) {
 
 $state = $_SESSION['onedrive.client.state'];
 
-$onedrive = new \Onedrive\Client(array(
+$onedrive = new \Onedrive\Client([
 	'state' => $state,
-));
+]);
 
 $quota = $onedrive->fetchQuota();
 @header('Content-Type: application/json', true);

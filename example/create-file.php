@@ -10,9 +10,9 @@ try {
         throw new \Exception('onedrive.client.state undefined in session');
     }
 
-    $onedrive = new Client(array(
+    $onedrive = new Client([
         'state' => $_SESSION['onedrive.client.state'],
-    ));
+    ]);
 
     if (!array_key_exists('name', $_GET)) {
         throw new \Exception('name undefined in $_GET');
@@ -23,8 +23,8 @@ try {
     }
 
     $options = array_key_exists('name_conflict_behavior', $_GET) ?
-        array('name_conflict_behavior' => $_GET['name_conflict_behavior'])
-        : array();
+        ['name_conflict_behavior' => $_GET['name_conflict_behavior']]
+        : [];
 
     $parentId = empty($_GET['parent_id']) ? null : $_GET['parent_id'];
     $name     = $_GET['name'];

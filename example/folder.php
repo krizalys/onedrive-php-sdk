@@ -10,9 +10,9 @@ try {
         throw new \Exception('onedrive.client.state undefined in session');
     }
 
-    $onedrive = new Client(array(
+    $onedrive = new Client([
         'state' => $_SESSION['onedrive.client.state'],
-    ));
+    ]);
 
     $id      = empty($_GET['id']) ? null : $_GET['id'];
     $folder  = $onedrive->fetchObject($id);
