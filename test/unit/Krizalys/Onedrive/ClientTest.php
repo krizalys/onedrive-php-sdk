@@ -1,13 +1,13 @@
 <?php
 
-namespace Test\Krizalys\Onedrive;
+namespace Test\Unit\Krizalys\Onedrive;
 
 use Krizalys\Onedrive\Client;
 use Krizalys\Onedrive\NameConflictBehavior;
 use Krizalys\Onedrive\StreamBackEnd;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Mockery as m;
-use Test\Mock\GlobalNamespace;
+use Test\Unit\Mock\GlobalNamespace;
 
 class ClientTest extends MockeryTestCase
 {

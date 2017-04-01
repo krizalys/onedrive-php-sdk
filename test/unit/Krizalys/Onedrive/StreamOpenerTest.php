@@ -1,10 +1,10 @@
 <?php
 
-namespace Test\Krizalys\Onedrive;
+namespace Test\Unit\Krizalys\Onedrive;
 
 use Krizalys\Onedrive\StreamBackEnd;
 use Krizalys\Onedrive\StreamOpener;
-use Test\Mock\GlobalNamespace;
+use Test\Unit\Mock\GlobalNamespace;
 
 class StreamOpenerTest extends \PHPUnit_Framework_TestCase
 {
