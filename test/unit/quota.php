@@ -10,7 +10,7 @@ if (!array_key_exists('onedrive.client.state', $_SESSION)) {
 $state = $_SESSION['onedrive.client.state'];
 
 $onedrive = new \Onedrive\Client([
-	'state' => $state,
+    'state' => $state,
 ]);
 
 $quota = $onedrive->fetchQuota();
