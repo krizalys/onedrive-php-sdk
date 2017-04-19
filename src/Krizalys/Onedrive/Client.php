@@ -350,7 +350,7 @@ class Client
      */
     public function getAccessTokenStatus()
     {
-        if (null === $this->_state->token) {
+        if (!property_exists($this->_state, 'token')) {
             return 0;
         }
 
