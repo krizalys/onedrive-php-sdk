@@ -2,7 +2,14 @@
 
 namespace Test\Functional\Krizalys;
 
+use Facebook\WebDriver\Chrome\ChromeOptions;
+use Facebook\WebDriver\Remote\DesiredCapabilities;
+use Facebook\WebDriver\Remote\RemoteWebDriver;
+use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverExpectedCondition;
 use Krizalys\Onedrive\Client;
+use Krizalys\Onedrive\StreamBackEnd;
+use Symfony\Component\Process\Process;
 
 /**
  * @group functional
@@ -17,84 +24,6 @@ EOF;
 
     private static $client;
 
-    private static function getAuthenticationCode(Client $client)
-    {
-        /**
-         * @todo Figure out why the callback URL (passed as the second
-         * parameter) does not seem to matter here, but passing a non-empty
-         * string causes the authentication process to not be initiated.
-         */
-        $url = $client->getLoginUrl(['wl.skydrive_update'], '');
-
-        echo "Functional test suite started.\n\nPlease sign into your OneDrive account from this page and grant to the app all\nthe privileges requested:\n\n\t$url\n\nThis process will then resume, do not interrupt it.\n";
-
-        $server = @socket_create_listen(self::PORT, 1);
-
-        if (false === $server) {
-            $message = socket_strerror(socket_last_error());
-            throw new \Exception($message);
-        }
-
-        $socketRemote = @socket_accept($server);
-
-        if (false === $socketRemote) {
-            $message = socket_strerror(socket_last_error());
-            socket_close($server);
-            throw new \Exception($message);
-        }
-
-        $buffer = @socket_read($socketRemote, 4096, PHP_BINARY_READ);
-
-        if (false === $buffer) {
-            $message = socket_strerror(socket_last_error());
-            socket_close($socketRemote);
-            socket_close($server);
-            throw new \Exception($message);
-        }
-
-        $size = @socket_write($socketRemote, implode("\r\n", [
-            'HTTP/1.1 200 OK',
-            'Content-Type: text/html; charset=utf-8',
-            '',
-            '<!DOCTYPE html><h1>Thank you</h1><p>The functional test suite started running. You can close this window.</p>',
-        ]));
-
-        if (false === $size) {
-            $message = socket_strerror(socket_last_error());
-            socket_close($socketRemote);
-            socket_close($server);
-            throw new \Exception($message);
-        }
-
-        socket_close($socketRemote);
-        socket_close($server);
-        list($headers, $body) = explode("\r\n\r\n", $buffer);
-
-        $headers = explode("\r\n", $headers);
-        $request = $headers[0];
-
-        if (1 !== preg_match('/^GET\s+(.+)\s+HTTP\/1\.1$/', $request, $matches)) {
-            throw new \Exception('Unsupported HTTP request format');
-        }
-
-        $url        = $matches[1];
-        $components = parse_url($url);
-        $query      = $components['query'];
-        $params     = explode('&', $query);
-        $query      = [];
-
-        array_map(function ($param) use (&$query) {
-            list($key, $value) = explode('=', $param);
-            $query[$key] = $value;
-        }, $params);
-
-        if (!array_key_exists('code', $query)) {
-            throw new \Exception('Code is missing from the request. Did you log in successfully and granted all the privileges requested?');
-        }
-
-        return $query['code'];
-    }
-
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
@@ -105,17 +34,18 @@ EOF;
         }
 
         $config = require $config;
-        $url    = sprintf('http://localhost:%u/', self::PORT);
 
         $client = new Client([
-            'client_id' => $config['CLIENT_ID'],
-        ], $url);
+            'client_id'       => $config['CLIENT_ID'],
+            'stream_back_end' => StreamBackEnd::TEMP,
+        ]);
 
-        try {
-            $code = self::getAuthenticationCode($client);
-        } catch (\Exception $e) {
-            die($e->getMessage() . "\n");
-        }
+        $code = self::getAuthenticationCode(
+            $client,
+            $config['CLIENT_ID'],
+            $config['USERNAME'],
+            $config['PASSWORD']
+        );
 
         $client->obtainAccessToken($config['SECRET'], $code);
         self::$client = $client;
@@ -198,5 +128,65 @@ EOF;
         self::$client->deleteDriveItem($folder2->getId());
 
         $this->assertTrue(true);
+    }
+
+    private static function getAuthenticationCode(Client $client, $clientId, $username, $password)
+    {
+        $command = sprintf('php -S localhost:%d %s/router.php', self::PORT, __DIR__);
+        $server  = new Process($command);
+        $server->start();
+        $opts = new ChromeOptions();
+        $opts->addArguments(['--incognito']);
+        $caps = DesiredCapabilities::chrome();
+        $caps->setCapability(ChromeOptions::CAPABILITY, $opts);
+        $seleniumUrl = sprintf('http://localhost:%d/wd/hub', 4444);
+        $redirectUri = sprintf('http://localhost:%d/', self::PORT);
+        $loginUrl    = $client->getLoginUrl(['wl.skydrive_update'], $redirectUri);
+        $webDriver   = RemoteWebDriver::create($seleniumUrl, $caps);
+        $webDriver->get($loginUrl);
+        $usernameLocator = WebDriverBy::id('i0116');
+        $passwordLocator = WebDriverBy::id('i0118');
+        $nextLocator     = WebDriverBy::id('idSIButton9');
+        $webDriver->wait()->until(WebDriverExpectedCondition::presenceOfElementLocated($usernameLocator));
+        $webDriver->wait()->until(WebDriverExpectedCondition::visibilityOfElementLocated($usernameLocator));
+        $webDriver->findElement($usernameLocator)->sendKeys($username);
+        $webDriver->wait()->until(WebDriverExpectedCondition::presenceOfElementLocated($nextLocator));
+        $webDriver->wait()->until(WebDriverExpectedCondition::visibilityOfElementLocated($nextLocator));
+        $webDriver->findElement($nextLocator)->click();
+        $webDriver->wait()->until(WebDriverExpectedCondition::presenceOfElementLocated($passwordLocator));
+        $webDriver->wait()->until(WebDriverExpectedCondition::visibilityOfElementLocated($passwordLocator));
+        $webDriver->findElement($passwordLocator)->sendKeys($password);
+        $webDriver->wait()->until(WebDriverExpectedCondition::presenceOfElementLocated($nextLocator));
+        $webDriver->wait()->until(WebDriverExpectedCondition::visibilityOfElementLocated($nextLocator));
+        $webDriver->findElement($nextLocator)->click();
+        $webDriver->wait()->until(WebDriverExpectedCondition::urlMatches('|^' . preg_quote($redirectUri) . '|'));
+        $webDriver->quit();
+
+        foreach ($server as $type => $buffer) {
+            if ($type == Process::OUT) {
+                $lines = explode("\n", $buffer);
+                $code  = self::findAuthenticationCode($lines);
+
+                if ($code !== null) {
+                    break;
+                }
+            } else {
+                throw new \Exception($buffer);
+            }
+        }
+
+        $server->stop();
+        return $code;
+    }
+
+    private static function findAuthenticationCode($lines)
+    {
+        foreach ($lines as $line) {
+            $line = trim($line);
+
+            if (preg_match('/M[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/', $line)) {
+                return $line;
+            }
+        }
     }
 }
