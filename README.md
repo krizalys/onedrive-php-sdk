@@ -24,10 +24,14 @@ Using the OneDrive SDK for PHP requires the following:
 
 ### Testing
 
-When installing the development dependencies (eg. for testing purposes), you
-also require:
+For development, you also require:
 
-* [PHP' Sockets extension][php-sockets]
+* A OneDrive web application configured with `http://localhost:7777/` as its
+  redirect URL
+* A WebDriver server, for example the [Selenium's Java standalone
+  server][selenium-server-standalone]
+* A Chrome browser & ChromeDriver, and they must be usable by the WebDriver
+  server
 
 Installation
 ------------
@@ -200,6 +204,27 @@ $_SESSION['onedrive.client.state'] = $onedrive->getState();
 For details about classes and methods available, see the [project
 page][ondrive-php-sdk] on [Krizalys][krizalys].
 
+Testing
+-------
+
+To run the functional test suite:
+
+1. Set your application configuration at `test/functional/config.php` ;
+2. Run your WebDriver server, for example:
+
+```
+java -jar selenium-server-standalone-3.8.1.jar
+```
+
+3. Run the functional test (it assumes that your Selenium WebDriver is listening
+   on port 4444):
+
+```
+vendor/bin/phpunit -c test/functional
+```
+
+4. Repeat steps 4 to 5 as needed.
+
 Examples
 --------
 
@@ -238,15 +263,15 @@ Credits
 
 The OneDrive SDK for PHP is developed and maintained by Christophe Vidal.
 
-[php]:                  http://php.net/
-[onedrive-api]:         http://msdn.microsoft.com/en-us/library/hh826521.aspx
-[php-curl]:             http://php.net/manual/en/book.curl.php
-[composer]:             https://getcomposer.org/
-[php-sockets]:          http://php.net/manual/en/book.sockets.php
-[live-login]:           https://login.live.com/
-[live-apps]:            https://account.live.com/developers/applications/index
-[live-newapp]:          https://account.live.com/developers/applications/create
-[ondrive-php-sdk]:      http://www.krizalys.com/software/onedrive-php-sdk
-[krizalys]:             http://www.krizalys.com/
-[ondrive-php-sdk-demo]: http://demo.krizalys.com/onedrive-php-sdk/example/
-[gpl]:                  http://www.gnu.org/copyleft/gpl.html
+[php]:                        http://php.net/
+[onedrive-api]:               http://msdn.microsoft.com/en-us/library/hh826521.aspx
+[php-curl]:                   http://php.net/manual/en/book.curl.php
+[composer]:                   https://getcomposer.org/
+[selenium-server-standalone]: http://selenium-release.storage.googleapis.com/index.html
+[live-login]:                 https://login.live.com/
+[live-apps]:                  https://account.live.com/developers/applications/index
+[live-newapp]:                https://account.live.com/developers/applications/create
+[ondrive-php-sdk]:            http://www.krizalys.com/software/onedrive-php-sdk
+[krizalys]:                   http://www.krizalys.com/
+[ondrive-php-sdk-demo]:       http://demo.krizalys.com/onedrive-php-sdk/example/
+[gpl]:                        http://www.gnu.org/copyleft/gpl.html
