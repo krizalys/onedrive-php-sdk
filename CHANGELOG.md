@@ -7,6 +7,7 @@ Change log
 ### Added
 
 - Support for PHP 7.1.
+- Support for PHP 7.2.
 - Functional test suite.
 
 [1.1.1] - 2017-03-26
