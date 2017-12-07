@@ -29,7 +29,7 @@ try {
     }
 
     $id   = $_GET['id'];
-    $file = $onedrive->fetchObject($id);
+    $file = $onedrive->fetchDriveItem($id);
 
     if ($file->isFolder()) {
         throw new \Exception('OneDrive does not support copying folders');

@@ -29,24 +29,24 @@ try {
     }
 
     $id = $_GET['id'];
-    $onedrive->updateObject($id, $properties);
-    $status = sprintf('<p class=bg-success>The object <em>%s</em> has been updated in your OneDrive account using the <code>Client::updateObject</code> method.</p>', htmlspecialchars($id));
+    $onedrive->updateDriveItem($id, $properties);
+    $status = sprintf('<p class=bg-success>The drive item <em>%s</em> has been updated in your OneDrive account using the <code>Client::updateDriveItem</code> method.</p>', htmlspecialchars($id));
 } catch (\Exception $e) {
-    $status = sprintf('<p class=bg-danger>The object <em>%s</em> has <strong>not</strong> been updated in your OneDrive account using the <code>Client::updateObject</code> method. Reason: <cite>%s</cite></p>', htmlspecialchars($id), htmlspecialchars($e->getMessage()));
+    $status = sprintf('<p class=bg-danger>The drive item <em>%s</em> has <strong>not</strong> been updated in your OneDrive account using the <code>Client::updateDriveItem</code> method. Reason: <cite>%s</cite></p>', htmlspecialchars($id), htmlspecialchars($e->getMessage()));
 }
 ?>
 <!DOCTYPE html>
 <html lang=en dir=ltr>
     <head>
         <meta charset=utf-8>
-        <title>Updating a OneDrive object – Demonstration of the OneDrive SDK for PHP</title>
+        <title>Updating a OneDrive drive item – Demonstration of the OneDrive SDK for PHP</title>
         <link rel=stylesheet href=//ajax.aspnetcdn.com/ajax/bootstrap/3.2.0/css/bootstrap.min.css>
         <link rel=stylesheet href=//ajax.aspnetcdn.com/ajax/bootstrap/3.2.0/css/bootstrap-theme.min.css>
         <meta name=viewport content="width=device-width, initial-scale=1">
     </head>
     <body>
         <div class=container>
-            <h1>Updating a OneDrive object</h1>
+            <h1>Updating a OneDrive drive item</h1>
             <?php if (null !== $status) echo $status ?>
             <p><a href=app.php>Back to the examples</a></p>
         </div>

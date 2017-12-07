@@ -19,7 +19,7 @@ try {
     ]);
 
     $id   = $_GET['id'];
-    $file = $onedrive->fetchObject($id);
+    $file = $onedrive->fetchDriveItem($id);
 } catch (\Exception $e) {
     $file   = null;
     $status = sprintf('<p class=bg-danger>Reason: <cite>%s</cite><p>', htmlspecialchars($e->getMessage()));
@@ -39,7 +39,7 @@ try {
             <h1>Fetching a OneDrive file</h1>
             <?php if (null !== $status) echo $status ?>
             <?php if (null !== $file): ?>
-            <p>The <code>Client::fetchObject</code> method returned the file <em><?php echo htmlspecialchars($id) ?></em>.</p>
+            <p>The <code>Client::fetchDriveItem</code> method returned the file <em><?php echo htmlspecialchars($id) ?></em>.</p>
             <h2>Properties</h2>
             <pre><?php print_r($file->fetchProperties()) ?></pre>
             <h2>Content</h2>

@@ -21,12 +21,12 @@ try {
     $parentId    = empty($_GET['parent_id']) ? null : $_GET['parent_id'];
     $name        = $_GET['name'];
     $description = empty($_GET['description']) ? null : $_GET['description'];
-    $parent      = $onedrive->fetchObject($parentId);
+    $parent      = $onedrive->fetchDriveItem($parentId);
     $folder      = $parent->createFolder($name, $description);
-    $status      = sprintf('<p class=bg-success>The folder <em>%s</em> has been created using the <code>Object::createFolder</code> method.</p>', htmlspecialchars($name));
+    $status      = sprintf('<p class=bg-success>The folder <em>%s</em> has been created using the <code>DriveItem::createFolder</code> method.</p>', htmlspecialchars($name));
 } catch (\Exception $e) {
     $folder = null;
-    $status = sprintf('<p class=bg-danger>The folder <em>%s</em> has <strong>not</strong> been created using the <code>Object::createFolder</code> method. Reason: <cite>%s</cite></p>', htmlspecialchars($name), htmlspecialchars($e->getMessage()));
+    $status = sprintf('<p class=bg-danger>The folder <em>%s</em> has <strong>not</strong> been created using the <code>DriveItem::createFolder</code> method. Reason: <cite>%s</cite></p>', htmlspecialchars($name), htmlspecialchars($e->getMessage()));
 }
 ?>
 <!DOCTYPE html>

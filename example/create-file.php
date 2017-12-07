@@ -28,12 +28,12 @@ try {
 
     $parentId = empty($_GET['parent_id']) ? null : $_GET['parent_id'];
     $name     = $_GET['name'];
-    $parent   = $onedrive->fetchObject($parentId);
+    $parent   = $onedrive->fetchDriveItem($parentId);
     $file     = $parent->createFile($name, $_GET['content'], $options);
-    $status   = sprintf('<p class=bg-success>The file <em>%s</em> has been created using the <code>Object::createFile</code> method.</p>', htmlspecialchars($name));
+    $status   = sprintf('<p class=bg-success>The file <em>%s</em> has been created using the <code>DriveItem::createFile</code> method.</p>', htmlspecialchars($name));
 } catch (\Exception $e) {
     $file   = null;
-    $status = sprintf('<p class=bg-danger>The file <em>%s</em> has <strong>not</strong> been created using the <code>Object::createFile</code> method. Reason: <cite>%s</cite></p>', htmlspecialchars($name), $e->getMessage());
+    $status = sprintf('<p class=bg-danger>The file <em>%s</em> has <strong>not</strong> been created using the <code>DriveItem::createFile</code> method. Reason: <cite>%s</cite></p>', htmlspecialchars($name), $e->getMessage());
 }
 ?>
 <!DOCTYPE html>
