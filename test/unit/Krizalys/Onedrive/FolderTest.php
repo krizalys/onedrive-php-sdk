@@ -60,7 +60,7 @@ class FolderTest extends MockeryTestCase
         $this->assertEquals(true, $actual);
     }
 
-    public function testFetchObjectsShouldCallOnceClientLogWithExpectedLevel()
+    public function testFetchDriveItemsShouldCallOnceClientLogWithExpectedLevel()
     {
         $client = $this->mockClient([
             'log' => function ($expectation) {
@@ -71,40 +71,40 @@ class FolderTest extends MockeryTestCase
                     });
             },
 
-            'fetchObjects' => null,
+            'fetchDriveItems' => null,
         ]);
 
         $folder = new Folder($client);
-        $folder->fetchObjects();
+        $folder->fetchDriveItems();
     }
 
-    public function testFetchObjectsShouldCallOnceClientFetchObjects()
+    public function testFetchDriveItemsShouldCallOnceClientFetchDriveItems()
     {
         $client = $this->mockClient([
             'log' => null,
 
-            'fetchObjects' => function ($expectation) {
+            'fetchDriveItems' => function ($expectation) {
                 $expectation->once();
             },
         ]);
 
         $folder = new Folder($client);
-        $folder->fetchObjects();
+        $folder->fetchDriveItems();
     }
 
-    public function testFetchChildObjectsShouldCallOnceClientFetchObjects()
+    public function testFetchChildDriveItemsShouldCallOnceClientFetchDriveItems()
     {
         $client = $this->mockClient([
-            'fetchObjects' => function ($expectation) {
+            'fetchDriveItems' => function ($expectation) {
                 $expectation->once();
             },
         ]);
 
         $folder = new Folder($client);
-        $folder->fetchChildObjects();
+        $folder->fetchChildDriveItems();
     }
 
-    public function testFetchDescendantObjectsShouldReturnExpectedValue()
+    public function testFetchDescendantDriveItemsShouldReturnExpectedValue()
     {
         $file1 = $this->mockFile('file1');
         $file2 = $this->mockFile('file2');
@@ -112,11 +112,11 @@ class FolderTest extends MockeryTestCase
         $file4 = $this->mockFile('file4');
 
         $folder = new Folder($this->mockClient([
-            'fetchObjects' => function ($expectation) use ($file1, $file2, $file3, $file4) {
+            'fetchDriveItems' => function ($expectation) use ($file1, $file2, $file3, $file4) {
                 $expectation->andReturn([
                     $file1,
                     new Folder($this->mockClient([
-                        'fetchObjects' => function ($expectation) use ($file2, $file3) {
+                        'fetchDriveItems' => function ($expectation) use ($file2, $file3) {
                             $expectation->andReturn([
                                 $file2,
                                 $file3,
@@ -129,7 +129,7 @@ class FolderTest extends MockeryTestCase
         ]));
 
         $expected = [$file2, $file3, $file1, $file4];
-        $actual   = $folder->fetchDescendantObjects();
+        $actual   = $folder->fetchDescendantDriveItems();
         $this->assertEquals($expected, $actual);
     }
 

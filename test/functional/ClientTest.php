@@ -144,7 +144,7 @@ EOF;
         $file1 = self::$client->createFile('Test file #1.txt', $folder1->getId(), 'Test content');
         $this->assertNotNull($file1);
 
-        $file1 = self::$client->fetchObject($file1->getId());
+        $file1 = self::$client->fetchDriveItem($file1->getId());
         $this->assertNotNull($file1);
 
         $actual = $file1->fetchContent();
@@ -160,21 +160,21 @@ EOF;
     /**
      * @depends testCreateFile
      */
-    public function testMoveObject($arguments)
+    public function testMoveDriveItem($arguments)
     {
         $folder1 = $arguments[0];
         $folder2 = $arguments[1];
         $file1   = $arguments[2];
 
-        self::$client->moveObject($file1->getId(), $folder2->getId());
+        self::$client->moveDriveItem($file1->getId(), $folder2->getId());
 
         return [$folder1, $folder2, $file1];
     }
 
     /**
-     * @depends testMoveObject
+     * @depends testMoveDriveItem
      */
-    public function testCopyObject($arguments)
+    public function testCopyDriveItem($arguments)
     {
         $folder1 = $arguments[0];
         $folder2 = $arguments[1];
@@ -186,16 +186,16 @@ EOF;
     }
 
     /**
-     * @depends testCopyObject
+     * @depends testCopyDriveItem
      */
-    public function testDeleteObject($arguments)
+    public function testDeleteDriveItem($arguments)
     {
         $folder1 = $arguments[0];
         $folder2 = $arguments[1];
 
-        self::$client->deleteObject($folder1->getId());
+        self::$client->deleteDriveItem($folder1->getId());
 
-        self::$client->deleteObject($folder2->getId());
+        self::$client->deleteDriveItem($folder2->getId());
 
         $this->assertTrue(true);
     }

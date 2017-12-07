@@ -544,7 +544,7 @@ class ClientTest extends MockeryTestCase
         );
     }
 
-    public function provideFetchObjectShouldReturnExpectedType()
+    public function provideFetchDriveItemShouldReturnExpectedType()
     {
         return [
             'File' => [
@@ -565,9 +565,9 @@ class ClientTest extends MockeryTestCase
     }
 
     /**
-     * @dataProvider provideFetchObjectShouldReturnExpectedType
+     * @dataProvider provideFetchDriveItemShouldReturnExpectedType
      */
-    public function testFetchObjectShouldReturnExpectedType($type, $expected)
+    public function testFetchDriveItemShouldReturnExpectedType($type, $expected)
     {
         GlobalNamespace::reset([
             'curl_exec' => function ($expectation) use ($type) {
@@ -577,11 +577,11 @@ class ClientTest extends MockeryTestCase
             },
         ]);
 
-        $object = $this
+        $driveItem = $this
             ->client
-            ->fetchObject('some-resource');
+            ->fetchDriveItem('some-resource');
 
-        $actual = get_class($object);
+        $actual = get_class($driveItem);
         $this->assertEquals("Krizalys\Onedrive\\$expected", $actual);
     }
 
@@ -708,14 +708,14 @@ class ClientTest extends MockeryTestCase
     public function provideFetchPropertiesShouldCallOnceCurlSetoptWithExpectedUrl()
     {
         return [
-            'Null object ID' => [
-                'objectId' => null,
-                'expected' => 'https://apis.live.net/v5.0/me/skydrive?access_token=OlD%2FAcCeSs%2BToKeN',
+            'Null drive item ID' => [
+                'driveItemId' => null,
+                'expected'    => 'https://apis.live.net/v5.0/me/skydrive?access_token=OlD%2FAcCeSs%2BToKeN',
             ],
 
-            'Non-null object ID' => [
-                'objectId' => 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
-                'expected' => 'https://apis.live.net/v5.0/file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123?access_token=OlD%2FAcCeSs%2BToKeN',
+            'Non-null drive item ID' => [
+                'driveItemId' => 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
+                'expected   ' => 'https://apis.live.net/v5.0/file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123?access_token=OlD%2FAcCeSs%2BToKeN',
             ],
         ];
     }
@@ -724,7 +724,7 @@ class ClientTest extends MockeryTestCase
      * @dataProvider provideFetchPropertiesShouldCallOnceCurlSetoptWithExpectedUrl
      */
     public function testFetchPropertiesShouldCallOnceCurlSetoptWithExpectedUrl(
-        $objectId,
+        $driveItemId,
         $expected
     ) {
         GlobalNamespace::reset([
@@ -743,29 +743,29 @@ class ClientTest extends MockeryTestCase
 
         $this
             ->client
-            ->fetchProperties($objectId);
+            ->fetchProperties($driveItemId);
     }
 
-    public function provideFetchObjectsShouldCallOnceCurlSetoptWithExpectedUrl()
+    public function provideFetchDriveItemsShouldCallOnceCurlSetoptWithExpectedUrl()
     {
         return [
-            'Null object ID' => [
-                'objectId' => null,
-                'expected' => 'https://apis.live.net/v5.0/me/skydrive/files?access_token=OlD%2FAcCeSs%2BToKeN',
+            'Null drive item ID' => [
+                'driveItemId' => null,
+                'expected'    => 'https://apis.live.net/v5.0/me/skydrive/files?access_token=OlD%2FAcCeSs%2BToKeN',
             ],
 
-            'Non-null object ID' => [
-                'objectId' => 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
-                'expected' => 'https://apis.live.net/v5.0/file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123/files?access_token=OlD%2FAcCeSs%2BToKeN',
+            'Non-null drive item ID' => [
+                'driveItemId' => 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
+                'expected'    => 'https://apis.live.net/v5.0/file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123/files?access_token=OlD%2FAcCeSs%2BToKeN',
             ],
         ];
     }
 
     /**
-     * @dataProvider provideFetchObjectsShouldCallOnceCurlSetoptWithExpectedUrl
+     * @dataProvider provideFetchDriveItemsShouldCallOnceCurlSetoptWithExpectedUrl
      */
-    public function testFetchObjectsShouldCallOnceCurlSetoptWithExpectedUrl(
-        $objectId,
+    public function testFetchDriveItemsShouldCallOnceCurlSetoptWithExpectedUrl(
+        $driveItemId,
         $expected
     ) {
         GlobalNamespace::reset([
@@ -786,10 +786,10 @@ class ClientTest extends MockeryTestCase
 
         $this
             ->client
-            ->fetchObjects($objectId);
+            ->fetchDriveItems($driveItemId);
     }
 
-    public function testUpdateObjectShouldCallOnceCurlSetoptArrayWithExpectedUrl()
+    public function testUpdateDriveItemShouldCallOnceCurlSetoptArrayWithExpectedUrl()
     {
         GlobalNamespace::reset([
             'curl_setopt_array' => [
@@ -814,10 +814,10 @@ class ClientTest extends MockeryTestCase
 
         $this
             ->client
-            ->updateObject('file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
+            ->updateDriveItem('file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
     }
 
-    public function provideMoveObjectShouldCallOnceCurlSetoptArrayWithExpectedDestinationUrl()
+    public function provideMoveDriveItemShouldCallOnceCurlSetoptArrayWithExpectedDestinationUrl()
     {
         return [
             'Null destination ID' => [
@@ -826,16 +826,16 @@ class ClientTest extends MockeryTestCase
             ],
 
             'Non-null destination ID' => [
-                'destinationId' => 'path/to/object',
-                'expected'      => 'path/to/object',
+                'destinationId' => 'path/to/drive-item',
+                'expected'      => 'path/to/drive-item',
             ],
         ];
     }
 
     /**
-     * @dataProvider provideMoveObjectShouldCallOnceCurlSetoptArrayWithExpectedDestinationUrl
+     * @dataProvider provideMoveDriveItemShouldCallOnceCurlSetoptArrayWithExpectedDestinationUrl
      */
-    public function testMoveObjectShouldCallOnceCurlSetoptArrayWithExpectedDestinationUrl(
+    public function testMoveDriveItemShouldCallOnceCurlSetoptArrayWithExpectedDestinationUrl(
         $destinationId,
         $expected
     ) {
@@ -862,7 +862,7 @@ class ClientTest extends MockeryTestCase
 
         $this
             ->client
-            ->moveObject('file.ffffffffffffffff.FFFFFFFFFFFFFFFF!456', $destinationId);
+            ->moveDriveItem('file.ffffffffffffffff.FFFFFFFFFFFFFFFF!456', $destinationId);
     }
 
     public function provideCopyFileShouldCallOnceCurlSetoptArrayWithExpectedDestinationUrl()
@@ -874,8 +874,8 @@ class ClientTest extends MockeryTestCase
             ],
 
             'Non-null destination ID' => [
-                'destinationId' => 'path/to/object',
-                'expected'      => 'path/to/object',
+                'destinationId' => 'path/to/drive-item',
+                'expected'      => 'path/to/drive-item',
             ],
         ];
     }
@@ -913,7 +913,7 @@ class ClientTest extends MockeryTestCase
             ->copyFile('file.ffffffffffffffff.FFFFFFFFFFFFFFFF!456', $destinationId);
     }
 
-    public function testDeleteObjectShouldCallOnceCurlSetoptArrayWithExpectedUrl()
+    public function testDeleteDriveItemShouldCallOnceCurlSetoptArrayWithExpectedUrl()
     {
         GlobalNamespace::reset([
             'curl_setopt_array' => [
@@ -938,7 +938,7 @@ class ClientTest extends MockeryTestCase
 
         $this
             ->client
-            ->deleteObject('file.ffffffffffffffff.FFFFFFFFFFFFFFFF!456');
+            ->deleteDriveItem('file.ffffffffffffffff.FFFFFFFFFFFFFFFF!456');
     }
 
     public function testFetchQuotaShouldCallOnceCurlSetoptWithExpectedUrl()
