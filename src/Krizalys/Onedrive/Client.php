@@ -827,25 +827,25 @@ class Client
     }
 
     /**
-     * Fetches an object from the current OneDrive account.
+     * Fetches a drive item from the current OneDrive account.
      *
-     * @param null|string $objectId The unique ID of the OneDrive object to
-     *                              fetch, or null to fetch the OneDrive root
-     *                              folder. Default: null.
+     * @param null|string $driveItemId The unique ID of the OneDrive drive item
+     *                                 to fetch, or null to fetch the OneDrive
+     *                                 root folder. Default: null.
      *
-     * @return object The object fetched, as an Object instance referencing to
-     *                the OneDrive object fetched.
+     * @return object The drive item fetched, as a DriveItem instance
+     *                referencing to the OneDrive drive item fetched.
      */
-    public function fetchObject($objectId = null)
+    public function fetchDriveItem($driveItemId = null)
     {
-        $objectId = null !== $objectId ? $objectId : 'me/skydrive';
-        $result   = $this->apiGet($objectId);
+        $driveItemId = null !== $driveItemId ? $driveItemId : 'me/skydrive';
+        $result      = $this->apiGet($driveItemId);
 
         if (in_array($result->type, ['folder', 'album'])) {
-            return new Folder($this, $objectId, $result);
+            return new Folder($this, $driveItemId, $result);
         }
 
-        return new File($this, $objectId, $result);
+        return new File($this, $driveItemId, $result);
     }
 
     /**
@@ -856,7 +856,7 @@ class Client
      */
     public function fetchRoot()
     {
-        return $this->fetchObject();
+        return $this->fetchDriveItem();
     }
 
     /**
@@ -867,7 +867,7 @@ class Client
      */
     public function fetchCameraRoll()
     {
-        return $this->fetchObject('me/skydrive/camera_roll');
+        return $this->fetchDriveItem('me/skydrive/camera_roll');
     }
 
     /**
@@ -878,7 +878,7 @@ class Client
      */
     public function fetchDocs()
     {
-        return $this->fetchObject('me/skydrive/my_documents');
+        return $this->fetchDriveItem('me/skydrive/my_documents');
     }
 
     /**
@@ -889,7 +889,7 @@ class Client
      */
     public function fetchPics()
     {
-        return $this->fetchObject('me/skydrive/my_photos');
+        return $this->fetchDriveItem('me/skydrive/my_photos');
     }
 
     /**
@@ -900,64 +900,65 @@ class Client
      */
     public function fetchPublicDocs()
     {
-        return $this->fetchObject('me/skydrive/public_documents');
+        return $this->fetchDriveItem('me/skydrive/public_documents');
     }
 
     /**
-     * Fetches the properties of an object in the current OneDrive account.
+     * Fetches the properties of a drive item in the current OneDrive account.
      *
-     * @param string $objectId The object ID.
+     * @param string $driveItemId The drive item ID.
      *
-     * @return object The properties of the object fetched.
+     * @return object The properties of the drive item fetched.
      */
-    public function fetchProperties($objectId)
+    public function fetchProperties($driveItemId)
     {
-        if (null === $objectId) {
-            $objectId = 'me/skydrive';
+        if (null === $driveItemId) {
+            $driveItemId = 'me/skydrive';
         }
 
-        return $this->apiGet($objectId);
+        return $this->apiGet($driveItemId);
     }
 
     /**
-     * Fetches the objects in a folder in the current OneDrive account.
+     * Fetches the drive items in a folder in the current OneDrive account.
      *
-     * @param string $objectId The object ID.
+     * @param string $driveItemId The drive item ID.
      *
-     * @return array The objects in the folder fetched, as Object instances
-     *               referencing OneDrive objects.
+     * @return array The drive items in the folder fetched, as DriveItem
+     *               instances referencing OneDrive drive items.
      */
-    public function fetchObjects($objectId)
+    public function fetchDriveItems($driveItemId)
     {
-        if (null === $objectId) {
-            $objectId = 'me/skydrive';
+        if (null === $driveItemId) {
+            $driveItemId = 'me/skydrive';
         }
 
-        $result  = $this->apiGet($objectId . '/files');
-        $objects = [];
+        $result     = $this->apiGet($driveItemId . '/files');
+        $driveItems = [];
 
         foreach ($result->data as $data) {
-            $object = in_array($data->type, ['folder', 'album']) ?
+            $driveItem = in_array($data->type, ['folder', 'album']) ?
                 new Folder($this, $data->id, $data)
                 : new File($this, $data->id, $data);
 
-            $objects[] = $object;
+            $driveItems[] = $driveItem;
         }
 
-        return $objects;
+        return $driveItems;
     }
 
     /**
-     * Updates the properties of an object in the current OneDrive account.
+     * Updates the properties of a drive item in the current OneDrive account.
      *
-     * @param string       $objectId   The unique ID of the object to update.
-     * @param array|object $properties The properties to update. Default: [].
-     * @param bool         $temp       Option to allow save to a temporary file
-     *                                 in case of large files.
+     * @param string       $driveItemId The unique ID of the drive item to
+     *                                  update.
+     * @param array|object $properties  The properties to update. Default: [].
+     * @param bool         $temp        Option to allow save to a temporary file
+     *                                  in case of large files.
      *
      * @throws \Exception Thrown on I/O errors.
      */
-    public function updateObject($objectId, $properties = [], $temp = false)
+    public function updateDriveItem($driveItemId, $properties = [], $temp = false)
     {
         $properties = (object) $properties;
         $encoded    = json_encode($properties);
@@ -975,25 +976,26 @@ class Client
             throw new \Exception('rewind() failed');
         }
 
-        $this->apiPut($objectId, $stream, 'application/json');
+        $this->apiPut($driveItemId, $stream, 'application/json');
     }
 
     /**
-     * Moves an object into another folder.
+     * Moves a drive item into another folder.
      *
-     * @param string      $objectId      The unique ID of the object to move.
+     * @param string      $driveItemId   The unique ID of the drive item to
+     *                                   move.
      * @param null|string $destinationId The unique ID of the folder into which
-     *                                   to move the object, or null to move it
-     *                                   to the OneDrive root folder. Default:
-     *                                   null.
+     *                                   to move the drive item, or null to move
+     *                                   it to the OneDrive root folder.
+     *                                   Default: null.
      */
-    public function moveObject($objectId, $destinationId = null)
+    public function moveDriveItem($driveItemId, $destinationId = null)
     {
         if (null === $destinationId) {
             $destinationId = 'me/skydrive';
         }
 
-        $this->apiMove($objectId, [
+        $this->apiMove($driveItemId, [
             'destination' => $destinationId,
         ]);
     }
@@ -1002,31 +1004,31 @@ class Client
      * Copies a file into another folder. OneDrive does not support copying
      * folders.
      *
-     * @param string      $objectId      The unique ID of the file to copy.
+     * @param string      $driveItemId   The unique ID of the file to copy.
      * @param null|string $destinationId The unique ID of the folder into which
      *                                   to copy the file, or null to copy it to
      *                                   the OneDrive root folder. Default:
      *                                   null.
      */
-    public function copyFile($objectId, $destinationId = null)
+    public function copyFile($driveItemId, $destinationId = null)
     {
         if (null === $destinationId) {
             $destinationId = 'me/skydrive';
         }
 
-        $this->apiCopy($objectId, [
+        $this->apiCopy($driveItemId, [
             'destination' => $destinationId,
         ]);
     }
 
     /**
-     * Deletes an object in the current OneDrive account.
+     * Deletes a drive item in the current OneDrive account.
      *
-     * @param string $objectId The unique ID of the object to delete.
+     * @param string $driveItemId The unique ID of the drive item to delete.
      */
-    public function deleteObject($objectId)
+    public function deleteDriveItem($driveItemId)
     {
-        $this->apiDelete($objectId);
+        $this->apiDelete($driveItemId);
     }
 
     /**
@@ -1070,10 +1072,10 @@ class Client
     }
 
     /**
-     * Fetches the objects shared with the current OneDrive account.
+     * Fetches the drive items shared with the current OneDrive account.
      *
      * @return object An object with the following properties:
-     *                - 'data' (array) The list of the shared objects.
+     *                - 'data' (array) The list of the shared drive items.
      */
     public function fetchShared()
     {
