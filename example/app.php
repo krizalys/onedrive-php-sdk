@@ -99,7 +99,7 @@ use Krizalys\Onedrive\NameConflictBehavior;
             <form action=update-object.php>
                 <fieldset>
                     <legend>Updating a OneDrive object</legend>
-                    <p>Updates an object in the OneDrive account using the <code>Client::updateObject</code> method. Updating objects does no modify their content (for a file) or their child objects (for a folder).</p>
+                    <p>Updates an object in the OneDrive account using the <code>Client::updateObject</code> method. Updating objects does not modify their content (for a file) or their child objects (for a folder).</p>
                     <div class=form-group>
                         <label for=update-object-id>ID:</label>
                         <input name=id id="update-object-id" placeholder=ID class=form-control>
