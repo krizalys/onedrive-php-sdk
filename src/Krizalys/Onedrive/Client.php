@@ -789,8 +789,10 @@ class Client
 
         $query = http_build_query($params);
 
-        // TODO: some versions of cURL cannot PUT memory streams? See here for a
-        // workaround: https://bugs.php.net/bug.php?id=43468
+        /**
+         * @todo some versions of cURL cannot PUT memory streams? See here for a
+         * workaround: https://bugs.php.net/bug.php?id=43468
+         */
         $file = $this->apiPut(
             $parentId . '/files/' . urlencode($name) . "?$query",
             $stream

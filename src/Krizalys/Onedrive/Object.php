@@ -145,7 +145,7 @@ abstract class Object
 
         $this->_size = (int) $result->size;
 
-        // TODO: Handle volatile existence (eg. present only for files).
+        /** @todo Handle volatile existence (eg. present only for files). */
         $this->_source = (string) $result->source;
 
         $this->_createdTime = strtotime($result->created_time);

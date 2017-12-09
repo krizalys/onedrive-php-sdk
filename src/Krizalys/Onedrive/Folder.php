@@ -49,7 +49,7 @@ class Folder extends Object
      */
     public function fetchObjects()
     {
-        // TODO: Log deprecation notice.
+        /** @todo Log deprecation notice. */
         return $this->fetchChildObjects();
     }
 
