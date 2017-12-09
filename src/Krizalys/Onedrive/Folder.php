@@ -41,7 +41,8 @@ class Folder extends Object
     }
 
     /**
-     * Gets the objects in the OneDrive folder referenced by this Folder instance.
+     * Gets the objects in the OneDrive folder referenced by this Folder
+     * instance.
      *
      * @return array The objects in the OneDrive folder referenced by this
      *               Folder instance, as Object instances.
@@ -51,7 +52,8 @@ class Folder extends Object
     public function fetchObjects()
     {
         $message = sprintf(
-            '%s() is deprecated and will be removed in a future version; use %s::fetchChildObject() instead',
+            '%s() is deprecated and will be removed in a future version;'
+                . ' use %s::fetchChildObject() instead',
             __METHOD__,
             __CLASS__
         );
@@ -85,7 +87,10 @@ class Folder extends Object
 
         foreach ($this->fetchChildObjects() as $object) {
             if ($object->isFolder()) {
-                $objects = array_merge($object->fetchDescendantObjects(), $objects);
+                $objects = array_merge(
+                    $object->fetchDescendantObjects(),
+                    $objects
+                );
             } else {
                 array_push($objects, $object);
             }
@@ -137,6 +142,10 @@ class Folder extends Object
             'stream_back_end'        => $client->getStreamBackEnd(),
         ], $options);
 
-        return $this->_client->createFile($name, $this->_id, $content, $options);
+        return $this->_client->createFile(
+            $name, $this->_id,
+            $content,
+            $options
+        );
     }
 }

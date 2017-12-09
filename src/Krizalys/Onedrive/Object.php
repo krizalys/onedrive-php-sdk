@@ -143,8 +143,11 @@ abstract class Object
         $this->_description = '' != $result->description ?
             (string) $result->description : null;
 
-        $this->_size        = (int) $result->size;
-        $this->_source      = (string) $result->source; // TODO: Handle volatile existence (eg. present only for files).
+        $this->_size = (int) $result->size;
+
+        // TODO: Handle volatile existence (eg. present only for files).
+        $this->_source = (string) $result->source;
+
         $this->_createdTime = strtotime($result->created_time);
         $this->_updatedTime = strtotime($result->updated_time);
 
@@ -226,10 +229,11 @@ abstract class Object
     }
 
     /**
-     * Gets the source link of the OneDrive object referenced by this Object instance.
+     * Gets the source link of the OneDrive object referenced by this Object
+     * instance.
      *
-     * @return string The source link of the OneDrive object referenced by this Object
-     *                instance.
+     * @return string The source link of the OneDrive object referenced by this
+     *                Object instance.
      */
     public function getSource()
     {
