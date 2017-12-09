@@ -576,11 +576,11 @@ class ClientTest extends MockeryTestCase
             },
         ]);
 
-        $object = $this
+        $driveItem = $this
             ->client
             ->fetchObject('some-resource');
 
-        $actual = get_class($object);
+        $actual = get_class($driveItem);
         $this->assertEquals("Krizalys\Onedrive\\$expected", $actual);
     }
 
@@ -707,14 +707,14 @@ class ClientTest extends MockeryTestCase
     public function provideFetchPropertiesShouldCallOnceCurlSetoptWithExpectedUrl()
     {
         return [
-            'Null object ID' => [
-                'objectId' => null,
-                'expected' => 'https://apis.live.net/v5.0/me/skydrive?access_token=OlD%2FAcCeSs%2BToKeN',
+            'Null drive item ID' => [
+                'driveItemId' => null,
+                'expected'    => 'https://apis.live.net/v5.0/me/skydrive?access_token=OlD%2FAcCeSs%2BToKeN',
             ],
 
-            'Non-null object ID' => [
-                'objectId' => 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
-                'expected' => 'https://apis.live.net/v5.0/file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123?access_token=OlD%2FAcCeSs%2BToKeN',
+            'Non-null drive item ID' => [
+                'driveItemId' => 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
+                'expected'    => 'https://apis.live.net/v5.0/file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123?access_token=OlD%2FAcCeSs%2BToKeN',
             ],
         ];
     }
@@ -723,7 +723,7 @@ class ClientTest extends MockeryTestCase
      * @dataProvider provideFetchPropertiesShouldCallOnceCurlSetoptWithExpectedUrl
      */
     public function testFetchPropertiesShouldCallOnceCurlSetoptWithExpectedUrl(
-        $objectId,
+        $driveItemId,
         $expected
     ) {
         GlobalNamespace::reset([
@@ -742,20 +742,20 @@ class ClientTest extends MockeryTestCase
 
         $this
             ->client
-            ->fetchProperties($objectId);
+            ->fetchProperties($driveItemId);
     }
 
     public function provideFetchObjectsShouldCallOnceCurlSetoptWithExpectedUrl()
     {
         return [
-            'Null object ID' => [
-                'objectId' => null,
-                'expected' => 'https://apis.live.net/v5.0/me/skydrive/files?access_token=OlD%2FAcCeSs%2BToKeN',
+            'Null drive item ID' => [
+                'driveItemId' => null,
+                'expected'    => 'https://apis.live.net/v5.0/me/skydrive/files?access_token=OlD%2FAcCeSs%2BToKeN',
             ],
 
-            'Non-null object ID' => [
-                'objectId' => 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
-                'expected' => 'https://apis.live.net/v5.0/file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123/files?access_token=OlD%2FAcCeSs%2BToKeN',
+            'Non-null drive item ID' => [
+                'driveItemId' => 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
+                'expected'    => 'https://apis.live.net/v5.0/file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123/files?access_token=OlD%2FAcCeSs%2BToKeN',
             ],
         ];
     }
@@ -764,7 +764,7 @@ class ClientTest extends MockeryTestCase
      * @dataProvider provideFetchObjectsShouldCallOnceCurlSetoptWithExpectedUrl
      */
     public function testFetchObjectsShouldCallOnceCurlSetoptWithExpectedUrl(
-        $objectId,
+        $driveItemId,
         $expected
     ) {
         GlobalNamespace::reset([
@@ -785,7 +785,7 @@ class ClientTest extends MockeryTestCase
 
         $this
             ->client
-            ->fetchObjects($objectId);
+            ->fetchObjects($driveItemId);
     }
 
     public function testUpdateObjectShouldCallOnceCurlSetoptArrayWithExpectedUrl()
@@ -825,8 +825,8 @@ class ClientTest extends MockeryTestCase
             ],
 
             'Non-null destination ID' => [
-                'destinationId' => 'path/to/object',
-                'expected'      => 'path/to/object',
+                'destinationId' => 'path/to/drive-item',
+                'expected'      => 'path/to/drive-item',
             ],
         ];
     }
@@ -873,8 +873,8 @@ class ClientTest extends MockeryTestCase
             ],
 
             'Non-null destination ID' => [
-                'destinationId' => 'path/to/object',
-                'expected'      => 'path/to/object',
+                'destinationId' => 'path/to/drive-item',
+                'expected'      => 'path/to/drive-item',
             ],
         ];
     }

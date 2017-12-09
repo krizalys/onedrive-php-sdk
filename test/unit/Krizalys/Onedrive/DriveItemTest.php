@@ -2,25 +2,25 @@
 
 namespace Test\Unit\Krizalys\Onedrive;
 
-use Krizalys\Onedrive\Object;
+use Krizalys\Onedrive\DriveItem;
 use Mockery as m;
 
-class TestObject extends Object
+class TestDriveItem extends DriveItem
 {
 }
 
-class ObjectTest extends \PHPUnit_Framework_TestCase
+class DriveItemTest extends \PHPUnit_Framework_TestCase
 {
-    private $object;
+    private $driveItem;
 
     private $client;
 
     protected function setUp()
     {
         parent::setUp();
-        $client       = $this->mockClient();
-        $this->object = new TestObject($client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
-        $this->client = $client;
+        $client          = $this->mockClient();
+        $this->driveItem = new TestDriveItem($client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
+        $this->client    = $client;
     }
 
     private function mockPayloadFolder(array $values = [])
@@ -52,7 +52,7 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
     public function testIsFolderShouldReturnFalse()
     {
         $actual = $this
-            ->object
+            ->driveItem
             ->isFolder();
 
         $this->assertFalse($actual);
@@ -61,7 +61,7 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
     public function testGetIdShouldReturnExpectedValue()
     {
         $actual = $this
-            ->object
+            ->driveItem
             ->getId();
 
         $this->assertEquals('file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', $actual);
@@ -69,11 +69,11 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
 
     public function testGetParentIdWithParentIdShouldReturnExpectedValue()
     {
-        $object = new TestObject($this->client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', [
+        $driveItem = new TestDriveItem($this->client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', [
             'parent_id' => 'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
         ]);
 
-        $actual = $object->getParentId();
+        $actual = $driveItem->getParentId();
         $this->assertEquals('folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', $actual);
     }
 
@@ -89,25 +89,25 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
             },
         ]);
 
-        $object = new TestObject($client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
-        $actual = $object->getParentId();
+        $driveItem = new TestDriveItem($client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
+        $actual    = $driveItem->getParentId();
         $this->assertEquals('folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', $actual);
     }
 
     public function testGetNameWithNameShouldReturnExpectedValue()
     {
-        $object = new TestObject($this->client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', [
-            'name' => 'test-object',
+        $driveItem = new TestDriveItem($this->client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', [
+            'name' => 'test-drive-item',
         ]);
 
-        $actual = $object->getName();
-        $this->assertEquals('test-object', $actual);
+        $actual = $driveItem->getName();
+        $this->assertEquals('test-drive-item', $actual);
     }
 
     public function testGetNameWithoutNameShouldReturnExpectedValue()
     {
         $payload = $this->mockPayloadFolder([
-            'name' => 'test-object',
+            'name' => 'test-drive-item',
         ]);
 
         $client = $this->mockClient([
@@ -116,18 +116,18 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
             },
         ]);
 
-        $object = new TestObject($client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
-        $actual = $object->getName();
-        $this->assertEquals('test-object', $actual);
+        $driveItem = new TestDriveItem($client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
+        $actual    = $driveItem->getName();
+        $this->assertEquals('test-drive-item', $actual);
     }
 
     public function testGetDescriptionWithDescriptionShouldReturnExpectedValue()
     {
-        $object = new TestObject($this->client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', [
+        $driveItem = new TestDriveItem($this->client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', [
             'description' => 'Some test description',
         ]);
 
-        $actual = $object->getDescription();
+        $actual = $driveItem->getDescription();
         $this->assertEquals('Some test description', $actual);
     }
 
@@ -143,18 +143,18 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
             },
         ]);
 
-        $object = new TestObject($client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
-        $actual = $object->getDescription();
+        $driveItem = new TestDriveItem($client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
+        $actual    = $driveItem->getDescription();
         $this->assertEquals('Some test description', $actual);
     }
 
     public function testGetSizeWithSizeShouldReturnExpectedValue()
     {
-        $object = new TestObject($this->client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', [
+        $driveItem = new TestDriveItem($this->client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', [
             'size' => 123,
         ]);
 
-        $actual = $object->getSize();
+        $actual = $driveItem->getSize();
         $this->assertEquals(123, $actual);
     }
 
@@ -170,18 +170,18 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
             },
         ]);
 
-        $object = new TestObject($client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
-        $actual = $object->getSize();
+        $driveItem = new TestDriveItem($client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
+        $actual    = $driveItem->getSize();
         $this->assertEquals(123, $actual);
     }
 
     public function testGetSourceWithSourceShouldReturnExpectedValue()
     {
-        $object = new TestObject($this->client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', [
+        $driveItem = new TestDriveItem($this->client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', [
             'source' => 'http://te.st/123/source',
         ]);
 
-        $actual = $object->getSource();
+        $actual = $driveItem->getSource();
         $this->assertEquals('http://te.st/123/source', $actual);
     }
 
@@ -197,18 +197,18 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
             },
         ]);
 
-        $object = new TestObject($client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
-        $actual = $object->getSource();
+        $driveItem = new TestDriveItem($client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
+        $actual    = $driveItem->getSource();
         $this->assertEquals('http://te.st/123/source', $actual);
     }
 
     public function testGetCreatedTimeWithCreatedTimeShouldReturnExpectedValue()
     {
-        $object = new TestObject($this->client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', [
+        $driveItem = new TestDriveItem($this->client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', [
             'created_time' => '1999-12-31T23:59:59+0000',
         ]);
 
-        $actual = $object->getCreatedTime();
+        $actual = $driveItem->getCreatedTime();
         $this->assertEquals(strtotime('1999-12-31T23:59:59+0000'), $actual);
     }
 
@@ -224,18 +224,18 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
             },
         ]);
 
-        $object = new TestObject($client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
-        $actual = $object->getCreatedTime();
+        $driveItem = new TestDriveItem($client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
+        $actual    = $driveItem->getCreatedTime();
         $this->assertEquals(strtotime('1999-12-31T23:59:59+0000'), $actual);
     }
 
     public function testGetUpdatedTimeWithUpdatedTimeShouldReturnExpectedValue()
     {
-        $object = new TestObject($this->client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', [
+        $driveItem = new TestDriveItem($this->client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123', [
             'updated_time' => '1999-12-31T23:59:59+0000',
         ]);
 
-        $actual = $object->getUpdatedTime();
+        $actual = $driveItem->getUpdatedTime();
         $this->assertEquals(strtotime('1999-12-31T23:59:59+0000'), $actual);
     }
 
@@ -251,8 +251,8 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
             },
         ]);
 
-        $object = new TestObject($client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
-        $actual = $object->getUpdatedTime();
+        $driveItem = new TestDriveItem($client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
+        $actual    = $driveItem->getUpdatedTime();
         $this->assertEquals(strtotime('1999-12-31T23:59:59+0000'), $actual);
     }
 
@@ -264,7 +264,7 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
             },
         ]);
 
-        $object = new TestObject($client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
-        $object->move('path/to/file');
+        $driveItem = new TestDriveItem($client, 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123');
+        $driveItem->move('path/to/file');
     }
 }
