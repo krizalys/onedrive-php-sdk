@@ -216,8 +216,8 @@ The example files provided with the OneDrive SDK for PHP are deployed on a
 [demo website][ondrive-php-sdk-demo] for live demonstration purposes. A OneDrive
 account is needed to try out this demonstration.
 
-If you are using PHP 5.4 or later, you can try the examples on your own machine
-using PHP's built-in web server:
+You can also try the examples on your own machine using PHP's built-in web
+server:
 
 ```
 $ php -S yourdomain.com -t example

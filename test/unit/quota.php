@@ -16,5 +16,4 @@ $onedrive = new \Onedrive\Client([
 $quota = $onedrive->fetchQuota();
 @header('Content-Type: application/json', true);
 
-// Warning: JSON_UNESCAPED_SLASHES is only available from PHP 5.4 onwards.
 echo json_encode($quota, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
