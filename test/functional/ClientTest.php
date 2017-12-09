@@ -19,9 +19,11 @@ EOF;
 
     private static function getAuthenticationCode(Client $client)
     {
-        // TODO: Figure out why the callback URL (passed as the second
-        // parameter) does not seem to matter here, but passing a non-empty
-        // string causes the authentication process to not be initiated.
+        /**
+         * @todo Figure out why the callback URL (passed as the second
+         * parameter) does not seem to matter here, but passing a non-empty
+         * string causes the authentication process to not be initiated.
+         */
         $url = $client->getLoginUrl(['wl.skydrive_update'], '');
 
         echo "Functional test suite started.\n\nPlease sign into your OneDrive account from this page and grant to the app all\nthe privileges requested:\n\n\t$url\n\nThis process will then resume, do not interrupt it.\n";
