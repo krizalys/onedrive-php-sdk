@@ -809,8 +809,9 @@ class Client
     /**
      * Fetches an object from the current OneDrive account.
      *
-     * @param null|string The unique ID of the OneDrive object to fetch, or null
-     *                    to fetch the OneDrive root folder. Default: null.
+     * @param null|string $objectId The unique ID of the OneDrive object to
+     *                              fetch, or null to fetch the OneDrive root
+     *                              folder. Default: null.
      *
      * @return object The object fetched, as an Object instance referencing to
      *                the OneDrive object fetched.
