@@ -5,16 +5,16 @@ namespace Krizalys\Onedrive;
 /**
  * @class Folder
  *
- * A Folder instance is an Object instance referencing to a OneDrive folder. It
- * may contain other OneDrive objects but may not have content.
+ * A Folder instance is a DriveItem instance referencing to a OneDrive folder.
+ * It may contain other OneDrive drive items but may not have content.
  */
-class Folder extends Object
+class Folder extends DriveItem
 {
     /**
-     * Determines whether the OneDrive object referenced by this Object instance
-     * is a folder.
+     * Determines whether the OneDrive drive item referenced by this DriveItem
+     * instance is a folder.
      *
-     * @return bool true if the OneDrive object referenced by this Object
+     * @return bool true if the OneDrive drive item referenced by this DriveItem
      *              instance is a folder, false otherwise.
      */
     public function isFolder()
@@ -25,13 +25,14 @@ class Folder extends Object
     /**
      * Constructor.
      *
-     * @param Client       $client  The Client instance owning this Object
+     * @param Client       $client  The Client instance owning this DriveItem
      *                              instance.
-     * @param null|string  $id      The unique ID of the OneDrive object
-     *                              referenced by this Object instance, or null
-     *                              to reference the OneDrive root folder.
+     * @param null|string  $id      The unique ID of the OneDrive drive item
+     *                              referenced by this DriveItem instance, or
+     *                              null to reference the OneDrive root folder.
      *                              Default: null.
-     * @param array|object $options Options to pass to the Object constructor.
+     * @param array|object $options Options to pass to the DriveItem
+     *                              constructor.
      */
     public function __construct(Client $client, $id = null, $options = [])
     {
@@ -39,11 +40,11 @@ class Folder extends Object
     }
 
     /**
-     * Gets the objects in the OneDrive folder referenced by this Folder
+     * Gets the drive items in the OneDrive folder referenced by this Folder
      * instance.
      *
-     * @return array The objects in the OneDrive folder referenced by this
-     *               Folder instance, as Object instances.
+     * @return array The drive items in the OneDrive folder referenced by this
+     *               Folder instance, as DriveItem instances.
      *
      * @deprecated Use Folder::fetchChildObjects() instead.
      */
@@ -54,11 +55,11 @@ class Folder extends Object
     }
 
     /**
-     * Gets the child objects in the OneDrive folder referenced by this Folder
-     * instance.
+     * Gets the child drive items in the OneDrive folder referenced by this
+     * Folder instance.
      *
-     * @return array The objects in the OneDrive folder referenced by this
-     *               Folder instance, as Object instances.
+     * @return array The drive items in the OneDrive folder referenced by this
+     *               Folder instance, as DriveItem instances.
      */
     public function fetchChildObjects()
     {
@@ -66,28 +67,28 @@ class Folder extends Object
     }
 
     /**
-     * Gets the descendant objects under the OneDrive folder referenced by this
-     * Folder instance.
+     * Gets the descendant drive items under the OneDrive folder referenced by
+     * this Folder instance.
      *
      * @return array The files in the OneDrive folder referenced by this Folder
-     *               instance, as Object instances.
+     *               instance, as DriveItem instances.
      */
     public function fetchDescendantObjects()
     {
-        $objects = [];
+        $driveItems = [];
 
-        foreach ($this->fetchChildObjects() as $object) {
-            if ($object->isFolder()) {
-                $objects = array_merge(
-                    $object->fetchDescendantObjects(),
-                    $objects
+        foreach ($this->fetchChildObjects() as $driveItem) {
+            if ($driveItem->isFolder()) {
+                $driveItems = array_merge(
+                    $driveItem->fetchDescendantObjects(),
+                    $driveItems
                 );
             } else {
-                array_push($objects, $object);
+                array_push($driveItems, $driveItem);
             }
         }
 
-        return $objects;
+        return $driveItems;
     }
 
     /**

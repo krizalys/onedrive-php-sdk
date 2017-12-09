@@ -5,27 +5,28 @@ namespace Krizalys\Onedrive;
 /**
  * @class File
  *
- * A File instance is an Object instance referencing a OneDrive file. It may
- * have content but may not contain other OneDrive objects.
+ * A File instance is a DriveItem instance referencing a OneDrive file. It may
+ * have content but may not contain other OneDrive drive items.
  */
-class File extends Object
+class File extends DriveItem
 {
     /**
      * Constructor.
      *
-     * @param Client       $client  The Client instance owning this Object
+     * @param Client       $client  The Client instance owning this DriveItem
      *                              instance.
-     * @param null|string  $id      The unique ID of the OneDrive object
-     *                              referenced by this Object instance.
+     * @param null|string  $id      The unique ID of the OneDrive drive item
+     *                              referenced by this DriveItem instance.
      * @param array|object $options An array/object with one or more of the
      *                              following keys/properties:
      *                              - 'parent_id' (string) The unique ID of the
-     *                              parent OneDrive folder of this object.
-     *                              - 'name' (string) The name of this object.
+     *                              parent OneDrive folder of this drive item.
+     *                              - 'name' (string) The name of this drive
+     *                              item.
      *                              - 'description'  (string) The description of
-     *                              this object. May be empty.
-     *                              - 'size' (int) The size of this object, in
-     *                              bytes.
+     *                              this drive item. May be empty.
+     *                              - 'size' (int) The size of this drive item,
+     *                              in bytes.
      *                              - 'created_time' (string) The creation time,
      *                              as a RFC date/time.
      *                              - 'updated_time' (string) The last
