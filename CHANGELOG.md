@@ -1,18 +1,25 @@
 Change log
 ==========
 
+[Unreleased][unreleased]
+------------------------
+
+### Added
+
+- Support for logging, using [monolog/monolog][monolog] by default.
+
+### Removed
+
+- Support for PHP 5.4 and PHP 5.5.
+
 [1.2.0] - 2017-12-09
 --------------------
 
 ### Added
 
 - Support for PHP 7.1.
-- Support for logging, using [monolog/monolog][monolog] by default.
+- Support for PHP 7.2.
 - Functional test suite.
-
-### Removed
-
-- Support for PHP 5.4 and PHP 5.5.
 
 [1.1.1] - 2017-03-26
 --------------------
