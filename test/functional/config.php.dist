@@ -3,4 +3,6 @@
 return [
     'CLIENT_ID' => '<CLIENT ID>',
     'SECRET'    => '<SECRET>',
+    'USERNAME'  => '<ONEDRIVE_USERNAME>',
+    'PASSWORD'  => '<ONEDRIVE_PASSWORD>',
 ];
