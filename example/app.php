@@ -27,8 +27,8 @@ use Krizalys\Onedrive\NameConflictBehavior;
                     <legend>Fetching a OneDrive folder</legend>
                     <p>Fetches a folder from the OneDrive account using the <code>Client::fetchObject</code> method.</p>
                     <div class=form-group>
-                        <label for=object-id>ID:</label>
-                        <input name=id id="object-id" placeholder=ID class=form-control>
+                        <label for=folder-id>ID:</label>
+                        <input name=id id="folder-id" placeholder=ID class=form-control>
                     </div>
                     <p><input type=submit value="Fetch folder" class="btn btn-primary"></p>
                 </fieldset>
@@ -38,8 +38,8 @@ use Krizalys\Onedrive\NameConflictBehavior;
                     <legend>Fetching a OneDrive file</legend>
                     <p>Fetches a file from the OneDrive account using the <code>Client::fetchObject</code> method.</p>
                     <div class=form-group>
-                        <label for=object-id>ID:</label>
-                        <input name=id id="object-id" placeholder=ID class=form-control>
+                        <label for=file-id>ID:</label>
+                        <input name=id id="file-id" placeholder=ID class=form-control>
                     </div>
                     <p><input type=submit value="Fetch file" class="btn btn-primary"></p>
                 </fieldset>
