@@ -31,7 +31,9 @@ class NameConflictBehaviorParameterizer
                 break;
 
             default:
-                throw new \Exception("Unsupported name conflict behavior: $nameConflictBehavior");
+                throw new \Exception(
+                    "Unsupported name conflict behavior: $nameConflictBehavior"
+                );
         }
 
         return $params;

@@ -217,14 +217,18 @@ class Client
         $this->_sslCaPath = array_key_exists('ssl_capath', $options)
             ? $options['ssl_capath'] : false;
 
-        $this->_nameConflictBehavior = array_key_exists('name_conflict_behavior', $options)
-            ? $options['name_conflict_behavior'] : NameConflictBehavior::REPLACE;
+        $this->_nameConflictBehavior =
+            array_key_exists('name_conflict_behavior', $options) ?
+            $options['name_conflict_behavior']
+            : NameConflictBehavior::REPLACE;
 
         $this->_streamBackEnd = array_key_exists('stream_back_end', $options)
             ? $options['stream_back_end'] : StreamBackEnd::MEMORY;
 
-        $this->_nameConflictBehaviorParameterizer = new NameConflictBehaviorParameterizer();
-        $this->_streamOpener                      = new StreamOpener();
+        $this->_nameConflictBehaviorParameterizer =
+            new NameConflictBehaviorParameterizer();
+
+        $this->_streamOpener = new StreamOpener();
     }
 
     /**
@@ -287,7 +291,9 @@ class Client
         array $options = []
     ) {
         if (null === $this->_clientId) {
-            throw new \Exception('The client ID must be set to call getLoginUrl()');
+            throw new \Exception(
+                'The client ID must be set to call getLoginUrl()'
+            );
         }
 
         $imploded                   = implode(',', $scopes);
@@ -363,11 +369,16 @@ class Client
     public function obtainAccessToken($clientSecret, $code)
     {
         if (null === $this->_clientId) {
-            throw new \Exception('The client ID must be set to call obtainAccessToken()');
+            throw new \Exception(
+                'The client ID must be set to call obtainAccessToken()'
+            );
         }
 
         if (null === $this->_state->redirect_uri) {
-            throw new \Exception('The state\'s redirect URI must be set to call obtainAccessToken()');
+            throw new \Exception(
+                'The state\'s redirect URI must be set to call'
+                    . ' obtainAccessToken()'
+            );
         }
 
         $url = self::TOKEN_URL;
@@ -435,11 +446,16 @@ class Client
     public function renewAccessToken($clientSecret)
     {
         if (null === $this->_clientId) {
-            throw new \Exception('The client ID must be set to call renewAccessToken()');
+            throw new \Exception(
+                'The client ID must be set to call renewAccessToken()'
+            );
         }
 
         if (null === $this->_state->token->data->refresh_token) {
-            throw new \Exception('The refresh token is not set or no permission for \'wl.offline_access\' was given to renew the token');
+            throw new \Exception(
+                'The refresh token is not set or no permission for'
+                    . ' \'wl.offline_access\' was given to renew the token'
+            );
         }
 
         $url = self::TOKEN_URL;
@@ -452,10 +468,14 @@ class Client
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_AUTOREFERER    => true,
             CURLOPT_POST           => 1, // i am sending post data
-            CURLOPT_POSTFIELDS     => 'client_id=' . urlencode($this->_clientId)
-                . '&client_secret=' . urlencode($clientSecret)
-                . '&grant_type=refresh_token'
-                . '&refresh_token=' . urlencode($this->_state->token->data->refresh_token),
+
+            CURLOPT_POSTFIELDS =>
+                'client_id=' . urlencode($this->_clientId)
+                    . '&client_secret=' . urlencode($clientSecret)
+                    . '&grant_type=refresh_token'
+                    . '&refresh_token=' . urlencode(
+                        $this->_state->token->data->refresh_token
+                    ),
 
             // SSL options.
             CURLOPT_SSL_VERIFYHOST => false,
@@ -467,7 +487,9 @@ class Client
 
         if (false === $result) {
             if (curl_errno($curl)) {
-                throw new \Exception('curl_setopt_array() failed: ' . curl_error($curl));
+                throw new \Exception(
+                    'curl_setopt_array() failed: ' . curl_error($curl)
+                );
             } else {
                 throw new \Exception('curl_setopt_array(): empty response');
             }
@@ -495,8 +517,12 @@ class Client
      */
     public function apiGet($path, $options = [])
     {
-        $url = self::API_URL . $path
-            . '?access_token=' . urlencode($this->_state->token->data->access_token);
+        $url =
+            self::API_URL
+                . $path
+                . '?access_token=' . urlencode(
+                    $this->_state->token->data->access_token
+                );
 
         $curl = self::_createCurl($path, $options);
         curl_setopt($curl, CURLOPT_URL, $url);
@@ -525,7 +551,8 @@ class Client
                 // The data is sent as JSON as per OneDrive documentation.
                 'Content-Type: application/json',
 
-                'Authorization: Bearer ' . $this->_state->token->data->access_token,
+                'Authorization: Bearer '
+                    . $this->_state->token->data->access_token,
             ],
 
             CURLOPT_POSTFIELDS => json_encode($data),
@@ -579,8 +606,11 @@ class Client
      */
     public function apiDelete($path)
     {
-        $url = self::API_URL . $path
-            . '?access_token=' . urlencode($this->_state->token->data->access_token);
+        $url =
+            self::API_URL
+                . $path
+                . '?access_token='
+                . urlencode($this->_state->token->data->access_token);
 
         $curl = self::_createCurl($path);
 
@@ -614,7 +644,8 @@ class Client
                 // The data is sent as JSON as per OneDrive documentation.
                 'Content-Type: application/json',
 
-                'Authorization: Bearer ' . $this->_state->token->data->access_token,
+                'Authorization: Bearer '
+                    . $this->_state->token->data->access_token,
             ],
 
             CURLOPT_POSTFIELDS    => json_encode($data),
@@ -645,7 +676,8 @@ class Client
                 // The data is sent as JSON as per OneDrive documentation.
                 'Content-Type: application/json',
 
-                'Authorization: Bearer ' . $this->_state->token->data->access_token,
+                'Authorization: Bearer '
+                    . $this->_state->token->data->access_token,
             ],
 
             CURLOPT_POSTFIELDS    => json_encode($data),
@@ -711,8 +743,12 @@ class Client
      *
      * @throws \Exception Thrown on I/O errors.
      */
-    public function createFile($name, $parentId = null, $content = '', array $options = [])
-    {
+    public function createFile(
+        $name,
+        $parentId = null,
+        $content = '',
+        array $options = []
+    ) {
         if (null === $parentId) {
             $parentId = 'me/skydrive';
         }
@@ -755,7 +791,10 @@ class Client
 
         // TODO: some versions of cURL cannot PUT memory streams? See here for a
         // workaround: https://bugs.php.net/bug.php?id=43468
-        $file = $this->apiPut($parentId . '/files/' . urlencode($name) . "?$query", $stream);
+        $file = $this->apiPut(
+            $parentId . '/files/' . urlencode($name) . "?$query",
+            $stream
+        );
 
         // Close the handle only if we opened it within this function.
         if (!is_resource($content)) {
