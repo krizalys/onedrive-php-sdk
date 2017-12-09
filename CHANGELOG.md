@@ -1,8 +1,8 @@
 Change log
 ==========
 
-[Unreleased][unreleased]
-------------------------
+[1.2.0] - 2017-12-09
+--------------------
 
 ### Added
 
@@ -43,7 +43,8 @@ Change log
 
 - Support for SSL.
 
-[unreleased]: https://github.com/krizalys/onedrive-php-sdk/compare/1.1.1...HEAD
+[unreleased]: https://github.com/krizalys/onedrive-php-sdk/compare/1.2.0...HEAD
+[1.2.0]:      https://github.com/krizalys/onedrive-php-sdk/compare/1.1.1...1.2.0
 [1.1.1]:      https://github.com/krizalys/onedrive-php-sdk/compare/1.1.0...1.1.1
 [1.1.0]:      https://github.com/krizalys/onedrive-php-sdk/compare/1.0.0...1.1.0
 [1.0.1]:      https://github.com/krizalys/onedrive-php-sdk/compare/1.0.0...1.0.1
