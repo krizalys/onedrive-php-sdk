@@ -14,12 +14,12 @@ try {
         'state' => $_SESSION['onedrive.client.state'],
     ]);
 
-    $root    = $onedrive->fetchRoot();
-    $objects = $root->fetchObjects();
+    $root       = $onedrive->fetchRoot();
+    $driveItems = $root->fetchObjects();
 } catch (\Exception $e) {
-    $root    = null;
-    $objects = null;
-    $status  = sprintf('<p class=bg-danger>Reason: <cite>%s</cite><p>', htmlspecialchars($e->getMessage()));
+    $root       = null;
+    $driveItems = null;
+    $status     = sprintf('<p class=bg-danger>Reason: <cite>%s</cite><p>', htmlspecialchars($e->getMessage()));
 }
 ?>
 <!DOCTYPE html>
@@ -35,13 +35,13 @@ try {
         <div class=container>
             <h1>Fetching the OneDrive root</h1>
             <?php if (null !== $status) echo $status ?>
-            <?php if (null !== $root && null !== $objects): ?>
+            <?php if (null !== $root && null !== $driveItems): ?>
             <p>The <code>Client::fetchRoot</code> method returned the root from your OneDrive account.</p>
             <h2>Properties</h2>
             <pre><?php print_r($root->fetchProperties()) ?></pre>
-            <h2>Objects</h2>
-            <?php if (0 == count($objects)): ?>
-            <p>There are no objects in this folder.</p>
+            <h2>Drive items</h2>
+            <?php if (0 == count($driveItems)): ?>
+            <p>There are no drive items in this folder.</p>
             <?php else: ?>
             <table class=table>
                 <thead>
@@ -53,14 +53,14 @@ try {
                     <th>ID</th>
                 </thead>
                 <tbody>
-                    <?php foreach ($objects as $object): ?>
+                    <?php foreach ($driveItems as $driveItem): ?>
                     <tr>
-                        <td><code style="white-space: pre">[<?php echo $object->isFolder() ? 'DIR' : '   ' ?>]</code></td>
-                        <td><a href="<?php echo $object->isFolder() ? 'folder' : 'file' ?>.php?id=<?php echo htmlspecialchars($object->getId()) ?>"><?php echo htmlspecialchars($object->getName(), ENT_NOQUOTES) ?></a></td>
-                        <td style="text-align: right"><?php echo $object->getSize() ?></td>
-                        <td><?php echo gmdate('r', $object->getCreatedTime()) ?></td>
-                        <td><?php echo gmdate('r', $object->getUpdatedTime()) ?></td>
-                        <td><code><?php echo htmlspecialchars($object->getId()) ?></code></td>
+                        <td><code style="white-space: pre">[<?php echo $driveItem->isFolder() ? 'DIR' : '   ' ?>]</code></td>
+                        <td><a href="<?php echo $driveItem->isFolder() ? 'folder' : 'file' ?>.php?id=<?php echo htmlspecialchars($driveItem->getId()) ?>"><?php echo htmlspecialchars($driveItem->getName(), ENT_NOQUOTES) ?></a></td>
+                        <td style="text-align: right"><?php echo $driveItem->getSize() ?></td>
+                        <td><?php echo gmdate('r', $driveItem->getCreatedTime()) ?></td>
+                        <td><?php echo gmdate('r', $driveItem->getUpdatedTime()) ?></td>
+                        <td><code><?php echo htmlspecialchars($driveItem->getId()) ?></code></td>
                     </tr>
                     <?php endforeach ?>
                 </tbody>

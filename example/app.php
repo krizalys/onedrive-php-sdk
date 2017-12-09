@@ -98,8 +98,8 @@ use Krizalys\Onedrive\NameConflictBehavior;
             </form>
             <form action=update-object.php>
                 <fieldset>
-                    <legend>Updating a OneDrive object</legend>
-                    <p>Updates an object in the OneDrive account using the <code>Client::updateObject</code> method. Updating objects does not modify their content (for a file) or their child objects (for a folder).</p>
+                    <legend>Updating a OneDrive drive item</legend>
+                    <p>Updates a drive item in the OneDrive account using the <code>Client::updateObject</code> method. Updating drive items does not modify their content (for a file) or their child drive items (for a folder).</p>
                     <div class=form-group>
                         <label for=update-object-id>ID:</label>
                         <input name=id id="update-object-id" placeholder=ID class=form-control>
@@ -112,24 +112,24 @@ use Krizalys\Onedrive\NameConflictBehavior;
                         <label for=update-object-description>Description:</label>
                         <textarea name=description id="update-object-description" placeholder=Description class=form-control></textarea>
                     </div>
-                    <p><input type=submit value="Update object" class="btn btn-primary"></p>
+                    <p><input type=submit value="Update drive item" class="btn btn-primary"></p>
                 </fieldset>
             </form>
             <form action=delete-object.php>
                 <fieldset>
-                    <legend>Deleting a OneDrive object</legend>
-                    <p>Deletes an object from the OneDrive account using the <code>Client::deleteObject</code> method.</p>
+                    <legend>Deleting a OneDrive drive item</legend>
+                    <p>Deletes a drive item from the OneDrive account using the <code>Client::deleteObject</code> method.</p>
                     <div class=form-group>
                         <label for=delete-object-id>ID:</label>
                         <input name=id id="delete-object-id" placeholder=ID class=form-control>
                     </div>
-                    <p><input type=submit value="Delete object" class="btn btn-primary"></p>
+                    <p><input type=submit value="Delete drive item" class="btn btn-primary"></p>
                 </fieldset>
             </form>
             <form action=move-object.php>
                 <fieldset>
-                    <legend>Moving a OneDrive object</legend>
-                    <p>Moves an object in the OneDrive account using the <code>Object::move</code> method.</p>
+                    <legend>Moving a OneDrive drive item</legend>
+                    <p>Moves a drive item in the OneDrive account using the <code>DriveItem::move</code> method.</p>
                     <div class=form-group>
                         <label for=move-object-id>ID:</label>
                         <input name=id id="move-object-id" placeholder=ID class=form-control>
@@ -138,7 +138,7 @@ use Krizalys\Onedrive\NameConflictBehavior;
                         <label for=move-object-destination-id>Destination ID:</label>
                         <input name=destination_id id="move-object-destination-id" placeholder="Destination ID" class=form-control>
                     </div>
-                    <p><input type=submit value="Move object" class="btn btn-primary"></p>
+                    <p><input type=submit value="Move drive item" class="btn btn-primary"></p>
                 </fieldset>
             </form>
             <form action=copy-file.php>
@@ -172,36 +172,36 @@ use Krizalys\Onedrive\NameConflictBehavior;
             </form>
             <form action=shared.php>
                 <fieldset>
-                    <legend>Fetching the OneDrive shared objects</legend>
-                    <p>Fetches the objects shared with the OneDrive account using the <code>Client::fetchShared</code> method.</p>
+                    <legend>Fetching the OneDrive shared drive items</legend>
+                    <p>Fetches the drive items shared with the OneDrive account using the <code>Client::fetchShared</code> method.</p>
                     <p><input type=submit value="Fetch shared" class="btn btn-primary"></p>
                 </fieldset>
             </form>
             <form action=camera-roll.php>
                 <fieldset>
                     <legend>Fetching the OneDrive camera roll</legend>
-                    <p>Fetches the objects shared with the OneDrive account using the <code>Client::fetchShared</code> method.</p>
+                    <p>Fetches the drive items shared with the OneDrive account using the <code>Client::fetchShared</code> method.</p>
                     <p><input type=submit value="Fetch camera roll" class="btn btn-primary"></p>
                 </fieldset>
             </form>
             <form action=docs.php>
                 <fieldset>
                     <legend>Fetching the OneDrive documents</legend>
-                    <p>Fetches the objects shared with the OneDrive account using the <code>Client::fetchShared</code> method.</p>
+                    <p>Fetches the drive items shared with the OneDrive account using the <code>Client::fetchShared</code> method.</p>
                     <p><input type=submit value="Fetch documents" class="btn btn-primary"></p>
                 </fieldset>
             </form>
             <form action=pics.php>
                 <fieldset>
                     <legend>Fetching the OneDrive pictures</legend>
-                    <p>Fetches the objects shared with the OneDrive account using the <code>Client::fetchShared</code> method.</p>
+                    <p>Fetches the drive items shared with the OneDrive account using the <code>Client::fetchShared</code> method.</p>
                     <p><input type=submit value="Fetch pictures" class="btn btn-primary"></p>
                 </fieldset>
             </form>
             <form action=public-docs.php>
                 <fieldset>
                     <legend>Fetching the OneDrive public documents</legend>
-                    <p>Fetches the objects shared with the OneDrive account using the <code>Client::fetchShared</code> method.</p>
+                    <p>Fetches the drive items shared with the OneDrive account using the <code>Client::fetchShared</code> method.</p>
                     <p><input type=submit value="Fetch public documents" class="btn btn-primary"></p>
                 </fieldset>
             </form>

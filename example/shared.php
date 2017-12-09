@@ -24,14 +24,14 @@ try {
 <html lang=en dir=ltr>
     <head>
         <meta charset=utf-8>
-        <title>Fetching the OneDrive shared objects – Demonstration of the OneDrive SDK for PHP</title>
+        <title>Fetching the OneDrive shared drive items – Demonstration of the OneDrive SDK for PHP</title>
         <link rel=stylesheet href=//ajax.aspnetcdn.com/ajax/bootstrap/3.2.0/css/bootstrap.min.css>
         <link rel=stylesheet href=//ajax.aspnetcdn.com/ajax/bootstrap/3.2.0/css/bootstrap-theme.min.css>
         <meta name=viewport content="width=device-width, initial-scale=1">
     </head>
     <body>
         <div class=container>
-            <h1>Fetching the OneDrive shared objects</h1>
+            <h1>Fetching the OneDrive shared drive items</h1>
             <?php if (null !== $status) echo $status ?>
             <?php if (null !== $recentDocs): ?>
             <p>The <code>Client::fetchShared</code> method returned:</p>
