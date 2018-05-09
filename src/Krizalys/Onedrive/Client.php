@@ -297,7 +297,8 @@ class Client
      *                            - 'wl.skydrive_update'
      * @param string $redirectUri The URI to which to redirect to upon
      *                            successful log in.
-     * @param array  $options     Reserved for future use. Default: [].
+     * @param array  $options     Optional parameters. Supported values:
+     *                            - 'state'
      *
      * @return string The login URL.
      *
@@ -330,6 +331,11 @@ class Client
             . '&redirect_uri=' . urlencode($redirectUri)
             . '&display=popup'
             . '&locale=en';
+            
+        // Options
+        if(isset($options['state'])) {
+            $url .= "&state=" . $options['state'];
+        }
 
         return $url;
     }
