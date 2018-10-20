@@ -49,7 +49,7 @@ class File extends DriveItem
      * @todo Should somewhat return the content-type as well; this information
      *       is not disclosed by OneDrive.
      */
-    public function fetchContent($options = [])
+    public function fetchContent(array $options = [])
     {
         return $this->_client->apiGet($this->_id . '/content', $options);
     }

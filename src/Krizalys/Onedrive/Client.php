@@ -104,7 +104,7 @@ class Client
      *
      * @return resource A compatible cURL object.
      */
-    private function _createCurl($path, $options = [])
+    private function _createCurl($path, array $options = [])
     {
         $curl = curl_init();
 
@@ -535,7 +535,7 @@ class Client
      *
      * @return object|string The response body, if any.
      */
-    public function apiGet($path, $options = [])
+    public function apiGet($path, array $options = [])
     {
         $url =
             self::API_URL
