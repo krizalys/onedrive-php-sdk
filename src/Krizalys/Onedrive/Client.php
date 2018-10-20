@@ -312,7 +312,7 @@ class Client
     ) {
         if (null === $this->_clientId) {
             throw new \Exception(
-                'The client ID must be set to call getLoginUrl()'
+                'The client ID must be set to call getLogInUrl()'
             );
         }
 
@@ -380,7 +380,7 @@ class Client
      * @param string $code         The code returned by OneDrive after
      *                             successful log in.
      * @param string $redirectUri  Must be the same as the redirect URI passed
-     *                             to getLoginUrl().
+     *                             to getLogInUrl().
      *
      * @throws \Exception Thrown if this Client instance's clientId is not set.
      * @throws \Exception Thrown if the redirect URI of this Client instance's
