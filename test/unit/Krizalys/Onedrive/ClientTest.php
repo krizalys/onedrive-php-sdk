@@ -89,6 +89,30 @@ class ClientTest extends MockeryTestCase
         $this->assertEquals('https://login.live.com/oauth20_authorize.srf?client_id=9999999999999999&scope=test_scope_1%2Ctest_scope_2&response_type=code&redirect_uri=http%3A%2F%2Fte.st%2Fcallback&display=popup&locale=en', $actual);
     }
 
+    public function testGetLogInUrlWithNullClientIdShouldThrowException()
+    {
+        $this->expectException(\Exception::class);
+
+        $client = new Client([
+            'state' => (object) [
+                'redirect_uri' => null,
+                'token'        => null,
+            ],
+        ]);
+
+        $scopes = [
+            'test_scope_1',
+            'test_scope_2',
+        ];
+
+        $opts = [
+            'unused'   => 'useless',
+            'reserved' => 'future',
+        ];
+
+        $client->getLogInUrl($scopes, 'http://te.st/callback', $opts);
+    }
+
     public function testGetTokenExpireShouldReturnExpectedValue()
     {
         GlobalNamespace::reset([
