@@ -906,11 +906,12 @@ class Client
     /**
      * Fetches the properties of a drive item in the current OneDrive account.
      *
-     * @param string $driveItemId The drive item ID.
+     * @param null|string $driveItemId The drive item ID, or null to fetch the
+     *                                 OneDrive root folder. Default: null.
      *
      * @return object The properties of the drive item fetched.
      */
-    public function fetchProperties($driveItemId)
+    public function fetchProperties($driveItemId = null)
     {
         if (null === $driveItemId) {
             $driveItemId = 'me/skydrive';
@@ -922,12 +923,13 @@ class Client
     /**
      * Fetches the drive items in a folder in the current OneDrive account.
      *
-     * @param string $driveItemId The drive item ID.
+     * @param null|string $driveItemId The drive item ID, or null to fetch the
+     *                                 OneDrive root folder. Default: null.
      *
      * @return array The drive items in the folder fetched, as DriveItem
      *               instances referencing OneDrive drive items.
      */
-    public function fetchDriveItems($driveItemId)
+    public function fetchDriveItems($driveItemId = null)
     {
         if (null === $driveItemId) {
             $driveItemId = 'me/skydrive';
