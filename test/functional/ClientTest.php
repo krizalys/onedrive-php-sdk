@@ -8,6 +8,7 @@ use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverExpectedCondition;
 use Krizalys\Onedrive\Client;
+use Krizalys\Onedrive\DriveItem;
 use Krizalys\Onedrive\StreamBackEnd;
 use Symfony\Component\Process\Process;
 
@@ -53,13 +54,41 @@ EOF;
 
     public function testCreateFolder()
     {
-        $folder1 = self::$client->createFolder('Test folder #1');
+        $root = self::$client->fetchDriveItem();
+
+        $folder1 = self::$client->createFolder('Test folder #1', null, null);
         $this->assertNotNull($folder1);
+        $this->assertEquals('Test folder #1', $folder1->getName());
 
-        $folder2 = self::$client->createFolder('Test folder #2');
+        $children = array_map(function (DriveItem $driveItem) {
+            return $driveItem->getId();
+        }, $root->fetchChildDriveItems());
+
+        $this->assertContains($folder1->getId(), $children);
+
+        $folder2 = self::$client->createFolder('Test folder #2', null, 'Test description folder #2');
         $this->assertNotNull($folder2);
+        $this->assertEquals('Test folder #2', $folder2->getName());
 
-        return [$folder1, $folder2];
+        $children = array_map(function (DriveItem $driveItem) {
+            return $driveItem->getId();
+        }, $root->fetchChildDriveItems());
+
+        $this->assertContains($folder2->getId(), $children);
+        $this->assertEquals('Test description folder #2', $folder2->getDescription());
+
+        $folder3 = self::$client->createFolder('Test folder #3', $folder1->getId(), null);
+        $this->assertNotNull($folder3);
+        $this->assertEquals('Test folder #3', $folder3->getName());
+        $this->assertEquals($folder1->getId(), $folder3->getParentId());
+
+        $children = array_map(function (DriveItem $driveItem) {
+            return $driveItem->getId();
+        }, $folder1->fetchChildDriveItems());
+
+        $this->assertContains($folder3->getId(), $children);
+
+        return [$folder1, $folder2, $folder3];
     }
 
     /**
@@ -69,13 +98,24 @@ EOF;
     {
         $folder1 = $arguments[0];
         $folder2 = $arguments[1];
+        $folder3 = $arguments[2];
 
         // Test with a text file.
         $file1 = self::$client->createFile('Test file #1.txt', $folder1->getId(), 'Test content');
         $this->assertNotNull($file1);
+        $this->assertEquals('Test file #1.txt', $file1->getName());
+        $this->assertEquals($folder1->getId(), $file1->getParentId());
+
+        $children = array_map(function (DriveItem $driveItem) {
+            return $driveItem->getId();
+        }, $folder1->fetchChildDriveItems());
+
+        $this->assertContains($file1->getId(), $children);
 
         $file1 = self::$client->fetchDriveItem($file1->getId());
         $this->assertNotNull($file1);
+        $this->assertEquals('Test file #1.txt', $file1->getName());
+        $this->assertEquals($folder1->getId(), $file1->getParentId());
 
         $actual = $file1->fetchContent();
         $this->assertEquals('Test content', $actual);
@@ -83,8 +123,16 @@ EOF;
         // Test with a binary file.
         $file2 = self::$client->createFile('Test file #2.png', $folder2->getId(), base64_decode(self::PHP_LOGO_PNG_BASE64));
         $this->assertNotNull($file2);
+        $this->assertEquals('Test file #2.png', $file2->getName());
+        $this->assertEquals($folder2->getId(), $file2->getParentId());
 
-        return [$folder1, $folder2, $file1];
+        $children = array_map(function (DriveItem $driveItem) {
+            return $driveItem->getId();
+        }, $folder2->fetchChildDriveItems());
+
+        $this->assertContains($file2->getId(), $children);
+
+        return [$folder1, $folder2, $folder3, $file1];
     }
 
     /**
@@ -94,11 +142,29 @@ EOF;
     {
         $folder1 = $arguments[0];
         $folder2 = $arguments[1];
-        $file1   = $arguments[2];
+        $folder3 = $arguments[2];
+        $file1   = $arguments[3];
+
+        $root = self::$client->fetchDriveItem();
 
         self::$client->moveDriveItem($file1->getId(), $folder2->getId());
 
-        return [$folder1, $folder2, $file1];
+        $children = array_map(function (DriveItem $driveItem) {
+            return $driveItem->getId();
+        }, $folder1->fetchChildDriveItems());
+
+        $this->assertFalse(in_array($file1->getId(), $children));
+
+        $children = array_map(function (DriveItem $driveItem) {
+            return $driveItem->getId();
+        }, $folder2->fetchChildDriveItems());
+
+        $this->assertContains($file1->getId(), $children);
+
+        $file1 = self::$client->fetchDriveItem($file1->getId());
+        $this->assertEquals($folder2->getId(), $file1->getParentId());
+
+        return [$folder1, $folder2, $folder3, $file1];
     }
 
     /**
@@ -108,11 +174,26 @@ EOF;
     {
         $folder1 = $arguments[0];
         $folder2 = $arguments[1];
-        $file1   = $arguments[2];
+        $folder3 = $arguments[2];
+        $file1   = $arguments[3];
+
+        $root = self::$client->fetchDriveItem();
 
         self::$client->copyFile($file1->getId(), $folder1->getId());
 
-        return [$folder1, $folder2];
+        $children = array_map(function (DriveItem $driveItem) {
+            return $driveItem->getId();
+        }, $folder2->fetchChildDriveItems());
+
+        $this->assertContains($file1->getId(), $children);
+
+        $children = array_map(function (DriveItem $driveItem) {
+            return $driveItem->getName();
+        }, $folder1->fetchChildDriveItems());
+
+        $this->assertContains('Test file #1.txt', $children);
+
+        return [$folder1, $folder2, $folder3];
     }
 
     /**
@@ -122,12 +203,33 @@ EOF;
     {
         $folder1 = $arguments[0];
         $folder2 = $arguments[1];
+        $folder3 = $arguments[2];
+
+        $root = self::$client->fetchDriveItem();
+
+        self::$client->deleteDriveItem($folder3->getId());
+
+        $children = array_map(function (DriveItem $driveItem) {
+            return $driveItem->getId();
+        }, $folder1->fetchChildDriveItems());
+
+        $this->assertFalse(in_array($folder3->getId(), $children));
 
         self::$client->deleteDriveItem($folder1->getId());
 
+        $children = array_map(function (DriveItem $driveItem) {
+            return $driveItem->getId();
+        }, $root->fetchChildDriveItems());
+
+        $this->assertFalse(in_array($folder1->getId(), $children));
+
         self::$client->deleteDriveItem($folder2->getId());
 
-        $this->assertTrue(true);
+        $children = array_map(function (DriveItem $driveItem) {
+            return $driveItem->getId();
+        }, $root->fetchChildDriveItems());
+
+        $this->assertFalse(in_array($folder2->getId(), $children));
     }
 
     private static function getAuthenticationCode(Client $client, $clientId, $username, $password)
