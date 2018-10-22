@@ -12,11 +12,14 @@ class StreamOpener
     /**
      * Opens a stream given a stream back end.
      *
-     * @param int $streamBackEnd The stream back end.
+     * @param int $streamBackEnd
+     *        The stream back end.
      *
-     * @return bool|resource The open stream.
+     * @return bool|resource
+     *         The open stream.
      *
-     * @throws \Exception Thrown if the stream back end given is not supported.
+     * @throws \Exception
+     *         Thrown if the stream back end given is not supported.
      */
     public function open($streamBackEnd)
     {

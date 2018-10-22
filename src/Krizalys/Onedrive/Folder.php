@@ -13,11 +13,7 @@ use Psr\Log\LogLevel;
 class Folder extends DriveItem
 {
     /**
-     * Determines whether the OneDrive drive item referenced by this DriveItem
-     * instance is a folder.
-     *
-     * @return bool true if the OneDrive drive item referenced by this DriveItem
-     *              instance is a folder, false otherwise.
+     * {@inheritdoc}
      */
     public function isFolder()
     {
@@ -27,14 +23,14 @@ class Folder extends DriveItem
     /**
      * Constructor.
      *
-     * @param Client       $client  The Client instance owning this DriveItem
-     *                              instance.
-     * @param null|string  $id      The unique ID of the OneDrive drive item
-     *                              referenced by this DriveItem instance, or
-     *                              null to reference the OneDrive root folder.
-     *                              Default: null.
-     * @param array|object $options Options to pass to the DriveItem
-     *                              constructor.
+     * @param Client $client
+     *        The Client instance owning this DriveItem instance.
+     * @param null|string $id
+     *        The unique ID of the OneDrive drive item referenced by this
+     *        DriveItem instance, or null to reference the OneDrive root folder.
+     *        Default: null.
+     * @param array|object $options
+     *        Options to pass to the DriveItem constructor.
      */
     public function __construct(Client $client, $id = null, $options = [])
     {
@@ -45,8 +41,9 @@ class Folder extends DriveItem
      * Gets the drive items in the OneDrive folder referenced by this Folder
      * instance.
      *
-     * @return array The drive items in the OneDrive folder referenced by this
-     *               Folder instance, as DriveItem instances.
+     * @return array
+     *         The drive items in the OneDrive folder referenced by this Folder
+     *         instance, as DriveItem instances.
      *
      * @deprecated Use Folder::fetchChildDriveItems() instead.
      */
@@ -67,8 +64,9 @@ class Folder extends DriveItem
      * Gets the child drive items in the OneDrive folder referenced by this
      * Folder instance.
      *
-     * @return array The drive items in the OneDrive folder referenced by this
-     *               Folder instance, as DriveItem instances.
+     * @return array
+     *         The drive items in the OneDrive folder referenced by this Folder
+     *         instance, as DriveItem instances.
      */
     public function fetchChildDriveItems()
     {
@@ -79,8 +77,9 @@ class Folder extends DriveItem
      * Gets the descendant drive items under the OneDrive folder referenced by
      * this Folder instance.
      *
-     * @return array The files in the OneDrive folder referenced by this Folder
-     *               instance, as DriveItem instances.
+     * @return array
+     *         The files in the OneDrive folder referenced by this Folder
+     *         instance, as DriveItem instances.
      */
     public function fetchDescendantDriveItems()
     {
@@ -104,13 +103,14 @@ class Folder extends DriveItem
      * Creates a folder in the OneDrive folder referenced by this Folder
      * instance.
      *
-     * @param string      $name        The name of the OneDrive folder to be
-     *                                 created.
-     * @param null|string $description The description of the OneDrive folder
-     *                                 to be created, or null to create it
-     *                                 without a description. Default: null.
+     * @param string $name
+     *        The name of the OneDrive folder to be created.
+     * @param null|string $description
+     *        The description of the OneDrive folder to be created, or null to
+     *        create it without a description. Default: null.
      *
-     * @return Folder The folder created, as a Folder instance.
+     * @return Folder
+     *         The folder created, as a Folder instance.
      */
     public function createFolder($name, $description = null)
     {
@@ -120,19 +120,21 @@ class Folder extends DriveItem
     /**
      * Creates a file in the OneDrive folder referenced by this Folder instance.
      *
-     * @param string          $name    The name of the OneDrive file to be
-     *                                 created.
-     * @param string|resource $content The content of the OneDrive file to be
-     *                                 created, as a string or handle to an
-     *                                 already opened file.  In the latter case,
-     *                                 the responsibility to close the handle is
-     *                                 is left to the calling function. Default:
-     *                                 ''.
-     * @param array           $options The options.
+     * @param string $name
+     *        The name of the OneDrive file to be created.
+     * @param string|resource $content
+     *        The content of the OneDrive file to be created, as a string or
+     *        handle to an already opened file. In the latter case, the
+     *        responsibility to close the handle is is left to the calling
+     *        function. Default: ''.
+     * @param array $options
+     *        The options.
      *
-     * @return File The file created, as a File instance.
+     * @return File
+     *         The file created, as a File instance.
      *
-     * @throws \Exception Thrown on I/O errors.
+     * @throws \Exception
+     *         Thrown on I/O errors.
      */
     public function createFile($name, $content = '', array $options = [])
     {

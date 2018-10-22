@@ -7,13 +7,16 @@ class NameConflictBehaviorParameterizer
     /**
      * Parameterizes a given name conflict behavior.
      *
-     * @param array $params               The parameters.
-     * @param int   $nameConflictBehavior The name conflict behavior.
+     * @param array $params
+     *        The parameters.
+     * @param int $nameConflictBehavior
+     *        The name conflict behavior.
      *
      * @return array
+     *         The parameters.
      *
-     * @throws \Exception Thrown if the name conflict behavior given is not
-     *                    supported.
+     * @throws \Exception
+     *         Thrown if the name conflict behavior given is not supported.
      */
     public function parameterize(array $params, $nameConflictBehavior)
     {

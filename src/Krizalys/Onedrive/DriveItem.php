@@ -16,75 +16,85 @@ namespace Krizalys\Onedrive;
 abstract class DriveItem
 {
     /**
-     * @var Client The owning Client instance.
+     * @var Client
+     *      The owning Client instance.
      */
     protected $_client;
 
     /**
-     * @var string The unique ID assigned by OneDrive to this drive item.
+     * @var string
+     *      The unique ID assigned by OneDrive to this drive item.
      */
     protected $_id;
 
     /**
-     * @var string The unique ID assigned by OneDrive to the parent folder of
-     *             this drive item.
+     * @var string
+     *      The unique ID assigned by OneDrive to the parent folder of this
+     *      drive item.
      */
     private $_parentId;
 
     /**
-     * @var string The name of this drive item.
+     * @var string
+     *      The name of this drive item.
      */
     private $_name;
 
     /**
-     * @var string The description of this drive item.
+     * @var string
+     *      The description of this drive item.
      */
     private $_description;
 
     /**
-     * @var int The size of this drive item, in bytes.
+     * @var int
+     *      The size of this drive item, in bytes.
      */
     private $_size;
 
     /**
-     * @var string The source link of this drive item.
+     * @var string
+     *      The source link of this drive item.
      */
     private $_source;
 
     /**
-     * @var int The creation time, in seconds since UNIX epoch.
+     * @var int
+     *      The creation time, in seconds since UNIX epoch.
      */
     private $_createdTime;
 
     /**
-     * @var int The last modification time, in seconds since UNIX epoch.
+     * @var int
+     *      The last modification time, in seconds since UNIX epoch.
      */
     private $_updatedTime;
 
     /**
      * Constructor.
      *
-     * @param Client       $client  The Client instance owning this DriveItem
-     *                              instance.
-     * @param null|string  $id      The unique ID of the OneDrive drive item
-     *                              referenced by this DriveItem instance.
-     * @param array|object $options An array/object with one or more of the
-     *                              following keys/properties:
-     *                              - 'parent_id'    (string) The unique ID of
-     *                              the parent OneDrive folder of this drive
-     *                              item.
-     *                              - 'name' (string) The name of this drive
-     *                              item.
-     *                              - 'description' (string) The description of
-     *                              this drive item. May be empty.
-     *                              - 'size' (int) The size of this drive item,
-     *                              in bytes.
-     *                              - 'source' (string) The source link of this
-     *                              drive item.
-     *                              - 'created_time' (string) The creation time,
-     *                              as a RFC date/time.
-     *                              - 'updated_time' (string) The last
-     *                              modification time, as a RFC date/time.
+     * @param Client $client
+     *        The Client instance owning this DriveItem instance.
+     * @param null|string $id
+     *        The unique ID of the OneDrive drive item referenced by this
+     *        DriveItem instance.
+     * @param array|object $options
+     *        An array/object with one or more of the following keys/properties:
+     *          - 'parent_id' string
+     *            The unique ID of the parent OneDrive folder of this drive
+     *            item.
+     *          - 'name' (string)
+     *            The name of this drive item.
+     *          - 'description' (string)
+     *            The description of this drive item. May be empty.
+     *          - 'size' (int)
+     *            The size of this drive item, in bytes.
+     *          - 'source' (string)
+     *            The source link of this drive item.
+     *          - 'created_time' (string)
+     *            The creation time, as a RFC date/time.
+     *          - 'updated_time' (string)
+     *            The last modification time, as a RFC date/time.
      */
     public function __construct(Client $client, $id, $options = [])
     {
@@ -118,8 +128,9 @@ abstract class DriveItem
      * Determines whether the OneDrive drive item referenced by this DriveItem
      * instance is a folder.
      *
-     * @return bool true if the OneDrive drive item referenced by this DriveItem
-     *              instance is a folder, false otherwise.
+     * @return bool
+     *         true if the OneDrive drive item referenced by this DriveItem
+     *         instance is a folder, false otherwise.
      */
     public function isFolder()
     {
@@ -131,8 +142,9 @@ abstract class DriveItem
      * DriveItem instance. Some properties are cached for faster subsequent
      * access.
      *
-     * @return array The properties of the OneDrive drive item referenced by
-     *               this DriveItem instance.
+     * @return array
+     *         The properties of the OneDrive drive item referenced by this
+     *         DriveItem instance.
      */
     public function fetchProperties()
     {
@@ -161,8 +173,9 @@ abstract class DriveItem
      * Gets the unique ID of the OneDrive drive item referenced by this
      * DriveItem instance.
      *
-     * @return string The unique ID of the OneDrive drive item referenced by
-     *                this DriveItem instance.
+     * @return string
+     *         The unique ID of the OneDrive drive item referenced by this
+     *         DriveItem instance.
      */
     public function getId()
     {
@@ -173,8 +186,9 @@ abstract class DriveItem
      * Gets the unique ID of the parent folder of the OneDrive drive item
      * referenced by this DriveItem instance.
      *
-     * @return string The unique ID of the OneDrive folder containing the drive
-     *                item referenced by this DriveItem instance.
+     * @return string
+     *         The unique ID of the OneDrive folder containing the drive item
+     *         referenced by this DriveItem instance.
      */
     public function getParentId()
     {
@@ -189,8 +203,9 @@ abstract class DriveItem
      * Gets the name of the OneDrive drive item referenced by this DriveItem
      * instance.
      *
-     * @return string The name of the OneDrive drive item referenced by this
-     *                DriveItem instance.
+     * @return string
+     *         The name of the OneDrive drive item referenced by this DriveItem
+     *         instance.
      */
     public function getName()
     {
@@ -205,8 +220,9 @@ abstract class DriveItem
      * Gets the description of the OneDrive drive item referenced by this
      * DriveItem instance.
      *
-     * @return string The description of the OneDrive drive item referenced by
-     *                this DriveItem instance.
+     * @return string
+     *         The description of the OneDrive drive item referenced by this
+     *         DriveItem instance.
      */
     public function getDescription()
     {
@@ -221,8 +237,9 @@ abstract class DriveItem
      * Gets the size of the OneDrive drive item referenced by this DriveItem
      * instance.
      *
-     * @return int The size of the OneDrive drive item referenced by this
-     *             DriveItem instance.
+     * @return int
+     *         The size of the OneDrive drive item referenced by this DriveItem
+     *         instance.
      */
     public function getSize()
     {
@@ -237,8 +254,9 @@ abstract class DriveItem
      * Gets the source link of the OneDrive drive item referenced by this
      * DriveItem instance.
      *
-     * @return string The source link of the OneDrive drive item referenced by
-     *                this DriveItem instance.
+     * @return string
+     *         The source link of the OneDrive drive item referenced by this
+     *         DriveItem instance.
      */
     public function getSource()
     {
@@ -253,8 +271,9 @@ abstract class DriveItem
      * Gets the creation time of the OneDrive drive item referenced by this
      * DriveItem instance.
      *
-     * @return int The creation time of the drive item referenced by this
-     *             DriveItem instance, in seconds since UNIX epoch.
+     * @return int
+     *         The creation time of the drive item referenced by this DriveItem
+     *         instance, in seconds since UNIX epoch.
      */
     public function getCreatedTime()
     {
@@ -269,8 +288,9 @@ abstract class DriveItem
      * Gets the last modification time of the OneDrive drive item referenced by
      * this DriveItem instance.
      *
-     * @return int The last modification time of the drive item referenced by
-     *             this DriveItem instance, in seconds since UNIX epoch.
+     * @return int
+     *         The last modification time of the drive item referenced by this
+     *         DriveItem instance, in seconds since UNIX epoch.
      */
     public function getUpdatedTime()
     {
@@ -285,11 +305,10 @@ abstract class DriveItem
      * Moves the OneDrive drive item referenced by this DriveItem instance into
      * another OneDrive folder.
      *
-     * @param null|string $destinationId The unique ID of the OneDrive folder
-     *                                   into which to move the OneDrive drive
-     *                                   item referenced by this DriveItem
-     *                                   instance, or null to move it to the
-     *                                   OneDrive root folder. Default: null.
+     * @param null|string $destinationId
+     *        The unique ID of the OneDrive folder into which to move the
+     *        OneDrive drive item referenced by this DriveItem instance, or null
+     *        to move it to the OneDrive root folder. Default: null.
      */
     public function move($destinationId = null)
     {
