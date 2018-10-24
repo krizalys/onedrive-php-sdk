@@ -213,7 +213,7 @@ To run the functional test suite:
 2. Run your WebDriver server, for example:
 
 ```
-java -jar selenium-server-standalone-3.8.1.jar
+java -jar selenium-server-standalone-3.14.0.jar
 ```
 
 3. Run the functional test (it assumes that your Selenium WebDriver is listening
