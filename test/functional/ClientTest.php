@@ -238,7 +238,13 @@ EOF;
         $server  = new Process($command);
         $server->start();
         $opts = new ChromeOptions();
-        $opts->addArguments(['--incognito']);
+
+        $args = [
+            '--headless',
+            '--incognito',
+        ];
+
+        $opts->addArguments($args);
         $caps = DesiredCapabilities::chrome();
         $caps->setCapability(ChromeOptions::CAPABILITY, $opts);
         $seleniumUrl = sprintf('http://localhost:%d/wd/hub', 4444);
