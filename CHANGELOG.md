@@ -12,6 +12,10 @@ Change log
 
 - Support for PHP 5.4 and PHP 5.5.
 
+### Changed
+
+- License changed from GNU General Public License v3.0 to BSD 3-Clause License.
+
 [1.2.0] - 2017-12-09
 --------------------
 

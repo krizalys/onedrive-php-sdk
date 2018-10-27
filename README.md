@@ -256,7 +256,7 @@ License
 -------
 
 The OneDrive SDK for PHP is licensed under the
-[GNU General Public License v3.0][gpl].
+[BSD 3-Clause License][bsd-3-clause].
 
 Credits
 -------
@@ -274,4 +274,4 @@ The OneDrive SDK for PHP is developed and maintained by Christophe Vidal.
 [ondrive-php-sdk]:            http://www.krizalys.com/software/onedrive-php-sdk
 [krizalys]:                   http://www.krizalys.com/
 [ondrive-php-sdk-demo]:       http://demo.krizalys.com/onedrive-php-sdk/example/
-[gpl]:                        http://www.gnu.org/copyleft/gpl.html
+[bsd-3-clause]:               https://opensource.org/licenses/BSD-3-Clause
