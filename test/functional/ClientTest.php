@@ -19,7 +19,7 @@ use Symfony\Component\Process\Process;
  */
 class ClientTest extends \PHPUnit_Framework_TestCase
 {
-    const PORT = 7777;
+    const REDIRECT_URI_PORT = 7777;
 
     const DATETIME_REGEX = '/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[-+]\d{4}/';
 
@@ -421,7 +421,7 @@ EOF;
 
     private static function getAuthenticationCode(Client $client, $clientId, $username, $password)
     {
-        $command = sprintf('php -S localhost:%d %s/router.php', self::PORT, __DIR__);
+        $command = sprintf('php -S localhost:%d %s/router.php', self::REDIRECT_URI_PORT, __DIR__);
         $server  = new Process($command);
         $server->start();
         $opts = new ChromeOptions();
@@ -435,7 +435,7 @@ EOF;
         $caps = DesiredCapabilities::chrome();
         $caps->setCapability(ChromeOptions::CAPABILITY, $opts);
         $seleniumUrl = sprintf('http://localhost:%d/wd/hub', 4444);
-        $redirectUri = sprintf('http://localhost:%d/', self::PORT);
+        $redirectUri = sprintf('http://localhost:%d/', self::REDIRECT_URI_PORT);
 
         $scopes = [
             'wl.skydrive_update',
