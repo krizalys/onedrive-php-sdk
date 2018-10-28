@@ -7,6 +7,7 @@ Change log
 ### Added
 
 - Support for logging, using [monolog/monolog][monolog] by default.
+- Additional functional test cases.
 
 ### Removed
 
