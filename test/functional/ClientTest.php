@@ -100,7 +100,7 @@ EOF;
     /**
      * @depends testCreateFolder
      */
-    public function testCreateFile($arguments)
+    public function testCreateFile(array $arguments)
     {
         $folder1 = $arguments[0];
         $folder2 = $arguments[1];
@@ -280,7 +280,7 @@ EOF;
     /**
      * @depends testCreateFile
      */
-    public function testMoveDriveItem($arguments)
+    public function testMoveDriveItem(array $arguments)
     {
         $folder1 = $arguments[0];
         $folder2 = $arguments[1];
@@ -312,7 +312,7 @@ EOF;
     /**
      * @depends testMoveDriveItem
      */
-    public function testCopyDriveItem($arguments)
+    public function testCopyDriveItem(array $arguments)
     {
         $folder1 = $arguments[0];
         $folder2 = $arguments[1];
@@ -341,7 +341,7 @@ EOF;
     /**
      * @depends testCopyDriveItem
      */
-    public function testDeleteDriveItem($arguments)
+    public function testDeleteDriveItem(array $arguments)
     {
         $folder1 = $arguments[0];
         $folder2 = $arguments[1];
