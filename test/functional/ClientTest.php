@@ -63,7 +63,7 @@ EOF;
         $root = self::$client->fetchDriveItem();
 
         $folder1 = self::$client->createFolder('Test folder #1', null, null);
-        $this->assertNotNull($folder1);
+        $this->assertInstanceOf(Folder::class, $folder1);
         $this->assertEquals('Test folder #1', $folder1->getName());
 
         $children = array_map(function (DriveItem $driveItem) {
@@ -73,7 +73,7 @@ EOF;
         $this->assertContains($folder1->getId(), $children);
 
         $folder2 = self::$client->createFolder('Test folder #2', null, 'Test description folder #2');
-        $this->assertNotNull($folder2);
+        $this->assertInstanceOf(Folder::class, $folder2);
         $this->assertEquals('Test folder #2', $folder2->getName());
 
         $children = array_map(function (DriveItem $driveItem) {
@@ -84,7 +84,7 @@ EOF;
         $this->assertEquals('Test description folder #2', $folder2->getDescription());
 
         $folder3 = self::$client->createFolder('Test folder #3', $folder1->getId(), null);
-        $this->assertNotNull($folder3);
+        $this->assertInstanceOf(Folder::class, $folder3);
         $this->assertEquals('Test folder #3', $folder3->getName());
         $this->assertEquals($folder1->getId(), $folder3->getParentId());
 
@@ -108,7 +108,7 @@ EOF;
 
         // Test with a text file.
         $file1 = self::$client->createFile('Test file #1.txt', $folder1->getId(), 'Test content');
-        $this->assertNotNull($file1);
+        $this->assertInstanceOf(File::class, $file1);
         $this->assertEquals('Test file #1.txt', $file1->getName());
         $this->assertEquals($folder1->getId(), $file1->getParentId());
 
@@ -119,7 +119,7 @@ EOF;
         $this->assertContains($file1->getId(), $children);
 
         $file1 = self::$client->fetchDriveItem($file1->getId());
-        $this->assertNotNull($file1);
+        $this->assertInstanceOf(File::class, $file1);
         $this->assertEquals('Test file #1.txt', $file1->getName());
         $this->assertEquals($folder1->getId(), $file1->getParentId());
 
@@ -128,7 +128,7 @@ EOF;
 
         // Test with a binary file.
         $file2 = self::$client->createFile('Test file #2.png', $folder2->getId(), base64_decode(self::PHP_LOGO_PNG_BASE64));
-        $this->assertNotNull($file2);
+        $this->assertInstanceOf(File::class, $file2);
         $this->assertEquals('Test file #2.png', $file2->getName());
         $this->assertEquals($folder2->getId(), $file2->getParentId());
 
@@ -146,7 +146,7 @@ EOF;
         $root = self::$client->fetchRoot();
         $item = self::$client->fetchDriveItem($root->getId());
         $this->assertInstanceOf(Folder::class, $item);
-        $this->assertNotNull($item->getName());
+        $this->assertEquals('SkyDrive', $item->getName());
         $this->assertEquals('', $item->getParentId());
     }
 
@@ -154,7 +154,7 @@ EOF;
     {
         $root = self::$client->fetchRoot();
         $this->assertInstanceOf(Folder::class, $root);
-        $this->assertNotNull($root->getName());
+        $this->assertEquals('SkyDrive', $root->getName());
         $this->assertEquals('', $root->getParentId());
     }
 
