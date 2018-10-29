@@ -31,6 +31,8 @@ EOF;
 
     private static $client;
 
+    private static $clientSecret;
+
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
@@ -47,6 +49,8 @@ EOF;
             'stream_back_end' => StreamBackEnd::TEMP,
         ]);
 
+        self::$clientSecret = $config['SECRET'];
+
         $code = self::getAuthenticationCode(
             $client,
             $config['CLIENT_ID'],
@@ -54,8 +58,18 @@ EOF;
             $config['PASSWORD']
         );
 
-        $client->obtainAccessToken($config['SECRET'], $code);
+        $client->obtainAccessToken(self::$clientSecret, $code);
         self::$client = $client;
+    }
+
+    public function testRenewAccessToken()
+    {
+        $before = clone self::$client->getState()->token;
+        self::$client->renewAccessToken(self::$clientSecret);
+        $after = clone self::$client->getState()->token;
+        $this->assertNotEquals($before->obtained, $after->data->obtained);
+        $this->assertNotEquals($before->data->access_token, $after->data->access_token);
+        $this->assertNotEquals($before->data->refresh_token, $after->data->refresh_token);
     }
 
     public function testCreateFolder()
@@ -441,6 +455,7 @@ EOF;
             'wl.skydrive_update',
             'wl.contacts_photos',
             'wl.contacts_skydrive',
+            'wl.offline_access',
         ];
 
         $logInUrl  = $client->getLogInUrl($scopes, $redirectUri);
