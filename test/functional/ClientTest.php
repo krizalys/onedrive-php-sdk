@@ -62,7 +62,7 @@ EOF;
         self::$client = $client;
     }
 
-    public function testRenewAccessToken()
+    public function testClientRenewAccessToken()
     {
         $before = clone self::$client->getState()->token;
         self::$client->renewAccessToken(self::$clientSecret);
@@ -72,7 +72,7 @@ EOF;
         $this->assertNotEquals($before->data->refresh_token, $after->data->refresh_token);
     }
 
-    public function testCreateFolder()
+    public function testClientCreateFolder()
     {
         $root = self::$client->fetchDriveItem();
 
@@ -112,9 +112,9 @@ EOF;
     }
 
     /**
-     * @depends testCreateFolder
+     * @depends testClientCreateFolder
      */
-    public function testCreateFile(array $arguments)
+    public function testClientCreateFile(array $arguments)
     {
         $folder1 = $arguments[0];
         $folder2 = $arguments[1];
@@ -155,7 +155,7 @@ EOF;
         return [$folder1, $folder2, $folder3, $file1];
     }
 
-    public function testFetchDriveItem()
+    public function testClientFetchDriveItem()
     {
         $root = self::$client->fetchRoot();
         $item = self::$client->fetchDriveItem($root->getId());
@@ -164,7 +164,7 @@ EOF;
         $this->assertEquals('', $item->getParentId());
     }
 
-    public function testFetchRoot()
+    public function testClientFetchRoot()
     {
         $root = self::$client->fetchRoot();
         $this->assertInstanceOf(Folder::class, $root);
@@ -172,7 +172,7 @@ EOF;
         $this->assertEquals('', $root->getParentId());
     }
 
-    public function testFetchCameraRoll()
+    public function testClientFetchCameraRoll()
     {
         $pics       = self::$client->fetchPics();
         $cameraRoll = self::$client->fetchCameraRoll();
@@ -186,7 +186,7 @@ EOF;
         $this->assertContains($cameraRoll->getName(), $children);
     }
 
-    public function testFetchDocs()
+    public function testClientFetchDocs()
     {
         $root = self::$client->fetchDriveItem();
         $docs = self::$client->fetchDocs();
@@ -200,7 +200,7 @@ EOF;
         $this->assertContains($docs->getName(), $children);
     }
 
-    public function testFetchPics()
+    public function testClientFetchPics()
     {
         $root = self::$client->fetchDriveItem();
         $pics = self::$client->fetchPics();
@@ -214,7 +214,7 @@ EOF;
         $this->assertContains($pics->getName(), $children);
     }
 
-    public function testFetchPublicDocs()
+    public function testClientFetchPublicDocs()
     {
         $root       = self::$client->fetchDriveItem();
         $publicDocs = self::$client->fetchPublicDocs();
@@ -228,7 +228,7 @@ EOF;
         $this->assertContains($publicDocs->getName(), $children);
     }
 
-    public function testFetchProperties()
+    public function testClientFetchProperties()
     {
         $root       = self::$client->fetchDriveItem();
         $properties = self::$client->fetchProperties($root->getId());
@@ -255,7 +255,7 @@ EOF;
         $this->assertRegExp(self::DATETIME_REGEX, $properties->client_updated_time);
     }
 
-    public function testFetchDriveItems()
+    public function testClientFetchDriveItems()
     {
         $root  = self::$client->fetchDriveItem();
         $items = self::$client->fetchDriveItems($root->getId());
@@ -272,7 +272,7 @@ EOF;
         }
     }
 
-    public function testUpdateDriveItem()
+    public function testClientUpdateDriveItem()
     {
         $item = self::$client->createFolder('Test folder', null, null);
 
@@ -292,9 +292,9 @@ EOF;
     }
 
     /**
-     * @depends testCreateFile
+     * @depends testClientCreateFile
      */
-    public function testMoveDriveItem(array $arguments)
+    public function testClientMoveDriveItem(array $arguments)
     {
         $folder1 = $arguments[0];
         $folder2 = $arguments[1];
@@ -324,9 +324,9 @@ EOF;
     }
 
     /**
-     * @depends testMoveDriveItem
+     * @depends testClientMoveDriveItem
      */
-    public function testCopyDriveItem(array $arguments)
+    public function testClientCopyDriveItem(array $arguments)
     {
         $folder1 = $arguments[0];
         $folder2 = $arguments[1];
@@ -353,9 +353,9 @@ EOF;
     }
 
     /**
-     * @depends testCopyDriveItem
+     * @depends testClientCopyDriveItem
      */
-    public function testDeleteDriveItem(array $arguments)
+    public function testClientDeleteDriveItem(array $arguments)
     {
         $folder1 = $arguments[0];
         $folder2 = $arguments[1];
@@ -388,7 +388,7 @@ EOF;
         $this->assertFalse(in_array($folder2->getId(), $children));
     }
 
-    public function testFetchQuota()
+    public function testClientFetchQuota()
     {
         $quota = self::$client->fetchQuota();
         $this->assertInternalType('object', $quota);
@@ -396,7 +396,7 @@ EOF;
         $this->assertGreaterThanOrEqual(0, $quota->available);
     }
 
-    public function testFetchAccountInfo()
+    public function testClientFetchAccountInfo()
     {
         $accountInfo = self::$client->fetchAccountInfo();
         $this->assertInternalType('object', $accountInfo);
@@ -411,7 +411,7 @@ EOF;
         $this->assertContains($accountInfo->locale, ['en_US']);
     }
 
-    public function testFetchRecentDocs()
+    public function testClientFetchRecentDocs()
     {
         $recentDocs = self::$client->fetchRecentDocs();
         $this->assertInternalType('object', $recentDocs);
@@ -422,7 +422,7 @@ EOF;
         }
     }
 
-    public function testFetchShared()
+    public function testClientFetchShared()
     {
         $shared = self::$client->fetchShared();
         $this->assertInternalType('object', $shared);
