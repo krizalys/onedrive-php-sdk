@@ -27,7 +27,7 @@ function autoload($name)
     // Convert "\" and "_" to path separators.
     $pathifiedStem = str_replace(['\\', '_'], '/', $stem);
 
-    $path = __DIR__ . '/src/Krizalys/Onedrive/' . $pathifiedStem . '.php';
+    $path = __DIR__ . "/src/$pathifiedStem.php";
 
     if (is_file($path)) {
         require_once $path;
