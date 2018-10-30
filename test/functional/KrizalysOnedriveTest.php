@@ -82,7 +82,7 @@ EOF;
 
         $children = array_map(function (DriveItem $driveItem) {
             return $driveItem->getId();
-        }, $root->fetchChildDriveItems());
+        }, self::getChildren($root));
 
         $this->assertContains($folder1->getId(), $children);
         self::delete($folder1);
@@ -93,7 +93,7 @@ EOF;
 
         $children = array_map(function (DriveItem $driveItem) {
             return $driveItem->getId();
-        }, $root->fetchChildDriveItems());
+        }, self::getChildren($root));
 
         $this->assertContains($folder2->getId(), $children);
         $this->assertEquals('Test description folder #2', $folder2->getDescription());
@@ -107,7 +107,7 @@ EOF;
 
             $children = array_map(function (DriveItem $driveItem) {
                 return $driveItem->getId();
-            }, $parent->fetchChildDriveItems());
+            }, self::getChildren($parent));
 
             $this->assertContains($folder3->getId(), $children);
         });
@@ -124,16 +124,16 @@ EOF;
 
             $children = array_map(function (DriveItem $driveItem) {
                 return $driveItem->getId();
-            }, $parent->fetchChildDriveItems());
+            }, self::getChildren($parent));
 
             $this->assertContains($file1->getId(), $children);
 
-            $file1 = self::$client->fetchDriveItem($file1->getId());
+            $file1 = self::getDriveItemById($file1->getId());
             $this->assertInstanceOf(File::class, $file1);
             $this->assertEquals('Test file #1.txt', $file1->getName());
             $this->assertEquals($parent->getId(), $file1->getParentId());
 
-            $actual = $file1->fetchContent();
+            $actual = self::getContent($file1);
             $this->assertEquals('Test content', $actual);
 
             // Test with a binary file.
@@ -144,7 +144,7 @@ EOF;
 
             $children = array_map(function (DriveItem $driveItem) {
                 return $driveItem->getId();
-            }, $parent->fetchChildDriveItems());
+            }, self::getChildren($parent));
 
             $this->assertContains($file2->getId(), $children);
         });
@@ -152,7 +152,7 @@ EOF;
 
     public function testClientFetchDriveItem()
     {
-        $root = self::$client->fetchRoot();
+        $root = self::getRoot();
         $item = self::$client->fetchDriveItem($root->getId());
         $this->assertInstanceOf(Folder::class, $item);
         $this->assertEquals('SkyDrive', $item->getName());
@@ -169,63 +169,63 @@ EOF;
 
     public function testClientFetchCameraRoll()
     {
-        $pics       = self::$client->fetchPics();
+        $pics       = self::getPhotosFolder();
         $cameraRoll = self::$client->fetchCameraRoll();
         $this->assertInstanceOf(Folder::class, $cameraRoll);
         $this->assertEquals('Camera Roll', $cameraRoll->getName());
 
         $children = array_map(function (DriveItem $driveItem) {
             return $driveItem->getName();
-        }, $pics->fetchChildDriveItems());
+        }, self::getChildren($pics));
 
         $this->assertContains($cameraRoll->getName(), $children);
     }
 
     public function testClientFetchDocs()
     {
-        $root = self::$client->fetchDriveItem();
+        $root = self::getRoot();
         $docs = self::$client->fetchDocs();
         $this->assertInstanceOf(Folder::class, $docs);
         $this->assertEquals('Documents', $docs->getName());
 
         $children = array_map(function (DriveItem $driveItem) {
             return $driveItem->getName();
-        }, $root->fetchChildDriveItems());
+        }, self::getChildren($root));
 
         $this->assertContains($docs->getName(), $children);
     }
 
     public function testClientFetchPics()
     {
-        $root = self::$client->fetchDriveItem();
+        $root = self::getRoot();
         $pics = self::$client->fetchPics();
         $this->assertInstanceOf(Folder::class, $pics);
         $this->assertEquals('Pictures', $pics->getName());
 
         $children = array_map(function (DriveItem $driveItem) {
             return $driveItem->getName();
-        }, $root->fetchChildDriveItems());
+        }, self::getChildren($root));
 
         $this->assertContains($pics->getName(), $children);
     }
 
     public function testClientFetchPublicDocs()
     {
-        $root       = self::$client->fetchDriveItem();
+        $root       = self::getRoot();
         $publicDocs = self::$client->fetchPublicDocs();
         $this->assertInstanceOf(Folder::class, $publicDocs);
         $this->assertEquals('Public', $publicDocs->getName());
 
         $children = array_map(function (DriveItem $driveItem) {
             return $driveItem->getName();
-        }, $root->fetchChildDriveItems());
+        }, self::getChildren($root));
 
         $this->assertContains($publicDocs->getName(), $children);
     }
 
     public function testClientFetchProperties()
     {
-        $root       = self::$client->fetchDriveItem();
+        $root       = self::getRoot();
         $properties = self::$client->fetchProperties($root->getId());
         $this->assertInternalType('object', $properties);
         $this->assertInternalType('string', $properties->id);
@@ -252,7 +252,7 @@ EOF;
 
     public function testClientFetchDriveItems()
     {
-        $root  = self::$client->fetchDriveItem();
+        $root  = self::getRoot();
         $items = self::$client->fetchDriveItems($root->getId());
         $this->assertInternalType('array', $items);
 
@@ -269,7 +269,8 @@ EOF;
 
     public function testClientUpdateDriveItem()
     {
-        $item = self::$client->createFolder('Test folder', null, null);
+        $root = self::getRoot();
+        $item = self::createFolder($root, 'Test folder');
 
         self::$client->updateDriveItem(
             $item->getId(),
@@ -280,10 +281,11 @@ EOF;
             false
         );
 
-        $item = self::$client->fetchDriveItem($item->getId());
+        $item = self::getDriveItemById($item->getId());
         $this->assertEquals('Test folder (renamed)', $item->getName());
         $this->assertEquals('Test description folder', $item->getDescription());
-        self::$client->deleteDriveItem($item->getId());
+
+        self::delete($item);
     }
 
     public function testClientMoveDriveItem()
@@ -295,17 +297,17 @@ EOF;
 
             $children = array_map(function (DriveItem $driveItem) {
                 return $driveItem->getId();
-            }, $parent->fetchChildDriveItems());
+            }, self::getChildren($parent));
 
             $this->assertFalse(in_array($item->getId(), $children));
 
             $children = array_map(function (DriveItem $driveItem) {
                 return $driveItem->getId();
-            }, $destination->fetchChildDriveItems());
+            }, self::getChildren($destination));
 
             $this->assertContains($item->getId(), $children);
 
-            $item = self::$client->fetchDriveItem($item->getId());
+            $item = self::getDriveItemById($item->getId());
             $this->assertEquals($destination->getId(), $item->getParentId());
         });
     }
@@ -319,13 +321,13 @@ EOF;
 
             $children = array_map(function (DriveItem $driveItem) {
                 return $driveItem->getId();
-            }, $parent->fetchChildDriveItems());
+            }, self::getChildren($parent));
 
             $this->assertContains($item->getId(), $children);
 
             $children = array_map(function (DriveItem $driveItem) {
                 return $driveItem->getName();
-            }, $destination->fetchChildDriveItems());
+            }, self::getChildren($destination));
 
             $this->assertContains('Test item', $children);
         });
@@ -339,7 +341,7 @@ EOF;
 
             $children = array_map(function (DriveItem $driveItem) {
                 return $driveItem->getId();
-            }, $parent->fetchChildDriveItems());
+            }, self::getChildren($parent));
 
             $this->assertFalse(in_array($item->getId(), $children));
         });
@@ -393,6 +395,26 @@ EOF;
     private static function getRoot()
     {
         return self::$client->fetchRoot();
+    }
+
+    private static function getDriveItemById($itemId)
+    {
+        return self::$client->fetchDriveItem($itemId);
+    }
+
+    private static function getContent(File $item)
+    {
+        return $item->fetchContent();
+    }
+
+    private static function getChildren(Folder $item)
+    {
+        return $item->fetchChildDriveItems();
+    }
+
+    private static function getPhotosFolder()
+    {
+        return self::$client->fetchPics();
     }
 
     private static function createFolder(Folder $item, $name)
