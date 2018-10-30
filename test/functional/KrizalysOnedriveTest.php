@@ -1,6 +1,6 @@
 <?php
 
-namespace Test\Functional\Krizalys;
+namespace Test\Functional\Krizalys\Onedrive;
 
 use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
@@ -17,7 +17,7 @@ use Symfony\Component\Process\Process;
 /**
  * @group functional
  */
-class ClientTest extends \PHPUnit_Framework_TestCase
+class KrizalysOnedriveTest extends \PHPUnit_Framework_TestCase
 {
     const REDIRECT_URI_PORT = 7777;
 
