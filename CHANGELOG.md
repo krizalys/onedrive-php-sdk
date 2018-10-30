@@ -12,6 +12,7 @@ Change log
 ### Removed
 
 - Support for PHP 5.4 and PHP 5.5.
+- Example application.
 
 ### Changed
 
