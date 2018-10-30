@@ -1,7 +1,7 @@
 <?php
 
 require_once sprintf('%s/../../vendor/autoload.php', __DIR__);
-require_once sprintf('%s/Krizalys/Onedrive/functions.php', __DIR__);
+require_once sprintf('%s/functions.php', __DIR__);
 
 spl_autoload_register(function ($class) {
     if (0 === substr_compare($class, 'Test\\Unit\\Mock\\', 0, 15)) {
