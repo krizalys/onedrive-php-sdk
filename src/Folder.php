@@ -74,32 +74,6 @@ class Folder extends DriveItem
     }
 
     /**
-     * Gets the descendant drive items under the OneDrive folder referenced by
-     * this Folder instance.
-     *
-     * @return array
-     *         The files in the OneDrive folder referenced by this Folder
-     *         instance, as DriveItem instances.
-     */
-    public function fetchDescendantDriveItems()
-    {
-        $driveItems = [];
-
-        foreach ($this->fetchChildDriveItems() as $driveItem) {
-            if ($driveItem->isFolder()) {
-                $driveItems = array_merge(
-                    $driveItem->fetchDescendantDriveItems(),
-                    $driveItems
-                );
-            } else {
-                array_push($driveItems, $driveItem);
-            }
-        }
-
-        return $driveItems;
-    }
-
-    /**
      * Creates a folder in the OneDrive folder referenced by this Folder
      * instance.
      *

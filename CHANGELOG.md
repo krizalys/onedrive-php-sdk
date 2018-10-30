@@ -13,6 +13,7 @@ Change log
 
 - Support for PHP 5.4 and PHP 5.5.
 - Example application.
+- `Krizalys\Onedrive\Folder::fetchDescendantDriveItems()`.
 
 ### Changed
 

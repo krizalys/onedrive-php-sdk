@@ -38,19 +38,6 @@ class FolderTest extends MockeryTestCase
         return $client;
     }
 
-    /**
-     * @param mixed $fileId
-     */
-    private function mockFile($fileId)
-    {
-        $file = m::mock('Krizalys\Onedrive\File', [
-            'isFolder' => false,
-        ]);
-
-        $file->id = $fileId;
-        return $file;
-    }
-
     public function testIsFolderShouldReturnExpectedValue()
     {
         $actual = $this
@@ -102,35 +89,6 @@ class FolderTest extends MockeryTestCase
 
         $folder = new Folder($client);
         $folder->fetchChildDriveItems();
-    }
-
-    public function testFetchDescendantDriveItemsShouldReturnExpectedValue()
-    {
-        $file1 = $this->mockFile('file1');
-        $file2 = $this->mockFile('file2');
-        $file3 = $this->mockFile('file3');
-        $file4 = $this->mockFile('file4');
-
-        $folder = new Folder($this->mockClient([
-            'fetchDriveItems' => function ($expectation) use ($file1, $file2, $file3, $file4) {
-                $expectation->andReturn([
-                    $file1,
-                    new Folder($this->mockClient([
-                        'fetchDriveItems' => function ($expectation) use ($file2, $file3) {
-                            $expectation->andReturn([
-                                $file2,
-                                $file3,
-                            ]);
-                        },
-                    ])),
-                    $file4,
-                ]);
-            },
-        ]));
-
-        $expected = [$file2, $file3, $file1, $file4];
-        $actual   = $folder->fetchDescendantDriveItems();
-        $this->assertEquals($expected, $actual);
     }
 
     public function testCreateFolderShouldCallOnceClientCreateFolder()
