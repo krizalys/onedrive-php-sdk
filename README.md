@@ -37,8 +37,7 @@ Installation
 ------------
 
 To install the OneDrive SDK for PHP, copy the `onedrive-php-sdk` folder in your
-application source tree. The `example` subfolder contains example files and may
-be removed from production servers.
+application source tree.
 
 Configuration
 -------------
@@ -225,33 +224,6 @@ vendor/bin/phpunit -c test/functional
 
 4. Repeat steps 4 to 5 as needed.
 
-Examples
---------
-
-To demonstrate the use of the OneDrive SDK for PHP, examples are provided with
-the library, in the `example` subfolder. Using the examples require a file
-`config.php` to be present in the `onedrive-php-sdk` folder and filled as
-explained in the step 1 from the Quick Start. A OneDrive account is needed to
-try out these examples.
-
-Demonstration
--------------
-
-The example files provided with the OneDrive SDK for PHP are deployed on a
-[demo website][ondrive-php-sdk-demo] for live demonstration purposes. A OneDrive
-account is needed to try out this demonstration.
-
-You can also try the examples on your own machine using PHP's built-in web
-server:
-
-```
-$ php -S yourdomain.com -t example
-```
-
-When using this method, be aware that the Microsoft Developer platform will not
-let you use `localhost` or a non-standard port in your target domain and
-redirect URLs.
-
 License
 -------
 
@@ -273,5 +245,4 @@ The OneDrive SDK for PHP is developed and maintained by Christophe Vidal.
 [live-newapp]:                https://account.live.com/developers/applications/create
 [ondrive-php-sdk]:            http://www.krizalys.com/software/onedrive-php-sdk
 [krizalys]:                   http://www.krizalys.com/
-[ondrive-php-sdk-demo]:       http://demo.krizalys.com/onedrive-php-sdk/example/
 [bsd-3-clause]:               https://opensource.org/licenses/BSD-3-Clause
