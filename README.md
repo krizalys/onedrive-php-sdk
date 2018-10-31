@@ -114,19 +114,28 @@ like (replace `/path/to` by the appropriate values):
 ($config = include '/path/to/config.php') or die('Configuration file not found');
 require_once '/path/to/onedrive-php-sdk/vendor/autoload.php';
 
+use GuzzleHttp\Client as GuzzleHttpClient;
 use Krizalys\Onedrive\Client;
+use Microsoft\Graph\Graph;
+use Monolog\Logger;
 
 // Instantiates a OneDrive client bound to your OneDrive application.
-$onedrive = new Client([
-    'client_id' => $config['ONEDRIVE_CLIENT_ID'],
-]);
+$onedrive = new Client(
+    $config['ONEDRIVE_CLIENT_ID'],
+    new Graph(),
+    new GuzzleHttpClient(
+        ['base_uri' => 'https://graph.microsoft.com/v1.0/']
+    ),
+    new Logger('Krizalys\Onedrive\Client')
+);
 
 // Gets a log in URL with sufficient privileges from the OneDrive API.
 $url = $onedrive->getLogInUrl([
-    'wl.signin',
-    'wl.basic',
-    'wl.contacts_skydrive',
-    'wl.skydrive_update',
+    'files.read',
+    'files.read.all',
+    'files.readwrite',
+    'files.readwrite.all',
+    'offline_access',
 ], $config['ONEDRIVE_CALLBACK_URI']);
 
 session_start();
