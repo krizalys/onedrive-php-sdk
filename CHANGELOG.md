@@ -14,10 +14,43 @@ Change log
 - Support for PHP 5.4 and PHP 5.5.
 - Example application.
 - `Krizalys\Onedrive\Folder::fetchDescendantDriveItems()`.
+- `Krizalys\Onedrive\Client::apiDelete()`.
+- `Krizalys\Onedrive\Client::apiPost()`.
+- `Krizalys\Onedrive\Client::apiPut()`.
+- `Krizalys\Onedrive\Client::apiMove()`.
+- `Krizalys\Onedrive\Client::apiCopy()`.
+- `Krizalys\Onedrive\Client::fetchPublicDocs`.
+- `Krizalys\Onedrive\Client::fetchAccountInfo`.
 
 ### Changed
 
-- License changed from GNU General Public License v3.0 to BSD 3-Clause License.
+- License: GNU General Public License v3.0 => BSD 3-Clause License.
+- `Krizalys\Onedrive\Client::createFolder()`: deprecated & logs a warning.
+- `Krizalys\Onedrive\Client::createFile()`: deprecated & logs a warning.
+- `Krizalys\Onedrive\Client::createFile()`: `$content` is automatically closed
+  if it is a resource.
+- `Krizalys\Onedrive\Client::fetchDriveItem()`: deprecated & logs a warning.
+- `Krizalys\Onedrive\Client::fetchRoot()`: deprecated & logs a warning.
+- `Krizalys\Onedrive\Client::fetchCameraRoll()`: deprecated & logs a warning.
+- `Krizalys\Onedrive\Client::fetchDocs()`: deprecated & logs a warning.
+- `Krizalys\Onedrive\Client::fetchPics()`: deprecated & logs a warning.
+- `Krizalys\Onedrive\Client::fetchProperties()`: deprecated & logs a warning.
+- `Krizalys\Onedrive\Client::fetchDriveItems()`: deprecated & logs a warning.
+- `Krizalys\Onedrive\Client::updateDriveItem()`: deprecated & logs a warning.
+- `Krizalys\Onedrive\Client::moveDriveItem()`: deprecated & logs a warning.
+- `Krizalys\Onedrive\Client::copyFile()`: deprecated & logs a warning.
+- `Krizalys\Onedrive\Client::deleteDriveItem()`: deprecated & logs a warning.
+- `Krizalys\Onedrive\Client::fetchQuota()`: deprecated & logs a warning.
+- `Krizalys\Onedrive\Client::fetchRecentDocs()`: deprecated & logs a warning.
+- `Krizalys\Onedrive\Client::fetchShared()`: deprecated & logs a warning.
+- `Krizalys\Onedrive\DriveItem::move()`: deprecated & logs a warning.
+- `Krizalys\Onedrive\File::fetchContent()`: deprecated & logs a warning.
+- `Krizalys\Onedrive\File::copy()`: deprecated & logs a warning.
+- `Krizalys\Onedrive\Folder::fetchDriveItems()`: deprecated & logs a warning.
+- `Krizalys\Onedrive\Folder::fetchChildDriveItems()`: deprecated & logs a
+  warning.
+- `Krizalys\Onedrive\Folder::createFolder()`: deprecated & logs a warning.
+- `Krizalys\Onedrive\Folder::createFile()`: deprecated & logs a warning.
 
 [1.2.0] - 2017-12-09
 --------------------
