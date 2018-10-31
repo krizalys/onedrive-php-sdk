@@ -4,7 +4,6 @@ namespace Test\Unit\Krizalys\Onedrive;
 
 use Krizalys\Onedrive\Client;
 use Krizalys\Onedrive\NameConflictBehavior;
-use Krizalys\Onedrive\StreamBackEnd;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Mockery as m;
 use Test\Unit\Mock\GlobalNamespace;
@@ -390,60 +389,6 @@ class ClientTest extends MockeryTestCase
         $this
             ->client
             ->createFile($name, $parentId, $content, $options);
-    }
-
-    public function provideCreateFileShouldCallOnceFopenWithExpectedArguments()
-    {
-        return [
-            'MEMORY back end' => [
-                'options'  => ['stream_back_end' => StreamBackEnd::MEMORY],
-                'expected' => [
-                    'filename' => 'php://memory',
-                    'mode'     => 'rw+b',
-                ],
-            ],
-
-            'TEMP back end' => [
-                'options'  => ['stream_back_end' => StreamBackEnd::TEMP],
-                'expected' => [
-                    'filename' => 'php://temp',
-                    'mode'     => 'rw+b',
-                ],
-            ],
-        ];
-    }
-
-    /**
-     * @dataProvider provideCreateFileShouldCallOnceFopenWithExpectedArguments
-     */
-    public function testCreateFileShouldCallOnceFopenWithExpectedArguments(
-        $options,
-        $expected
-    ) {
-        GlobalNamespace::reset([
-            'fopen' => function ($expectation) use ($expected) {
-                $expectation
-                    ->once()
-                    ->withArgs(function ($filename, $mode) use ($expected) {
-                        return $expected['filename'] == $filename && $expected['mode'] == $mode;
-                    });
-            },
-
-            'curl_exec' => function ($expectation) {
-                $expectation->andReturn(json_encode((object) [
-                    'id' => 'file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
-                ]));
-            },
-        ]);
-
-        $client = $this->getClient($options);
-
-        $client->createFile(
-            'test-file.txt',
-            'folder.ffffffffffffffff.FFFFFFFFFFFFFFFF!123',
-            'Some test content',
-            $options
-        );
     }
 
     public function provideFetchDriveItemShouldReturnExpectedType()
