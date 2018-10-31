@@ -7,11 +7,44 @@ use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverExpectedCondition;
+use GuzzleHttp\Client as GuzzleHttpClient;
 use Krizalys\Onedrive\Client;
 use Krizalys\Onedrive\DriveItem;
 use Krizalys\Onedrive\File;
 use Krizalys\Onedrive\Folder;
-use Krizalys\Onedrive\StreamBackEnd;
+use Krizalys\Onedrive\Proxy\AudioProxy;
+use Krizalys\Onedrive\Proxy\BaseItemProxy;
+use Krizalys\Onedrive\Proxy\DeletedProxy;
+use Krizalys\Onedrive\Proxy\DriveItemProxy;
+use Krizalys\Onedrive\Proxy\DriveProxy;
+use Krizalys\Onedrive\Proxy\EntityProxy;
+use Krizalys\Onedrive\Proxy\FileProxy;
+use Krizalys\Onedrive\Proxy\FileSystemInfoProxy;
+use Krizalys\Onedrive\Proxy\FolderProxy;
+use Krizalys\Onedrive\Proxy\GeoCoordinatesProxy;
+use Krizalys\Onedrive\Proxy\GraphListProxy;
+use Krizalys\Onedrive\Proxy\IdentitySetProxy;
+use Krizalys\Onedrive\Proxy\ImageProxy;
+use Krizalys\Onedrive\Proxy\ItemReferenceProxy;
+use Krizalys\Onedrive\Proxy\ListItemProxy;
+use Krizalys\Onedrive\Proxy\PackageProxy;
+use Krizalys\Onedrive\Proxy\PermissionProxy;
+use Krizalys\Onedrive\Proxy\PhotoProxy;
+use Krizalys\Onedrive\Proxy\PublicationFacetProxy;
+use Krizalys\Onedrive\Proxy\QuotaProxy;
+use Krizalys\Onedrive\Proxy\RemoteItemProxy;
+use Krizalys\Onedrive\Proxy\RootProxy;
+use Krizalys\Onedrive\Proxy\SearchResultProxy;
+use Krizalys\Onedrive\Proxy\SharedProxy;
+use Krizalys\Onedrive\Proxy\SharePointIdsProxy;
+use Krizalys\Onedrive\Proxy\SpecialFolderProxy;
+use Krizalys\Onedrive\Proxy\SystemProxy;
+use Krizalys\Onedrive\Proxy\ThumbnailProxy;
+use Krizalys\Onedrive\Proxy\UserProxy;
+use Krizalys\Onedrive\Proxy\VideoProxy;
+use Krizalys\Onedrive\Proxy\WorkbookProxy;
+use Microsoft\Graph\Graph;
+use Monolog\Logger;
 use Symfony\Component\Process\Process;
 
 /**
@@ -19,7 +52,11 @@ use Symfony\Component\Process\Process;
  */
 class KrizalysOnedriveTest extends \PHPUnit_Framework_TestCase
 {
+    const MICROSOFT_GRAPH_BASE_URI = 'https://graph.microsoft.com/v1.0/';
+
     const REDIRECT_URI_PORT = 7777;
+
+    const ASYNC_DELAY = 3;
 
     const DATETIME_REGEX = '/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[-+]\d{4}/';
 
@@ -44,10 +81,14 @@ EOF;
 
         $config = require $config;
 
-        $client = new Client([
-            'client_id'       => $config['CLIENT_ID'],
-            'stream_back_end' => StreamBackEnd::TEMP,
-        ]);
+        $client = new Client(
+            $config['CLIENT_ID'],
+            new Graph(),
+            new GuzzleHttpClient(
+                ['base_uri' => MICROSOFT_GRAPH_BASE_URI]
+            ),
+            new Logger('Krizalys\Onedrive\Client')
+        );
 
         self::$clientSecret = $config['SECRET'];
 
@@ -62,7 +103,347 @@ EOF;
         self::$client = $client;
     }
 
-    public function testClientRenewAccessToken()
+    public function testGetDrives()
+    {
+        $drives = self::$client->getDrives();
+        $this->assertGreaterThanOrEqual(1, count($drives));
+
+        foreach ($drives as $drive) {
+            $this->assertDriveProxy($drive);
+        }
+    }
+
+    public function testGetMyDrive()
+    {
+        $drive = self::$client->getMyDrive();
+        $this->assertDriveProxy($drive);
+    }
+
+    public function testGetDriveById()
+    {
+        $drive = self::getFirstDrive();
+        $drive = self::$client->getDriveById($drive->id);
+        $this->assertDriveProxy($drive);
+    }
+
+    public function testGetDriveByUser()
+    {
+        $drive = self::getFirstDrive();
+        $drive = self::$client->getDriveByUser($drive->owner->user->id);
+        $this->assertDriveProxy($drive);
+    }
+
+    public function testGetDriveByGroup()
+    {
+        $drive = self::getFirstDrive();
+        $drive = self::$client->getDriveByGroup($drive->owner->user->id);
+
+        if ($drive == $null) {
+            $this->markTestSkipped('No drive by group found');
+        }
+
+        $this->assertDriveProxy($drive);
+    }
+
+    public function testGetDriveBySite()
+    {
+        $drive = self::getFirstDrive();
+        $drive = self::$client->getDriveBySite($drive->owner->user->id);
+
+        if ($drive == $null) {
+            $this->markTestSkipped('No drive by site found');
+        }
+
+        $this->assertDriveProxy($drive);
+    }
+
+    public function testGetDriveItemById()
+    {
+        $item = self::getRoot();
+        $item = self::$client->getDriveItemById($item->parentReference->driveId, $item->id);
+        $this->assertDriveItemProxy($item);
+    }
+
+    public function testGetRoot()
+    {
+        $item = self::$client->getRoot();
+        $this->assertDriveItemProxy($item);
+        $this->assertNotNull($item->parentReference);
+        $this->assertNull($item->parentReference->id);
+        $this->assertNotNull($item->parentReference->driveId);
+        $this->assertNotNull($item->parentReference->driveType);
+        $this->assertRootProxy($item->root);
+    }
+
+    /**
+     * @dataProvider specialFolderProvider
+     */
+    public function testGetSpecialFolder($specialFolderName)
+    {
+        $item = self::$client->getSpecialFolder($specialFolderName);
+        $this->assertDriveItemProxy($item);
+        $this->assertNotNull($item->parentReference);
+        $this->assertNotNull($item->parentReference->id);
+        $this->assertNotNull($item->parentReference->driveId);
+        $this->assertNotNull($item->parentReference->driveType);
+
+        // For some reason, this special folder does not have a SpecialFolder
+        // facet.
+        if ($specialFolderName != 'approot') {
+            $this->assertSpecialFolderProxy($item->specialFolder);
+        }
+    }
+
+    public function testGetShared()
+    {
+        $items = self::$client->getShared();
+        $this->assertInternalType('array', $items);
+
+        foreach ($items as $item) {
+            $this->assertDriveItemProxy($item);
+        }
+    }
+
+    public function testGetRecent()
+    {
+        $items = self::$client->getRecent();
+        $this->assertInternalType('array', $items);
+
+        foreach ($items as $item) {
+            $this->assertDriveItemProxy($item);
+        }
+    }
+
+    private function assertRootProxy($root)
+    {
+        $this->assertInstanceOf(RootProxy::class, $root);
+    }
+
+    private function assertSpecialFolderProxy($specialFolder)
+    {
+        $this->assertInstanceOf(SpecialFolderProxy::class, $specialFolder);
+        $this->assertInternalType('string', $specialFolder->name);
+    }
+
+    public function testCreateFolder()
+    {
+        self::runInFolder(__FUNCTION__, function (DriveItemProxy $sandbox) {
+            $item = $sandbox->createFolder(
+                'Test folder',
+                [
+                    'description' => 'Test description',
+                ]
+            );
+
+            $this->assertDriveItemProxy($item);
+            $this->assertNotNull($item->parentReference);
+            $this->assertEquals($sandbox->id, $item->parentReference->id);
+            $this->assertEquals('Test folder', $item->name);
+            $this->assertEquals('Test description', $item->description);
+        });
+    }
+
+    public function testGetChildren()
+    {
+        self::runInFolder(__FUNCTION__, function (DriveItemProxy $sandbox) {
+            self::createFolder($sandbox, 'Test folder');
+            self::upload($sandbox, 'Test file');
+            $children = $sandbox->getChildren();
+
+            foreach ($children as $child) {
+                $this->assertDriveItemProxy($child);
+            }
+
+            $this->assertCount(2, $children);
+            $this->assertEquals('Test folder', $children[0]->name);
+            $this->assertEquals('Test file', $children[1]->name);
+        });
+    }
+
+    public function testDeleteFile()
+    {
+        self::runInFolder(__FUNCTION__, function (DriveItemProxy $sandbox) {
+            $item = self::upload($sandbox, 'Test file');
+            $item->delete();
+            $children = $sandbox->children;
+            $this->assertCount(0, $children);
+        });
+    }
+
+    public function testDeleteFolder()
+    {
+        self::runInFolder(__FUNCTION__, function (DriveItemProxy $sandbox) {
+            $item = self::createFolder($sandbox, 'Test folder');
+            $item->delete();
+            $children = $sandbox->children;
+            $this->assertCount(0, $children);
+        });
+    }
+
+    public function testUploadString()
+    {
+        self::runInFolder(__FUNCTION__, function (DriveItemProxy $sandbox) {
+            $item = $sandbox->upload(
+                'Test file',
+                'Test content',
+                [
+                    'Content-Type: text/plain',
+                ]
+            );
+
+            $this->assertDriveItemProxy($item);
+            $this->assertNotNull($item->parentReference);
+            $this->assertEquals($sandbox->id, $item->parentReference->id);
+            $this->assertEquals('Test file', $item->name);
+            $this->assertEquals('Test content', $item->content);
+        });
+    }
+
+    public function testUploadStream()
+    {
+        self::runInFolder(__FUNCTION__, function (DriveItemProxy $sandbox) {
+            $content = fopen('php://memory', 'rb+');
+            fwrite($content, 'Test content');
+            rewind($content);
+
+            $item = $sandbox->upload(
+                'Test file',
+                $content,
+                [
+                    'Content-Type: text/plain',
+                ]
+            );
+
+            $this->assertDriveItemProxy($item);
+            $this->assertNotNull($item->parentReference);
+            $this->assertEquals($sandbox->id, $item->parentReference->id);
+            $this->assertEquals('Test file', $item->name);
+            $this->assertEquals('Test content', $item->content);
+
+            // No need to fclose $content; it is done internally by Guzzle when
+            // instantiating a Guzzle stream from it.
+        });
+    }
+
+    public function testRename()
+    {
+        self::runInFolder(__FUNCTION__, function (DriveItemProxy $sandbox) {
+            $item        = self::upload($sandbox, 'Test file');
+            $destination = self::createFolder($sandbox, 'Test destination');
+
+            $item = $item->rename(
+                'Test file (renamed)',
+                [
+                    'description' => 'Test description (updated)',
+                ]
+            );
+
+            $this->assertDriveItemProxy($item);
+            $this->assertNotNull($item->parentReference);
+            $this->assertEquals($sandbox->id, $item->parentReference->id);
+            $this->assertEquals('Test file (renamed)', $item->name);
+            $this->assertEquals('Test description (updated)', $item->description);
+        });
+    }
+
+    public function testMoveFile()
+    {
+        self::runInFolder(__FUNCTION__, function (DriveItemProxy $sandbox) {
+            $item        = self::upload($sandbox, 'Test file');
+            $destination = self::createFolder($sandbox, 'Test destination');
+
+            $item = $item->move(
+                $destination,
+                [
+                    'name' => 'Test file (moved)',
+                ]
+            );
+
+            $this->assertDriveItemProxy($item);
+            $this->assertNotNull($item->parentReference);
+            $this->assertEquals($destination->id, $item->parentReference->id);
+            $this->assertEquals('Test file (moved)', $item->name);
+        });
+    }
+
+    public function testMoveFolder()
+    {
+        self::runInFolder(__FUNCTION__, function (DriveItemProxy $sandbox) {
+            $item        = self::createFolder($sandbox, 'Test folder');
+            $destination = self::createFolder($sandbox, 'Test destination');
+
+            $item = $item->move(
+                $destination,
+                [
+                    'name' => 'Test folder (moved)',
+                ]
+            );
+
+            $children = $sandbox->children;
+            $this->assertCount(1, $children);
+            $this->assertDriveItemProxy($item);
+            $this->assertNotNull($item->parentReference);
+            $this->assertEquals($destination->id, $item->parentReference->id);
+            $this->assertEquals('Test folder (moved)', $item->name);
+        });
+    }
+
+    public function testCopyFile()
+    {
+        self::runInFolder(__FUNCTION__, function (DriveItemProxy $sandbox) {
+            $item        = self::upload($sandbox, 'Test file');
+            $destination = self::createFolder($sandbox, 'Test destination');
+
+            $uri = $item->copy(
+                $destination,
+                [
+                    'name' => 'Test file (copied)',
+                ]
+            );
+
+            // Work around for asynchronous operation; assume it has completed
+            // after a short delay.
+            sleep(self::ASYNC_DELAY);
+
+            $this->assertRegExp(self::URI_REGEX, $uri);
+            $item = self::getFirstChildByName($destination, 'Test file (copied)');
+            $item = self::getDriveItemById($item->id);
+            $this->assertDriveItemProxy($item);
+            $this->assertNotNull($item->parentReference);
+            $this->assertEquals($destination->id, $item->parentReference->id);
+            $this->assertEquals('Test file (copied)', $item->name);
+        });
+    }
+
+    public function testCopyFolder()
+    {
+        self::runInFolder(__FUNCTION__, function (DriveItemProxy $sandbox) {
+            $item        = self::createFolder($sandbox, 'Test folder');
+            $destination = self::createFolder($sandbox, 'Test destination');
+
+            $uri = $item->copy(
+                $destination,
+                [
+                    'name' => 'Test folder (copied)',
+                ]
+            );
+
+            // Work around for asynchronous operation; assume it has completed
+            // after a short delay.
+            sleep(self::ASYNC_DELAY);
+
+            $this->assertRegExp(self::URI_REGEX, $uri);
+            $item = self::getFirstChildByName($destination, 'Test folder (copied)');
+            $item = self::getDriveItemById($item->id);
+            $this->assertDriveItemProxy($item);
+            $this->assertNotNull($item->parentReference);
+            $this->assertEquals($destination->id, $item->parentReference->id);
+            $this->assertEquals('Test folder (copied)', $item->name);
+        });
+    }
+
+    // Legacy support //////////////////////////////////////////////////////////
+    public function testClientRenewAccessTokenLegacy()
     {
         $before = clone self::$client->getState()->token;
         self::$client->renewAccessToken(self::$clientSecret);
@@ -72,7 +453,7 @@ EOF;
         $this->assertNotEquals($before->data->refresh_token, $after->data->refresh_token);
     }
 
-    public function testClientCreateFolder()
+    public function testClientCreateFolderLegacy()
     {
         $root = self::getRoot();
 
@@ -80,180 +461,151 @@ EOF;
         $this->assertInstanceOf(Folder::class, $folder1);
         $this->assertEquals('Test folder #1', $folder1->getName());
 
-        $children = array_map(function (DriveItem $driveItem) {
-            return $driveItem->getId();
-        }, self::getChildren($root));
+        $children = array_map(function (DriveItemProxy $driveItem) {
+            return $driveItem->id;
+        }, $root->children);
 
         $this->assertContains($folder1->getId(), $children);
-        self::delete($folder1);
+        self::deleteLegacy($folder1);
 
         $folder2 = self::$client->createFolder('Test folder #2', null, 'Test description folder #2');
         $this->assertInstanceOf(Folder::class, $folder2);
         $this->assertEquals('Test folder #2', $folder2->getName());
 
-        $children = array_map(function (DriveItem $driveItem) {
-            return $driveItem->getId();
-        }, self::getChildren($root));
+        $children = array_map(function (DriveItemProxy $driveItem) {
+            return $driveItem->id;
+        }, $root->children);
 
         $this->assertContains($folder2->getId(), $children);
         $this->assertEquals('Test description folder #2', $folder2->getDescription());
-        self::delete($folder2);
+        self::deleteLegacy($folder2);
 
-        self::runInFolder(__FUNCTION__, function (Folder $parent) {
-            $folder3 = self::$client->createFolder('Test folder #3', $parent->getId(), null);
+        self::runInFolder(__FUNCTION__, function (DriveItemProxy $parent) {
+            $folder3 = self::$client->createFolder('Test folder #3', $parent->id, null);
             $this->assertInstanceOf(Folder::class, $folder3);
             $this->assertEquals('Test folder #3', $folder3->getName());
-            $this->assertEquals($parent->getId(), $folder3->getParentId());
+            $this->assertEquals($parent->id, $folder3->getParentId());
 
-            $children = array_map(function (DriveItem $driveItem) {
-                return $driveItem->getId();
-            }, self::getChildren($parent));
+            $children = array_map(function (DriveItemProxy $driveItem) {
+                return $driveItem->id;
+            }, $parent->children);
 
             $this->assertContains($folder3->getId(), $children);
         });
     }
 
-    public function testClientCreateFile()
+    public function testClientCreateFileLegacy()
     {
-        self::runInFolder(__FUNCTION__, function (Folder $parent) {
+        self::runInFolder(__FUNCTION__, function (DriveItemProxy $parent) {
             // Test with a text file.
-            $file1 = self::$client->createFile('Test file #1.txt', $parent->getId(), 'Test content');
+            $file1 = self::$client->createFile('Test file #1.txt', $parent->id, 'Test content');
             $this->assertInstanceOf(File::class, $file1);
             $this->assertEquals('Test file #1.txt', $file1->getName());
-            $this->assertEquals($parent->getId(), $file1->getParentId());
+            $this->assertEquals($parent->id, $file1->getParentId());
+            $this->assertEquals('Test content', $file1->fetchContent());
 
-            $children = array_map(function (DriveItem $driveItem) {
-                return $driveItem->getId();
-            }, self::getChildren($parent));
+            $children = array_map(function (DriveItemProxy $driveItem) {
+                return $driveItem->id;
+            }, $parent->children);
 
             $this->assertContains($file1->getId(), $children);
 
-            $file1 = self::getDriveItemById($file1->getId());
-            $this->assertInstanceOf(File::class, $file1);
-            $this->assertEquals('Test file #1.txt', $file1->getName());
-            $this->assertEquals($parent->getId(), $file1->getParentId());
-
-            $actual = self::getContent($file1);
-            $this->assertEquals('Test content', $actual);
-
             // Test with a binary file.
-            $file2 = self::$client->createFile('Test file #2.png', $parent->getId(), base64_decode(self::PHP_LOGO_PNG_BASE64));
+            $content = base64_decode(self::PHP_LOGO_PNG_BASE64);
+            $file2   = self::$client->createFile('Test file #2.png', $parent->id, $content);
             $this->assertInstanceOf(File::class, $file2);
             $this->assertEquals('Test file #2.png', $file2->getName());
-            $this->assertEquals($parent->getId(), $file2->getParentId());
+            $this->assertEquals($parent->id, $file2->getParentId());
+            $this->assertEquals($content, $file2->fetchContent());
 
-            $children = array_map(function (DriveItem $driveItem) {
-                return $driveItem->getId();
-            }, self::getChildren($parent));
+            $children = array_map(function (DriveItemProxy $driveItem) {
+                return $driveItem->id;
+            }, $parent->children);
 
             $this->assertContains($file2->getId(), $children);
         });
     }
 
-    public function testClientFetchDriveItem()
+    public function testClientFetchDriveItemLegacy()
     {
         $root = self::getRoot();
-        $item = self::$client->fetchDriveItem($root->getId());
+        $item = self::$client->fetchDriveItem($root->id);
         $this->assertInstanceOf(Folder::class, $item);
-        $this->assertEquals('SkyDrive', $item->getName());
-        $this->assertEquals('', $item->getParentId());
+        $this->assertContains($item->getName(), ['root', 'SkyDrive']);
+        $this->assertInternalType('string', $item->getParentId());
     }
 
-    public function testClientFetchRoot()
+    public function testClientFetchRootLegacy()
     {
         $root = self::$client->fetchRoot();
         $this->assertInstanceOf(Folder::class, $root);
-        $this->assertEquals('SkyDrive', $root->getName());
-        $this->assertEquals('', $root->getParentId());
+        $this->assertContains($root->getName(), ['root', 'SkyDrive']);
+        $this->assertInternalType('string', $root->getParentId());
     }
 
-    public function testClientFetchCameraRoll()
+    public function testClientFetchCameraRollLegacy()
     {
         $pics       = self::getPhotosFolder();
         $cameraRoll = self::$client->fetchCameraRoll();
         $this->assertInstanceOf(Folder::class, $cameraRoll);
         $this->assertEquals('Camera Roll', $cameraRoll->getName());
 
-        $children = array_map(function (DriveItem $driveItem) {
-            return $driveItem->getName();
-        }, self::getChildren($pics));
+        $children = array_map(function (DriveItemProxy $driveItem) {
+            return $driveItem->name;
+        }, $pics->children);
 
         $this->assertContains($cameraRoll->getName(), $children);
     }
 
-    public function testClientFetchDocs()
+    public function testClientFetchDocsLegacy()
     {
         $root = self::getRoot();
         $docs = self::$client->fetchDocs();
         $this->assertInstanceOf(Folder::class, $docs);
         $this->assertEquals('Documents', $docs->getName());
 
-        $children = array_map(function (DriveItem $driveItem) {
-            return $driveItem->getName();
-        }, self::getChildren($root));
+        $children = array_map(function (DriveItemProxy $driveItem) {
+            return $driveItem->name;
+        }, $root->children);
 
         $this->assertContains($docs->getName(), $children);
     }
 
-    public function testClientFetchPics()
+    public function testClientFetchPicsLegacy()
     {
         $root = self::getRoot();
         $pics = self::$client->fetchPics();
         $this->assertInstanceOf(Folder::class, $pics);
         $this->assertEquals('Pictures', $pics->getName());
 
-        $children = array_map(function (DriveItem $driveItem) {
-            return $driveItem->getName();
-        }, self::getChildren($root));
+        $children = array_map(function (DriveItemProxy $driveItem) {
+            return $driveItem->name;
+        }, $root->children);
 
         $this->assertContains($pics->getName(), $children);
     }
 
-    public function testClientFetchPublicDocs()
+    public function testClientFetchPropertiesLegacy()
     {
         $root       = self::getRoot();
-        $publicDocs = self::$client->fetchPublicDocs();
-        $this->assertInstanceOf(Folder::class, $publicDocs);
-        $this->assertEquals('Public', $publicDocs->getName());
-
-        $children = array_map(function (DriveItem $driveItem) {
-            return $driveItem->getName();
-        }, self::getChildren($root));
-
-        $this->assertContains($publicDocs->getName(), $children);
-    }
-
-    public function testClientFetchProperties()
-    {
-        $root       = self::getRoot();
-        $properties = self::$client->fetchProperties($root->getId());
+        $properties = self::$client->fetchProperties($root->id);
         $this->assertInternalType('object', $properties);
         $this->assertInternalType('string', $properties->id);
         $this->assertInternalType('object', $properties->from);
         $this->assertNull($properties->from->name);
         $this->assertNull($properties->from->id);
-        $this->assertEquals('SkyDrive', $properties->name);
+        $this->assertContains($properties->name, ['root', 'SkyDrive']);
         $this->assertEquals('', $properties->description);
-        $this->assertNull($properties->parent_id);
+        $this->assertInternalType('string', $properties->parent_id);
         $this->assertGreaterThanOrEqual(0, $properties->size);
-        $this->assertRegExp(self::URI_REGEX, $properties->upload_location);
-        $this->assertGreaterThanOrEqual(0, $properties->comments_count);
-        $this->assertFalse($properties->comments_enabled);
-        $this->assertFalse($properties->is_embeddable);
-        $this->assertGreaterThanOrEqual(0, $properties->count);
-        $this->assertRegExp(self::URI_REGEX, $properties->link);
-        $this->assertContains($properties->type, ['folder']);
-        $this->assertInternalType('object', $properties->shared_with);
-        $this->assertEquals('Just me', $properties->shared_with->access);
-        $this->assertNull($properties->created_time);
+        $this->assertRegExp(self::DATETIME_REGEX, $properties->created_time);
         $this->assertRegExp(self::DATETIME_REGEX, $properties->updated_time);
-        $this->assertRegExp(self::DATETIME_REGEX, $properties->client_updated_time);
     }
 
-    public function testClientFetchDriveItems()
+    public function testClientFetchDriveItemsLegacy()
     {
         $root  = self::getRoot();
-        $items = self::$client->fetchDriveItems($root->getId());
+        $items = self::$client->fetchDriveItems($root->id);
         $this->assertInternalType('array', $items);
 
         foreach ($items as $item) {
@@ -267,13 +619,13 @@ EOF;
         }
     }
 
-    public function testClientUpdateDriveItem()
+    public function testClientUpdateDriveItemLegacy()
     {
         $root = self::getRoot();
         $item = self::createFolder($root, 'Test folder');
 
         self::$client->updateDriveItem(
-            $item->getId(),
+            $item->id,
             [
                 'name'        => 'Test folder (renamed)',
                 'description' => 'Test description folder',
@@ -281,73 +633,77 @@ EOF;
             false
         );
 
-        $item = self::getDriveItemById($item->getId());
-        $this->assertEquals('Test folder (renamed)', $item->getName());
-        $this->assertEquals('Test description folder', $item->getDescription());
+        $item = self::getDriveItemById($item->id);
+        $this->assertEquals('Test folder (renamed)', $item->name);
+        $this->assertEquals('Test description folder', $item->description);
 
         self::delete($item);
     }
 
-    public function testClientMoveDriveItem()
+    public function testClientMoveDriveItemLegacy()
     {
-        self::runInFolder(__FUNCTION__, function (Folder $parent) {
+        self::runInFolder(__FUNCTION__, function (DriveItemProxy $parent) {
             $item        = self::createFolder($parent, 'Test item');
             $destination = self::createFolder($parent, 'Test destination');
-            self::$client->moveDriveItem($item->getId(), $destination->getId());
+            self::$client->moveDriveItem($item->id, $destination->id);
 
-            $children = array_map(function (DriveItem $driveItem) {
-                return $driveItem->getId();
-            }, self::getChildren($parent));
+            $children = array_map(function (DriveItemProxy $driveItem) {
+                return $driveItem->id;
+            }, $parent->children);
 
-            $this->assertFalse(in_array($item->getId(), $children));
+            $this->assertFalse(in_array($item->id, $children));
 
-            $children = array_map(function (DriveItem $driveItem) {
-                return $driveItem->getId();
-            }, self::getChildren($destination));
+            $children = array_map(function (DriveItemProxy $driveItem) {
+                return $driveItem->id;
+            }, $destination->children);
 
-            $this->assertContains($item->getId(), $children);
+            $this->assertContains($item->id, $children);
 
-            $item = self::getDriveItemById($item->getId());
-            $this->assertEquals($destination->getId(), $item->getParentId());
+            $item = self::getDriveItemById($item->id);
+            $this->assertEquals($destination->id, $item->parentReference->id);
         });
     }
 
-    public function testClientCopyDriveItem()
+    public function testClientCopyDriveItemLegacy()
     {
-        self::runInFolder(__FUNCTION__, function (Folder $parent) {
-            $item        = self::createFile($parent, 'Test item');
+        self::runInFolder(__FUNCTION__, function (DriveItemProxy $parent) {
+            $item        = self::upload($parent, 'Test item');
             $destination = self::createFolder($parent, 'Test destination');
-            self::$client->copyFile($item->getId(), $destination->getId());
+            self::$client->copyFile($item->id, $destination->id);
 
-            $children = array_map(function (DriveItem $driveItem) {
-                return $driveItem->getId();
-            }, self::getChildren($parent));
+            // Work around for asynchronous operation; assume it has completed
+            // after a short delay.
+            sleep(self::ASYNC_DELAY);
 
-            $this->assertContains($item->getId(), $children);
+            $children = array_map(function (DriveItemProxy $driveItem) {
+                return $driveItem->id;
+            }, $parent->children);
 
-            $children = array_map(function (DriveItem $driveItem) {
-                return $driveItem->getName();
-            }, self::getChildren($destination));
+            $this->assertContains($item->id, $children);
+
+            $children = array_map(function (DriveItemProxy $driveItem) {
+                return $driveItem->name;
+            }, $destination->children);
 
             $this->assertContains('Test item', $children);
         });
     }
 
-    public function testClientDeleteDriveItem()
+    public function testClientDeleteDriveItemLegacy()
     {
-        self::runInFolder(__FUNCTION__, function (Folder $parent) {
+        self::runInFolder(__FUNCTION__, function (DriveItemProxy $parent) {
             $item = self::createFolder($parent, 'Test folder');
-            self::$client->deleteDriveItem($item->getId());
+            self::$client->deleteDriveItem($item->id);
 
-            $children = array_map(function (DriveItem $driveItem) {
-                return $driveItem->getId();
-            }, self::getChildren($parent));
+            $children = array_map(function (DriveItemProxy $driveItem) {
+                return $driveItem->id;
+            }, $parent->children);
 
-            $this->assertFalse(in_array($item->getId(), $children));
+            $this->assertFalse(in_array($item->id, $children));
         });
     }
 
-    public function testClientFetchQuota()
+    public function testClientFetchQuotaLegacy()
     {
         $quota = self::$client->fetchQuota();
         $this->assertInternalType('object', $quota);
@@ -355,22 +711,7 @@ EOF;
         $this->assertGreaterThanOrEqual(0, $quota->available);
     }
 
-    public function testClientFetchAccountInfo()
-    {
-        $accountInfo = self::$client->fetchAccountInfo();
-        $this->assertInternalType('object', $accountInfo);
-        $this->assertInternalType('string', $accountInfo->id);
-        $this->assertInternalType('string', $accountInfo->first_name);
-        $this->assertInternalType('string', $accountInfo->last_name);
-        $firstName = $accountInfo->first_name;
-        $lastName  = $accountInfo->last_name;
-        $name      = "$firstName $lastName";
-        $this->assertEquals($name, $accountInfo->name);
-        $this->assertNull($accountInfo->gender);
-        $this->assertContains($accountInfo->locale, ['en_US']);
-    }
-
-    public function testClientFetchRecentDocs()
+    public function testClientFetchRecentDocsLegacy()
     {
         $recentDocs = self::$client->fetchRecentDocs();
         $this->assertInternalType('object', $recentDocs);
@@ -381,7 +722,7 @@ EOF;
         }
     }
 
-    public function testClientFetchShared()
+    public function testClientFetchSharedLegacy()
     {
         $shared = self::$client->fetchShared();
         $this->assertInternalType('object', $shared);
@@ -392,74 +733,79 @@ EOF;
         }
     }
 
-    public function testDriveItemMove()
+    public function testDriveItemMoveLegacy()
     {
-        self::runInFolder(__FUNCTION__, function (Folder $parent) {
-            $item        = self::createFile($parent, 'Test item');
+        self::runInFolder(__FUNCTION__, function (DriveItemProxy $parent) {
+            $item        = self::upload($parent, 'Test item');
             $destination = self::createFolder($parent, 'Test destination');
 
-            $item->move($destination->getId());
+            (new File(self::$client, $item->id))->move($destination->id);
 
-            $children = array_map(function (DriveItem $driveItem) {
-                return $driveItem->getId();
-            }, self::getChildren($parent));
+            $children = array_map(function (DriveItemProxy $driveItem) {
+                return $driveItem->id;
+            }, $parent->children);
 
-            $this->assertFalse(in_array($item->getId(), $children));
+            $this->assertFalse(in_array($item->id, $children));
 
-            $children = array_map(function (DriveItem $driveItem) {
-                return $driveItem->getId();
-            }, self::getChildren($destination));
+            $children = array_map(function (DriveItemProxy $driveItem) {
+                return $driveItem->id;
+            }, $destination->children);
 
-            $this->assertContains($item->getId(), $children);
+            $this->assertContains($item->id, $children);
 
-            $item = self::getDriveItemById($item->getId());
-            $this->assertEquals($destination->getId(), $item->getParentId());
+            $item = self::getDriveItemById($item->id);
+            $this->assertEquals($destination->id, $item->parentReference->id);
         });
     }
 
-    public function testFileFetchContent()
+    public function testFileFetchContentLegacy()
     {
-        self::runInFolder(__FUNCTION__, function (Folder $parent) {
-            $item   = self::createFile($parent, 'Test item', 'Test content');
+        self::runInFolder(__FUNCTION__, function (DriveItemProxy $parent) {
+            $item   = self::upload($parent, 'Test item', 'Test content');
+            $item   = new File(self::$client, $item->id);
             $actual = $item->fetchContent();
             $this->assertEquals('Test content', $actual);
         });
     }
 
-    public function testFileCopy()
+    public function testFileCopyLegacy()
     {
-        self::runInFolder(__FUNCTION__, function (Folder $parent) {
-            $parent      = self::getRoot();
-            $item        = self::createFile($parent, 'Test item');
+        self::runInFolder(__FUNCTION__, function (DriveItemProxy $parent) {
+            $item        = self::upload($parent, 'Test item');
             $destination = self::createFolder($parent, 'Test destination');
 
-            $item->copy($destination->getId());
+            (new File(self::$client, $item->id))->copy($destination->id);
 
-            $children = array_map(function (DriveItem $driveItem) {
-                return $driveItem->getName();
-            }, self::getChildren($parent));
+            // Work around for asynchronous operation; assume it has completed
+            // after a short delay.
+            sleep(self::ASYNC_DELAY);
 
-            $this->assertContains($item->getName(), $children);
+            $children = array_map(function (DriveItemProxy $driveItem) {
+                return $driveItem->name;
+            }, $parent->children);
 
-            $children = array_map(function (DriveItem $driveItem) {
-                return $driveItem->getName();
-            }, self::getChildren($destination));
+            $this->assertContains($item->name, $children);
 
-            $this->assertContains($item->getName(), $children);
+            $children = array_map(function (DriveItemProxy $driveItem) {
+                return $driveItem->name;
+            }, $destination->children);
 
-            $copy = array_filter(self::getChildren($destination), function (DriveItem $driveItem) use ($item) {
+            $this->assertContains($item->name, $children);
+
+            $copy = array_filter($destination->children, function (DriveItemProxy $driveItem) use ($item) {
                 return $driveItem->name == $item->name;
             });
 
             $this->assertCount(1, $copy);
-            $copy = self::getDriveItemById($copy[0]->getId());
-            $this->assertEquals($destination->getId(), $copy->getParentId());
+            $copy = self::getDriveItemById($copy[0]->id);
+            $this->assertEquals($destination->id, $copy->parentReference->id);
         });
     }
 
-    public function testFolderFetchDriveItems()
+    public function testFolderFetchDriveItemsLegacy()
     {
         $root  = self::getRoot();
+        $root  = new Folder(self::$client, $root->id);
         $items = $root->fetchDriveItems();
         $this->assertInternalType('array', $items);
 
@@ -474,9 +820,10 @@ EOF;
         }
     }
 
-    public function testFolderFetchChildDriveItems()
+    public function testFolderFetchChildDriveItemsLegacy()
     {
         $root  = self::getRoot();
+        $root  = new Folder(self::$client, $root->id);
         $items = $root->fetchChildDriveItems();
         $this->assertInternalType('array', $items);
 
@@ -491,78 +838,480 @@ EOF;
         }
     }
 
-    public function testFolderCreateFolder()
+    public function testFolderCreateFolderLegacy()
     {
-        self::runInFolder(__FUNCTION__, function (Folder $parent) {
-            $item = $parent->createFolder('Test folder', 'Test description');
+        self::runInFolder(__FUNCTION__, function (DriveItemProxy $parent) {
+            $item = (new Folder(self::$client, $parent->id))->createFolder('Test folder', 'Test description');
             $this->assertInstanceOf(Folder::class, $item);
-            $this->assertEquals($parent->getId(), $item->getParentId());
+            $this->assertEquals($parent->id, $item->getParentId());
             $this->assertEquals('Test folder', $item->getName());
             $this->assertEquals('Test description', $item->getDescription());
 
-            $children = array_map(function (DriveItem $driveItem) {
-                return $driveItem->getId();
-            }, self::getChildren($parent));
+            $children = array_map(function (DriveItemProxy $driveItem) {
+                return $driveItem->id;
+            }, $parent->children);
 
             $this->assertContains($item->getId(), $children);
         });
     }
 
-    public function testFolderCreateFile()
+    public function testFolderCreateFileLegacy()
     {
-        self::runInFolder(__FUNCTION__, function (Folder $parent) {
-            $item = $parent->createFile('Test file', 'Test content');
+        self::runInFolder(__FUNCTION__, function (DriveItemProxy $parent) {
+            $item = (new Folder(self::$client, $parent->id))->createFile('Test file', 'Test content');
             $this->assertInstanceOf(File::class, $item);
-            $this->assertEquals($parent->getId(), $item->getParentId());
+            $this->assertEquals($parent->id, $item->getParentId());
             $this->assertEquals('Test file', $item->getName());
             $this->assertEquals('Test content', $item->fetchContent());
 
-            $children = array_map(function (DriveItem $driveItem) {
-                return $driveItem->getId();
-            }, self::getChildren($parent));
+            $children = array_map(function (DriveItemProxy $driveItem) {
+                return $driveItem->id;
+            }, $parent->children);
 
             $this->assertContains($item->getId(), $children);
         });
+    }
+
+    public function specialFolderProvider()
+    {
+        return [
+            ['documents'],
+            ['photos'],
+            ['cameraroll'],
+            ['approot'],
+            ['music'],
+        ];
+    }
+
+    private function assertEntityProxy($entity)
+    {
+        $this->assertInstanceOf(EntityProxy::class, $entity);
+        $this->assertInternalType('string', $entity->id);
+    }
+
+    private function assertBaseItemProxy($baseItem)
+    {
+        $this->assertEntityProxy($baseItem);
+        $this->assertInstanceOf(BaseItemProxy::class, $baseItem);
+
+        $this->assertThat(
+            $baseItem->createdBy,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isInstanceOf(IdentitySetProxy::class, $baseItem->createdBy)
+            )
+        );
+
+        $this->assertThat(
+            $baseItem->createdDateTime,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isInstanceOf(\DateTime::class)
+            )
+        );
+
+        $this->assertThat(
+            $baseItem->description,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isType('string')
+            )
+        );
+
+        $this->assertThat(
+            $baseItem->eTag,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isType('string')
+            )
+        );
+
+        $this->assertThat(
+            $baseItem->lastModifiedBy,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isInstanceOf(IdentitySetProxy::class, $baseItem->createdBy)
+            )
+        );
+
+        $this->assertThat(
+            $baseItem->lastModifiedDateTime,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isInstanceOf(\DateTime::class)
+            )
+        );
+
+        $this->assertThat(
+            $baseName->name,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isType('string')
+            )
+        );
+
+        $this->assertThat(
+            $baseItem->parentReference,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isInstanceOf(ItemReferenceProxy::class, $baseItem->parentReference)
+            )
+        );
+
+        $this->assertThat(
+            $baseItem->webUrl,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->matchesRegularExpression(self::URI_REGEX)
+            )
+        );
+
+        $this->assertThat(
+            $baseItem->createdByUser,
+            $this->logicalOr(
+                $this->isNull,
+                $this->isInstanceOf(UserProxy::class)
+            )
+        );
+
+        $this->assertThat(
+            $baseItem->lastModifiedByUser,
+            $this->logicalOr(
+                $this->isNull,
+                $this->isInstanceOf(UserProxy::class)
+            )
+        );
+    }
+
+    private function assertQuotaProxy($quota)
+    {
+        $this->assertInstanceOf(QuotaProxy::class, $quota);
+        $this->assertGreaterThanOrEqual(0, $quota->deleted);
+        $this->assertGreaterThanOrEqual(0, $quota->remaining);
+        $this->assertContains($quota->state, ['normal', 'nearing', 'critical', 'exceeded']);
+        $this->assertGreaterThanOrEqual(0, $quota->total);
+        $this->assertGreaterThanOrEqual(0, $quota->used);
+    }
+
+    private function assertPermissionProxy($permission)
+    {
+        $this->assertInstanceOf(PermissionProxy::class, $permission);
+    }
+
+    private function assertThumbnailProxy($thumbnail)
+    {
+        $this->assertInstanceOf(ThumbnailProxy::class, $thumbnail);
+    }
+
+    private function assertDriveProxy($drive)
+    {
+        $this->assertBaseItemProxy($drive);
+        $this->assertInstanceOf(DriveProxy::class, $drive);
+        $this->assertContains($drive->driveType, ['personal', 'business', 'documentLibrary']);
+        $this->assertInstanceOf(IdentitySetProxy::class, $drive->owner);
+        $this->assertQuotaProxy($drive->quota);
+
+        $this->assertThat(
+            $drive->sharePointIds,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isInstanceOf(SharePointIdsProxy::class)
+            )
+        );
+
+        $this->assertThat(
+            $drive->system,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isInstanceOf(SystemProxy::class)
+            )
+        );
+
+        if ($drive->items !== null) {
+            foreach ($drive->items as $item) {
+                $this->assertDriveItemProxy($item);
+            }
+        }
+
+        $this->assertThat(
+            $drive->list,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isInstanceOf(GraphListProxy::class)
+            )
+        );
+
+        $this->assertThat(
+            $drive->root,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isInstanceOf(DriveItemProxy::class)
+            )
+        );
+
+        $this->assertThat(
+            $drive->special,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isInstanceOf(DriveItemProxy::class)
+            )
+        );
+    }
+
+    private function assertDriveItemProxy($item)
+    {
+        $this->assertBaseItemProxy($item);
+        $this->assertInstanceOf(DriveItemProxy::class, $item);
+
+        $this->assertThat(
+            $item->audio,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isInstanceOf(AudioProxy::class)
+            )
+        );
+
+        //"content" => [ "@odata.type" => "Edm.Stream" ],
+        $this->assertNotNull($item->cTag);
+
+        $this->assertThat(
+            $item->deleted,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isInstanceOf(DeletedProxy::class)
+            )
+        );
+
+        $this->assertThat(
+            $item->file,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isInstanceOf(FileProxy::class)
+            )
+        );
+
+        $this->assertThat(
+            $item->fileSystemInfo,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isInstanceOf(FileSystemInfoProxy::class)
+            )
+        );
+
+        $this->assertThat(
+            $item->folder,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isInstanceOf(FolderProxy::class)
+            )
+        );
+
+        $this->assertThat(
+            $item->image,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isInstanceOf(ImageProxy::class)
+            )
+        );
+
+        $this->assertThat(
+            $item->location,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isInstanceOf(GeoCoordinatesProxy::class)
+            )
+        );
+
+        $this->assertThat(
+            $item->package,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isInstanceOf(PackageProxy::class)
+            )
+        );
+
+        $this->assertThat(
+            $item->photo,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isInstanceOf(PhotoProxy::class)
+            )
+        );
+
+        $this->assertThat(
+            $item->publication,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isInstanceOf(PublicationFacetProxy::class)
+            )
+        );
+
+        $this->assertThat(
+            $item->remoteItem,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isInstanceOf(RemoteItemProxy::class)
+            )
+        );
+
+        $this->assertThat(
+            $item->root,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isInstanceOf(RootProxy::class)
+            )
+        );
+
+        $this->assertThat(
+            $item->searchResult,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isInstanceOf(SearchResultProxy::class)
+            )
+        );
+
+        $this->assertThat(
+            $item->shared,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isInstanceOf(SharedProxy::class)
+            )
+        );
+
+        $this->assertThat(
+            $item->sharepointIds,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isInstanceOf(SharePointIdsProxy::class)
+            )
+        );
+
+        $this->assertThat(
+            $item->size,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->greaterThanOrEqual(0)
+            )
+        );
+
+        $this->assertThat(
+            $item->specialFolder,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isInstanceOf(SpecialFolderProxy::class)
+            )
+        );
+
+        $this->assertThat(
+            $item->video,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isInstanceOf(VideoProxy::class)
+            )
+        );
+
+        $this->assertThat(
+            $item->webDavUrl,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->matchesRegularExpression('|^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?|')
+            )
+        );
+
+        foreach ($item->children as $child) {
+            $this->assertDriveItemProxy($child);
+        }
+
+        $this->assertThat(
+            $item->listItem,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isInstanceOf(ListItemProxy::class)
+            )
+        );
+
+        if ($item->permissions !== null) {
+            foreach ($item->permissions as $permission) {
+                $this->assertPermissionProxy($permission);
+            }
+        }
+
+        if ($item->thumbnails !== null) {
+            foreach ($item->thumbnails as $thumbnail) {
+                $this->assertThumbnailProxy($thumbnail);
+            }
+        }
+
+        if ($item->versions !== null) {
+            foreach ($item->versions as $version) {
+                $this->assertInternalType('string', $version);
+            }
+        }
+
+        $this->assertThat(
+            $item->workbook,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isInstanceOf(WorkbookProxy::class)
+            )
+        );
     }
 
     private static function getRoot()
     {
-        return self::$client->fetchRoot();
+        return self::$client->getRoot();
     }
 
-    private static function getDriveItemById($itemId)
+    private static function getDriveItemById($id)
     {
-        return self::$client->fetchDriveItem($itemId);
-    }
-
-    private static function getContent(File $item)
-    {
-        return $item->fetchContent();
-    }
-
-    private static function getChildren(Folder $item)
-    {
-        return $item->fetchChildDriveItems();
+        $item = self::getRoot();
+        return self::$client->getDriveItemById($item->parentReference->driveId, $id);
     }
 
     private static function getPhotosFolder()
     {
-        return self::$client->fetchPics();
+        return self::$client->getSpecialFolder('photos');
     }
 
-    private static function createFolder(Folder $item, $name)
+    private static function createFolder(DriveItemProxy $item, $name)
     {
         return $item->createFolder($name);
     }
 
-    private static function createFile(Folder $item, $name, $content = '')
+    private static function upload(DriveItemProxy $item, $name, $content = '')
     {
-        return $item->createFile($name, $content);
+        return $item->upload(
+            $name,
+            $content,
+            [
+                'Content-Type: text/plain',
+            ]
+        );
     }
 
-    private static function delete(DriveItem $item)
+    private static function delete(DriveItemProxy $item)
+    {
+        $item->delete();
+    }
+
+    private static function deleteLegacy(DriveItem $item)
     {
         self::$client->deleteDriveItem($item->getId());
+    }
+
+    private static function getFirstDrive()
+    {
+        $drives = self::$client->getDrives();
+        return $drives[0];
+    }
+
+    private static function getFirstChildByName(DriveItemProxy $item, $name)
+    {
+        $items = array_filter($item->children, function (DriveItemProxy $item) use ($name) {
+            return $item->name == $name;
+        });
+
+        return count($items) == 1 ? $items[0] : null;
     }
 
     private static function runInFolder($name, callable $function)
@@ -599,10 +1348,11 @@ EOF;
         $redirectUri = sprintf('http://localhost:%d/', self::REDIRECT_URI_PORT);
 
         $scopes = [
-            'wl.skydrive_update',
-            'wl.contacts_photos',
-            'wl.contacts_skydrive',
-            'wl.offline_access',
+            'files.read',
+            'files.read.all',
+            'files.readwrite',
+            'files.readwrite.all',
+            'offline_access',
         ];
 
         $logInUrl  = $client->getLogInUrl($scopes, $redirectUri);
