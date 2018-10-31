@@ -2,8 +2,15 @@
 
 namespace Krizalys\Onedrive;
 
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
+use GuzzleHttp\ClientInterface;
+use Krizalys\Onedrive\Proxy\DriveItemProxy;
+use Krizalys\Onedrive\Proxy\DriveProxy;
+use Microsoft\Graph\Graph;
+use Microsoft\Graph\Model;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 
 /**
  * @class Client
@@ -11,42 +18,50 @@ use Monolog\Logger;
  * A Client instance allows communication with the OneDrive API and perform
  * operations programmatically.
  *
- * For an overview of the OneDrive protocol flow, see here:
- * http://msdn.microsoft.com/en-us/library/live/hh243647.aspx
- *
  * To manage your Live Connect applications, see here:
- * https://account.live.com/developers/applications/index
- * Or here:
- * https://manage.dev.live.com/ (not working?)
- *
- * For an example implementation, see here:
- * https://github.com/drumaddict/skydrive-api-yii/blob/master/SkyDriveAPI.php
+ * https://apps.dev.microsoft.com/#/appList
  */
-class Client
+class Client implements LoggerAwareInterface
 {
-    /**
-     * @var string
-     *      The base URL for API requests.
-     */
-    const API_URL = 'https://apis.live.net/v5.0/';
+    use LoggerAwareTrait;
 
     /**
      * @var string
      *      The base URL for authorization requests.
      */
-    const AUTH_URL = 'https://login.live.com/oauth20_authorize.srf';
+    const AUTH_URL = 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize';
 
     /**
      * @var string
      *      The base URL for token requests.
      */
-    const TOKEN_URL = 'https://login.live.com/oauth20_token.srf';
+    const TOKEN_URL = 'https://login.microsoftonline.com/common/oauth2/v2.0/token';
+
+    /**
+     * @var string
+     *      The legacy date/time format.
+     *
+     * @deprecated Use ISO-8601 date/times instead.
+     */
+    const LEGACY_DATETIME_FORMAT = 'Y-m-d\TH:i:sO';
 
     /**
      * @var string
      *      The client ID.
      */
-    private $_clientId;
+    private $clientId;
+
+    /**
+     * @var Microsoft\Graph\Graph
+     *      The Microsoft Graph.
+     */
+    private $graph;
+
+    /**
+     * @var GuzzleHttp\ClientInterface
+     *      The Guzzle HTTP client.
+     */
+    private $httpClient;
 
     /**
      * @var object
@@ -55,236 +70,46 @@ class Client
     private $_state;
 
     /**
-     * @var Logger
-     *      The logger.
-     */
-    private $_logger;
-
-    /**
-     * @var int
-     *      The last HTTP status received.
-     */
-    private $_httpStatus;
-
-    /**
-     * @var string
-     *      The last Content-Type received.
-     */
-    private $_contentType;
-
-    /**
-     * @var bool
-     *      Whether to verify SSL hosts and peers.
-     */
-    private $_sslVerify;
-
-    /**
-     * @var null|string
-     *      Override SSL CA path for verification (only relevant when
-     *      verifying).
-     */
-    private $_sslCaPath;
-
-    /**
-     * @var int
-     *      The name conflict behavior.
-     */
-    private $_nameConflictBehavior;
-
-    /**
-     * @var int
-     *      The stream back end.
-     */
-    private $_streamBackEnd;
-
-    /**
-     * @var NameConflictBehaviorParameterizer
-     *      The name conflict behavior parameterizer.
-     */
-    private $_nameConflictBehaviorParameterizer;
-
-    /**
-     * @var StreamOpener
-     *      The stream opener.
-     */
-    private $_streamOpener;
-
-    /**
-     * Creates a base cURL object which is compatible with the OneDrive API.
-     *
-     * @param string $path
-     *        The path of the API call (eg. me/skydrive).
-     * @param array $options
-     *        Extra cURL options to apply.
-     *
-     * @return resource
-     *         A compatible cURL object.
-     */
-    private function _createCurl($path, array $options = [])
-    {
-        $curl = curl_init();
-
-        $defaultOptions = [
-            // General options.
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_AUTOREFERER    => true,
-
-            // SSL options.
-            // The value 2 checks the existence of a common name and also
-            // verifies that it matches the hostname provided.
-            CURLOPT_SSL_VERIFYHOST => ($this->_sslVerify ? 2 : false),
-
-            CURLOPT_SSL_VERIFYPEER => $this->_sslVerify,
-        ];
-
-        if ($this->_sslVerify && $this->_sslCaPath) {
-            $defaultOptions[CURLOPT_CAINFO] = $this->_sslCaPath;
-        }
-
-        // See http://php.net/manual/en/function.array-merge.php for a
-        // description of the + operator (and why array_merge() would be wrong).
-        $finalOptions = $options + $defaultOptions;
-
-        curl_setopt_array($curl, $finalOptions);
-        return $curl;
-    }
-
-    /**
-     * Processes a result returned by the OneDrive API call using a cURL object.
-     *
-     * @param resource $curl
-     *        The cURL object used to perform the call.
-     *
-     * @return object|string
-     *         The content returned, as an object instance if served a JSON, or
-     *         as a string if served as anything else.
-     *
-     * @throws \Exception
-     *         Thrown if curl_exec() fails.
-     */
-    private function _processResult($curl)
-    {
-        $result = curl_exec($curl);
-
-        if (false === $result) {
-            throw new \Exception('curl_exec() failed: ' . curl_error($curl));
-        }
-
-        $info = curl_getinfo($curl);
-
-        $this->_httpStatus = array_key_exists('http_code', $info) ?
-            (int) $info['http_code'] : null;
-
-        $this->_contentType = array_key_exists('content_type', $info) ?
-            (string) $info['content_type'] : null;
-
-        // Parse nothing but JSON.
-        if (1 !== preg_match('|^application/json|', $this->_contentType)) {
-            return $result;
-        }
-
-        // Empty JSON string is returned as an empty object.
-        if ('' == $result) {
-            return (object) [];
-        }
-
-        $decoded = json_decode($result);
-        $vars    = get_object_vars($decoded);
-
-        if (array_key_exists('error', $vars)) {
-            throw new \Exception($decoded->error->message,
-                (int) $decoded->error->code);
-        }
-
-        return $decoded;
-    }
-
-    /**
      * Constructor.
      *
+     * @param string $clientId
+     *        The client ID.
+     * @param Microsoft\Graph\Graph $graph
+     *        The graph.
+     * @param GuzzleHttp\ClientInterface
+     *        The HTTP client.
+     * @param Psr\Log\LoggerInterface
+     *        The logger.
      * @param array $options
      *        The options to use while creating this object.
      *        Valid supported keys are:
      *          - 'state' (object) When defined, it should contain a valid
      *            OneDrive client state, as returned by getState(). Default: [].
-     *          - 'logger' (Logger) A LoggerInterface instance. Default:
-     *            new Logger('Krizalys\Onedrive\Client') which logs every
-     *            message to 'php://stderr'.
-     *          - 'ssl_verify' (bool) Whether to verify SSL hosts and peers.
-     *            Default: false.
-     *          - 'ssl_capath' (bool|string) CA path to use for verifying SSL
-     *            certificate chain. Default: false.
-     *          - 'name_conflict_behavior' (int) Default name conflict behavior.
-     *            Either: NameConflictBehavior::FAIL,
-     *            NameConflictBehavior::RENAME or NameConflictBehavior::REPLACE.
-     *            Default: NameConflictBehavior::REPLACE.
-     *          - 'stream_back_end' (int) Default stream back end.
-     *            Either StreamBackEnd::MEMORY or StreamBackEnd::TEMP. Default:
-     *            StreamBackEnd::MEMORY.
-     *            Using temporary files is recommended when uploading big files.
-     *            Default: StreamBackEnd::MEMORY.
+     *
+     * @throws Exception
+     *         Thrown if $clientId is null.
      */
-    public function __construct(array $options = [])
-    {
-        $this->_clientId = array_key_exists('client_id', $options)
-            ? (string) $options['client_id'] : null;
+    public function __construct(
+        $clientId,
+        Graph $graph,
+        ClientInterface $httpClient,
+        LoggerInterface $logger,
+        array $options = []
+    ) {
+        if ($clientId === null) {
+            throw new \Exception('The client ID must be set');
+        }
+
+        $this->clientId   = $clientId;
+        $this->graph      = $graph;
+        $this->httpClient = $httpClient;
+        $this->logger     = $logger;
 
         $this->_state = array_key_exists('state', $options)
             ? $options['state'] : (object) [
                 'redirect_uri' => null,
                 'token'        => null,
             ];
-
-        if (array_key_exists('logger', $options)) {
-            $logger = $options['logger'];
-        } else {
-            $logger = new Logger('Krizalys\Onedrive\Client');
-            $logger->pushHandler(new StreamHandler('php://stderr'));
-        }
-
-        $this->_logger = $logger;
-
-        $this->_sslVerify = array_key_exists('ssl_verify', $options)
-            ? $options['ssl_verify'] : false;
-
-        $this->_sslCaPath = array_key_exists('ssl_capath', $options)
-            ? $options['ssl_capath'] : false;
-
-        $this->_nameConflictBehavior =
-            array_key_exists('name_conflict_behavior', $options) ?
-            $options['name_conflict_behavior']
-            : NameConflictBehavior::REPLACE;
-
-        $this->_streamBackEnd = array_key_exists('stream_back_end', $options)
-            ? $options['stream_back_end'] : StreamBackEnd::MEMORY;
-
-        $this->_nameConflictBehaviorParameterizer =
-            new NameConflictBehaviorParameterizer();
-
-        $this->_streamOpener = new StreamOpener();
-    }
-
-    /**
-     * Gets the name conflict behavior of this client instance.
-     *
-     * @return int
-     *         The name conflict behavior.
-     */
-    public function getNameConflictBehavior()
-    {
-        return $this->_nameConflictBehavior;
-    }
-
-    /**
-     * Gets the stream back end of this client instance.
-     *
-     * @return int
-     *         The stream back end.
-     */
-    public function getStreamBackEnd()
-    {
-        return $this->_streamBackEnd;
     }
 
     /**
@@ -301,58 +126,46 @@ class Client
 
     /**
      * Gets the URL of the log in form. After login, the browser is redirected
-     * to the redirect URL, and a code is passed as a GET parameter to this URL.
+     * to the redirect URI, and a code is passed as a query string parameter to
+     * this URI.
      *
-     * The browser is also redirected to this URL if the user is already logged
-     * in.
+     * The browser is also redirected to the redirect URI if the user is already
+     * logged in.
      *
      * @param array $scopes
      *        The OneDrive scopes requested by the application. Supported
      *        values:
-     *          - 'wl.signin'
-     *          - 'wl.basic'
-     *          - 'wl.contacts_skydrive'
-     *          - 'wl.skydrive_update'
+     *          - 'offline_access'
+     *          - 'files.read'
+     *          - 'files.read.all'
+     *          - 'files.readwrite'
+     *          - 'files.readwrite.all'
      * @param string $redirectUri
      *        The URI to which to redirect to upon successful log in.
-     * @param array $options
-     *        Reserved for future use. Default: [].
      *
      * @return string
      *         The log in URL.
-     *
-     * @throws \Exception
-     *         Thrown if this Client instance's clientId is not set.
-     *
-     * @todo Support $options.
      */
-    public function getLogInUrl(
-        array $scopes,
-        $redirectUri,
-        array $options = []
-    ) {
-        if (null === $this->_clientId) {
-            throw new \Exception(
-                'The client ID must be set to call getLogInUrl()'
-            );
-        }
-
-        $imploded                   = implode(',', $scopes);
+    public function getLogInUrl(array $scopes, $redirectUri)
+    {
         $redirectUri                = (string) $redirectUri;
         $this->_state->redirect_uri = $redirectUri;
 
-        // When using this URL, the browser will eventually be redirected to the
-        // callback URL with a code passed in the URL query string (the name of
-        // the variable is "code"). This is suitable for PHP.
-        $url = self::AUTH_URL
-            . '?client_id=' . urlencode($this->_clientId)
-            . '&scope=' . urlencode($imploded)
-            . '&response_type=code'
-            . '&redirect_uri=' . urlencode($redirectUri)
-            . '&display=popup'
-            . '&locale=en';
+        $values = [
+            'client_id'     => $this->clientId,
+            'response_type' => 'code',
+            'redirect_uri'  => $redirectUri,
+            'scope'         => implode(' ', $scopes),
+            'response_mode' => 'query',
+        ];
 
-        return $url;
+        $query = http_build_query($values, '', '&', PHP_QUERY_RFC3986);
+
+        // When visiting this URL and authenticating successfully, the agent is
+        // redirected to the redirect URI, with a code passed in the query
+        // string (the name of the variable is "code"). This is suitable for
+        // PHP.
+        return self::AUTH_URL . "?$query";
     }
 
     /**
@@ -406,20 +219,14 @@ class Client
      * @param string $redirectUri
      *        Must be the same as the redirect URI passed to getLogInUrl().
      *
-     * @throws \Exception
-     *         Thrown if this Client instance's clientId is not set.
-     * @throws \Exception
+     * @throws Exception
      *         Thrown if the redirect URI of this Client instance's state is not
      *         set.
+     * @throws Exception
+     *         Thrown if the HTTP response body cannot be JSON-decoded.
      */
     public function obtainAccessToken($clientSecret, $code)
     {
-        if (null === $this->_clientId) {
-            throw new \Exception(
-                'The client ID must be set to call obtainAccessToken()'
-            );
-        }
-
         if (null === $this->_state->redirect_uri) {
             throw new \Exception(
                 'The state\'s redirect URI must be set to call'
@@ -427,52 +234,23 @@ class Client
             );
         }
 
-        $url = self::TOKEN_URL;
+        $values = [
+            'client_id'     => $this->clientId,
+            'redirect_uri'  => $this->_state->redirect_uri,
+            'client_secret' => (string) $clientSecret,
+            'code'          => (string) $code,
+            'grant_type'    => 'authorization_code',
+        ];
 
-        $curl = curl_init();
-
-        $fields = http_build_query(
-            [
-                'client_id'     => $this->_clientId,
-                'redirect_uri'  => $this->_state->redirect_uri,
-                'client_secret' => $clientSecret,
-                'code'          => $code,
-                'grant_type'    => 'authorization_code',
-            ]
+        $response = $this->httpClient->post(
+            self::TOKEN_URL,
+            ['form_params' => $values]
         );
 
-        curl_setopt_array($curl, [
-            // General options.
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_AUTOREFERER    => true,
-            CURLOPT_POST           => 1,
-            CURLOPT_POSTFIELDS     => $fields,
+        $body = $response->getBody();
+        $data = json_decode($body);
 
-            CURLOPT_HTTPHEADER => [
-                'Content-Length: ' . strlen($fields),
-            ],
-
-            // SSL options.
-            CURLOPT_SSL_VERIFYHOST => false,
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_URL            => $url,
-        ]);
-
-        $result = curl_exec($curl);
-
-        if (false === $result) {
-            if (curl_errno($curl)) {
-                throw new \Exception('curl_setopt_array() failed: '
-                    . curl_error($curl));
-            } else {
-                throw new \Exception('curl_setopt_array(): empty response');
-            }
-        }
-
-        $decoded = json_decode($result);
-
-        if (null === $decoded) {
+        if ($data === null) {
             throw new \Exception('json_decode() failed');
         }
 
@@ -480,8 +258,10 @@ class Client
 
         $this->_state->token = (object) [
             'obtained' => time(),
-            'data'     => $decoded,
+            'data'     => $data,
         ];
+
+        $this->graph->setAccessToken($this->_state->token->data->access_token);
     }
 
     /**
@@ -492,12 +272,6 @@ class Client
      */
     public function renewAccessToken($clientSecret)
     {
-        if (null === $this->_clientId) {
-            throw new \Exception(
-                'The client ID must be set to call renewAccessToken()'
-            );
-        }
-
         if (null === $this->_state->token->data->refresh_token) {
             throw new \Exception(
                 'The refresh token is not set or no permission for'
@@ -505,46 +279,22 @@ class Client
             );
         }
 
-        $url = self::TOKEN_URL;
+        $values = [
+            'client_id'     => $this->clientId,
+            'client_secret' => $clientSecret,
+            'grant_type'    => 'refresh_token',
+            'refresh_token' => $this->_state->token->data->refresh_token,
+        ];
 
-        $curl = curl_init();
+        $response = $this->httpClient->post(
+            self::TOKEN_URL,
+            ['form_params' => $values]
+        );
 
-        curl_setopt_array($curl, [
-            // General options.
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_AUTOREFERER    => true,
-            CURLOPT_POST           => 1, // i am sending post data
+        $body = $response->getBody();
+        $data = json_decode($body);
 
-            CURLOPT_POSTFIELDS =>
-                'client_id=' . urlencode($this->_clientId)
-                    . '&client_secret=' . urlencode($clientSecret)
-                    . '&grant_type=refresh_token'
-                    . '&refresh_token=' . urlencode(
-                        $this->_state->token->data->refresh_token
-                    ),
-
-            // SSL options.
-            CURLOPT_SSL_VERIFYHOST => false,
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_URL            => $url,
-        ]);
-
-        $result = curl_exec($curl);
-
-        if (false === $result) {
-            if (curl_errno($curl)) {
-                throw new \Exception(
-                    'curl_setopt_array() failed: ' . curl_error($curl)
-                );
-            } else {
-                throw new \Exception('curl_setopt_array(): empty response');
-            }
-        }
-
-        $decoded = json_decode($result);
-
-        if (null === $decoded) {
+        if ($data === null) {
             throw new \Exception('json_decode() failed');
         }
 
@@ -555,201 +305,333 @@ class Client
     }
 
     /**
-     * Performs a call to the OneDrive API using the GET method.
-     *
-     * @param string $path
-     *        The path of the API call (eg. me/skydrive).
-     * @param array $options
-     *        Further curl options to set.
-     *
-     * @return object|string
-     *         The response body, if any.
+     * @return array
+     *         The drives.
      */
-    public function apiGet($path, array $options = [])
+    public function getDrives()
     {
-        $url =
-            self::API_URL
-                . $path
-                . '?access_token=' . urlencode(
-                    $this->_state->token->data->access_token
-                );
+        $driveLocator = '/me/drives';
+        $endpoint     = "$driveLocator";
 
-        $curl = self::_createCurl($path, $options);
-        curl_setopt($curl, CURLOPT_URL, $url);
-        return $this->_processResult($curl);
-    }
+        $response = $this
+            ->graph
+            ->createCollectionRequest('GET', $endpoint)
+            ->execute();
 
-    /**
-     * Performs a call to the OneDrive API using the POST method.
-     *
-     * @param string $path
-     *        The path of the API call (eg. me/skydrive).
-     * @param array|object $data
-     *        The data to pass in the body of the request.
-     *
-     * @return object|string
-     *         The response body, if any.
-     */
-    public function apiPost($path, $data)
-    {
-        $url  = self::API_URL . $path;
-        $data = (object) $data;
-        $curl = self::_createCurl($path);
+        $status = $response->getStatus();
 
-        curl_setopt_array($curl, [
-            CURLOPT_URL        => $url,
-            CURLOPT_POST       => true,
-
-            CURLOPT_HTTPHEADER => [
-                // The data is sent as JSON as per OneDrive documentation.
-                'Content-Type: application/json',
-
-                'Authorization: Bearer '
-                    . $this->_state->token->data->access_token,
-            ],
-
-            CURLOPT_POSTFIELDS => json_encode($data),
-        ]);
-
-        return $this->_processResult($curl);
-    }
-
-    /**
-     * Performs a call to the OneDrive API using the PUT method.
-     *
-     * @param string $path
-     *        The path of the API call (eg. me/skydrive).
-     * @param resource $stream
-     *        The data stream to upload.
-     * @param string $contentType
-     *        The MIME type of the data stream, or null if unknown. Default:
-     *        null.
-     *
-     * @return object|string
-     *         The response body, if any.
-     */
-    public function apiPut($path, $stream, $contentType = null)
-    {
-        $url   = self::API_URL . $path;
-        $curl  = self::_createCurl($path);
-        $stats = fstat($stream);
-
-        $headers = [
-            'Authorization: Bearer ' . $this->_state->token->data->access_token,
-        ];
-
-        if (null !== $contentType) {
-            $headers[] = 'Content-Type: ' . $contentType;
+        if ($status != 200) {
+            throw new \Exception("Unexpected status code produced by 'GET $endpoint': $status");
         }
 
-        $options = [
-            CURLOPT_URL        => $url,
-            CURLOPT_HTTPHEADER => $headers,
-            CURLOPT_PUT        => true,
-            CURLOPT_INFILE     => $stream,
-            CURLOPT_INFILESIZE => $stats[7], // Size
-        ];
+        $drives = $response->getResponseAsObject(Model\Drive::class);
 
-        curl_setopt_array($curl, $options);
-        return $this->_processResult($curl);
+        if (!is_array($drives)) {
+            return [];
+        }
+
+        return array_map(function (Model\Drive $drive) {
+            return new DriveProxy($this->graph, $drive);
+        }, $drives);
     }
 
     /**
-     * Performs a call to the OneDrive API using the DELETE method.
+     * @param string $driveId
+     *        The drive ID.
      *
-     * @param string $path
-     *        The path of the API call (eg. me/skydrive).
-     *
-     * @return object|string
-     *         The response body, if any.
+     * @return DriveProxy
+     *         The drive.
      */
-    public function apiDelete($path)
+    public function getMyDrive()
     {
-        $url =
-            self::API_URL
-                . $path
-                . '?access_token='
-                . urlencode($this->_state->token->data->access_token);
+        $driveLocator = '/me/drive';
+        $endpoint     = "$driveLocator";
 
-        $curl = self::_createCurl($path);
+        $response = $this
+            ->graph
+            ->createRequest('GET', $endpoint)
+            ->execute();
 
-        curl_setopt_array($curl, [
-            CURLOPT_URL           => $url,
-            CURLOPT_CUSTOMREQUEST => 'DELETE',
-        ]);
+        $status = $response->getStatus();
 
-        return $this->_processResult($curl);
+        if ($status != 200) {
+            throw new \Exception();
+        }
+
+        $drive = $response->getResponseAsObject(Model\Drive::class);
+
+        return new DriveProxy($this->graph, $drive);
     }
 
     /**
-     * Performs a call to the OneDrive API using the MOVE method.
+     * @param string $driveId
+     *        The drive ID.
      *
-     * @param string $path
-     *        The path of the API call (eg. me/skydrive).
-     * @param array|object $data
-     *        The data to pass in the body of the request.
-     *
-     * @return object|string
-     *         The response body, if any.
+     * @return DriveProxy
+     *         The drive.
      */
-    public function apiMove($path, $data)
+    public function getDriveById($driveId)
     {
-        $url  = self::API_URL . $path;
-        $data = (object) $data;
-        $curl = self::_createCurl($path);
+        $driveLocator = "/drives/$driveId";
+        $endpoint     = "$driveLocator";
 
-        curl_setopt_array($curl, [
-            CURLOPT_URL           => $url,
-            CURLOPT_CUSTOMREQUEST => 'MOVE',
+        $response = $this
+            ->graph
+            ->createRequest('GET', $endpoint)
+            ->execute();
 
-            CURLOPT_HTTPHEADER    => [
-                // The data is sent as JSON as per OneDrive documentation.
-                'Content-Type: application/json',
+        $status = $response->getStatus();
 
-                'Authorization: Bearer '
-                    . $this->_state->token->data->access_token,
-            ],
+        if ($status != 200) {
+            throw new \Exception();
+        }
 
-            CURLOPT_POSTFIELDS    => json_encode($data),
-        ]);
+        $drive = $response->getResponseAsObject(Model\Drive::class);
 
-        return $this->_processResult($curl);
+        return new DriveProxy($this->graph, $drive);
     }
 
     /**
-     * Performs a call to the OneDrive API using the COPY method.
+     * @param string $idOrUserPrincipalName
+     *        The ID or user principal name.
      *
-     * @param string $path
-     *        The path of the API call (eg. me/skydrive).
-     * @param array|object $data
-     *        The data to pass in the body of the request.
-     *
-     * @return object|string
-     *         The response body, if any.
+     * @return DriveProxy
+     *         The drive.
      */
-    public function apiCopy($path, $data)
+    public function getDriveByUser($idOrUserPrincipalName)
     {
-        $url  = self::API_URL . $path;
-        $data = (object) $data;
-        $curl = self::_createCurl($path);
+        $userLocator  = "/users/$idOrUserPrincipalName";
+        $driveLocator = '/drive';
+        $endpoint     = "$userLocator$driveLocator";
 
-        curl_setopt_array($curl, [
-            CURLOPT_URL           => $url,
-            CURLOPT_CUSTOMREQUEST => 'COPY',
+        $response = $this
+            ->graph
+            ->createRequest('GET', $endpoint)
+            ->execute();
 
-            CURLOPT_HTTPHEADER    => [
-                // The data is sent as JSON as per OneDrive documentation.
-                'Content-Type: application/json',
+        $status = $response->getStatus();
 
-                'Authorization: Bearer '
-                    . $this->_state->token->data->access_token,
-            ],
+        if ($status != 200) {
+            throw new \Exception();
+        }
 
-            CURLOPT_POSTFIELDS    => json_encode($data),
-        ]);
+        $drive = $response->getResponseAsObject(Model\Drive::class);
 
-        return $this->_processResult($curl);
+        return new DriveProxy($this->graph, $drive);
     }
+
+    /**
+     * @param string $groupId
+     *        The group ID.
+     *
+     * @return DriveProxy
+     *         The drive.
+     */
+    public function getDriveByGroup($groupId)
+    {
+        $groupLocator = "/groups/$groupId";
+        $driveLocator = '/drive';
+        $endpoint     = "$groupLocator$driveLocator";
+
+        $response = $this
+            ->graph
+            ->createRequest('GET', $endpoint)
+            ->execute();
+
+        $status = $response->getStatus();
+
+        if ($status != 200) {
+            throw new \Exception();
+        }
+
+        $drive = $response->getResponseAsObject(Model\Drive::class);
+
+        return new DriveProxy($this->graph, $drive);
+    }
+
+    /**
+     * @param string $siteId
+     *        The site ID.
+     *
+     * @return DriveProxy
+     *         The drive.
+     */
+    public function getDriveBySite($siteId)
+    {
+        $siteLocator  = "/sites/$siteId";
+        $driveLocator = '/drive';
+        $endpoint     = "$siteLocator$driveLocator";
+
+        $response = $this
+            ->graph
+            ->createRequest('GET', $endpoint)
+            ->execute();
+
+        $status = $response->getStatus();
+
+        if ($status != 200) {
+            throw new \Exception();
+        }
+
+        $drive = $response->getResponseAsObject(Model\Drive::class);
+
+        return new DriveProxy($this->graph, $drive);
+    }
+
+    /**
+     * @param string $driveId
+     *        The drive ID.
+     * @param string $itemId
+     *        The drive item ID.
+     *
+     * @return DriveItemProxy
+     *         The drive item.
+     */
+    public function getDriveItemById($driveId, $itemId)
+    {
+        $driveLocator = "/drives/$driveId";
+        $itemLocator  = "/items/$itemId";
+        $endpoint     = "$driveLocator$itemLocator";
+
+        $response = $this
+            ->graph
+            ->createRequest('GET', $endpoint)
+            ->execute();
+
+        $status = $response->getStatus();
+
+        if ($status != 200) {
+            throw new \Exception();
+        }
+
+        $driveItem = $response->getResponseAsObject(Model\DriveItem::class);
+
+        return new DriveItemProxy($this->graph, $driveItem);
+    }
+
+    /**
+     * @return DriveItemProxy
+     *         The root drive item.
+     */
+    public function getRoot()
+    {
+        $driveLocator = '/me/drive';
+        $itemLocator  = '/root';
+        $endpoint     = "$driveLocator$itemLocator";
+
+        $response = $this
+            ->graph
+            ->createRequest('GET', $endpoint)
+            ->execute();
+
+        $status = $response->getStatus();
+
+        if ($status != 200) {
+            throw new \Exception("Unexpected status code produced by 'GET $endpoint': $status");
+        }
+
+        $driveItem = $response->getResponseAsObject(Model\DriveItem::class);
+
+        return new DriveItemProxy($this->graph, $driveItem);
+    }
+
+    /**
+     * @param string $specialFolderName
+     *        The special folder name. Supported values:
+     *          - 'documents'
+     *          - 'photos'
+     *          - 'cameraroll'
+     *          - 'approot'
+     *          - 'music'
+     *
+     * @return DriveItemProxy
+     *         The root drive item.
+     */
+    public function getSpecialFolder($specialFolderName)
+    {
+        $driveLocator         = '/me/drive';
+        $specialFolderLocator = "/special/$specialFolderName";
+        $endpoint             = "$driveLocator$specialFolderLocator";
+
+        $response = $this
+            ->graph
+            ->createRequest('GET', $endpoint)
+            ->execute();
+
+        $status = $response->getStatus();
+
+        if ($status != 200) {
+            throw new \Exception("Unexpected status code produced by 'GET $endpoint': $status");
+        }
+
+        $driveItem = $response->getResponseAsObject(Model\DriveItem::class);
+
+        return new DriveItemProxy($this->graph, $driveItem);
+    }
+
+    /**
+     * @return array
+     *         The shared drive items.
+     */
+    public function getShared()
+    {
+        $driveLocator = '/me/drive';
+        $endpoint     = "$driveLocator/sharedWithMe";
+
+        $response = $this
+            ->graph
+            ->createCollectionRequest('GET', $endpoint)
+            ->execute();
+
+        $status = $response->getStatus();
+
+        if ($status != 200) {
+            throw new \Exception("Unexpected status code produced by 'GET $endpoint': $status");
+        }
+
+        $driveItems = $response->getResponseAsObject(Model\DriveItem::class);
+
+        if (!is_array($driveItems)) {
+            return [];
+        }
+
+        return array_map(function (Model\DriveItem $driveItem) {
+            return new DriveItemProxy($this->graph, $driveItem);
+        }, $driveItems);
+    }
+
+    /**
+     * @return array
+     *         The recent drive items.
+     */
+    public function getRecent()
+    {
+        $driveLocator = '/me/drive';
+        $endpoint     = "$driveLocator/recent";
+
+        $response = $this
+            ->graph
+            ->createCollectionRequest('GET', $endpoint)
+            ->execute();
+
+        $status = $response->getStatus();
+
+        if ($status != 200) {
+            throw new \Exception("Unexpected status code produced by 'GET $endpoint': $status");
+        }
+
+        $driveItems = $response->getResponseAsObject(Model\DriveItem::class);
+
+        if (!is_array($driveItems)) {
+            return [];
+        }
+
+        return array_map(function (Model\DriveItem $driveItem) {
+            return new DriveItemProxy($this->graph, $driveItem);
+        }, $driveItems);
+    }
+
+    // Legacy support //////////////////////////////////////////////////////////
 
     /**
      * Creates a folder in the current OneDrive account.
@@ -767,24 +649,38 @@ class Client
      * @return Folder
      *         The folder created, as a Folder instance referencing to the
      *         OneDrive folder created.
+     *
+     * @deprecated Use Krizalys\Onedrive\Proxy\DriveItemProxy::createFolder()
+     *             instead.
      */
     public function createFolder($name, $parentId = null, $description = null)
     {
-        if (null === $parentId) {
-            $parentId = 'me/skydrive';
+        $message = sprintf(
+            '%s() is deprecated and will be removed in version 3;'
+                . ' use Krizalys\Onedrive\Proxy\DriveItemProxy::createFolder()'
+                . ' instead',
+            __METHOD__
+        );
+
+        $this->log(LogLevel::WARNING, $message);
+        $drive = $this->getMyDrive();
+
+        $item = $parentId !== null ?
+            $this->getDriveItemById($drive->id, $parentId)
+            : $drive->getRoot();
+
+        $options = [];
+
+        if ($description !== null) {
+            $options += [
+                'description' => (string) $description,
+            ];
         }
 
-        $properties = [
-            'name' => (string) $name,
-        ];
+        $item    = $item->createFolder($name, $options);
+        $options = $this->buildOptions($item, ['parent_id' => $parentId]);
 
-        if (null !== $description) {
-            $properties['description'] = (string) $description;
-        }
-
-        $folder = $this->apiPost($parentId, (object) $properties);
-
-        return new Folder($this, $folder->id, $folder);
+        return new Folder($this, $item->id, $options);
     }
 
     /**
@@ -796,11 +692,9 @@ class Client
      *        The ID of the OneDrive folder into which to create the OneDrive
      *        file, or null to create it in the OneDrive root folder. Default:
      *        null.
-     * @param string|resource $content
+     * @param string|resource|\GuzzleHttp\Psr7\Stream $content
      *        The content of the OneDrive file to be created, as a string or as
-     *        a resource to an already opened file. In the latter case, the
-     *        responsibility to close the handle is left to the calling
-     *        function. Default: ''.
+     *        a resource to an already opened file. Default: ''.
      * @param array $options
      *        The options.
      *
@@ -808,8 +702,13 @@ class Client
      *         The file created, as File instance referencing to the OneDrive
      *         file created.
      *
-     * @throws \Exception
+     * @throws Exception
      *         Thrown on I/O errors.
+     *
+     * @deprecated Use Krizalys\Onedrive\Proxy\DriveItemProxy::upload() instead.
+     *
+     * @todo Support name conflict behavior.
+     * @todo Support content type in options.
      */
     public function createFile(
         $name,
@@ -817,61 +716,24 @@ class Client
         $content = '',
         array $options = []
     ) {
-        if (null === $parentId) {
-            $parentId = 'me/skydrive';
-        }
-
-        if (is_resource($content)) {
-            $stream = $content;
-        } else {
-            $options = array_merge([
-                'stream_back_end' => $this->_streamBackEnd,
-            ], $options);
-
-            $stream = $this
-                ->_streamOpener
-                ->open($options['stream_back_end']);
-
-            if (false === $stream) {
-                throw new \Exception('fopen() failed');
-            }
-
-            if (false === fwrite($stream, $content)) {
-                fclose($stream);
-                throw new \Exception('fwrite() failed');
-            }
-
-            if (!rewind($stream)) {
-                fclose($stream);
-                throw new \Exception('rewind() failed');
-            }
-        }
-
-        $options = array_merge([
-            'name_conflict_behavior' => $this->_nameConflictBehavior,
-        ], $options);
-
-        $params = $this
-            ->_nameConflictBehaviorParameterizer
-            ->parameterize([], $options['name_conflict_behavior']);
-
-        $query = http_build_query($params);
-
-        /**
-         * @todo some versions of cURL cannot PUT memory streams? See here for a
-         * workaround: https://bugs.php.net/bug.php?id=43468
-         */
-        $file = $this->apiPut(
-            $parentId . '/files/' . urlencode($name) . "?$query",
-            $stream
+        $message = sprintf(
+            '%s() is deprecated and will be removed in version 3;'
+                . ' use Krizalys\Onedrive\Proxy\DriveItemProxy::upload()'
+                . ' instead',
+            __METHOD__
         );
 
-        // Close the handle only if we opened it within this function.
-        if (!is_resource($content)) {
-            fclose($stream);
-        }
+        $this->log(LogLevel::WARNING, $message);
+        $drive = $this->getMyDrive();
 
-        return new File($this, $file->id, $file);
+        $item = $parentId !== null ?
+            $this->getDriveItemById($drive->id, $parentId)
+            : $drive->getRoot();
+
+        $item    = $item->upload($name, $content);
+        $options = $this->buildOptions($item, ['parent_id' => $parentId]);
+
+        return new File($this, $item->id, $options);
     }
 
     /**
@@ -884,17 +746,29 @@ class Client
      * @return object
      *         The drive item fetched, as a DriveItem instance referencing to
      *         the OneDrive drive item fetched.
+     *
+     * @deprecated Use Krizalys\Onedrive\Client::getDriveItemById() instead.
      */
     public function fetchDriveItem($driveItemId = null)
     {
-        $driveItemId = null !== $driveItemId ? $driveItemId : 'me/skydrive';
-        $result      = $this->apiGet($driveItemId);
+        $message = sprintf(
+            '%s() is deprecated and will be removed in version 3;'
+                . ' use Krizalys\Onedrive\Client::getDriveItemById() instead.',
+            __METHOD__
+        );
 
-        if (in_array($result->type, ['folder', 'album'])) {
-            return new Folder($this, $driveItemId, $result);
-        }
+        $this->log(LogLevel::WARNING, $message);
+        $drive = $this->getMyDrive();
 
-        return new File($this, $driveItemId, $result);
+        $item = $driveItemId !== null ?
+            $this->getDriveItemById($drive->id, $driveItemId)
+            : $drive->getRoot();
+
+        $options = $this->buildOptions($item, ['parent_id' => $driveItemId]);
+
+        return $this->isFolder($item) ?
+            new Folder($this, $item->id, $options)
+            : new File($this, $item->id, $options);
     }
 
     /**
@@ -903,10 +777,22 @@ class Client
      * @return Folder
      *         The root folder, as a Folder instance referencing to the OneDrive
      *         root folder.
+     *
+     * @deprecated Use Krizalys\Onedrive\Client::getRoot() instead.
      */
     public function fetchRoot()
     {
-        return $this->fetchDriveItem();
+        $message = sprintf(
+            '%s() is deprecated and will be removed in version 3;'
+                . ' use Krizalys\Onedrive\Client::getRoot() instead.',
+            __METHOD__
+        );
+
+        $this->log(LogLevel::WARNING, $message);
+        $item    = $this->getRoot();
+        $options = $this->buildOptions($item);
+
+        return new Folder($this, $item->id, $options);
     }
 
     /**
@@ -915,10 +801,22 @@ class Client
      * @return Folder
      *         The "Camera Roll" folder, as a Folder instance referencing to the
      *         OneDrive "Camera Roll" folder.
+     *
+     * @deprecated Use Krizalys\Onedrive\Client::getSpecialFolder() instead.
      */
     public function fetchCameraRoll()
     {
-        return $this->fetchDriveItem('me/skydrive/camera_roll');
+        $message = sprintf(
+            '%s() is deprecated and will be removed in version 3;'
+                . ' use Krizalys\Onedrive\Client::getSpecialFolder() instead.',
+            __METHOD__
+        );
+
+        $this->log(LogLevel::WARNING, $message);
+        $item    = $this->getSpecialFolder('cameraroll');
+        $options = $this->buildOptions($item);
+
+        return new Folder($this, $item->id, $options);
     }
 
     /**
@@ -927,10 +825,22 @@ class Client
      * @return Folder
      *         The "Documents" folder, as a Folder instance referencing to the
      *         OneDrive "Documents" folder.
+     *
+     * @deprecated Use Krizalys\Onedrive\Client::getSpecialFolder() instead.
      */
     public function fetchDocs()
     {
-        return $this->fetchDriveItem('me/skydrive/my_documents');
+        $message = sprintf(
+            '%s() is deprecated and will be removed in version 3;'
+                . ' use Krizalys\Onedrive\Client::getSpecialFolder() instead.',
+            __METHOD__
+        );
+
+        $this->log(LogLevel::WARNING, $message);
+        $item    = $this->getSpecialFolder('documents');
+        $options = $this->buildOptions($item);
+
+        return new Folder($this, $item->id, $options);
     }
 
     /**
@@ -939,22 +849,22 @@ class Client
      * @return Folder
      *         The "Pictures" folder, as a Folder instance referencing to the
      *         OneDrive "Pictures" folder.
+     *
+     * @deprecated Use Krizalys\Onedrive\Client::getSpecialFolder() instead.
      */
     public function fetchPics()
     {
-        return $this->fetchDriveItem('me/skydrive/my_photos');
-    }
+        $message = sprintf(
+            '%s() is deprecated and will be removed in version 3;'
+                . ' use Krizalys\Onedrive\Client::getSpecialFolder() instead.',
+            __METHOD__
+        );
 
-    /**
-     * Fetches the "Public" folder from the current OneDrive account.
-     *
-     * @return Folder
-     *         The "Public" folder, as a Folder instance referencing to the
-     *         OneDrive "Public" folder.
-     */
-    public function fetchPublicDocs()
-    {
-        return $this->fetchDriveItem('me/skydrive/public_documents');
+        $this->log(LogLevel::WARNING, $message);
+        $item    = $this->getSpecialFolder('photos');
+        $options = $this->buildOptions($item);
+
+        return new Folder($this, $item->id, $options);
     }
 
     /**
@@ -966,14 +876,33 @@ class Client
      *
      * @return object
      *         The properties of the drive item fetched.
+     *
+     * @deprecated Use Krizalys\Onedrive\Client::getDriveItemById() instead.
      */
     public function fetchProperties($driveItemId = null)
     {
-        if (null === $driveItemId) {
-            $driveItemId = 'me/skydrive';
-        }
+        $message = sprintf(
+            '%s() is deprecated and will be removed in version 3;'
+                . ' use Krizalys\Onedrive\Client::getDriveItemById() instead',
+            __METHOD__
+        );
 
-        return $this->apiGet($driveItemId);
+        $this->log(LogLevel::WARNING, $message);
+        $drive = $this->getMyDrive();
+
+        $item = $driveItemId !== null ?
+            $this->getDriveItemById($drive->id, $driveItemId)
+            : $drive->getRoot();
+
+        $options = $this->buildOptions(
+            $item,
+            [
+                'id'        => $item->id,
+                'parent_id' => $driveItemId,
+            ]
+        );
+
+        return (object) $options;
     }
 
     /**
@@ -986,25 +915,33 @@ class Client
      * @return array
      *         The drive items in the folder fetched, as DriveItem instances
      *         referencing OneDrive drive items.
+     *
+     * @deprecated Use Krizalys\Onedrive\Proxy\DriveItemProxy::children
+     *             instead.
      */
     public function fetchDriveItems($driveItemId = null)
     {
-        if (null === $driveItemId) {
-            $driveItemId = 'me/skydrive';
-        }
+        $message = sprintf(
+            '%s() is deprecated and will be removed in version 3;'
+                . ' use Krizalys\Onedrive\Proxy\DriveItemProxy::children'
+                . ' instead.',
+            __METHOD__
+        );
 
-        $result     = $this->apiGet($driveItemId . '/files');
-        $driveItems = [];
+        $this->log(LogLevel::WARNING, $message);
+        $drive = $this->getMyDrive();
 
-        foreach ($result->data as $data) {
-            $driveItem = in_array($data->type, ['folder', 'album']) ?
-                new Folder($this, $data->id, $data)
-                : new File($this, $data->id, $data);
+        $item = $driveItemId !== null ?
+            $this->getDriveItemById($drive->id, $driveItemId)
+            : $drive->getRoot();
 
-            $driveItems[] = $driveItem;
-        }
+        return array_map(function (DriveItemProxy $item) use ($driveItemId) {
+            $options = $this->buildOptions($item, ['parent_id' => $driveItemId]);
 
-        return $driveItems;
+            return $this->isFolder($item) ?
+                new Folder($this, $item->id, $options)
+                : new File($this, $item->id, $options);
+        }, $item->children);
     }
 
     /**
@@ -1017,28 +954,40 @@ class Client
      * @param bool $temp
      *        Option to allow save to a temporary file in case of large files.
      *
-     * @throws \Exception
+     * @throws Exception
      *         Thrown on I/O errors.
+     *
+     * @deprecated Use Krizalys\Onedrive\Proxy\DriveItemProxy::rename() instead.
      */
     public function updateDriveItem($driveItemId, $properties = [], $temp = false)
     {
-        $properties = (object) $properties;
-        $encoded    = json_encode($properties);
-        $stream     = fopen('php://' . ($temp ? 'temp' : 'memory'), 'rw+b');
+        $message = sprintf(
+            '%s() is deprecated and will be removed in version 3;'
+                . ' use Krizalys\Onedrive\Proxy\DriveItemProxy::rename()'
+                . ' instead',
+            __METHOD__
+        );
 
-        if (false === $stream) {
-            throw new \Exception('fopen() failed');
+        $this->log(LogLevel::WARNING, $message);
+        $drive = $this->getMyDrive();
+
+        $item = $driveItemId !== null ?
+            $this->getDriveItemById($drive->id, $driveItemId)
+            : $drive->getRoot();
+
+        $options = (array) $properties;
+
+        if (array_key_exists('name', $options)) {
+            $name = $options['name'];
+            unset($options['name']);
+        } else {
+            $name = $item->name;
         }
 
-        if (false === fwrite($stream, $encoded)) {
-            throw new \Exception('fwrite() failed');
-        }
+        $item    = $item->rename($name, $options);
+        $options = $this->buildOptions($item, ['parent_id' => $driveItemId]);
 
-        if (!rewind($stream)) {
-            throw new \Exception('rewind() failed');
-        }
-
-        $this->apiPut($driveItemId, $stream, 'application/json');
+        return new Folder($this, $item->id, $options);
     }
 
     /**
@@ -1049,16 +998,27 @@ class Client
      * @param null|string $destinationId
      *        The unique ID of the folder into which to move the drive item, or
      *        null to move it to the OneDrive root folder. Default: null.
+     *
+     * @deprecated Use Krizalys\Onedrive\Proxy\DriveItemProxy::move() instead.
      */
     public function moveDriveItem($driveItemId, $destinationId = null)
     {
-        if (null === $destinationId) {
-            $destinationId = 'me/skydrive';
-        }
+        $message = sprintf(
+            '%s() is deprecated and will be removed in version 3;'
+                . ' use Krizalys\Onedrive\Proxy\DriveItemProxy::move()'
+                . ' instead.',
+            __METHOD__
+        );
 
-        $this->apiMove($driveItemId, [
-            'destination' => $destinationId,
-        ]);
+        $this->log(LogLevel::WARNING, $message);
+        $drive = $this->getMyDrive();
+        $item  = $this->getDriveItemById($drive->id, $driveItemId);
+
+        $destination = $destinationId !== null ?
+            $this->getDriveItemById($drive->id, $destinationId)
+            : $drive->getRoot();
+
+        $item->move($destination);
     }
 
     /**
@@ -1070,16 +1030,27 @@ class Client
      * @param null|string $destinationId
      *        The unique ID of the folder into which to copy the file, or null
      *        to copy it to the OneDrive root folder. Default: null.
+     *
+     * @deprecated Use Krizalys\Onedrive\Proxy\DriveItemProxy::copy() instead.
      */
     public function copyFile($driveItemId, $destinationId = null)
     {
-        if (null === $destinationId) {
-            $destinationId = 'me/skydrive';
-        }
+        $message = sprintf(
+            '%s() is deprecated and will be removed in version 3;'
+                . ' use Krizalys\Onedrive\Proxy\DriveItemProxy::copy()'
+                . ' instead.',
+            __METHOD__
+        );
 
-        $this->apiCopy($driveItemId, [
-            'destination' => $destinationId,
-        ]);
+        $this->log(LogLevel::WARNING, $message);
+        $drive = $this->getMyDrive();
+        $item  = $this->getDriveItemById($drive->id, $driveItemId);
+
+        $destination = $destinationId !== null ?
+            $this->getDriveItemById($drive->id, $destinationId)
+            : $drive->getRoot();
+
+        $item->copy($destination);
     }
 
     /**
@@ -1087,10 +1058,22 @@ class Client
      *
      * @param string $driveItemId
      *        The unique ID of the drive item to delete.
+     *
+     * @deprecated Use Krizalys\Onedrive\Proxy\DriveItemProxy::delete() instead.
      */
     public function deleteDriveItem($driveItemId)
     {
-        $this->apiDelete($driveItemId);
+        $message = sprintf(
+            '%s() is deprecated and will be removed in version 3;'
+                . ' use Krizalys\Onedrive\Proxy\DriveItemProxy::delete()'
+                . ' instead',
+            __METHOD__
+        );
+
+        $this->log(LogLevel::WARNING, $message);
+        $drive = $this->getMyDrive();
+        $item  = $this->getDriveItemById($drive->id, $driveItemId);
+        $item->delete();
     }
 
     /**
@@ -1100,27 +1083,25 @@ class Client
      *         An object with the following properties:
      *           - 'quota' (int) The total space, in bytes.
      *           - 'available' (int) The available space, in bytes.
+     *
+     * @deprecated Use Krizalys\Onedrive\Proxy\DriveProxy::quota instead.
      */
     public function fetchQuota()
     {
-        return $this->apiGet('me/skydrive/quota');
-    }
+        $message = sprintf(
+            '%s() is deprecated and will be removed in version 3;'
+                . ' use Krizalys\Onedrive\Proxy\DriveProxy::quota instead',
+            __METHOD__
+        );
 
-    /**
-     * Fetches the account info of the current OneDrive account.
-     *
-     * @return object
-     *         An object with the following properties:
-     *           - 'id' (string) OneDrive account ID.
-     *           - 'first_name' (string) Account owner's first name.
-     *           - 'last_name' (string) Account owner's last name.
-     *           - 'name' (string) Account owner's full name.
-     *           - 'gender' (string) Account owner's gender.
-     *           - 'locale' (string) Account owner's locale.
-     */
-    public function fetchAccountInfo()
-    {
-        return $this->apiGet('me');
+        $this->log(LogLevel::WARNING, $message);
+        $drive = $this->getMyDrive();
+        $quota = $drive->quota;
+
+        return (object) [
+            'quota'     => $quota->total,
+            'available' => $quota->remaining,
+        ];
     }
 
     /**
@@ -1129,10 +1110,25 @@ class Client
      * @return object
      *         An object with the following properties:
      *           - 'data' (array) The list of the recent documents uploaded.
+     *
+     * @deprecated Use Krizalys\Onedrive\Client::getRecent() instead.
      */
     public function fetchRecentDocs()
     {
-        return $this->apiGet('me/skydrive/recent_docs');
+        $message = sprintf(
+            '%s() is deprecated and will be removed in version 3;'
+                . ' use Krizalys\Onedrive\Client::getRecent() instead',
+            __METHOD__
+        );
+
+        $this->log(LogLevel::WARNING, $message);
+        $items = $this->getRecent();
+
+        return (object) [
+            'data' => array_map(function (DriveItemProxy $item) {
+                return (object) $this->buildOptions($item);
+            }, $items),
+        ];
     }
 
     /**
@@ -1141,10 +1137,25 @@ class Client
      * @return object
      *         An object with the following properties:
      *           - 'data' (array) The list of the shared drive items.
+     *
+     * @deprecated Use Krizalys\Onedrive\Client::getShared() instead.
      */
     public function fetchShared()
     {
-        return $this->apiGet('me/skydrive/shared');
+        $message = sprintf(
+            '%s() is deprecated and will be removed in version 3;'
+                . ' use Krizalys\Onedrive\Client::getShared() instead',
+            __METHOD__
+        );
+
+        $this->log(LogLevel::WARNING, $message);
+        $items = $this->getShared();
+
+        return (object) [
+            'data' => array_map(function (DriveItemProxy $item) {
+                return (object) $this->buildOptions($item);
+            }, $items),
+        ];
     }
 
     /**
@@ -1159,6 +1170,69 @@ class Client
      */
     public function log($level, $message, array $context = [])
     {
-        $this->_logger->log($level, $message, $context);
+        $this->logger->log($level, $message, $context);
+    }
+
+    /**
+     * Checks whether a given drive item is a folder.
+     *
+     * @param DriveItemProxy $item
+     *        The drive item.
+     *
+     * @return bool
+     *         Whether the drive item is a folder.
+     */
+    public function isFolder(DriveItemProxy $item)
+    {
+        return $item->folder !== null || $item->specialFolder !== null;
+    }
+
+    /**
+     * @param DriveItemProxy $item
+     *        The drive item.
+     * @param array $options
+     *        The options.
+     *
+     * @return array
+     *         The options.
+     */
+    public function buildOptions(DriveItemProxy $item, array $options = [])
+    {
+        $defaultOptions = [
+            'from' => (object) [
+                'name' => null,
+                'id'   => null,
+            ],
+        ];
+
+        if ($item->id !== null) {
+            $defaultOptions['id'] = $item->id;
+        }
+
+        if ($item->parentReference->id !== null) {
+            $defaultOptions['parent_id'] = $item->parentReference->id;
+        }
+
+        if ($item->name !== null) {
+            $defaultOptions['name'] = $item->name;
+        }
+
+        if ($item->description !== null) {
+            $defaultOptions['description'] = $item->description;
+        }
+
+        if ($item->size !== null) {
+            $defaultOptions['size'] = $item->size;
+        }
+
+        if ($item->createdDateTime !== null) {
+            $defaultOptions['created_time'] = $item->createdDateTime->format(self::LEGACY_DATETIME_FORMAT);
+        }
+
+        if ($item->lastModifiedDateTime !== null) {
+            $defaultOptions['updated_time'] = $item->lastModifiedDateTime->format(self::LEGACY_DATETIME_FORMAT);
+        }
+
+        return $defaultOptions + $options;
     }
 }
