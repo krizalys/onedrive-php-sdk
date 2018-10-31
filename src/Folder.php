@@ -2,6 +2,7 @@
 
 namespace Krizalys\Onedrive;
 
+use Krizalys\Onedrive\Proxy\DriveItemProxy;
 use Psr\Log\LogLevel;
 
 /**
@@ -9,6 +10,9 @@ use Psr\Log\LogLevel;
  *
  * A Folder instance is a DriveItem instance referencing to a OneDrive folder.
  * It may contain other OneDrive drive items but may not have content.
+ *
+ * @deprecated Use Krizalys\Onedrive\Proxy\DriveItemProxy and/or
+ *             Krizalys\Onedrive\Proxy\Folder instead.
  */
 class Folder extends DriveItem
 {
@@ -45,19 +49,30 @@ class Folder extends DriveItem
      *         The drive items in the OneDrive folder referenced by this Folder
      *         instance, as DriveItem instances.
      *
-     * @deprecated Use Folder::fetchChildDriveItems() instead.
+     * @deprecated Use Krizalys\Onedrive\Proxy\DriveItemProxy::children instead.
      */
     public function fetchDriveItems()
     {
+        $client = $this->_client;
+
         $message = sprintf(
-            '%s() is deprecated and will be removed in a future version;'
-                . ' use %s::fetchChildDriveItem() instead',
-            __METHOD__,
-            __CLASS__
+            '%s() is deprecated and will be removed in version 3;'
+                . ' use Krizalys\Onedrive\Proxy\DriveItemProxy::children'
+                . ' instead',
+            __METHOD__
         );
 
-        $this->_client->log(LogLevel::WARNING, $message);
-        return $this->fetchChildDriveItems();
+        $client->log(LogLevel::WARNING, $message);
+        $drive = $client->getMyDrive();
+        $item  = $client->getDriveItemById($drive->id, $this->_id);
+
+        return array_map(function (DriveItemProxy $item) use ($client) {
+            $options = $client->buildOptions($item, ['parent_id' => $this->_id]);
+
+            return $client->isFolder($item) ?
+                new self($client, $item->id, $options)
+                : new File($client, $item->id, $options);
+        }, $item->children);
     }
 
     /**
@@ -67,10 +82,31 @@ class Folder extends DriveItem
      * @return array
      *         The drive items in the OneDrive folder referenced by this Folder
      *         instance, as DriveItem instances.
+     *
+     * @deprecated Use Krizalys\Onedrive\Proxy\DriveItemProxy::children instead.
      */
     public function fetchChildDriveItems()
     {
-        return $this->_client->fetchDriveItems($this->_id);
+        $client = $this->_client;
+
+        $message = sprintf(
+            '%s() is deprecated and will be removed in version 3;'
+                . ' use Krizalys\Onedrive\Proxy\DriveItemProxy::children'
+                . ' instead',
+            __METHOD__
+        );
+
+        $client->log(LogLevel::WARNING, $message);
+        $drive = $client->getMyDrive();
+        $item  = $client->getDriveItemById($drive->id, $this->_id);
+
+        return array_map(function (DriveItemProxy $item) use ($client) {
+            $options = $client->buildOptions($item, ['parent_id' => $this->_id]);
+
+            return $client->isFolder($item) ?
+                new self($client, $item->id, $options)
+                : new File($client, $item->id, $options);
+        }, $item->children);
     }
 
     /**
@@ -85,10 +121,36 @@ class Folder extends DriveItem
      *
      * @return Folder
      *         The folder created, as a Folder instance.
+     *
+     * @deprecated Use Krizalys\Onedrive\Proxy\DriveItemProxy::createFolder()
+     *             instead.
      */
     public function createFolder($name, $description = null)
     {
-        return $this->_client->createFolder($name, $this->_id, $description);
+        $client = $this->_client;
+
+        $message = sprintf(
+            '%s() is deprecated and will be removed in version 3;'
+                . ' use Krizalys\Onedrive\Proxy\DriveItemProxy::createFolder()'
+                . ' instead',
+            __METHOD__
+        );
+
+        $client->log(LogLevel::WARNING, $message);
+        $drive   = $client->getMyDrive();
+        $item    = $client->getDriveItemById($drive->id, $this->_id);
+        $options = [];
+
+        if ($description !== null) {
+            $options += [
+                'description' => (string) $description,
+            ];
+        }
+
+        $item    = $item->createFolder($name, $options);
+        $options = $client->buildOptions($item, ['parent_id' => $parentId]);
+
+        return new self($client, $item->id, $options);
     }
 
     /**
@@ -107,22 +169,36 @@ class Folder extends DriveItem
      * @return File
      *         The file created, as a File instance.
      *
-     * @throws \Exception
+     * @throws Exception
      *         Thrown on I/O errors.
+     *
+     * @deprecated Use Krizalys\Onedrive\Proxy\DriveItemProxy::upload() instead.
      */
     public function createFile($name, $content = '', array $options = [])
     {
         $client = $this->_client;
 
-        $options = array_merge([
-            'name_conflict_behavior' => $client->getNameConflictBehavior(),
-            'stream_back_end'        => $client->getStreamBackEnd(),
-        ], $options);
-
-        return $this->_client->createFile(
-            $name, $this->_id,
-            $content,
-            $options
+        $message = sprintf(
+            '%s() is deprecated and will be removed in version 3;'
+                . ' use Krizalys\Onedrive\Proxy\DriveItemProxy::upload()'
+                . ' instead',
+            __METHOD__
         );
+
+        $client->log(LogLevel::WARNING, $message);
+        $drive   = $client->getMyDrive();
+        $item    = $client->getDriveItemById($drive->id, $this->_id);
+        $options = [];
+
+        if ($description !== null) {
+            $options += [
+                'description' => (string) $description,
+            ];
+        }
+
+        $item    = $item->upload($name, $content, $options);
+        $options = $client->buildOptions($item, ['parent_id' => $parentId]);
+
+        return new File($client, $item->id, $options);
     }
 }

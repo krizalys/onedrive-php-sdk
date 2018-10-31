@@ -2,6 +2,8 @@
 
 namespace Krizalys\Onedrive;
 
+use Psr\Log\LogLevel;
+
 /**
  * @class DriveItem
  *
@@ -12,6 +14,8 @@ namespace Krizalys\Onedrive;
  * Note that DriveItem instances are only "proxy" to actual OneDrive drive items
  * (eg. destroying a DriveItem instance will not delete the actual OneDrive
  * drive item it is referencing to).
+ *
+ * @deprecated Use Krizalys\Onedrive\Proxy\DriveItemProxy instead.
  */
 abstract class DriveItem
 {
@@ -309,9 +313,25 @@ abstract class DriveItem
      *        The unique ID of the OneDrive folder into which to move the
      *        OneDrive drive item referenced by this DriveItem instance, or null
      *        to move it to the OneDrive root folder. Default: null.
+     *
+     * @deprecated Use Krizalys\Onedrive\Proxy\DriveItemProxy::move() instead.
      */
     public function move($destinationId = null)
     {
-        $this->_client->moveDriveItem($this->_id, $destinationId);
+        $client = $this->_client;
+
+        $message = sprintf(
+            '%s() is deprecated and will be removed in version 3;'
+                . ' use Krizalys\Onedrive\Proxy\DriveItemProxy::move()'
+                . ' instead.',
+            __METHOD__
+        );
+
+        $client->log(LogLevel::WARNING, $message);
+        $drive           = $client->getMyDrive();
+        $item            = $client->getDriveItemById($drive->id, $this->_id);
+        $destinationItem = $client->getDriveItemById($drive->id, $destinationId);
+
+        return $item->move($destinationItem);
     }
 }

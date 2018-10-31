@@ -2,11 +2,16 @@
 
 namespace Krizalys\Onedrive;
 
+use Psr\Log\LogLevel;
+
 /**
  * @class File
  *
  * A File instance is a DriveItem instance referencing a OneDrive file. It may
  * have content but may not contain other OneDrive drive items.
+ *
+ * @deprecated Use Krizalys\Onedrive\Proxy\DriveItemProxy and/or
+ *             Krizalys\Onedrive\Proxy\File instead.
  */
 class File extends DriveItem
 {
@@ -39,10 +44,25 @@ class File extends DriveItem
      *
      * @todo Should somewhat return the content-type as well; this information
      *       is not disclosed by OneDrive.
+     *
+     * @deprecated Use Krizalys\Onedrive\Proxy\DriveItemProxy::content instead.
      */
     public function fetchContent(array $options = [])
     {
-        return $this->_client->apiGet($this->_id . '/content', $options);
+        $client = $this->_client;
+
+        $message = sprintf(
+            '%s() is deprecated and will be removed in version 3;'
+                . ' use Krizalys\Onedrive\Proxy\DriveItemProxy::content'
+                . ' instead.',
+            __METHOD__
+        );
+
+        $client->log(LogLevel::WARNING, $message);
+        $drive = $client->getMyDrive();
+        $item  = $client->getDriveItemById($drive->id, $this->_id);
+
+        return (string) $item->content;
     }
 
     /**
@@ -53,9 +73,25 @@ class File extends DriveItem
      *        The unique ID of the OneDrive folder into which to copy the
      *        OneDrive file referenced by this File instance, or null to copy it
      *        in the OneDrive root folder. Default: null.
+     *
+     * @deprecated Use Krizalys\Onedrive\Proxy\DriveItemProxy::copy() instead.
      */
     public function copy($destinationId = null)
     {
-        $this->_client->copyFile($this->_id, $destinationId);
+        $client = $this->_client;
+
+        $message = sprintf(
+            '%s() is deprecated and will be removed in version 3;'
+                . ' use Krizalys\Onedrive\Proxy\DriveItemProxy::copy()'
+                . ' instead.',
+            __METHOD__
+        );
+
+        $client->log(LogLevel::WARNING, $message);
+        $drive           = $client->getMyDrive();
+        $item            = $client->getDriveItemById($drive->id, $this->_id);
+        $destinationItem = $client->getDriveItemById($drive->id, $destinationId);
+
+        return $item->copy($destinationItem);
     }
 }
