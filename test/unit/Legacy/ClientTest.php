@@ -1,6 +1,6 @@
 <?php
 
-namespace Test\Unit\Krizalys\Onedrive;
+namespace Test\Unit\Krizalys\Onedrive\Legacy;
 
 use Krizalys\Onedrive\Client;
 use Krizalys\Onedrive\NameConflictBehavior;
@@ -8,6 +8,9 @@ use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Mockery as m;
 use Test\Unit\Mock\GlobalNamespace;
 
+/**
+ * @group legacy
+ */
 class ClientTest extends MockeryTestCase
 {
     public static $functions;

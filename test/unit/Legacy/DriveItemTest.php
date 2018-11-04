@@ -1,6 +1,6 @@
 <?php
 
-namespace Test\Unit\Krizalys\Onedrive;
+namespace Test\Unit\Krizalys\Onedrive\Legacy;
 
 use Krizalys\Onedrive\DriveItem;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
@@ -10,6 +10,9 @@ class TestDriveItem extends DriveItem
 {
 }
 
+/**
+ * @group legacy
+ */
 class DriveItemTest extends MockeryTestCase
 {
     private $driveItem;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Test\Unit\Krizalys\Onedrive;
+namespace Test\Unit\Krizalys\Onedrive\Legacy;
 
 use Krizalys\Onedrive\Folder;
 use Krizalys\Onedrive\NameConflictBehavior;
@@ -8,6 +8,9 @@ use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Mockery as m;
 use Psr\Log\LogLevel;
 
+/**
+ * @group legacy
+ */
 class FolderTest extends MockeryTestCase
 {
     private $folder;

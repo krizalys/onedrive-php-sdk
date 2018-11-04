@@ -1,11 +1,14 @@
 <?php
 
-namespace Test\Unit\Krizalys\Onedrive;
+namespace Test\Unit\Krizalys\Onedrive\Legacy;
 
 use Krizalys\Onedrive\File;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Mockery as m;
 
+/**
+ * @group legacy
+ */
 class FileTest extends MockeryTestCase
 {
     private function mockClient(array $expectations = [])
