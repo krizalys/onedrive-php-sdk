@@ -8,11 +8,6 @@ namespace Krizalys\Onedrive;
 
 use Test\Unit\Mock\GlobalNamespace;
 
-function time()
-{
-    return GlobalNamespace::$functions->time();
-}
-
 function fopen($filename, $mode, $use_include_path = false, $context = null)
 {
     return GlobalNamespace::$functions->fopen(

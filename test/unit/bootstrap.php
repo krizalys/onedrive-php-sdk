@@ -1,6 +1,7 @@
 <?php
 
 require_once sprintf('%s/../../vendor/autoload.php', __DIR__);
+require_once sprintf('%s/functions.php', __DIR__);
 require_once sprintf('%s/Legacy/functions.php', __DIR__);
 
 spl_autoload_register(function ($class) {
