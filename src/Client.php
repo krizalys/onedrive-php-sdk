@@ -216,8 +216,6 @@ class Client implements LoggerAwareInterface
      *        The OneDrive client secret.
      * @param string $code
      *        The code returned by OneDrive after successful log in.
-     * @param string $redirectUri
-     *        Must be the same as the redirect URI passed to getLogInUrl().
      *
      * @throws Exception
      *         Thrown if the redirect URI of this Client instance's state is not
@@ -336,9 +334,6 @@ class Client implements LoggerAwareInterface
     }
 
     /**
-     * @param string $driveId
-     *        The drive ID.
-     *
      * @return DriveProxy
      *         The drive.
      */
