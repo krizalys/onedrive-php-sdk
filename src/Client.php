@@ -300,7 +300,7 @@ class Client implements LoggerAwareInterface
 
         $this->_state->token = (object) [
             'obtained' => time(),
-            'data'     => $decoded,
+            'data'     => $data,
         ];
     }
 

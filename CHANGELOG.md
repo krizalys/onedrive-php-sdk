@@ -1,6 +1,14 @@
 Change log
 ==========
 
+[Unreleased][unreleased]
+------------------------
+
+### Fixed
+
+- `Krizalys\Onedrive\Client::renewAccessToken()` was not setting its instance'
+  token data as expected.
+
 [2.0.0] - 2018-11-01
 --------------------
 
