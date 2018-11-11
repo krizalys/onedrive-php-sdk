@@ -11,7 +11,7 @@
         "php",
         "sdk"
     ],
-    "author": [
+    "authors": [
         {
             "name": "Christophe Vidal",
             "homepage": "http://www.krizalys.com/"
