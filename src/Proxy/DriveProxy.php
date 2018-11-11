@@ -90,7 +90,7 @@ class DriveProxy extends BaseItemProxy
 
         $response = $this
             ->graph
-            ->createCollectionRequest('GET', $endpoint)
+            ->createRequest('GET', $endpoint)
             ->execute();
 
         $status = $response->getStatus();

@@ -12,6 +12,8 @@ Change log
 
 - `Krizalys\Onedrive\Client::renewAccessToken()` was not setting its instance'
   token data as expected.
+- `Krizalys\Onedrive\Proxy\DriveProxy::getRoot()` was sending a collection
+  request instead of a normal request.
 
 [2.0.0] - 2018-11-01
 --------------------
