@@ -8,6 +8,8 @@ use Microsoft\Graph\Model\Permission;
 class PermissionProxy extends EntityProxy
 {
     /**
+     * Constructor.
+     *
      * @param Graph $graph
      *        The graph.
      * @param Permission $permission

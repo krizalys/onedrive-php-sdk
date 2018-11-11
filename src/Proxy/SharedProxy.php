@@ -8,6 +8,8 @@ use Microsoft\Graph\Model\Shared;
 class SharedProxy extends EntityProxy
 {
     /**
+     * Constructor.
+     *
      * @param Graph $graph
      *        The graph.
      * @param Shared $shared

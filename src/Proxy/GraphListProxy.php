@@ -8,6 +8,8 @@ use Microsoft\Graph\Model\GraphList;
 class GraphListProxy extends BaseItemProxy
 {
     /**
+     * Constructor.
+     *
      * @param Graph $graph
      *        The graph.
      * @param GraphList $graphList

@@ -8,6 +8,8 @@ use Microsoft\Graph\Model\Thumbnail;
 class ThumbnailProxy extends EntityProxy
 {
     /**
+     * Constructor.
+     *
      * @param Graph $graph
      *        The graph.
      * @param Thumbnail $thumbnail

@@ -8,6 +8,8 @@ use Microsoft\Graph\Model\Folder;
 class FolderProxy extends EntityProxy
 {
     /**
+     * Constructor.
+     *
      * @param Graph $graph
      *        The graph.
      * @param Folder $folder

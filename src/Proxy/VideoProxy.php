@@ -8,6 +8,8 @@ use Microsoft\Graph\Model\Video;
 class VideoProxy extends EntityProxy
 {
     /**
+     * Constructor.
+     *
      * @param Graph $graph
      *        The graph.
      * @param Video $video

@@ -8,6 +8,8 @@ use Microsoft\Graph\Model\Photo;
 class PhotoProxy extends EntityProxy
 {
     /**
+     * Constructor.
+     *
      * @param Graph $graph
      *        The graph.
      * @param Photo $photo

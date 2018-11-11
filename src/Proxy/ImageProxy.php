@@ -8,6 +8,8 @@ use Microsoft\Graph\Model\Image;
 class ImageProxy extends EntityProxy
 {
     /**
+     * Constructor.
+     *
      * @param Graph $graph
      *        The graph.
      * @param Image $image

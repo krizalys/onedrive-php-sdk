@@ -8,6 +8,8 @@ use Microsoft\Graph\Model\BaseItem;
 class BaseItemProxy extends EntityProxy
 {
     /**
+     * Constructor.
+     *
      * @param Graph $graph
      *        The graph.
      * @param BaseItem $baseItem
@@ -19,6 +21,8 @@ class BaseItemProxy extends EntityProxy
     }
 
     /**
+     * Getter.
+     *
      * @param string $name
      *        The name.
      *

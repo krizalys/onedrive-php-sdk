@@ -8,6 +8,8 @@ use Microsoft\Graph\Model\SpecialFolder;
 class SpecialFolderProxy extends EntityProxy
 {
     /**
+     * Constructor.
+     *
      * @param Graph $graph
      *        The graph.
      * @param SpecialFolder $specialFolder
@@ -19,6 +21,8 @@ class SpecialFolderProxy extends EntityProxy
     }
 
     /**
+     * Getter.
+     *
      * @param string $name
      *        The name.
      *

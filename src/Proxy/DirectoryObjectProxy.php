@@ -8,6 +8,8 @@ use Microsoft\Graph\Model\DirectoryObject;
 class DirectoryObjectProxy extends EntityProxy
 {
     /**
+     * Constructor.
+     *
      * @param Graph $graph
      *        The graph.
      * @param DirectoryObject $directoryObject

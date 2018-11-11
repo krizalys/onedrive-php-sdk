@@ -8,6 +8,8 @@ use Microsoft\Graph\Model\ItemReference;
 class ItemReferenceProxy extends EntityProxy
 {
     /**
+     * Constructor.
+     *
      * @param Graph $graph
      *        The graph.
      * @param ItemReference $itemReference
@@ -19,6 +21,8 @@ class ItemReferenceProxy extends EntityProxy
     }
 
     /**
+     * Getter.
+     *
      * @param string $name
      *        The name.
      *

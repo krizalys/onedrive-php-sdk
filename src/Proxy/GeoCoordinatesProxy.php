@@ -8,6 +8,8 @@ use Microsoft\Graph\Model\GeoCoordinates;
 class GeoCoordinatesProxy extends EntityProxy
 {
     /**
+     * Constructor.
+     *
      * @param Graph $graph
      *        The graph.
      * @param GeoCoordinates $geoCoordinates

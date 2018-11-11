@@ -8,6 +8,8 @@ use Microsoft\Graph\Model\SystemFacet;
 class SystemFacetProxy
 {
     /**
+     * Constructor.
+     *
      * @param Graph $graph
      *        The graph.
      * @param SystemFacet $systemFacet

@@ -8,6 +8,8 @@ use Microsoft\Graph\Model\SearchResult;
 class SearchResultProxy extends EntityProxy
 {
     /**
+     * Constructor.
+     *
      * @param Graph $graph
      *        The graph.
      * @param SearchResult $searchResult

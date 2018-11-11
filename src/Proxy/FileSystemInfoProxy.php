@@ -8,6 +8,8 @@ use Microsoft\Graph\Model\FileSystemInfo;
 class FileSystemInfoProxy extends EntityProxy
 {
     /**
+     * Constructor.
+     *
      * @param Graph $graph
      *        The graph.
      * @param FileSystemInfo $fileSystemInfo

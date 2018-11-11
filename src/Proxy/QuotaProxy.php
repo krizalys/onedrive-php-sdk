@@ -8,6 +8,8 @@ use Microsoft\Graph\Model\Quota;
 class QuotaProxy extends EntityProxy
 {
     /**
+     * Constructor.
+     *
      * @param Graph $graph
      *        The graph.
      * @param Quota $quota
@@ -19,6 +21,8 @@ class QuotaProxy extends EntityProxy
     }
 
     /**
+     * Getter.
+     *
      * @param string $name
      *        The name.
      *

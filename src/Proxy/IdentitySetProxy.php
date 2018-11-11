@@ -8,6 +8,8 @@ use Microsoft\Graph\Model\IdentitySet;
 class IdentitySetProxy extends EntityProxy
 {
     /**
+     * Constructor.
+     *
      * @param Graph $graph
      *        The graph.
      * @param IdentitySet $identitySet
@@ -19,6 +21,8 @@ class IdentitySetProxy extends EntityProxy
     }
 
     /**
+     * Getter.
+     *
      * @param string $name
      *        The name.
      *

@@ -9,6 +9,8 @@ use Microsoft\Graph\Model\DriveItem;
 class DriveProxy extends BaseItemProxy
 {
     /**
+     * Constructor.
+     *
      * @param Graph $graph
      *        The graph.
      * @param Drive $drive
@@ -20,6 +22,8 @@ class DriveProxy extends BaseItemProxy
     }
 
     /**
+     * Getter.
+     *
      * @param string $name
      *        The name.
      *

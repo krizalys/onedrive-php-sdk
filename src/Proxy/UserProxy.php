@@ -8,6 +8,8 @@ use Microsoft\Graph\Model\User;
 class UserProxy extends DirectoryObjectProxy
 {
     /**
+     * Constructor.
+     *
      * @param Graph $graph
      *        The graph.
      * @param User $user

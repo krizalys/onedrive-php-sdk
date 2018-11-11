@@ -8,6 +8,8 @@ use Microsoft\Graph\Model\Root;
 class RootProxy extends EntityProxy
 {
     /**
+     * Constructor.
+     *
      * @param Graph $graph
      *        The graph.
      * @param Root $root

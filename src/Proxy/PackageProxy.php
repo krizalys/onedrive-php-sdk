@@ -8,6 +8,8 @@ use Microsoft\Graph\Model\Package;
 class PackageProxy extends EntityProxy
 {
     /**
+     * Constructor.
+     *
      * @param Graph $graph
      *        The graph.
      * @param Package $package

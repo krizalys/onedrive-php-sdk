@@ -20,6 +20,8 @@ class EntityProxy
     protected $entity;
 
     /**
+     * Constructor.
+     *
      * @param Graph $graph
      *        The graph.
      * @param Entity $entity
@@ -32,6 +34,8 @@ class EntityProxy
     }
 
     /**
+     * Getter.
+     *
      * @param string $name
      *        The name.
      *

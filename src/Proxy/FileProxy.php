@@ -8,6 +8,8 @@ use Microsoft\Graph\Model\File;
 class FileProxy extends EntityProxy
 {
     /**
+     * Constructor.
+     *
      * @param Graph $graph
      *        The graph.
      * @param File $file

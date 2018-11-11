@@ -8,6 +8,8 @@ use Microsoft\Graph\Model\RemoteItem;
 class RemoteItemProxy extends EntityProxy
 {
     /**
+     * Constructor.
+     *
      * @param Graph $graph
      *        The graph.
      * @param RemoteItem $remoteItem

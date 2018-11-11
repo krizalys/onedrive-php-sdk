@@ -8,6 +8,8 @@ use Microsoft\Graph\Model\Deleted;
 class DeletedProxy extends EntityProxy
 {
     /**
+     * Constructor.
+     *
      * @param Graph $graph
      *        The graph.
      * @param Deleted $deleted

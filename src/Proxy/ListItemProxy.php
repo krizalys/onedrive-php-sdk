@@ -8,6 +8,8 @@ use Microsoft\Graph\Model\ListItem;
 class ListItemProxy extends BaseItemProxy
 {
     /**
+     * Constructor.
+     *
      * @param Graph $graph
      *        The graph.
      * @param ListItem $listItem

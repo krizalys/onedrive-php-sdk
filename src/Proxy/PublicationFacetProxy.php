@@ -8,6 +8,8 @@ use Microsoft\Graph\Model\PublicationFacet;
 class PublicationFacetProxy extends EntityProxy
 {
     /**
+     * Constructor.
+     *
      * @param Graph $graph
      *        The graph.
      * @param PublicationFacet $publicationFacet

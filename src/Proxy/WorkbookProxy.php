@@ -8,6 +8,8 @@ use Microsoft\Graph\Model\Workbook;
 class WorkbookProxy extends EntityProxy
 {
     /**
+     * Constructor.
+     *
      * @param Graph $graph
      *        The graph.
      * @param Workbook $workbook

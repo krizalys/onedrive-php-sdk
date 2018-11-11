@@ -8,6 +8,8 @@ use Microsoft\Graph\Model\SharePointIds;
 class SharePointIdsProxy extends EntityProxy
 {
     /**
+     * Constructor.
+     *
      * @param Graph $graph
      *        The graph.
      * @param SharePointIds $sharePointIds

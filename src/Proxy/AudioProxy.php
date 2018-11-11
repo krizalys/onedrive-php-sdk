@@ -8,6 +8,8 @@ use Microsoft\Graph\Model\Audio;
 class AudioProxy extends EntityProxy
 {
     /**
+     * Constructor.
+     *
      * @param Graph $graph
      *        The graph.
      * @param Audio $audio

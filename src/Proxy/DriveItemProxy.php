@@ -12,6 +12,8 @@ use Microsoft\Graph\Model\Thumbnail;
 class DriveItemProxy extends BaseItemProxy
 {
     /**
+     * Constructor.
+     *
      * @param Graph
      *        The graph.
      * @param DriveItem
@@ -23,6 +25,8 @@ class DriveItemProxy extends BaseItemProxy
     }
 
     /**
+     * Getter.
+     *
      * @param string $name
      *        The name.
      *
@@ -148,6 +152,8 @@ class DriveItemProxy extends BaseItemProxy
     }
 
     /**
+     * Creates a folder under this folder drive item.
+     *
      * @param string $name
      *        The name.
      * @param array $options
@@ -189,6 +195,8 @@ class DriveItemProxy extends BaseItemProxy
     }
 
     /**
+     * Gets this folder drive item's children.
+     *
      * @return array
      *         The child drive items.
      *
@@ -222,6 +230,9 @@ class DriveItemProxy extends BaseItemProxy
         }, $driveItems);
     }
 
+    /**
+     * Deletes this drive item.
+     */
     public function delete()
     {
         $driveLocator = "/drives/{$this->parentReference->driveId}";
@@ -241,6 +252,8 @@ class DriveItemProxy extends BaseItemProxy
     }
 
     /**
+     * Uploads a file under this folder drive item.
+     *
      * @param string $name
      *        The name.
      * @param string|resource|\GuzzleHttp\Psr7\Stream $content
@@ -284,6 +297,8 @@ class DriveItemProxy extends BaseItemProxy
     }
 
     /**
+     * Downloads this file drive item.
+     *
      * @return GuzzleHttp\Psr7\Stream
      *         The content.
      */
@@ -308,6 +323,8 @@ class DriveItemProxy extends BaseItemProxy
     }
 
     /**
+     * Renames this file item.
+     *
      * @param string $name
      *        The name.
      * @param array $options
@@ -344,6 +361,8 @@ class DriveItemProxy extends BaseItemProxy
     }
 
     /**
+     * Moves this drive item.
+     *
      * @param DriveItemProxy $destinationItem
      *        The destination item.
      * @param array $options
@@ -382,6 +401,8 @@ class DriveItemProxy extends BaseItemProxy
     }
 
     /**
+     * Copies this drive item.
+     *
      * @param DriveItemProxy $destinationItem
      *        The destination item.
      * @param array $options
