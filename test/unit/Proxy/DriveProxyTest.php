@@ -1,5 +1,7 @@
 <?php
 
+namespace Test\Unit\Krizalys\Onedrive\Proxy;
+
 use Krizalys\Onedrive\Proxy\DriveItemProxy;
 use Krizalys\Onedrive\Proxy\DriveProxy;
 use Microsoft\Graph\Graph;
