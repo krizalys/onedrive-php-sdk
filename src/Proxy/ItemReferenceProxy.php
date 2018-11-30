@@ -43,6 +43,9 @@ class ItemReferenceProxy extends EntityProxy
             case 'driveType':
                 return $itemReference->getDriveType();
 
+            case 'path':
+                return $itemReference->getPath();
+
             default:
                 return parent::__get($name);
         }
