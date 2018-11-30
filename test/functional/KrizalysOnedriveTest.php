@@ -172,6 +172,7 @@ EOF;
         $this->assertNull($item->parentReference->id);
         $this->assertNotNull($item->parentReference->driveId);
         $this->assertNotNull($item->parentReference->driveType);
+        $this->assertNotNull($item->parentReference->path);
         $this->assertRootProxy($item->root);
     }
 
@@ -186,6 +187,7 @@ EOF;
         $this->assertNotNull($item->parentReference->id);
         $this->assertNotNull($item->parentReference->driveId);
         $this->assertNotNull($item->parentReference->driveType);
+        $this->assertNotNull($item->parentReference->path);
 
         // For some reason, this special folder does not have a SpecialFolder
         // facet.
