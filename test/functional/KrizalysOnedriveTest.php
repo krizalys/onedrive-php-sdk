@@ -172,7 +172,7 @@ EOF;
         $this->assertNull($item->parentReference->id);
         $this->assertNotNull($item->parentReference->driveId);
         $this->assertNotNull($item->parentReference->driveType);
-        $this->assertNotNull($item->parentReference->path);
+        $this->assertNull($item->parentReference->path);
         $this->assertRootProxy($item->root);
     }
 
