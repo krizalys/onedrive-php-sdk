@@ -10,6 +10,8 @@ use Microsoft\Graph\Model\DriveItemVersion;
 use Microsoft\Graph\Model\Permission;
 use Microsoft\Graph\Model\Thumbnail;
 
+define('CHUNK_SIZE', 60 * 1024 * 1024); //setting chunk size to max level(60 MiB) for upload session
+
 class DriveItemProxy extends BaseItemProxy
 {
     /**
@@ -260,45 +262,86 @@ class DriveItemProxy extends BaseItemProxy
      * Uploads a file under this folder drive item.
      *
      * @param string $name
-     *        The name.
-     * @param string|resource|\GuzzleHttp\Psr7\Stream $content
-     *        The content.
+     *        The name of file(relative file path if in same directory (or) absolute file path).
      * @param array $options
      *        The options.
      *
      * @return DriveItemProxy
      *         The drive item created.
      *
-     * @todo Support name conflict behavior.
-     * @todo Support content type in options.
      */
-    public function upload($name, $content, array $options = [])
+    public function upload($name, array $options = [])
     {
         $name         = rawurlencode($name);
         $driveLocator = "/drives/{$this->parentReference->driveId}";
         $itemLocator  = "/items/{$this->id}";
-        $endpoint     = "$driveLocator$itemLocator:/$name:/content";
+        $uploadSessionEndpoint = "$driveLocator$itemLocator:/$name:/createUploadSession";
+        //include extended options with existing item for upload session
+        $item = array_merge(
+            array("name" => $name, 'description' => '' ,"@microsoft.graph.conflictBehavior" => "rename"), $options
+        );
 
-        $body = $content instanceof Stream ?
-            $content
-            : Psr7\stream_for($content);
-
-        $response = $this
+		//create an upload session for large files
+		$uploadSessionResponse = $this
             ->graph
-            ->createRequest('PUT', $endpoint)
-            ->addHeaders($options)
-            ->attachBody($body)
+            ->createRequest('POST', $uploadSessionEndpoint)
+            ->addHeaders(array('Content-Type' => 'application/json'))
+            ->attachBody(array("item" =>$item))
             ->execute();
+			
+		$uploadSessionResponseBody=$uploadSessionResponse->getBody();
 
-        $status = $response->getStatus();
+        if(is_array($uploadSessionResponseBody) && array_key_exists("uploadUrl", $uploadSessionResponseBody)) {
 
-        if ($status != 200 && $status != 201) {
-            throw new \Exception("Unexpected status code produced by 'PUT $endpoint': $status");
-        }
+            $uploadUrl = $uploadSessionResponseBody['uploadUrl'];
 
-        $driveItem = $response->getResponseAsObject(DriveItem::class);
-
-        return new self($this->graph, $driveItem);
+			$handle = @fopen($name, "r");
+			if ($handle) {
+				$bytesRead=0;
+				$buffer = "";
+				$totalSize=filesize($name);
+				
+				while (!feof($handle)) {
+					$buffer = fread($handle, CHUNK_SIZE);
+					$contentLength = strlen($buffer);
+					ob_flush(); //flush output buffer high-level
+					flush(); //flush output buffer low-level
+					
+					//initialise bytes read, and interval range
+					$byteIntervalStart=$bytesRead;
+					$bytesRead += $contentLength;
+					$byteIntervalEnd=$bytesRead-1;
+					
+					//upload headers containing bytes Content length and range
+					$uploadSessionHeaders = array();
+					$uploadSessionHeaders['Content-Type'] = 'application/json';
+					$uploadSessionHeaders['Content-Length'] = $contentLength;
+					$uploadSessionHeaders['Content-Range'] = 'bytes ' . $byteIntervalStart . "-" . $byteIntervalEnd . "/" . $totalSize;
+					
+					//create a put request for chunks
+					$chunkedResponse = $this
+		                 ->graph
+		                 ->createRequest('PUT', $uploadUrl)
+		                 ->addHeaders($uploadSessionHeaders)
+		                 ->attachBody($buffer)
+		                 ->execute();
+					
+					$status = $chunkedResponse->getStatus();
+					
+					if($status != 201 && $status != 202){
+						throw new \Exception("Unexpected status code produced by 'PUT $endpoint': $status");
+					}
+					
+					if($status === 201){
+						//resource created in onedrive return response object as DriveItem
+						return $chunkedResponse->getResponseAsObject(DriveItem::class);
+					}
+                }
+			}
+			fclose($handle);
+		}
+		
+		return NULL;
     }
 
     /**
