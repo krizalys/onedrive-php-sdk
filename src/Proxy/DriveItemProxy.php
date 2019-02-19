@@ -7,10 +7,9 @@ use GuzzleHttp\Psr7\Stream;
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model\DriveItem;
 use Microsoft\Graph\Model\DriveItemVersion;
+use Microsoft\Graph\Model\UploadSession;
 use Microsoft\Graph\Model\Permission;
 use Microsoft\Graph\Model\Thumbnail;
-
-define('CHUNK_SIZE', 60 * 1024 * 1024); //setting chunk size to max level(60 MiB) for upload session
 
 class DriveItemProxy extends BaseItemProxy
 {
@@ -262,87 +261,94 @@ class DriveItemProxy extends BaseItemProxy
      * Uploads a file under this folder drive item.
      *
      * @param string $name
-     *        The name of file(relative file path if in same directory (or) absolute file path).
+     *        The name.
+     * @param string|resource|\GuzzleHttp\Psr7\Stream $content
+     *        The content.
      * @param array $options
      *        The options.
      *
      * @return DriveItemProxy
      *         The drive item created.
      *
+     * @todo Support name conflict behavior.
+     * @todo Support content type in options.
      */
-    public function upload($name, array $options = [])
+    public function upload($name, $content, array $options = [])
     {
         $name         = rawurlencode($name);
         $driveLocator = "/drives/{$this->parentReference->driveId}";
         $itemLocator  = "/items/{$this->id}";
-        $uploadSessionEndpoint = "$driveLocator$itemLocator:/$name:/createUploadSession";
-        //include extended options with existing item for upload session
-        $item = array_merge(
-            array("name" => $name, 'description' => '' ,"@microsoft.graph.conflictBehavior" => "rename"), $options
-        );
+        $endpoint     = "$driveLocator$itemLocator:/$name:/content";
 
-		//create an upload session for large files
-		$uploadSessionResponse = $this
+        $body = $content instanceof Stream ?
+            $content
+            : Psr7\stream_for($content);
+
+        $response = $this
             ->graph
-            ->createRequest('POST', $uploadSessionEndpoint)
-            ->addHeaders(array('Content-Type' => 'application/json'))
-            ->attachBody(array("item" =>$item))
+            ->createRequest('PUT', $endpoint)
+            ->addHeaders($options)
+            ->attachBody($body)
             ->execute();
-			
-		$uploadSessionResponseBody=$uploadSessionResponse->getBody();
 
-        if(is_array($uploadSessionResponseBody) && array_key_exists("uploadUrl", $uploadSessionResponseBody)) {
+        $status = $response->getStatus();
 
-            $uploadUrl = $uploadSessionResponseBody['uploadUrl'];
+        if ($status != 200 && $status != 201) {
+            throw new \Exception("Unexpected status code produced by 'PUT $endpoint': $status");
+        }
 
-			$handle = @fopen($name, "r");
-			if ($handle) {
-				$bytesRead=0;
-				$buffer = "";
-				$totalSize=filesize($name);
-				
-				while (!feof($handle)) {
-					$buffer = fread($handle, CHUNK_SIZE);
-					$contentLength = strlen($buffer);
-					ob_flush(); //flush output buffer high-level
-					flush(); //flush output buffer low-level
-					
-					//initialise bytes read, and interval range
-					$byteIntervalStart=$bytesRead;
-					$bytesRead += $contentLength;
-					$byteIntervalEnd=$bytesRead-1;
-					
-					//upload headers containing bytes Content length and range
-					$uploadSessionHeaders = array();
-					$uploadSessionHeaders['Content-Type'] = 'application/json';
-					$uploadSessionHeaders['Content-Length'] = $contentLength;
-					$uploadSessionHeaders['Content-Range'] = 'bytes ' . $byteIntervalStart . "-" . $byteIntervalEnd . "/" . $totalSize;
-					
-					//create a put request for chunks
-					$chunkedResponse = $this
-		                 ->graph
-		                 ->createRequest('PUT', $uploadUrl)
-		                 ->addHeaders($uploadSessionHeaders)
-		                 ->attachBody($buffer)
-		                 ->execute();
-					
-					$status = $chunkedResponse->getStatus();
-					
-					if($status != 201 && $status != 202){
-						throw new \Exception("Unexpected status code produced by 'PUT $endpoint': $status");
-					}
-					
-					if($status === 201){
-						//resource created in onedrive return response object as DriveItem
-						return $chunkedResponse->getResponseAsObject(DriveItem::class);
-					}
-                }
-			}
-			fclose($handle);
+        $driveItem = $response->getResponseAsObject(DriveItem::class);
+
+        return new self($this->graph, $driveItem);
+    }
+	
+	/**
+     * Creates a upload session to upload a file under this folder drive item.
+     *
+     * @param string $name
+     *        The name.
+     * @param string|resource|\GuzzleHttp\Psr7\Stream $content
+     *        The content.
+     * @param array $options
+     *        The options.
+     *
+     * @return UploadSessionProxy
+     *         The upload session created.
+     *
+     * @todo Support content type in options.
+     */
+    public function startUpload($name, $content, array $options = [])
+    {
+		$name         = rawurlencode($name);
+        $driveLocator = "/drives/{$this->parentReference->driveId}";
+        $itemLocator  = "/items/{$this->id}";
+		$endpoint = "$driveLocator$itemLocator:/$name:/createUploadSession";
+		
+		//Include extended options with existing item for upload session. Extended options to be overwritten if not mentioned
+		$item = [
+			'name' => isset($options['name']) ? $options['name'] : $name,
+			'description' => isset($options['name']) ? $options['description'] : '',
+			'@microsoft.graph.conflictBehavior' => isset($options['conflictBehavior']) ? $options['conflictBehavior'] : 'rename',
+		];
+		
+		//create an upload session for large files
+		$response = $this
+			->graph
+			->createRequest('POST', $endpoint)
+			->addHeaders(array('Content-Type' => 'application/json'))
+			->attachBody(array("item" =>$item))
+			->execute();
+		
+		$status = $response->getStatus();
+		
+		if ($status != 200) {
+			throw new \Exception("Unexpected status code produced by 'PUT $endpoint': $status");
 		}
 		
-		return NULL;
-    }
+		$uploadSession = $response->getResponseAsObject(UploadSession::class);
+		
+		return new UploadSessionProxy($this->graph, $uploadSession, $name, $content, $options);
+	}
 
     /**
      * Downloads this file drive item.
