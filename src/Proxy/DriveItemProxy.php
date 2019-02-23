@@ -190,7 +190,7 @@ class DriveItemProxy extends BaseItemProxy
 
         $status = $response->getStatus();
 
-        if ($status != 201) {
+        if ($status != 200 && $status != 201) {
             throw new \Exception("Unexpected status code produced by 'POST $endpoint': $status");
         }
 
@@ -292,7 +292,7 @@ class DriveItemProxy extends BaseItemProxy
 
         $status = $response->getStatus();
 
-        if ($status != 201) {
+        if ($status != 200 && $status != 201) {
             throw new \Exception("Unexpected status code produced by 'PUT $endpoint': $status");
         }
 
