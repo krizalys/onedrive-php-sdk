@@ -232,18 +232,11 @@ EOF;
     public function testCreateFolder()
     {
         self::runInFolder(__FUNCTION__, function (DriveItemProxy $sandbox) {
-            $item = $sandbox->createFolder(
-                'Test folder',
-                [
-                    'description' => 'Test description',
-                ]
-            );
+            // Upload a new file.
+            $this->assertCreateFolder($sandbox);
 
-            $this->assertDriveItemProxy($item);
-            $this->assertNotNull($item->parentReference);
-            $this->assertEquals($sandbox->id, $item->parentReference->id);
-            $this->assertEquals('Test folder', $item->name);
-            $this->assertEquals('Test description', $item->description);
+            // Overwrite an existing file.
+            $this->assertCreateFolder($sandbox);
         });
     }
 
@@ -287,45 +280,22 @@ EOF;
     public function testUploadString()
     {
         self::runInFolder(__FUNCTION__, function (DriveItemProxy $sandbox) {
-            $item = $sandbox->upload(
-                'Test file',
-                'Test content',
-                [
-                    'Content-Type: text/plain',
-                ]
-            );
+            // Upload a new file.
+            $this->assertUploadString($sandbox);
 
-            $this->assertDriveItemProxy($item);
-            $this->assertNotNull($item->parentReference);
-            $this->assertEquals($sandbox->id, $item->parentReference->id);
-            $this->assertEquals('Test file', $item->name);
-            $this->assertEquals('Test content', $item->content);
+            // Overwrite an existing file.
+            $this->assertUploadString($sandbox);
         });
     }
 
     public function testUploadStream()
     {
         self::runInFolder(__FUNCTION__, function (DriveItemProxy $sandbox) {
-            $content = fopen('php://memory', 'rb+');
-            fwrite($content, 'Test content');
-            rewind($content);
+            // Upload a new file.
+            $this->assertUploadStream($sandbox);
 
-            $item = $sandbox->upload(
-                'Test file',
-                $content,
-                [
-                    'Content-Type: text/plain',
-                ]
-            );
-
-            $this->assertDriveItemProxy($item);
-            $this->assertNotNull($item->parentReference);
-            $this->assertEquals($sandbox->id, $item->parentReference->id);
-            $this->assertEquals('Test file', $item->name);
-            $this->assertEquals('Test content', $item->content);
-
-            // No need to fclose $content; it is done internally by Guzzle when
-            // instantiating a Guzzle stream from it.
+            // Overwrite an existing file.
+            $this->assertUploadStream($sandbox);
         });
     }
 
@@ -1255,6 +1225,63 @@ EOF;
         }
 
         return $items[0];
+    }
+
+    private function assertCreateFolder(DriveItemProxy $sandbox)
+    {
+        $item = $sandbox->createFolder(
+            'Test folder',
+            [
+                'description' => 'Test description',
+            ]
+        );
+
+        $this->assertDriveItemProxy($item);
+        $this->assertNotNull($item->parentReference);
+        $this->assertEquals($sandbox->id, $item->parentReference->id);
+        $this->assertEquals('Test folder', $item->name);
+        $this->assertEquals('Test description', $item->description);
+    }
+
+    private function assertUploadString(DriveItemProxy $sandbox)
+    {
+        $item = $sandbox->upload(
+            'Test file',
+            'Test content',
+            [
+                'Content-Type: text/plain',
+            ]
+        );
+
+        $this->assertDriveItemProxy($item);
+        $this->assertNotNull($item->parentReference);
+        $this->assertEquals($sandbox->id, $item->parentReference->id);
+        $this->assertEquals('Test file', $item->name);
+        $this->assertEquals('Test content', $item->content);
+    }
+
+    private function assertUploadStream(DriveItemProxy $sandbox)
+    {
+        $content = fopen('php://memory', 'rb+');
+        fwrite($content, 'Test content');
+        rewind($content);
+
+        $item = $sandbox->upload(
+            'Test file',
+            $content,
+            [
+                'Content-Type: text/plain',
+            ]
+        );
+
+        $this->assertDriveItemProxy($item);
+        $this->assertNotNull($item->parentReference);
+        $this->assertEquals($sandbox->id, $item->parentReference->id);
+        $this->assertEquals('Test file', $item->name);
+        $this->assertEquals('Test content', $item->content);
+
+        // No need to fclose $content; it is done internally by Guzzle when
+        // instantiating a Guzzle stream from it.
     }
 
     private static function getRoot()
