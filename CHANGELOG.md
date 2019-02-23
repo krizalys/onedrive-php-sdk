@@ -1,6 +1,37 @@
 Change log
 ==========
 
+[2.0.2] - 2019-02-23
+--------------------
+
+### Added
+
+- `Krizalys\Onedrive\Proxy\BaseItemVersionProxy`.
+- `Krizalys\Onedrive\Proxy\DriveItemVersionProxy`.
+- `Krizalys\Onedrive\Proxy\ItemReferenceProxy::path`.
+- Some unit test cases.
+- Some functional test cases.
+
+### Changed
+
+- `Krizalys\Onedrive\Proxy\DriveItem::versions`: returns an array of
+`Krizalys\Onedrive\Proxy\DriveItemVersionProxy` instances.
+- `Krizalys\Onedrive\Proxy\SharePointIdsProxy`: renamed into
+`SharepointIdsProxy` to match its Microsoft Graph model.
+
+### Fixed
+
+- `Krizalys\Onedrive\Proxy\DriveItemProxy::createFolder()` was throwing an
+exception when a folder with the same name already existed despite the conflict
+behavior being set to `replace`.
+- `Krizalys\Onedrive\Proxy\DriveItemProxy::upload()` was throwing an exception
+when a file with the same name already existed despite the conflict behavior
+being set to `replace`.
+- `Krizalys\Onedrive\Proxy\BaseItemProxy::lastModifiedByUser` was causing a
+fatal error.
+- `Krizalys\Onedrive\Proxy\SystemFacetProxy::__construct()` was causing a fatal
+error.
+
 [2.0.1] - 2018-11-11
 --------------------
 
@@ -104,7 +135,8 @@ Change log
 
 - Support for SSL.
 
-[unreleased]: https://github.com/krizalys/onedrive-php-sdk/compare/2.0.1...HEAD
+[unreleased]: https://github.com/krizalys/onedrive-php-sdk/compare/2.0.2...HEAD
+[2.0.2]:      https://github.com/krizalys/onedrive-php-sdk/compare/2.0.1...2.0.2
 [2.0.1]:      https://github.com/krizalys/onedrive-php-sdk/compare/2.0.0...2.0.1
 [2.0.0]:      https://github.com/krizalys/onedrive-php-sdk/compare/1.2.0...2.0.0
 [1.2.0]:      https://github.com/krizalys/onedrive-php-sdk/compare/1.1.1...1.2.0
