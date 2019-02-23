@@ -70,7 +70,7 @@ class BaseItemProxy extends EntityProxy
 
             case 'lastModifiedByUser':
                 $lastModifiedByUser = $baseItem->getLastModifiedByUser();
-                return $lastModifiedByUser !== null ? new lastModifiedByUser($this->graph, $lastModifiedByUser) : null;
+                return $lastModifiedByUser !== null ? new UserProxy($this->graph, $lastModifiedByUser) : null;
 
             default:
                 return parent::__get($name);
