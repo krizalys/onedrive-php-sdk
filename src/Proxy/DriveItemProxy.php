@@ -102,7 +102,7 @@ class DriveItemProxy extends BaseItemProxy
 
             case 'sharepointIds':
                 $sharepointIds = $driveItem->getSharepointIds();
-                return $sharepointIds !== null ? new SharePointIdsProxy($this->graph, $sharepointIds) : null;
+                return $sharepointIds !== null ? new SharepointIdsProxy($this->graph, $sharepointIds) : null;
 
             case 'size':
                 return $driveItem->getSize();

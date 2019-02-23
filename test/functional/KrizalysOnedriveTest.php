@@ -36,7 +36,7 @@ use Krizalys\Onedrive\Proxy\RemoteItemProxy;
 use Krizalys\Onedrive\Proxy\RootProxy;
 use Krizalys\Onedrive\Proxy\SearchResultProxy;
 use Krizalys\Onedrive\Proxy\SharedProxy;
-use Krizalys\Onedrive\Proxy\SharePointIdsProxy;
+use Krizalys\Onedrive\Proxy\SharepointIdsProxy;
 use Krizalys\Onedrive\Proxy\SpecialFolderProxy;
 use Krizalys\Onedrive\Proxy\SystemProxy;
 use Krizalys\Onedrive\Proxy\ThumbnailProxy;
@@ -992,7 +992,7 @@ EOF;
             $drive->sharePointIds,
             $this->logicalOr(
                 $this->isNull(),
-                $this->isInstanceOf(SharePointIdsProxy::class)
+                $this->isInstanceOf(SharepointIdsProxy::class)
             )
         );
 
@@ -1159,7 +1159,7 @@ EOF;
             $item->sharepointIds,
             $this->logicalOr(
                 $this->isNull(),
-                $this->isInstanceOf(SharePointIdsProxy::class)
+                $this->isInstanceOf(SharepointIdsProxy::class)
             )
         );
 
