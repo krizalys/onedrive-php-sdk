@@ -6,6 +6,7 @@ use GuzzleHttp\Psr7;
 use GuzzleHttp\Psr7\Stream;
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model\DriveItem;
+use Microsoft\Graph\Model\DriveItemVersion;
 use Microsoft\Graph\Model\Permission;
 use Microsoft\Graph\Model\Thumbnail;
 
@@ -140,7 +141,11 @@ class DriveItemProxy extends BaseItemProxy
                 }, $thumbnails) : null;
 
             case 'versions':
-                return $driveItem->getVersions();
+                $versions = $driveItem->getVersions();
+
+                return $versions !== null ? array_map(function (DriveItemVersion $driveItemVersion) {
+                    return new DriveItemVersionProxy($this->graph, $driveItemVersion);
+                }, $versions) : null;
 
             case 'workbook':
                 $workbook = $driveItem->getWorkbook();
