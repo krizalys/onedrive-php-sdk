@@ -5,7 +5,7 @@ namespace Krizalys\Onedrive\Proxy;
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model\SystemFacet;
 
-class SystemFacetProxy
+class SystemFacetProxy extends EntityProxy
 {
     /**
      * Constructor.
