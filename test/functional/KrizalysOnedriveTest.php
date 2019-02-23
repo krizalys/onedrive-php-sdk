@@ -56,7 +56,9 @@ class KrizalysOnedriveTest extends \PHPUnit_Framework_TestCase
 
     const REDIRECT_URI_PORT = 7777;
 
-    const ASYNC_DELAY = 3;
+    const ASYNC_POLL_TIMEOUT = 10; // In seconds.
+
+    const ASYNC_POLL_INTERVAL = 1; // In seconds.
 
     const DATETIME_REGEX = '/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[-+]\d{4}/';
 
@@ -403,12 +405,8 @@ EOF;
                 ]
             );
 
-            // Work around for asynchronous operation; assume it has completed
-            // after a short delay.
-            sleep(self::ASYNC_DELAY);
-
             $this->assertRegExp(self::URI_REGEX, $uri);
-            $item = self::getFirstChildByName($destination, 'Test file (copied)');
+            $item = $this->assertDriveItemProxyWillHaveChild($destination, 'Test file (copied)');
             $item = self::getDriveItemById($item->id);
             $this->assertDriveItemProxy($item);
             $this->assertNotNull($item->parentReference);
@@ -430,12 +428,8 @@ EOF;
                 ]
             );
 
-            // Work around for asynchronous operation; assume it has completed
-            // after a short delay.
-            sleep(self::ASYNC_DELAY);
-
             $this->assertRegExp(self::URI_REGEX, $uri);
-            $item = self::getFirstChildByName($destination, 'Test folder (copied)');
+            $item = $this->assertDriveItemProxyWillHaveChild($destination, 'Test folder (copied)');
             $item = self::getDriveItemById($item->id);
             $this->assertDriveItemProxy($item);
             $this->assertNotNull($item->parentReference);
@@ -673,21 +667,12 @@ EOF;
             $destination = self::createFolder($parent, 'Test destination');
             self::$client->copyFile($item->id, $destination->id);
 
-            // Work around for asynchronous operation; assume it has completed
-            // after a short delay.
-            sleep(self::ASYNC_DELAY);
-
             $children = array_map(function (DriveItemProxy $driveItem) {
                 return $driveItem->id;
             }, $parent->children);
 
             $this->assertContains($item->id, $children);
-
-            $children = array_map(function (DriveItemProxy $driveItem) {
-                return $driveItem->name;
-            }, $destination->children);
-
-            $this->assertContains('Test item', $children);
+            $this->assertDriveItemProxyWillHaveChild($destination, 'Test item');
         });
     }
 
@@ -775,24 +760,14 @@ EOF;
         self::runInFolder(__FUNCTION__, function (DriveItemProxy $parent) {
             $item        = self::upload($parent, 'Test item');
             $destination = self::createFolder($parent, 'Test destination');
-
             (new File(self::$client, $item->id))->copy($destination->id);
-
-            // Work around for asynchronous operation; assume it has completed
-            // after a short delay.
-            sleep(self::ASYNC_DELAY);
 
             $children = array_map(function (DriveItemProxy $driveItem) {
                 return $driveItem->name;
             }, $parent->children);
 
             $this->assertContains($item->name, $children);
-
-            $children = array_map(function (DriveItemProxy $driveItem) {
-                return $driveItem->name;
-            }, $destination->children);
-
-            $this->assertContains($item->name, $children);
+            $this->assertDriveItemProxyWillHaveChild($destination, $item->name);
 
             $copy = array_filter($destination->children, function (DriveItemProxy $driveItem) use ($item) {
                 return $driveItem->name == $item->name;
@@ -1259,6 +1234,29 @@ EOF;
         );
     }
 
+    private function assertDriveItemProxyWillHaveChild(DriveItemProxy $item, $name)
+    {
+        $now = time();
+
+        $items = array_filter($item->children, function (DriveItemProxy $item) use ($name) {
+            return $item->name == $name;
+        });
+
+        while (count($items) != 1) {
+            sleep(self::ASYNC_POLL_INTERVAL);
+
+            if (time() - $now > self::ASYNC_POLL_TIMEOUT) {
+                $this->fail('Assertion failed after timeout');
+            }
+
+            $items = array_filter($item->children, function (DriveItemProxy $item) use ($name) {
+                return $item->name == $name;
+            });
+        }
+
+        return $items[0];
+    }
+
     private static function getRoot()
     {
         return self::$client->getRoot();
@@ -1305,15 +1303,6 @@ EOF;
     {
         $drives = self::$client->getDrives();
         return $drives[0];
-    }
-
-    private static function getFirstChildByName(DriveItemProxy $item, $name)
-    {
-        $items = array_filter($item->children, function (DriveItemProxy $item) use ($name) {
-            return $item->name == $name;
-        });
-
-        return count($items) == 1 ? $items[0] : null;
     }
 
     private static function runInFolder($name, callable $function)
