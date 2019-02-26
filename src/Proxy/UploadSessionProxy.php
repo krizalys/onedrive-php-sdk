@@ -110,17 +110,15 @@ class UploadSessionProxy extends EntityProxy {
 		$totalSize = 0;
 		
 		//Get the resource size from options array. If not available, calculate from stream contents
-		$totalSize = $this->isOptionExists("fileSize") ? $this->getOption("fileSize") : strlen($resourceStream ->getContents());
+		$totalSize = $this->isOptionExists("streamSize") ? $this->getOption("streamSize") : strlen($resourceStream ->getContents());
 		$resourceStream->rewind(); //rewind stream handle to start of stream
 		
-		//Set chunk size from options array. If unavailable (or) size > 60 MiB fallback to MIN_CHUNK_SIZE
+		//Default chunk size to MIN_CHUNK_SIZE
 		$chunkSize = UploadSessionProxy::MIN_CHUNK_SIZE;
+		
+		//If user defined chunk size exists in options array get the size matching the range 320 KiB < chunkSize < 60 MiB
 		if($this->isOptionExists("chunkSize")) {
-			$chunkSize = $this->getOption("chunkSize");
-			
-			if((int)$chunkSize > UploadSessionProxy::MAX_CHUNK_SIZE){
-				$chunkSize = UploadSessionProxy::MIN_CHUNK_SIZE;
-			}
+			$chunkSize = min(max($chunkSize, $this->getOption("chunkSize")), UploadSessionProxy::MAX_CHUNK_SIZE);
 		}
 		
 		while (!$resourceStream->eof()) {
@@ -165,7 +163,6 @@ class UploadSessionProxy extends EntityProxy {
 		
 		return new self($this->graph, $this->uploadSession, $this->name, $this->resource, $this->options);
 	}
-
 }
 
 ?>
