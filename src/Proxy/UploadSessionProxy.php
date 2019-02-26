@@ -153,13 +153,10 @@ class UploadSessionProxy extends EntityProxy {
 			
 			if($status === 201){
 				//resource created in onedrive return response object as DriveItem
-				$resourceStream->close();
 				return $response->getResponseAsObject(DriveItem::class);
 			}
 			
 		}
-		
-		$resourceStream->close();
 		
 		return new self($this->graph, $this->uploadSession, $this->name, $this->resource, $this->options);
 	}
