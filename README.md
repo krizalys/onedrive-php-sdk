@@ -19,7 +19,7 @@ Requirements
 
 Using the OneDrive SDK for PHP requires the following:
 
-* [PHP][php] 5.6 or newer ;
+* [PHP][php] 7.3 or newer ;
 * [Composer][composer] or a manual install of the dependencies mentioned in
   `composer.json`.
 
