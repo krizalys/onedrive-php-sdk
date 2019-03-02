@@ -40,6 +40,7 @@ use Krizalys\Onedrive\Proxy\SharepointIdsProxy;
 use Krizalys\Onedrive\Proxy\SpecialFolderProxy;
 use Krizalys\Onedrive\Proxy\SystemProxy;
 use Krizalys\Onedrive\Proxy\ThumbnailProxy;
+use Krizalys\Onedrive\Proxy\UploadSessionProxy;
 use Krizalys\Onedrive\Proxy\UserProxy;
 use Krizalys\Onedrive\Proxy\VideoProxy;
 use Krizalys\Onedrive\Proxy\WorkbookProxy;
@@ -296,6 +297,28 @@ EOF;
 
             // Overwrite an existing file.
             $this->assertUploadStream($sandbox);
+        });
+    }
+
+    public function testStartUploadString()
+    {
+        self::runInFolder(__FUNCTION__, function (DriveItemProxy $sandbox) {
+            // Upload a new file.
+            $this->assertStartUploadString($sandbox);
+
+            // Overwrite an existing file.
+            $this->assertStartUploadString($sandbox);
+        });
+    }
+
+    public function testStartUploadStream()
+    {
+        self::runInFolder(__FUNCTION__, function (DriveItemProxy $sandbox) {
+            // Upload a new file.
+            $this->assertStartUploadStream($sandbox);
+
+            // Overwrite an existing file.
+            $this->assertStartUploadStream($sandbox);
         });
     }
 
@@ -1227,6 +1250,23 @@ EOF;
         return $items[0];
     }
 
+    private function assertUploadSessionProxy($uploadSession)
+    {
+        $this->assertInstanceOf(UploadSessionProxy::class, $uploadSession);
+
+        $this->assertThat(
+            $uploadSession->expirationDateTime,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isInstanceOf(\DateTime::class)
+            )
+        );
+
+        $this->assertCount(1, $uploadSession->nextExpectedRanges);
+        $this->assertEquals('0-', $uploadSession->nextExpectedRanges[0]);
+        $this->assertRegExp(self::URI_REGEX, $uploadSession->uploadUrl);
+    }
+
     private function assertCreateFolder(DriveItemProxy $sandbox)
     {
         $item = $sandbox->createFolder(
@@ -1281,6 +1321,60 @@ EOF;
         $this->assertEquals('Test content', $item->content);
 
         // No need to fclose $content; it is done internally by Guzzle when
+        // instantiating a Guzzle stream from it.
+    }
+
+    private function assertStartUploadString(DriveItemProxy $sandbox)
+    {
+        $string = str_repeat("Test content\n", 100000);
+        $size   = strlen($string);
+
+        $uploadSession = $sandbox->startUpload(
+            'Test file',
+            $string,
+            [
+                'conflictBehavior' => 'replace',
+                'streamSize'       => $size,
+                'chunkSize'        => 320 * 1024,
+            ]
+        );
+
+        $this->assertUploadSessionProxy($uploadSession);
+        $item = $uploadSession->run();
+        $this->assertDriveItemProxy($item);
+        $this->assertNotNull($item->parentReference);
+        $this->assertEquals($sandbox->id, $item->parentReference->id);
+        $this->assertEquals('Test file', $item->name);
+        $this->assertEquals($string, $item->content);
+    }
+
+    private function assertStartUploadStream(DriveItemProxy $sandbox)
+    {
+        $content = str_repeat("Test content\n", 100000);
+        $stream  = fopen('php://memory', 'rb+');
+        fwrite($stream, $content);
+        $size = ftell($stream);
+        rewind($stream);
+
+        $uploadSession = $sandbox->startUpload(
+            'Test file',
+            $stream,
+            [
+                'conflictBehavior' => 'replace',
+                'streamSize'       => $size,
+                'chunkSize'        => 320 * 1024,
+            ]
+        );
+
+        $this->assertUploadSessionProxy($uploadSession);
+        $item = $uploadSession->run();
+        $this->assertDriveItemProxy($item);
+        $this->assertNotNull($item->parentReference);
+        $this->assertEquals($sandbox->id, $item->parentReference->id);
+        $this->assertEquals('Test file', $item->name);
+        $this->assertEquals($content, $item->content);
+
+        // No need to fclose $stream; it is done internally by Guzzle when
         // instantiating a Guzzle stream from it.
     }
 
