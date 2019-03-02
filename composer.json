@@ -40,5 +40,10 @@
         "psr-4": {
             "Krizalys\\Onedrive\\": "src/"
         }
+    },
+    "config": {
+        "platform": {
+            "ext-zip": "1.12.5"
+        }
     }
 }
