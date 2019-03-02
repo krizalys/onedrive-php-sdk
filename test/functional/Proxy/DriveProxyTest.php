@@ -20,7 +20,7 @@ class DriveProxyTest extends TestCase
 
     private static $root;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 

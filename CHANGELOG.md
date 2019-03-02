@@ -8,6 +8,10 @@ Change log
 
 - Support for PHP 8.0.
 
+### Changed
+
+- Upgraded to PHPUnit 9.
+
 ### Removed
 
 - Support for PHP 5.6, PHP 7.0, PHP 7.1, and PHP 7.2.

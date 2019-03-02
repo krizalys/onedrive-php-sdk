@@ -21,7 +21,7 @@ class IdentityProxyTest extends TestCase
             ->willReturn('Display Name');
 
         $sut = new IdentityProxy($graph, $identity);
-        $this->assertInternalType('string', $sut->displayName);
+        $this->assertIsString($sut->displayName);
         $this->assertSame('Display Name', $sut->displayName);
     }
 }

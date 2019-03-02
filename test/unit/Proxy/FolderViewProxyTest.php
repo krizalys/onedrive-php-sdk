@@ -21,7 +21,7 @@ class FolderViewProxyTest extends TestCase
             ->willReturn('sort_by');
 
         $sut = new FolderViewProxy($graph, $folderView);
-        $this->assertInternalType('string', $sut->sortBy);
+        $this->assertIsString($sut->sortBy);
         $this->assertSame('sort_by', $sut->sortBy);
     }
 
@@ -37,7 +37,7 @@ class FolderViewProxyTest extends TestCase
             ->willReturn('sort_order');
 
         $sut = new FolderViewProxy($graph, $folderView);
-        $this->assertInternalType('string', $sut->sortOrder);
+        $this->assertIsString($sut->sortOrder);
         $this->assertSame('sort_order', $sut->sortOrder);
     }
 
@@ -53,7 +53,7 @@ class FolderViewProxyTest extends TestCase
             ->willReturn('view_type');
 
         $sut = new FolderViewProxy($graph, $folderView);
-        $this->assertInternalType('string', $sut->viewType);
+        $this->assertIsString($sut->viewType);
         $this->assertSame('view_type', $sut->viewType);
     }
 }

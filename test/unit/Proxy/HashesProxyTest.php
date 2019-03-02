@@ -21,7 +21,7 @@ class HashesProxyTest extends TestCase
             ->willReturn('1234');
 
         $sut = new HashesProxy($graph, $hashes);
-        $this->assertInternalType('string', $sut->crc32Hash);
+        $this->assertIsString($sut->crc32Hash);
         $this->assertSame('1234', $sut->crc32Hash);
     }
 
@@ -37,7 +37,7 @@ class HashesProxyTest extends TestCase
             ->willReturn('1234');
 
         $sut = new HashesProxy($graph, $hashes);
-        $this->assertInternalType('string', $sut->quickXorHash);
+        $this->assertIsString($sut->quickXorHash);
         $this->assertSame('1234', $sut->quickXorHash);
     }
 
@@ -53,7 +53,7 @@ class HashesProxyTest extends TestCase
             ->willReturn('1234');
 
         $sut = new HashesProxy($graph, $hashes);
-        $this->assertInternalType('string', $sut->sha1Hash);
+        $this->assertIsString($sut->sha1Hash);
         $this->assertSame('1234', $sut->sha1Hash);
     }
 }

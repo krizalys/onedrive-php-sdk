@@ -107,7 +107,7 @@ class DriveItemProxyTest extends TestCase
         $resourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
         $sut = new DriveItemProxy($graph, $driveItem, $resourceDefinition);
-        $this->assertInternalType('string', $sut->cTag);
+        $this->assertIsString($sut->cTag);
         $this->assertSame('1234', $sut->cTag);
     }
 
@@ -391,7 +391,7 @@ class DriveItemProxyTest extends TestCase
         $resourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
         $sut = new DriveItemProxy($graph, $driveItem, $resourceDefinition);
-        $this->assertInternalType('int', $sut->size);
+        $this->assertIsInt($sut->size);
         $this->assertSame(1234, $sut->size);
     }
 
@@ -447,7 +447,7 @@ class DriveItemProxyTest extends TestCase
         $resourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
         $sut = new DriveItemProxy($graph, $driveItem, $resourceDefinition);
-        $this->assertInternalType('string', $sut->webDavUrl);
+        $this->assertIsString($sut->webDavUrl);
         $this->assertSame('http://webd.av/url', $sut->webDavUrl);
     }
 
@@ -495,7 +495,7 @@ class DriveItemProxyTest extends TestCase
 
         $sut    = new DriveItemProxy($graph, $driveItem, $resourceDefinition);
         $actual = $sut->permissions;
-        $this->assertInternalType('array', $actual);
+        $this->assertIsArray($actual);
         $this->assertCount(2, $actual);
 
         foreach ($actual as $permission) {
@@ -523,7 +523,7 @@ class DriveItemProxyTest extends TestCase
 
         $sut    = new DriveItemProxy($graph, $driveItem, $resourceDefinition);
         $actual = $sut->thumbnails;
-        $this->assertInternalType('array', $actual);
+        $this->assertIsArray($actual);
         $this->assertCount(2, $actual);
 
         foreach ($actual as $thumbnail) {
@@ -551,7 +551,7 @@ class DriveItemProxyTest extends TestCase
 
         $sut    = new DriveItemProxy($graph, $driveItem, $resourceDefinition);
         $actual = $sut->versions;
-        $this->assertInternalType('array', $actual);
+        $this->assertIsArray($actual);
         $this->assertCount(2, $actual);
 
         foreach ($actual as $driveItemVersion) {
@@ -756,7 +756,7 @@ class DriveItemProxyTest extends TestCase
 
         $sut    = new DriveItemProxy($graph, $item, $resourceDefinition);
         $actual = $sut->getChildren();
-        $this->assertInternalType('array', $actual);
+        $this->assertIsArray($actual);
         $this->assertCount(2, $actual);
 
         foreach ($actual as $child) {
@@ -1170,7 +1170,7 @@ class DriveItemProxyTest extends TestCase
 
         $sut    = new DriveItemProxy($graph, $item, $resourceDefinition);
         $actual = $sut->copy($destinationItem, []);
-        $this->assertInternalType('string', $actual);
+        $this->assertIsString($actual);
         $this->assertSame('http://progre.ss/url', $actual);
     }
 
@@ -1240,7 +1240,7 @@ class DriveItemProxyTest extends TestCase
         $actual = $sut->createLink(SharingLinkType::VIEW, []);
         $this->assertInstanceOf(PermissionProxy::class, $actual);
         $this->assertInstanceOf(SharingLinkProxy::class, $actual->link);
-        $this->assertInternalType('string', $actual->link->scope);
+        $this->assertIsString($actual->link->scope);
         $this->assertSame(SharingLinkScope::ANONYMOUS, $actual->link->scope);
     }
 
@@ -1343,7 +1343,7 @@ class DriveItemProxyTest extends TestCase
 
         $sut    = new DriveItemProxy($graph, $item, $resourceDefinition);
         $actual = $sut->invite([], [], []);
-        $this->assertInternalType('array', $actual);
+        $this->assertIsArray($actual);
         $this->assertCount(2, $actual);
 
         $this->assertInstanceOf(PermissionProxy::class, $actual[0]);

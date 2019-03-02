@@ -21,7 +21,7 @@ class EntityProxyTest extends TestCase
             ->willReturn('1234');
 
         $sut = new EntityProxy($graph, $entity);
-        $this->assertInternalType('string', $sut->id);
+        $this->assertIsString($sut->id);
         $this->assertSame('1234', $sut->id);
     }
 }

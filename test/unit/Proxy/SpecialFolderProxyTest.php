@@ -21,7 +21,7 @@ class SpecialFolderProxyTest extends TestCase
             ->willReturn('Name');
 
         $sut = new SpecialFolderProxy($graph, $specialFolder);
-        $this->assertInternalType('string', $sut->name);
+        $this->assertIsString($sut->name);
         $this->assertSame('Name', $sut->name);
     }
 }

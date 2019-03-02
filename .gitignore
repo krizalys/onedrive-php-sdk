@@ -2,6 +2,7 @@ vendor/
 composer.lock
 coverage.xml
 phpunit.xml
+.phpunit.result.cache
 
 # Mac OS X artifacts
 .DS_Store

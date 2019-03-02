@@ -311,7 +311,7 @@ trait AssertionsTrait
 
         if ($item->versions !== null) {
             foreach ($item->versions as $version) {
-                $this->assertInternalType('string', $version);
+                $this->assertIsString($version);
             }
         }
 
@@ -399,7 +399,7 @@ trait AssertionsTrait
         $this->assertEntityProxy($file);
         $this->assertInstanceOf(FileProxy::class, $file);
         $this->assertHashesProxy($file->hashes);
-        $this->assertInternalType('string', $file->mimeType);
+        $this->assertIsString($file->mimeType);
     }
 
     private function assertFileSystemInfoProxy($fileSystemInfo)
@@ -430,7 +430,7 @@ trait AssertionsTrait
     {
         $this->assertEntityProxy($folder);
         $this->assertInstanceOf(FolderProxy::class, $folder);
-        $this->assertInternalType('int', $folder->childCount);
+        $this->assertIsInt($folder->childCount);
         $this->assertGreaterThanOrEqual(0, $folder->childCount);
         $this->assertFolderViewProxy($folder->view);
     }
@@ -439,7 +439,7 @@ trait AssertionsTrait
     {
         $this->assertEntityProxy($folderView);
         $this->assertInstanceOf(FolderViewProxy::class, $folderView);
-        $this->assertInternalType('string', $folderView->sortBy);
+        $this->assertIsString($folderView->sortBy);
 
         $this->assertContains($folderView->sortBy, [
             FolderViewSortBy::DEFAULT_,
@@ -451,14 +451,14 @@ trait AssertionsTrait
             FolderViewSortBy::SEQUENCE,
         ]);
 
-        $this->assertInternalType('string', $folderView->sortOrder);
+        $this->assertIsString($folderView->sortOrder);
 
         $this->assertContains($folderView->sortOrder, [
             FolderViewSortOrder::ASCENDING,
             FolderViewSortOrder::DESCENDING,
         ]);
 
-        $this->assertInternalType('string', $folderView->viewType);
+        $this->assertIsString($folderView->viewType);
 
         $this->assertContains($folderView->viewType, [
             FolderViewType::DEFAULT_,
@@ -481,8 +481,8 @@ trait AssertionsTrait
             )
         );
 
-        $this->assertInternalType('string', $hashes->quickXorHash);
-        $this->assertInternalType('string', $hashes->sha1Hash);
+        $this->assertIsString($hashes->quickXorHash);
+        $this->assertIsString($hashes->sha1Hash);
     }
 
     private function assertIdentityProxy($identity)
@@ -531,8 +531,8 @@ trait AssertionsTrait
             )
         );
 
-        $this->assertInternalType('string', $itemReference->driveId);
-        $this->assertInternalType('string', $itemReference->driveType);
+        $this->assertIsString($itemReference->driveId);
+        $this->assertIsString($itemReference->driveType);
 
         $this->assertContains($itemReference->driveType, [
             DriveType::PERSONAL,
@@ -553,7 +553,7 @@ trait AssertionsTrait
     {
         $this->assertEntityProxy($package);
         $this->assertInstanceOf(PackageProxy::class, $package);
-        $this->assertInternalType('string', $package->type);
+        $this->assertIsString($package->type);
 
         $this->assertContains($package->type, [
             PackageType::ONENOTE,
@@ -643,12 +643,12 @@ trait AssertionsTrait
             $this->assertSharepointIdsProxy($remoteItem->sharepointIds);
         }
 
-        $this->assertInternalType('int', $remoteItem->size);
+        $this->assertIsInt($remoteItem->size);
         $this->assertSpecialFolderProxy($remoteItem->specialFolder);
-        $this->assertInternalType('string', $remoteItem->webDavUrl);
-        $this->assertRegExp(self::$uriRegex, $remoteItem->webDavUrl);
-        $this->assertInternalType('string', $remoteItem->webUrl);
-        $this->assertRegExp(self::$uriRegex, $remoteItem->webUrl);
+        $this->assertIsString($remoteItem->webDavUrl);
+        $this->assertMatchesRegularExpression(self::$uriRegex, $remoteItem->webDavUrl);
+        $this->assertIsString($remoteItem->webUrl);
+        $this->assertMatchesRegularExpression(self::$uriRegex, $remoteItem->webUrl);
     }
 
     private function assertRootProxy($root)
@@ -661,7 +661,7 @@ trait AssertionsTrait
     {
         $this->assertEntityProxy($specialFolder);
         $this->assertInstanceOf(SpecialFolderProxy::class, $specialFolder);
-        $this->assertInternalType('string', $specialFolder->name);
+        $this->assertIsString($specialFolder->name);
     }
 
     private function assertSharedProxy($shared)
@@ -669,7 +669,7 @@ trait AssertionsTrait
         $this->assertEntityProxy($shared);
         $this->assertInstanceOf(SharedProxy::class, $shared);
         $this->assertIdentitySetProxy($shared->owner);
-        $this->assertInternalType('string', $shared->scope);
+        $this->assertIsString($shared->scope);
 
         $this->assertContains($shared->scope, [
             SharedScope::ANONYMOUS,
@@ -694,13 +694,13 @@ trait AssertionsTrait
     {
         $this->assertEntityProxy($sharepointIds);
         $this->assertInstanceOf(SharepointIdsProxy::class, $sharepointIds);
-        $this->assertInternalType('string', $sharepointIds->listId);
-        $this->assertInternalType('string', $sharepointIds->listItemId);
-        $this->assertInternalType('string', $sharepointIds->listItemUniqueId);
-        $this->assertInternalType('string', $sharepointIds->siteId);
-        $this->assertInternalType('string', $sharepointIds->siteUrl);
-        $this->assertRegExp(self::$uriRegex, $sharepointIds->siteUrl);
-        $this->assertInternalType('string', $sharepointIds->webId);
+        $this->assertIsString($sharepointIds->listId);
+        $this->assertIsString($sharepointIds->listItemId);
+        $this->assertIsString($sharepointIds->listItemUniqueId);
+        $this->assertIsString($sharepointIds->siteId);
+        $this->assertIsString($sharepointIds->siteUrl);
+        $this->assertMatchesRegularExpression(self::$uriRegex, $sharepointIds->siteUrl);
+        $this->assertIsString($sharepointIds->webId);
     }
 
     private function assertSharingLinkProxy($sharingLink)
@@ -727,7 +727,7 @@ trait AssertionsTrait
             ]);
         }
 
-        $this->assertRegExp(self::$uriRegex, $sharingLink->webUrl);
+        $this->assertMatchesRegularExpression(self::$uriRegex, $sharingLink->webUrl);
     }
 
     private function assertThumbnailProxy($thumbnail)
@@ -743,6 +743,6 @@ trait AssertionsTrait
         $this->assertInstanceOf(\DateTime::class, $uploadSession->expirationDateTime);
         $this->assertCount(1, $uploadSession->nextExpectedRanges);
         $this->assertEquals('0-', $uploadSession->nextExpectedRanges[0]);
-        $this->assertRegExp(self::$uriRegex, $uploadSession->uploadUrl);
+        $this->assertMatchesRegularExpression(self::$uriRegex, $uploadSession->uploadUrl);
     }
 }

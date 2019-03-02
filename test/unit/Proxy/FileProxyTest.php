@@ -46,7 +46,7 @@ class FileProxyTest extends TestCase
             ->willReturn('mime/type');
 
         $sut = new FileProxy($graph, $file);
-        $this->assertInternalType('string', $sut->mimeType);
+        $this->assertIsString($sut->mimeType);
         $this->assertSame('mime/type', $sut->mimeType);
     }
 }

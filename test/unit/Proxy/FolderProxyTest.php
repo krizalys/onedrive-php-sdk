@@ -23,7 +23,7 @@ class FolderProxyTest extends TestCase
             ->willReturn(1);
 
         $sut = new FolderProxy($graph, $folder);
-        $this->assertInternalType('int', $sut->childCount);
+        $this->assertIsInt($sut->childCount);
         $this->assertSame(1, $sut->childCount);
     }
 
