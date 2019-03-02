@@ -11,6 +11,7 @@ Change log
 ### Removed
 
 - Support for PHP 5.6, PHP 7.0, PHP 7.1, and PHP 7.2.
+- V1 API.
 
 [2.7.0] - 2021-02-12
 --------------------

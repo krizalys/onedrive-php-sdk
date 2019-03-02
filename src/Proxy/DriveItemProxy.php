@@ -527,20 +527,6 @@ class DriveItemProxy extends BaseItemProxy
      */
     public function upload($name, $content, array $options = [])
     {
-        if (array_key_exists('contentType', $options)) {
-            $message = 'The \'contentType\' option is deprecated and will be'
-                . ' removed in version 3; omit this option';
-
-            @trigger_error($message, E_USER_DEPRECATED);
-        }
-
-        if (array_key_exists('Content-Type', $options)) {
-            $message = 'The \'Content-Type\' option is deprecated and will be'
-                . ' removed in version 3; omit this option';
-
-            @trigger_error($message, E_USER_DEPRECATED);
-        }
-
         $opDef = $this->resourceDefinition
             ->getResourceDefinition('content')
             ->getOperationDefinition('put');
