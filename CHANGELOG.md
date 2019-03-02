@@ -1,6 +1,14 @@
 Change log
 ==========
 
+[Unreleased][unreleased]
+------------------------
+
+### Fixed
+
+- `composer install` was failing on platforms without PHP's Zip extension, such
+as the official PHP Docker image.
+
 [2.0.2] - 2019-02-23
 --------------------
 
