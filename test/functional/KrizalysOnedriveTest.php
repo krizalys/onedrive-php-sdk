@@ -1161,7 +1161,7 @@ EOF;
             $item->webDavUrl,
             $this->logicalOr(
                 $this->isNull(),
-                $this->matchesRegularExpression('|^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?|')
+                $this->matchesRegularExpression(self::URI_REGEX)
             )
         );
 
