@@ -52,8 +52,6 @@ use Symfony\Component\Process\Process;
  */
 class KrizalysOnedriveTest extends \PHPUnit_Framework_TestCase
 {
-    const MICROSOFT_GRAPH_BASE_URI = 'https://graph.microsoft.com/v1.0/';
-
     const REDIRECT_URI_PORT = 7777;
 
     const ASYNC_POLL_TIMEOUT = 10; // In seconds.
@@ -86,9 +84,7 @@ EOF;
         $client = new Client(
             $config['CLIENT_ID'],
             new Graph(),
-            new GuzzleHttpClient(
-                ['base_uri' => MICROSOFT_GRAPH_BASE_URI]
-            ),
+            new GuzzleHttpClient(),
             new Logger('Krizalys\Onedrive\Client')
         );
 
