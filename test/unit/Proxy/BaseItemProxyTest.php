@@ -75,7 +75,7 @@ class BaseItemProxyTest extends TestCase
             ->willReturn('Description');
 
         $sut = new BaseItemProxy($graph, $baseItem);
-        $this->assertInternalType('string', $sut->description);
+        $this->assertIsString($sut->description);
         $this->assertSame('Description', $sut->description);
     }
 
@@ -91,7 +91,7 @@ class BaseItemProxyTest extends TestCase
             ->willReturn('1234');
 
         $sut = new BaseItemProxy($graph, $baseItem);
-        $this->assertInternalType('string', $sut->eTag);
+        $this->assertIsString($sut->eTag);
         $this->assertSame('1234', $sut->eTag);
     }
 
@@ -154,7 +154,7 @@ class BaseItemProxyTest extends TestCase
             ->willReturn('Name');
 
         $sut = new BaseItemProxy($graph, $baseItem);
-        $this->assertInternalType('string', $sut->name);
+        $this->assertIsString($sut->name);
         $this->assertSame('Name', $sut->name);
     }
 
@@ -193,7 +193,7 @@ class BaseItemProxyTest extends TestCase
             ->willReturn('http://w.eb/url');
 
         $sut = new BaseItemProxy($graph, $baseItem);
-        $this->assertInternalType('string', $sut->webUrl);
+        $this->assertIsString($sut->webUrl);
         $this->assertSame('http://w.eb/url', $sut->webUrl);
     }
 

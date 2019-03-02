@@ -185,7 +185,7 @@ class RemoteItemProxyTest extends TestCase
             ->willReturn('Name');
 
         $sut = new RemoteItemProxy($graph, $remoteItem);
-        $this->assertInternalType('string', $sut->name);
+        $this->assertIsString($sut->name);
         $this->assertSame('Name', $sut->name);
     }
 
@@ -275,7 +275,7 @@ class RemoteItemProxyTest extends TestCase
             ->willReturn(1234);
 
         $sut = new RemoteItemProxy($graph, $remoteItem);
-        $this->assertInternalType('int', $sut->size);
+        $this->assertIsInt($sut->size);
         $this->assertSame(1234, $sut->size);
     }
 
@@ -308,7 +308,7 @@ class RemoteItemProxyTest extends TestCase
             ->willReturn('http://webd.av/url');
 
         $sut = new RemoteItemProxy($graph, $remoteItem);
-        $this->assertInternalType('string', $sut->webDavUrl);
+        $this->assertIsString($sut->webDavUrl);
         $this->assertSame('http://webd.av/url', $sut->webDavUrl);
     }
 
@@ -324,7 +324,7 @@ class RemoteItemProxyTest extends TestCase
             ->willReturn('http://w.eb/url');
 
         $sut = new RemoteItemProxy($graph, $remoteItem);
-        $this->assertInternalType('string', $sut->webUrl);
+        $this->assertIsString($sut->webUrl);
         $this->assertSame('http://w.eb/url', $sut->webUrl);
     }
 }

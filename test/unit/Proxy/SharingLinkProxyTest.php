@@ -48,7 +48,7 @@ class SharingLinkProxyTest extends TestCase
             ->willReturn(SharingLinkScope::ANONYMOUS);
 
         $sut = new SharingLinkProxy($graph, $sharingLink);
-        $this->assertInternalType('string', $sut->scope);
+        $this->assertIsString($sut->scope);
         $this->assertSame(SharingLinkScope::ANONYMOUS, $sut->scope);
     }
 
@@ -64,7 +64,7 @@ class SharingLinkProxyTest extends TestCase
             ->willReturn(SharingLinkType::VIEW);
 
         $sut = new SharingLinkProxy($graph, $sharingLink);
-        $this->assertInternalType('string', $sut->type);
+        $this->assertIsString($sut->type);
         $this->assertSame(SharingLinkType::VIEW, $sut->type);
     }
 
@@ -80,7 +80,7 @@ class SharingLinkProxyTest extends TestCase
             ->willReturn('http://ho.st/web-url');
 
         $sut = new SharingLinkProxy($graph, $sharingLink);
-        $this->assertInternalType('string', $sut->webUrl);
+        $this->assertIsString($sut->webUrl);
         $this->assertSame('http://ho.st/web-url', $sut->webUrl);
     }
 }

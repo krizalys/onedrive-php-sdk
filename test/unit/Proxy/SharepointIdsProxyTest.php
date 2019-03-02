@@ -21,7 +21,7 @@ class SharepointIdsProxyTest extends TestCase
             ->willReturn('1234');
 
         $sut = new SharepointIdsProxy($graph, $sharepointIds);
-        $this->assertInternalType('string', $sut->listId);
+        $this->assertIsString($sut->listId);
         $this->assertSame('1234', $sut->listId);
     }
 
@@ -37,7 +37,7 @@ class SharepointIdsProxyTest extends TestCase
             ->willReturn('1234');
 
         $sut = new SharepointIdsProxy($graph, $sharepointIds);
-        $this->assertInternalType('string', $sut->listItemId);
+        $this->assertIsString($sut->listItemId);
         $this->assertSame('1234', $sut->listItemId);
     }
 
@@ -53,7 +53,7 @@ class SharepointIdsProxyTest extends TestCase
             ->willReturn('1234');
 
         $sut = new SharepointIdsProxy($graph, $sharepointIds);
-        $this->assertInternalType('string', $sut->listItemUniqueId);
+        $this->assertIsString($sut->listItemUniqueId);
         $this->assertSame('1234', $sut->listItemUniqueId);
     }
 
@@ -69,7 +69,7 @@ class SharepointIdsProxyTest extends TestCase
             ->willReturn('1234');
 
         $sut = new SharepointIdsProxy($graph, $sharepointIds);
-        $this->assertInternalType('string', $sut->siteId);
+        $this->assertIsString($sut->siteId);
         $this->assertSame('1234', $sut->siteId);
     }
 
@@ -85,7 +85,7 @@ class SharepointIdsProxyTest extends TestCase
             ->willReturn('http://si.te/url');
 
         $sut = new SharepointIdsProxy($graph, $sharepointIds);
-        $this->assertInternalType('string', $sut->siteUrl);
+        $this->assertIsString($sut->siteUrl);
         $this->assertSame('http://si.te/url', $sut->siteUrl);
     }
 
@@ -101,7 +101,7 @@ class SharepointIdsProxyTest extends TestCase
             ->willReturn('1234');
 
         $sut = new SharepointIdsProxy($graph, $sharepointIds);
-        $this->assertInternalType('string', $sut->webId);
+        $this->assertIsString($sut->webId);
         $this->assertSame('1234', $sut->webId);
     }
 }

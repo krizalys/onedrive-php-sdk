@@ -38,7 +38,7 @@ class SharedProxyTest extends TestCase
             ->willReturn($identitySet);
 
         $sut = new SharedProxy($graph, $shared);
-        $this->assertInternalType('string', $sut->owner->application->displayName);
+        $this->assertIsString($sut->owner->application->displayName);
         $this->assertSame('Display Name', $sut->owner->application->displayName);
     }
 
@@ -54,7 +54,7 @@ class SharedProxyTest extends TestCase
             ->willReturn(SharedScope::ANONYMOUS);
 
         $sut = new SharedProxy($graph, $shared);
-        $this->assertInternalType('string', $sut->scope);
+        $this->assertIsString($sut->scope);
         $this->assertSame(SharedScope::ANONYMOUS, $sut->scope);
     }
 
@@ -84,7 +84,7 @@ class SharedProxyTest extends TestCase
             ->willReturn($identitySet);
 
         $sut = new SharedProxy($graph, $shared);
-        $this->assertInternalType('string', $sut->sharedBy->application->displayName);
+        $this->assertIsString($sut->sharedBy->application->displayName);
         $this->assertSame('Display Name', $sut->sharedBy->application->displayName);
     }
 

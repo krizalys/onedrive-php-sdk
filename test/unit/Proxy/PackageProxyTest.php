@@ -22,7 +22,7 @@ class PackageProxyTest extends TestCase
             ->willReturn(PackageType::ONENOTE);
 
         $sut = new PackageProxy($graph, $package);
-        $this->assertInternalType('string', $sut->type);
+        $this->assertIsString($sut->type);
         $this->assertSame(PackageType::ONENOTE, $sut->type);
     }
 }

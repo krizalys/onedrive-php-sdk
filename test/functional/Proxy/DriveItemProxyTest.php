@@ -25,7 +25,7 @@ class DriveItemProxyTest extends TestCase
 
     private static $root;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 
@@ -61,14 +61,11 @@ class DriveItemProxyTest extends TestCase
         });
     }
 
-    /**
-     * @expectedException \Krizalys\Onedrive\Exception\ConflictException
-     *
-     * @expectedExceptionMessage There is already a drive item named "Test
-     *                           folder" in this folder
-     */
     public function testCreateFolderWhenExistingAndFailConflictBehavior()
     {
+        $this->expectException(\Krizalys\Onedrive\Exception\ConflictException::class);
+        $this->expectExceptionMessage('There is already a drive item named "Test folder" in this folder');
+
         self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $sandbox->createFolder('Test folder');
 
@@ -214,14 +211,11 @@ class DriveItemProxyTest extends TestCase
         });
     }
 
-    /**
-     * @expectedException \Krizalys\Onedrive\Exception\ConflictException
-     *
-     * @expectedExceptionMessage There is already a drive item named
-     *                           "Test%20file" in this folder
-     */
     public function testUploadStringWhenExistingAndFailConflictBehavior()
     {
+        $this->expectException(\Krizalys\Onedrive\Exception\ConflictException::class);
+        $this->expectExceptionMessage('There is already a drive item named "Test%20file" in this folder');
+
         self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $sandbox->upload(
                 'Test file',
@@ -310,14 +304,11 @@ class DriveItemProxyTest extends TestCase
         });
     }
 
-    /**
-     * @expectedException \Krizalys\Onedrive\Exception\ConflictException
-     *
-     * @expectedExceptionMessage There is already a drive item named
-     *                           "Test%20file" in this folder
-     */
     public function testUploadStreamWhenExistingAndFailConflictBehavior()
     {
+        $this->expectException(\Krizalys\Onedrive\Exception\ConflictException::class);
+        $this->expectExceptionMessage('There is already a drive item named "Test%20file" in this folder');
+
         self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $sandbox->upload(
                 'Test file',
@@ -425,14 +416,11 @@ class DriveItemProxyTest extends TestCase
         });
     }
 
-    /**
-     * @expectedException \Krizalys\Onedrive\Exception\ConflictException
-     *
-     * @expectedExceptionMessage There is already a drive item named
-     *                           "Test%20file" in this folder
-     */
     public function testStartUploadStringWhenExistingAndFailConflictBehavior()
     {
+        $this->expectException(\Krizalys\Onedrive\Exception\ConflictException::class);
+        $this->expectExceptionMessage('There is already a drive item named "Test%20file" in this folder');
+
         self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $sandbox->upload(
                 'Test file',
@@ -543,14 +531,11 @@ class DriveItemProxyTest extends TestCase
         });
     }
 
-    /**
-     * @expectedException \Krizalys\Onedrive\Exception\ConflictException
-     *
-     * @expectedExceptionMessage There is already a drive item named
-     *                           "Test%20file" in this folder
-     */
     public function testStartUploadStreamWhenExistingAndFailConflictBehavior()
     {
+        $this->expectException(\Krizalys\Onedrive\Exception\ConflictException::class);
+        $this->expectExceptionMessage('There is already a drive item named "Test%20file" in this folder');
+
         self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $sandbox->upload(
                 'Test file',
@@ -737,7 +722,7 @@ class DriveItemProxyTest extends TestCase
                 return $this->getAndDecode($uri)->status == 'completed';
             });
 
-            $this->assertRegExp(self::$uriRegex, $uri);
+            $this->assertMatchesRegularExpression(self::$uriRegex, $uri);
             $driveItems = $destination->getChildren(['top' => 2]);
             $this->assertCount(1, $driveItems);
             $driveItem = $driveItems[0];
@@ -763,7 +748,7 @@ class DriveItemProxyTest extends TestCase
                 return $this->getAndDecode($uri)->status == 'completed';
             });
 
-            $this->assertRegExp(self::$uriRegex, $uri);
+            $this->assertMatchesRegularExpression(self::$uriRegex, $uri);
             $driveItems = $destination->getChildren(['top' => 2]);
             $this->assertCount(1, $driveItems);
             $driveItem = $driveItems[0];
