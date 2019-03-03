@@ -3,7 +3,6 @@
 namespace Krizalys\Onedrive;
 
 use Krizalys\Onedrive\Proxy\DriveItemProxy;
-use Psr\Log\LogLevel;
 
 /**
  * @class Folder
@@ -62,7 +61,7 @@ class Folder extends DriveItem
             __METHOD__
         );
 
-        $client->log(LogLevel::WARNING, $message);
+        @trigger_error($message, E_USER_DEPRECATED);
         $drive = $client->getMyDrive();
         $item  = $client->getDriveItemById($drive->id, $this->_id);
 
@@ -96,7 +95,7 @@ class Folder extends DriveItem
             __METHOD__
         );
 
-        $client->log(LogLevel::WARNING, $message);
+        @trigger_error($message, E_USER_DEPRECATED);
         $drive = $client->getMyDrive();
         $item  = $client->getDriveItemById($drive->id, $this->_id);
 
@@ -136,7 +135,7 @@ class Folder extends DriveItem
             __METHOD__
         );
 
-        $client->log(LogLevel::WARNING, $message);
+        @trigger_error($message, E_USER_DEPRECATED);
         $drive   = $client->getMyDrive();
         $item    = $client->getDriveItemById($drive->id, $this->_id);
         $options = [];
@@ -185,7 +184,7 @@ class Folder extends DriveItem
             __METHOD__
         );
 
-        $client->log(LogLevel::WARNING, $message);
+        @trigger_error($message, E_USER_DEPRECATED);
         $drive   = $client->getMyDrive();
         $item    = $client->getDriveItemById($drive->id, $this->_id);
         $options = [];

@@ -44,7 +44,6 @@ use Krizalys\Onedrive\Proxy\UserProxy;
 use Krizalys\Onedrive\Proxy\VideoProxy;
 use Krizalys\Onedrive\Proxy\WorkbookProxy;
 use Microsoft\Graph\Graph;
-use Monolog\Logger;
 use Symfony\Component\Process\Process;
 
 /**
@@ -84,8 +83,7 @@ EOF;
         $client = new Client(
             $config['CLIENT_ID'],
             new Graph(),
-            new GuzzleHttpClient(),
-            new Logger('Krizalys\Onedrive\Client')
+            new GuzzleHttpClient()
         );
 
         self::$clientSecret = $config['SECRET'];
