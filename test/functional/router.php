@@ -8,7 +8,7 @@ function route()
 
     if ($path == '/') {
         if (!array_key_exists('query', $components)) {
-            throw new Exception('code not given');
+            throw new \Exception('code not given');
         }
 
         parse_str($components['query'], $query);

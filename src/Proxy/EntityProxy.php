@@ -1,15 +1,37 @@
 <?php
 
+/**
+ * This file is part of Krizalys' OneDrive SDK for PHP.
+ *
+ * For the full copyright and license information, please view the LICENSE file
+ * that was distributed with this source code.
+ *
+ * @author    Christophe Vidal
+ * @copyright 2008-2019 Christophe Vidal (http://www.krizalys.com)
+ * @license   https://opensource.org/licenses/BSD-3-Clause 3-Clause BSD License
+ * @link      https://github.com/krizalys/onedrive-php-sdk
+ */
+
 namespace Krizalys\Onedrive\Proxy;
 
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model\Entity;
 
+/**
+ * A proxy to a \Microsoft\Graph\Model\Entity instance.
+ *
+ * @property-read string $id
+ *                The ID.
+ *
+ * @since 2.0.0
+ *
+ * @link https://github.com/microsoftgraph/msgraph-sdk-php/blob/dev/src/Model/Entity.php
+ */
 class EntityProxy
 {
     /**
      * @var Graph
-     *      The graph.
+     *      The Microsoft Graph.
      */
     protected $graph;
 
@@ -23,9 +45,11 @@ class EntityProxy
      * Constructor.
      *
      * @param Graph $graph
-     *        The graph.
+     *        The Microsoft Graph.
      * @param Entity $entity
      *        The entity.
+     *
+     * @since 2.0.0
      */
     public function __construct(Graph $graph, Entity $entity)
     {
@@ -41,6 +65,8 @@ class EntityProxy
      *
      * @return mixed
      *         The value.
+     *
+     * @since 2.0.0
      */
     public function __get($name)
     {

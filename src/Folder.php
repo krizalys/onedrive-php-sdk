@@ -1,17 +1,35 @@
 <?php
 
+/**
+ * This file is part of Krizalys' OneDrive SDK for PHP.
+ *
+ * For the full copyright and license information, please view the LICENSE file
+ * that was distributed with this source code.
+ *
+ * @author    Christophe Vidal
+ * @copyright 2008-2019 Christophe Vidal (http://www.krizalys.com)
+ * @license   https://opensource.org/licenses/BSD-3-Clause 3-Clause BSD License
+ * @link      https://github.com/krizalys/onedrive-php-sdk
+ */
+
 namespace Krizalys\Onedrive;
 
 use Krizalys\Onedrive\Proxy\DriveItemProxy;
 
 /**
- * @class Folder
+ * A proxy to a folder stored on a OneDrive drive.
  *
- * A Folder instance is a DriveItem instance referencing to a OneDrive folder.
- * It may contain other OneDrive drive items but may not have content.
+ * A `Folder `instance is a kind of
+ * {@see \Krizalys\Onedrive\DriveItem DriveItem} which may have child OneDrive
+ * items, retrievable using
+ * {@see Folder::fetchChildDriveItems() fetchChildDriveItems()}, but may not
+ * have content.
  *
- * @deprecated Use Krizalys\Onedrive\Proxy\DriveItemProxy and/or
- *             Krizalys\Onedrive\Proxy\Folder instead.
+ * @deprecated 2.0.0 Superseded by \Krizalys\Onedrive\Proxy\DriveItemProxy and
+ *             \Krizalys\Onedrive\Proxy\Folder.
+ *
+ * @see \Krizalys\Onedrive\Proxy\DriveItemProxy
+ * @see \Krizalys\Onedrive\Proxy\Folder
  */
 class Folder extends DriveItem
 {
@@ -27,13 +45,15 @@ class Folder extends DriveItem
      * Constructor.
      *
      * @param Client $client
-     *        The Client instance owning this DriveItem instance.
+     *        The `Client` instance owning this DriveItem instance.
      * @param null|string $id
      *        The unique ID of the OneDrive drive item referenced by this
      *        DriveItem instance, or null to reference the OneDrive root folder.
      *        Default: null.
      * @param array|object $options
      *        Options to pass to the DriveItem constructor.
+     *
+     * @since 1.0.0
      */
     public function __construct(Client $client, $id = null, $options = [])
     {
@@ -45,10 +65,15 @@ class Folder extends DriveItem
      * instance.
      *
      * @return array
-     *         The drive items in the OneDrive folder referenced by this Folder
-     *         instance, as DriveItem instances.
+     *         The drive items in the OneDrive folder referenced by this
+     *         `Folder` instance, as DriveItem instances.
      *
-     * @deprecated Use Krizalys\Onedrive\Proxy\DriveItemProxy::children instead.
+     * @since 2.0.0
+     *
+     * @deprecated 2.0.0 Superseded by
+     *             \Krizalys\Onedrive\Proxy\DriveItemProxy::children.
+     *
+     * @see \Krizalys\Onedrive\Proxy\DriveItemProxy::children
      */
     public function fetchDriveItems()
     {
@@ -56,7 +81,7 @@ class Folder extends DriveItem
 
         $message = sprintf(
             '%s() is deprecated and will be removed in version 3;'
-                . ' use Krizalys\Onedrive\Proxy\DriveItemProxy::children'
+                . ' use \Krizalys\Onedrive\Proxy\DriveItemProxy::children'
                 . ' instead',
             __METHOD__
         );
@@ -79,10 +104,15 @@ class Folder extends DriveItem
      * Folder instance.
      *
      * @return array
-     *         The drive items in the OneDrive folder referenced by this Folder
-     *         instance, as DriveItem instances.
+     *         The drive items in the OneDrive folder referenced by this
+     *         `Folder` instance, as DriveItem instances.
      *
-     * @deprecated Use Krizalys\Onedrive\Proxy\DriveItemProxy::children instead.
+     * @since 2.0.0
+     *
+     * @deprecated 2.0.0 Superseded by
+     *             \Krizalys\Onedrive\Proxy\DriveItemProxy::children.
+     *
+     * @see \Krizalys\Onedrive\Proxy\DriveItemProxy::children
      */
     public function fetchChildDriveItems()
     {
@@ -90,7 +120,7 @@ class Folder extends DriveItem
 
         $message = sprintf(
             '%s() is deprecated and will be removed in version 3;'
-                . ' use Krizalys\Onedrive\Proxy\DriveItemProxy::children'
+                . ' use \Krizalys\Onedrive\Proxy\DriveItemProxy::children'
                 . ' instead',
             __METHOD__
         );
@@ -119,10 +149,14 @@ class Folder extends DriveItem
      *        create it without a description. Default: null.
      *
      * @return Folder
-     *         The folder created, as a Folder instance.
+     *         The folder created, as a `Folder` instance.
      *
-     * @deprecated Use Krizalys\Onedrive\Proxy\DriveItemProxy::createFolder()
-     *             instead.
+     * @since 1.0.0
+     *
+     * @deprecated 2.0.0 Superseded by
+     *             \Krizalys\Onedrive\Proxy\DriveItemProxy::createFolder().
+     *
+     * @see \Krizalys\Onedrive\Proxy\DriveItemProxy::createFolder()
      */
     public function createFolder($name, $description = null)
     {
@@ -130,7 +164,7 @@ class Folder extends DriveItem
 
         $message = sprintf(
             '%s() is deprecated and will be removed in version 3;'
-                . ' use Krizalys\Onedrive\Proxy\DriveItemProxy::createFolder()'
+                . ' use \Krizalys\Onedrive\Proxy\DriveItemProxy::createFolder()'
                 . ' instead',
             __METHOD__
         );
@@ -168,10 +202,15 @@ class Folder extends DriveItem
      * @return File
      *         The file created, as a File instance.
      *
-     * @throws Exception
+     * @throws \Exception
      *         Thrown on I/O errors.
      *
-     * @deprecated Use Krizalys\Onedrive\Proxy\DriveItemProxy::upload() instead.
+     * @since 1.0.0
+     *
+     * @deprecated 2.0.0 Superseded by
+     *             \Krizalys\Onedrive\Proxy\DriveItemProxy::upload().
+     *
+     * @see \Krizalys\Onedrive\Proxy\DriveItemProxy::upload()
      */
     public function createFile($name, $content = '', array $options = [])
     {
@@ -179,7 +218,7 @@ class Folder extends DriveItem
 
         $message = sprintf(
             '%s() is deprecated and will be removed in version 3;'
-                . ' use Krizalys\Onedrive\Proxy\DriveItemProxy::upload()'
+                . ' use \Krizalys\Onedrive\Proxy\DriveItemProxy::upload()'
                 . ' instead',
             __METHOD__
         );

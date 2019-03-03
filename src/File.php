@@ -1,15 +1,32 @@
 <?php
 
+/**
+ * This file is part of Krizalys' OneDrive SDK for PHP.
+ *
+ * For the full copyright and license information, please view the LICENSE file
+ * that was distributed with this source code.
+ *
+ * @author    Christophe Vidal
+ * @copyright 2008-2019 Christophe Vidal (http://www.krizalys.com)
+ * @license   https://opensource.org/licenses/BSD-3-Clause 3-Clause BSD License
+ * @link      https://github.com/krizalys/onedrive-php-sdk
+ */
+
 namespace Krizalys\Onedrive;
 
 /**
- * @class File
+ * A proxy to a file stored on a OneDrive drive.
  *
- * A File instance is a DriveItem instance referencing a OneDrive file. It may
- * have content but may not contain other OneDrive drive items.
+ * A `File` instance is a kind of {@see \Krizalys\Onedrive\DriveItem DriveItem}
+ * instance which may have content, downloadable using
+ * {@see File::fetchContent() fetchContent()}, but may not have child OneDrive
+ * items.
  *
- * @deprecated Use Krizalys\Onedrive\Proxy\DriveItemProxy and/or
- *             Krizalys\Onedrive\Proxy\File instead.
+ * @deprecated 2.0.0 Superseded by \Krizalys\Onedrive\Proxy\DriveItemProxy and
+ *             \Krizalys\Onedrive\Proxy\File.
+ *
+ * @see \Krizalys\Onedrive\Proxy\DriveItemProxy
+ * @see \Krizalys\Onedrive\Proxy\File
  */
 class File extends DriveItem
 {
@@ -17,12 +34,14 @@ class File extends DriveItem
      * Constructor.
      *
      * @param Client $client
-     *        The Client instance owning this DriveItem instance.
+     *        The `Client` instance owning this DriveItem instance.
      * @param null|string $id
      *        The unique ID of the OneDrive drive item referenced by this
      *        DriveItem instance.
      * @param array|object $options
      *        Options to pass to the DriveItem constructor.
+     *
+     * @since 1.0.0
      */
     public function __construct(Client $client, $id, $options = [])
     {
@@ -37,13 +56,16 @@ class File extends DriveItem
      *        Extra cURL options to apply.
      *
      * @return string
-     *         The content of the OneDrive file referenced by this File
+     *         The content of the OneDrive file referenced by this `File`
      *         instance.
      *
      * @todo Should somewhat return the content-type as well; this information
      *       is not disclosed by OneDrive.
      *
-     * @deprecated Use Krizalys\Onedrive\Proxy\DriveItemProxy::content instead.
+     * @since 1.0.0
+     *
+     * @deprecated 2.0.0 Redundant feature. Use
+     *             \Krizalys\Onedrive\Proxy\DriveItemProxy::content.
      */
     public function fetchContent(array $options = [])
     {
@@ -51,7 +73,7 @@ class File extends DriveItem
 
         $message = sprintf(
             '%s() is deprecated and will be removed in version 3;'
-                . ' use Krizalys\Onedrive\Proxy\DriveItemProxy::content'
+                . ' use \Krizalys\Onedrive\Proxy\DriveItemProxy::content'
                 . ' instead.',
             __METHOD__
         );
@@ -67,12 +89,19 @@ class File extends DriveItem
      * Copies the OneDrive file referenced by this File instance into another
      * OneDrive folder.
      *
+     * `$destinationId` must refer to a folder.
+     *
      * @param null|string $destinationId
      *        The unique ID of the OneDrive folder into which to copy the
-     *        OneDrive file referenced by this File instance, or null to copy it
-     *        in the OneDrive root folder. Default: null.
+     *        OneDrive file referenced by this `File` instance, or null to copy
+     *        it in the OneDrive root folder. Default: null.
      *
-     * @deprecated Use Krizalys\Onedrive\Proxy\DriveItemProxy::copy() instead.
+     * @since 1.0.0
+     *
+     * @deprecated 2.0.0 Superseded by
+     *             \Krizalys\Onedrive\Proxy\DriveItemProxy::copy().
+     *
+     * @see \Krizalys\Onedrive\Proxy\DriveItemProxy::copy()
      */
     public function copy($destinationId = null)
     {
@@ -80,7 +109,7 @@ class File extends DriveItem
 
         $message = sprintf(
             '%s() is deprecated and will be removed in version 3;'
-                . ' use Krizalys\Onedrive\Proxy\DriveItemProxy::copy()'
+                . ' use \Krizalys\Onedrive\Proxy\DriveItemProxy::copy()'
                 . ' instead.',
             __METHOD__
         );

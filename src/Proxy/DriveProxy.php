@@ -1,20 +1,60 @@
 <?php
 
+/**
+ * This file is part of Krizalys' OneDrive SDK for PHP.
+ *
+ * For the full copyright and license information, please view the LICENSE file
+ * that was distributed with this source code.
+ *
+ * @author    Christophe Vidal
+ * @copyright 2008-2019 Christophe Vidal (http://www.krizalys.com)
+ * @license   https://opensource.org/licenses/BSD-3-Clause 3-Clause BSD License
+ * @link      https://github.com/krizalys/onedrive-php-sdk
+ */
+
 namespace Krizalys\Onedrive\Proxy;
 
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model\Drive;
 use Microsoft\Graph\Model\DriveItem;
 
+/**
+ * A proxy to a \Microsoft\Graph\Model\Drive instance.
+ *
+ * @property-read string $driveType
+ *                The drive type.
+ * @property-read \Krizalys\Onedrive\Proxy\IdentitySetProxy $owner
+ *                The owner.
+ * @property-read \Krizalys\Onedrive\Proxy\QuotaProxy $quota
+ *                The quota.
+ * @property-read \Krizalys\Onedrive\Proxy\SharepointIdsProxy $sharePointIds
+ *                The SharePoint IDs.
+ * @property-read \Krizalys\Onedrive\Proxy\SystemFacetProxy $system
+ *                The system facet.
+ * @property-read \Krizalys\Onedrive\Proxy\DriveItemProxy[] $items
+ *                The items.
+ * @property-read \Krizalys\Onedrive\Proxy\GraphListProxy $list
+ *                The list.
+ * @property-read \Krizalys\Onedrive\Proxy\DriveItemProxy $root
+ *                The root.
+ * @property-read \Krizalys\Onedrive\Proxy\DriveItemProxy special
+ *                The special.
+ *
+ * @since 2.0.0
+ *
+ * @link https://github.com/microsoftgraph/msgraph-sdk-php/blob/dev/src/Model/Drive.php
+ */
 class DriveProxy extends BaseItemProxy
 {
     /**
      * Constructor.
      *
      * @param Graph $graph
-     *        The graph.
+     *        The Microsoft Graph.
      * @param Drive $drive
      *        The drive.
+     *
+     * @since 2.0.0
      */
     public function __construct(Graph $graph, Drive $drive)
     {
@@ -29,6 +69,8 @@ class DriveProxy extends BaseItemProxy
      *
      * @return mixed
      *         The value.
+     *
+     * @since 2.0.0
      */
     public function __get($name)
     {
@@ -79,8 +121,15 @@ class DriveProxy extends BaseItemProxy
     }
 
     /**
+     * Gets the root of this instance.
+     *
      * @return DriveItemProxy
      *         The root.
+     *
+     * @since 2.0.0
+     *
+     * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_get?view=odsp-graph-online
+     *       Get a DriveItem resource
      */
     public function getRoot()
     {
