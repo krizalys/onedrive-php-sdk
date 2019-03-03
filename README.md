@@ -123,9 +123,7 @@ use Monolog\Logger;
 $client = new Client(
     $config['ONEDRIVE_CLIENT_ID'],
     new Graph(),
-    new GuzzleHttpClient(
-        ['base_uri' => 'https://graph.microsoft.com/v1.0/']
-    ),
+    new GuzzleHttpClient(),
     new Logger('Krizalys\Onedrive\Client')
 );
 
@@ -199,9 +197,7 @@ if (!array_key_exists('onedrive.client.state', $_SESSION)) {
 $client = new Client(
     $config['ONEDRIVE_CLIENT_ID'],
     new Graph(),
-    new GuzzleHttpClient(
-        ['base_uri' => 'https://graph.microsoft.com/v1.0/']
-    ),
+    new GuzzleHttpClient(),
     new Logger('Krizalys\Onedrive\Client'),
     [
         // Restore the previous state while instantiating this client to proceed
