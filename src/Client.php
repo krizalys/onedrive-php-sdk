@@ -76,9 +76,9 @@ class Client implements LoggerAwareInterface
      *        The client ID.
      * @param Microsoft\Graph\Graph $graph
      *        The graph.
-     * @param GuzzleHttp\ClientInterface
+     * @param GuzzleHttp\ClientInterface $httpClient
      *        The HTTP client.
-     * @param Psr\Log\LoggerInterface
+     * @param Psr\Log\LoggerInterface $logger
      *        The logger.
      * @param array $options
      *        The options to use while creating this object.
