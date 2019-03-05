@@ -4,6 +4,10 @@ Change log
 [Unreleased][unreleased]
 ------------------------
 
+### Added
+
+- Support for large file uploads.
+
 ### Changed
 
 - Deprecated usages are now reported using `trigger_error`; A
