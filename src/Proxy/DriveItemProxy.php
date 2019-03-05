@@ -7,14 +7,12 @@ use GuzzleHttp\Psr7\Stream;
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model\DriveItem;
 use Microsoft\Graph\Model\DriveItemVersion;
-use Microsoft\Graph\Model\UploadSession;
 use Microsoft\Graph\Model\Permission;
 use Microsoft\Graph\Model\Thumbnail;
+use Microsoft\Graph\Model\UploadSession;
 
 class DriveItemProxy extends BaseItemProxy
 {
-	const BASE_CHUNK_SIZE  = 320 * 1024; //minimal chunk size 320 KiB
-	
     /**
      * Constructor.
      *
@@ -303,45 +301,10 @@ class DriveItemProxy extends BaseItemProxy
 
         return new self($this->graph, $driveItem);
     }
-	
-	/**
-     * Validate options array.
-     *
-     * @param array $options
-     *        The options.
-     *
-     * @return bool
-     *         The boolean value.
-     */
-	private function validateOptions(array $options = [])
-	{
-		$validationErrors = "";
-		$streamSize       = $options['streamSize'];
-		$chunkSize        = $options['chunkSize'];
-		
-		if(!isset($streamSize)){
-			$validationErrors .= PHP_EOL."streamSize isn't set in options";
-		}else if(!is_numeric($streamSize)){
-			$validationErrors .= PHP_EOL."streamSize should be numeric";
-		}else if((int)$streamSize <= 0){
-			$validationErrors .= PHP_EOL."streamSize should be positive integer";
-		}
-		
-		if(!isset($chunkSize)){
-			$validationErrors .= PHP_EOL."chunkSize isn't set in options";
-		}else if(!is_numeric($chunkSize)){
-			$validationErrors .= PHP_EOL."chunkSize should be numeric";
-		}else if((int)$chunkSize <= 0){
-			$validationErrors .= PHP_EOL."chunkSize should be positive integer";
-		}else if(((int)$chunkSize % DriveItemProxy::BASE_CHUNK_SIZE) != 0){
-			$validationErrors .= PHP_EOL."chunkSize should be multiple of ".DriveItemProxy::BASE_CHUNK_SIZE;
-		}
-		
-		return $validationErrors;
-	}
-	
-	/**
-     * Creates a upload session to upload a file under this folder drive item.
+
+    /**
+     * Creates an upload session to upload a large file in multiple ranges under
+     * this folder drive item.
      *
      * @param string $name
      *        The name.
@@ -353,48 +316,31 @@ class DriveItemProxy extends BaseItemProxy
      * @return UploadSessionProxy
      *         The upload session created.
      *
+     * @todo Support name conflict behavior.
+     * @todo Support content type in options.
      */
     public function startUpload($name, $content, array $options = [])
     {
-		$name         = rawurlencode($name);
+        $name         = rawurlencode($name);
         $driveLocator = "/drives/{$this->parentReference->driveId}";
         $itemLocator  = "/items/{$this->id}";
-		$endpoint = "$driveLocator$itemLocator:/$name:/createUploadSession";
-		
-		$validation = $this->validateOptions($options);
-		
-		if(!empty($validation)){
-			throw new \Exception("Validation failed for upload options : $validation");
-		}
-		
-		//Create item array for upload session
-		$item = [
-			'name' => $name,
-			'@microsoft.graph.conflictBehavior' => isset($options['conflictBehavior']) ? $options['conflictBehavior'] : 'rename',
-		];
-		
-		//Add description as extended item to above
-		if(isset($options['description'])){
-			$item = $item + ['description' => $options['description']];
-		}
-		
-		//create an upload session for large files
-		$response = $this
-			->graph
-			->createRequest('POST', $endpoint)
-			->attachBody(array("item" =>$item))
-			->execute();
-		
-		$status = $response->getStatus();
-		
-		if ($status != 200) {
-			throw new \Exception("Unexpected status code produced by 'PUT $endpoint': $status");
-		}
-		
-		$uploadSession = $response->getResponseAsObject(UploadSession::class);
-		
-		return new UploadSessionProxy($this->graph, $uploadSession, $name, $content, $options);
-	}
+        $endpoint     = "$driveLocator$itemLocator:/$name:/createUploadSession";
+
+        $response = $this
+            ->graph
+            ->createRequest('POST', $endpoint)
+            ->execute();
+
+        $status = $response->getStatus();
+
+        if ($status != 200) {
+            throw new \Exception("Unexpected status code produced by 'POST $endpoint': $status");
+        }
+
+        $uploadSession = $response->getResponseAsObject(UploadSession::class);
+
+        return new UploadSessionProxy($this->graph, $uploadSession, $content, $options);
+    }
 
     /**
      * Downloads this file drive item.
