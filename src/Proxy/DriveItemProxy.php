@@ -9,6 +9,7 @@ use Microsoft\Graph\Model\DriveItem;
 use Microsoft\Graph\Model\DriveItemVersion;
 use Microsoft\Graph\Model\Permission;
 use Microsoft\Graph\Model\Thumbnail;
+use Microsoft\Graph\Model\UploadSession;
 
 class DriveItemProxy extends BaseItemProxy
 {
@@ -299,6 +300,46 @@ class DriveItemProxy extends BaseItemProxy
         $driveItem = $response->getResponseAsObject(DriveItem::class);
 
         return new self($this->graph, $driveItem);
+    }
+
+    /**
+     * Creates an upload session to upload a large file in multiple ranges under
+     * this folder drive item.
+     *
+     * @param string $name
+     *        The name.
+     * @param string|resource|\GuzzleHttp\Psr7\Stream $content
+     *        The content.
+     * @param array $options
+     *        The options.
+     *
+     * @return UploadSessionProxy
+     *         The upload session created.
+     *
+     * @todo Support name conflict behavior.
+     * @todo Support content type in options.
+     */
+    public function startUpload($name, $content, array $options = [])
+    {
+        $name         = rawurlencode($name);
+        $driveLocator = "/drives/{$this->parentReference->driveId}";
+        $itemLocator  = "/items/{$this->id}";
+        $endpoint     = "$driveLocator$itemLocator:/$name:/createUploadSession";
+
+        $response = $this
+            ->graph
+            ->createRequest('POST', $endpoint)
+            ->execute();
+
+        $status = $response->getStatus();
+
+        if ($status != 200) {
+            throw new \Exception("Unexpected status code produced by 'POST $endpoint': $status");
+        }
+
+        $uploadSession = $response->getResponseAsObject(UploadSession::class);
+
+        return new UploadSessionProxy($this->graph, $uploadSession, $content, $options);
     }
 
     /**

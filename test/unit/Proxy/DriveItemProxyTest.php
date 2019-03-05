@@ -24,6 +24,7 @@ use Krizalys\Onedrive\Proxy\SharedProxy;
 use Krizalys\Onedrive\Proxy\SharepointIdsProxy;
 use Krizalys\Onedrive\Proxy\SpecialFolderProxy;
 use Krizalys\Onedrive\Proxy\ThumbnailProxy;
+use Krizalys\Onedrive\Proxy\UploadSessionProxy;
 use Krizalys\Onedrive\Proxy\VideoProxy;
 use Krizalys\Onedrive\Proxy\WorkbookProxy;
 use Microsoft\Graph\Graph;
@@ -51,12 +52,14 @@ use Microsoft\Graph\Model\Shared;
 use Microsoft\Graph\Model\SharepointIds;
 use Microsoft\Graph\Model\SpecialFolder;
 use Microsoft\Graph\Model\Thumbnail;
+use Microsoft\Graph\Model\UploadSession;
 use Microsoft\Graph\Model\Video;
 use Microsoft\Graph\Model\Workbook;
 
 class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
 {
-    const DRIVE_ITEM_ID = '0123';
+    const DRIVE_ITEM_ID     = '0123';
+    const UPLOAD_SESSION_ID = '4567';
 
     public function testAudioShouldReturnExpectedValue()
     {
@@ -395,6 +398,17 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(self::DRIVE_ITEM_ID, $actual->id);
     }
 
+    public function testStartUploadShouldReturnExpectedValue()
+    {
+        $item          = $this->mockDriveItem();
+        $uploadSession = $this->mockUploadSession(['id' => self::UPLOAD_SESSION_ID]);
+        $graph         = $this->mockGraphWithResponse(200, ['body' => $uploadSession]);
+        $sut           = new DriveItemProxy($graph, $item);
+        $actual        = $sut->startUpload('Irrelevant', 'Test content', []);
+        $this->assertInstanceOf(UploadSessionProxy::class, $actual);
+        $this->assertSame(self::UPLOAD_SESSION_ID, $actual->id);
+    }
+
     public function testDownloadShouldReturnExpectedValue()
     {
         $item     = $this->mockDriveItem();
@@ -501,5 +515,16 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
         $driveItemProxy = $this->createMock(DriveItemProxy::class);
 
         return $driveItemProxy;
+    }
+
+    private function mockUploadSession(array $options = [])
+    {
+        $uploadSession = $this->createMock(UploadSession::class);
+
+        if (array_key_exists('id', $options)) {
+            $uploadSession->method('getId')->willReturn($options['id']);
+        }
+
+        return $uploadSession;
     }
 }
