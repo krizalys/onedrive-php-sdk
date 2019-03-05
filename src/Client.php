@@ -7,10 +7,6 @@ use Krizalys\Onedrive\Proxy\DriveItemProxy;
 use Krizalys\Onedrive\Proxy\DriveProxy;
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
-use Psr\Log\LoggerInterface;
-use Psr\Log\LogLevel;
 
 /**
  * @class Client
@@ -21,10 +17,8 @@ use Psr\Log\LogLevel;
  * To manage your Live Connect applications, see here:
  * https://apps.dev.microsoft.com/#/appList
  */
-class Client implements LoggerAwareInterface
+class Client
 {
-    use LoggerAwareTrait;
-
     /**
      * @var string
      *      The base URL for authorization requests.
@@ -76,10 +70,11 @@ class Client implements LoggerAwareInterface
      *        The client ID.
      * @param Microsoft\Graph\Graph $graph
      *        The graph.
-     * @param GuzzleHttp\ClientInterface
+     * @param GuzzleHttp\ClientInterface $httpClient
      *        The HTTP client.
-     * @param Psr\Log\LoggerInterface
-     *        The logger.
+     * @param mixed $logger
+     *        Deprecated and will be removed in version 3; omit this parameter,
+     *        or pass null or options instead.
      * @param array $options
      *        The options to use while creating this object.
      *        Valid supported keys are:
@@ -93,9 +88,19 @@ class Client implements LoggerAwareInterface
         $clientId,
         Graph $graph,
         ClientInterface $httpClient,
-        LoggerInterface $logger,
+        $logger = null,
         array $options = []
     ) {
+        if (func_num_args() == 4 && is_array($logger)) {
+            $options = $logger;
+            $logger  = null;
+        } elseif ($logger !== null) {
+            $message = '$logger is deprecated and will be removed in version 3;'
+                . ' omit this parameter, or pass null or options instead';
+
+            @trigger_error($message, E_USER_DEPRECATED);
+        }
+
         if ($clientId === null) {
             throw new \Exception('The client ID must be set');
         }
@@ -103,7 +108,6 @@ class Client implements LoggerAwareInterface
         $this->clientId   = $clientId;
         $this->graph      = $graph;
         $this->httpClient = $httpClient;
-        $this->logger     = $logger;
 
         $this->_state = array_key_exists('state', $options)
             ? $options['state'] : (object) [
@@ -657,7 +661,7 @@ class Client implements LoggerAwareInterface
             __METHOD__
         );
 
-        $this->log(LogLevel::WARNING, $message);
+        @trigger_error($message, E_USER_DEPRECATED);
         $drive = $this->getMyDrive();
 
         $item = $parentId !== null ?
@@ -718,7 +722,7 @@ class Client implements LoggerAwareInterface
             __METHOD__
         );
 
-        $this->log(LogLevel::WARNING, $message);
+        @trigger_error($message, E_USER_DEPRECATED);
         $drive = $this->getMyDrive();
 
         $item = $parentId !== null ?
@@ -752,7 +756,7 @@ class Client implements LoggerAwareInterface
             __METHOD__
         );
 
-        $this->log(LogLevel::WARNING, $message);
+        @trigger_error($message, E_USER_DEPRECATED);
         $drive = $this->getMyDrive();
 
         $item = $driveItemId !== null ?
@@ -783,7 +787,7 @@ class Client implements LoggerAwareInterface
             __METHOD__
         );
 
-        $this->log(LogLevel::WARNING, $message);
+        @trigger_error($message, E_USER_DEPRECATED);
         $item    = $this->getRoot();
         $options = $this->buildOptions($item);
 
@@ -807,7 +811,7 @@ class Client implements LoggerAwareInterface
             __METHOD__
         );
 
-        $this->log(LogLevel::WARNING, $message);
+        @trigger_error($message, E_USER_DEPRECATED);
         $item    = $this->getSpecialFolder('cameraroll');
         $options = $this->buildOptions($item);
 
@@ -831,7 +835,7 @@ class Client implements LoggerAwareInterface
             __METHOD__
         );
 
-        $this->log(LogLevel::WARNING, $message);
+        @trigger_error($message, E_USER_DEPRECATED);
         $item    = $this->getSpecialFolder('documents');
         $options = $this->buildOptions($item);
 
@@ -855,7 +859,7 @@ class Client implements LoggerAwareInterface
             __METHOD__
         );
 
-        $this->log(LogLevel::WARNING, $message);
+        @trigger_error($message, E_USER_DEPRECATED);
         $item    = $this->getSpecialFolder('photos');
         $options = $this->buildOptions($item);
 
@@ -882,7 +886,7 @@ class Client implements LoggerAwareInterface
             __METHOD__
         );
 
-        $this->log(LogLevel::WARNING, $message);
+        @trigger_error($message, E_USER_DEPRECATED);
         $drive = $this->getMyDrive();
 
         $item = $driveItemId !== null ?
@@ -923,7 +927,7 @@ class Client implements LoggerAwareInterface
             __METHOD__
         );
 
-        $this->log(LogLevel::WARNING, $message);
+        @trigger_error($message, E_USER_DEPRECATED);
         $drive = $this->getMyDrive();
 
         $item = $driveItemId !== null ?
@@ -963,7 +967,7 @@ class Client implements LoggerAwareInterface
             __METHOD__
         );
 
-        $this->log(LogLevel::WARNING, $message);
+        @trigger_error($message, E_USER_DEPRECATED);
         $drive = $this->getMyDrive();
 
         $item = $driveItemId !== null ?
@@ -1005,7 +1009,7 @@ class Client implements LoggerAwareInterface
             __METHOD__
         );
 
-        $this->log(LogLevel::WARNING, $message);
+        @trigger_error($message, E_USER_DEPRECATED);
         $drive = $this->getMyDrive();
         $item  = $this->getDriveItemById($drive->id, $driveItemId);
 
@@ -1037,7 +1041,7 @@ class Client implements LoggerAwareInterface
             __METHOD__
         );
 
-        $this->log(LogLevel::WARNING, $message);
+        @trigger_error($message, E_USER_DEPRECATED);
         $drive = $this->getMyDrive();
         $item  = $this->getDriveItemById($drive->id, $driveItemId);
 
@@ -1065,7 +1069,7 @@ class Client implements LoggerAwareInterface
             __METHOD__
         );
 
-        $this->log(LogLevel::WARNING, $message);
+        @trigger_error($message, E_USER_DEPRECATED);
         $drive = $this->getMyDrive();
         $item  = $this->getDriveItemById($drive->id, $driveItemId);
         $item->delete();
@@ -1089,7 +1093,7 @@ class Client implements LoggerAwareInterface
             __METHOD__
         );
 
-        $this->log(LogLevel::WARNING, $message);
+        @trigger_error($message, E_USER_DEPRECATED);
         $drive = $this->getMyDrive();
         $quota = $drive->quota;
 
@@ -1116,7 +1120,7 @@ class Client implements LoggerAwareInterface
             __METHOD__
         );
 
-        $this->log(LogLevel::WARNING, $message);
+        @trigger_error($message, E_USER_DEPRECATED);
         $items = $this->getRecent();
 
         return (object) [
@@ -1143,7 +1147,7 @@ class Client implements LoggerAwareInterface
             __METHOD__
         );
 
-        $this->log(LogLevel::WARNING, $message);
+        @trigger_error($message, E_USER_DEPRECATED);
         $items = $this->getShared();
 
         return (object) [
@@ -1151,21 +1155,6 @@ class Client implements LoggerAwareInterface
                 return (object) $this->buildOptions($item);
             }, $items),
         ];
-    }
-
-    /**
-     * Logs with an arbitrary level.
-     *
-     * @param mixed $level
-     *        The level.
-     * @param string $message
-     *        The message.
-     * @param array $context
-     *        The context.
-     */
-    public function log($level, $message, array $context = [])
-    {
-        $this->logger->log($level, $message, $context);
     }
 
     /**

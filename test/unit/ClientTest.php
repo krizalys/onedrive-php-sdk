@@ -13,7 +13,6 @@ use Microsoft\Graph\Http\GraphResponse;
 use Microsoft\Graph\Model\Drive;
 use Microsoft\Graph\Model\DriveItem;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Log\LoggerInterface;
 
 class ClientTest extends \PHPUnit_Framework_TestCase
 {
@@ -34,16 +33,14 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     {
         $graph      = $this->mockGraph();
         $httpClient = $this->createMock(ClientInterface::class);
-        $logger     = $this->createMock(LoggerInterface::class);
-        new Client(null, $graph, $httpClient, $logger, []);
+        new Client(null, $graph, $httpClient, []);
     }
 
     public function testGetLogInUrlShouldReturnExpectedValue()
     {
         $graph      = $this->mockGraph();
         $httpClient = $this->createMock(ClientInterface::class);
-        $logger     = $this->createMock(LoggerInterface::class);
-        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, $logger);
+        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, []);
 
         $scopes = [
             'test.scope.1',
@@ -267,8 +264,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $drive      = $this->mockDrive(self::DRIVE_ID);
         $graph      = $this->mockGraphWithCollectionResponse([$drive]);
         $httpClient = $this->createMock(ClientInterface::class);
-        $logger     = $this->createMock(LoggerInterface::class);
-        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, $logger);
+        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, []);
         $actual     = $sut->getDrives();
         $this->assertInternalType('array', $actual);
         $this->assertCount(1, $actual);
@@ -284,8 +280,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $drive      = $this->mockDrive(self::DRIVE_ID);
         $graph      = $this->mockGraphWithResponse($drive);
         $httpClient = $this->createMock(ClientInterface::class);
-        $logger     = $this->createMock(LoggerInterface::class);
-        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, $logger);
+        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, []);
         $actual     = $sut->getMyDrive();
         $this->assertInstanceOf(DriveProxy::class, $actual);
         $this->assertSame(self::DRIVE_ID, $actual->id);
@@ -296,8 +291,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $drive      = $this->mockDrive(self::DRIVE_ID);
         $graph      = $this->mockGraphWithResponse($drive);
         $httpClient = $this->createMock(ClientInterface::class);
-        $logger     = $this->createMock(LoggerInterface::class);
-        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, $logger);
+        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, []);
         $actual     = $sut->getDriveById(self::DRIVE_ID);
         $this->assertInstanceOf(DriveProxy::class, $actual);
         $this->assertSame(self::DRIVE_ID, $actual->id);
@@ -308,8 +302,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $drive      = $this->mockDrive(self::DRIVE_ID);
         $graph      = $this->mockGraphWithResponse($drive);
         $httpClient = $this->createMock(ClientInterface::class);
-        $logger     = $this->createMock(LoggerInterface::class);
-        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, $logger);
+        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, []);
         $actual     = $sut->getDriveByUser(self::USER_ID);
         $this->assertInstanceOf(DriveProxy::class, $actual);
         $this->assertSame(self::DRIVE_ID, $actual->id);
@@ -320,8 +313,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $drive      = $this->mockDrive(self::DRIVE_ID);
         $graph      = $this->mockGraphWithResponse($drive);
         $httpClient = $this->createMock(ClientInterface::class);
-        $logger     = $this->createMock(LoggerInterface::class);
-        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, $logger);
+        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, []);
         $actual     = $sut->getDriveByGroup(self::GROUP_ID);
         $this->assertInstanceOf(DriveProxy::class, $actual);
         $this->assertSame(self::DRIVE_ID, $actual->id);
@@ -332,8 +324,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $drive      = $this->mockDrive(self::DRIVE_ID);
         $graph      = $this->mockGraphWithResponse($drive);
         $httpClient = $this->createMock(ClientInterface::class);
-        $logger     = $this->createMock(LoggerInterface::class);
-        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, $logger);
+        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, []);
         $actual     = $sut->getDriveBySite(self::SITE_ID);
         $this->assertInstanceOf(DriveProxy::class, $actual);
         $this->assertSame(self::DRIVE_ID, $actual->id);
@@ -344,8 +335,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $item       = $this->mockDriveItem(self::DRIVE_ITEM_ID);
         $graph      = $this->mockGraphWithResponse($item);
         $httpClient = $this->createMock(ClientInterface::class);
-        $logger     = $this->createMock(LoggerInterface::class);
-        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, $logger);
+        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, []);
         $actual     = $sut->getDriveItemById(self::DRIVE_ID, self::DRIVE_ITEM_ID);
         $this->assertInstanceOf(DriveItemProxy::class, $actual);
         $this->assertSame(self::DRIVE_ITEM_ID, $actual->id);
@@ -356,8 +346,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $item       = $this->mockDriveItem(self::DRIVE_ITEM_ID);
         $graph      = $this->mockGraphWithResponse($item);
         $httpClient = $this->createMock(ClientInterface::class);
-        $logger     = $this->createMock(LoggerInterface::class);
-        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, $logger);
+        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, []);
         $actual     = $sut->getRoot();
         $this->assertInstanceOf(DriveItemProxy::class, $actual);
         $this->assertSame(self::DRIVE_ITEM_ID, $actual->id);
@@ -368,8 +357,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $item       = $this->mockDriveItem(self::DRIVE_ITEM_ID);
         $graph      = $this->mockGraphWithResponse($item);
         $httpClient = $this->createMock(ClientInterface::class);
-        $logger     = $this->createMock(LoggerInterface::class);
-        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, $logger);
+        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, []);
         $actual     = $sut->getSpecialFolder('documents');
         $this->assertInstanceOf(DriveItemProxy::class, $actual);
         $this->assertSame(self::DRIVE_ITEM_ID, $actual->id);
@@ -380,8 +368,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $item       = $this->mockDriveItem(self::DRIVE_ITEM_ID);
         $graph      = $this->mockGraphWithCollectionResponse([$item]);
         $httpClient = $this->createMock(ClientInterface::class);
-        $logger     = $this->createMock(LoggerInterface::class);
-        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, $logger);
+        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, []);
         $actual     = $sut->getShared();
 
         foreach ($actual as $item) {
@@ -395,8 +382,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $item       = $this->mockDriveItem(self::DRIVE_ITEM_ID);
         $graph      = $this->mockGraphWithCollectionResponse([$item]);
         $httpClient = $this->createMock(ClientInterface::class);
-        $logger     = $this->createMock(LoggerInterface::class);
-        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, $logger);
+        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, []);
         $actual     = $sut->getRecent();
 
         foreach ($actual as $item) {
@@ -411,8 +397,6 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             $options['httpClient']
             : $this->createMock(ClientInterface::class);
 
-        $logger = $this->createMock(LoggerInterface::class);
-
         $options = array_key_exists('options', $options) ?
             $options['options']
             : [];
@@ -421,7 +405,6 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             self::CLIENT_ID,
             $graph,
             $httpClient,
-            $logger,
             $options
         );
     }

@@ -4,6 +4,14 @@ Change log
 [Unreleased][unreleased]
 ------------------------
 
+### Changed
+
+- Deprecated usages are now reported using `trigger_error`; A
+  `Psr\Log\LoggerInterface` instance is not needed anymore.
+- `Krizalys\Onedrive\Client::__construct()`: passing a logger instance via
+  `$logger` is now deprecated & reports a notice. Omit this parameter, or pass
+  `null` or options instead.
+
 ### Fixed
 
 - `composer install` was failing on platforms without PHP's Zip extension, such

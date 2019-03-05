@@ -117,16 +117,12 @@ require_once '/path/to/onedrive-php-sdk/vendor/autoload.php';
 use GuzzleHttp\Client as GuzzleHttpClient;
 use Krizalys\Onedrive\Client;
 use Microsoft\Graph\Graph;
-use Monolog\Logger;
 
 // Instantiates a OneDrive client bound to your OneDrive application.
 $client = new Client(
     $config['ONEDRIVE_CLIENT_ID'],
     new Graph(),
-    new GuzzleHttpClient(
-        ['base_uri' => 'https://graph.microsoft.com/v1.0/']
-    ),
-    new Logger('Krizalys\Onedrive\Client')
+    new GuzzleHttpClient()
 );
 
 // Gets a log in URL with sufficient privileges from the OneDrive API.
@@ -179,7 +175,6 @@ require_once '/path/to/onedrive-php-sdk/vendor/autoload.php';
 use GuzzleHttp\Client as GuzzleHttpClient;
 use Krizalys\Onedrive\Client;
 use Microsoft\Graph\Graph;
-use Monolog\Logger;
 
 // If we don't have a code in the query string (meaning that the user did not
 // log in successfully or did not grant privileges requested), we cannot proceed
@@ -199,10 +194,7 @@ if (!array_key_exists('onedrive.client.state', $_SESSION)) {
 $client = new Client(
     $config['ONEDRIVE_CLIENT_ID'],
     new Graph(),
-    new GuzzleHttpClient(
-        ['base_uri' => 'https://graph.microsoft.com/v1.0/']
-    ),
-    new Logger('Krizalys\Onedrive\Client'),
+    new GuzzleHttpClient(),
     [
         // Restore the previous state while instantiating this client to proceed
         // in obtaining an access token.

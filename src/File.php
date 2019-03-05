@@ -2,8 +2,6 @@
 
 namespace Krizalys\Onedrive;
 
-use Psr\Log\LogLevel;
-
 /**
  * @class File
  *
@@ -58,7 +56,7 @@ class File extends DriveItem
             __METHOD__
         );
 
-        $client->log(LogLevel::WARNING, $message);
+        @trigger_error($message, E_USER_DEPRECATED);
         $drive = $client->getMyDrive();
         $item  = $client->getDriveItemById($drive->id, $this->_id);
 
@@ -87,7 +85,7 @@ class File extends DriveItem
             __METHOD__
         );
 
-        $client->log(LogLevel::WARNING, $message);
+        @trigger_error($message, E_USER_DEPRECATED);
         $drive           = $client->getMyDrive();
         $item            = $client->getDriveItemById($drive->id, $this->_id);
         $destinationItem = $client->getDriveItemById($drive->id, $destinationId);

@@ -45,7 +45,6 @@ use Krizalys\Onedrive\Proxy\UserProxy;
 use Krizalys\Onedrive\Proxy\VideoProxy;
 use Krizalys\Onedrive\Proxy\WorkbookProxy;
 use Microsoft\Graph\Graph;
-use Monolog\Logger;
 use Symfony\Component\Process\Process;
 
 /**
@@ -53,8 +52,6 @@ use Symfony\Component\Process\Process;
  */
 class KrizalysOnedriveTest extends \PHPUnit_Framework_TestCase
 {
-    const MICROSOFT_GRAPH_BASE_URI = 'https://graph.microsoft.com/v1.0/';
-
     const REDIRECT_URI_PORT = 7777;
 
     const ASYNC_POLL_TIMEOUT = 10; // In seconds.
@@ -87,10 +84,7 @@ EOF;
         $client = new Client(
             $config['CLIENT_ID'],
             new Graph(),
-            new GuzzleHttpClient(
-                ['base_uri' => MICROSOFT_GRAPH_BASE_URI]
-            ),
-            new Logger('Krizalys\Onedrive\Client')
+            new GuzzleHttpClient()
         );
 
         self::$clientSecret = $config['SECRET'];
@@ -1184,7 +1178,7 @@ EOF;
             $item->webDavUrl,
             $this->logicalOr(
                 $this->isNull(),
-                $this->matchesRegularExpression('|^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?|')
+                $this->matchesRegularExpression(self::URI_REGEX)
             )
         );
 
