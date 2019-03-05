@@ -1247,15 +1247,7 @@ EOF;
     private function assertUploadSessionProxy($uploadSession)
     {
         $this->assertInstanceOf(UploadSessionProxy::class, $uploadSession);
-
-        $this->assertThat(
-            $uploadSession->expirationDateTime,
-            $this->logicalOr(
-                $this->isNull(),
-                $this->isInstanceOf(\DateTime::class)
-            )
-        );
-
+        $this->assertInstanceOf(\DateTime::class, $uploadSession->expirationDateTime);
         $this->assertCount(1, $uploadSession->nextExpectedRanges);
         $this->assertEquals('0-', $uploadSession->nextExpectedRanges[0]);
         $this->assertRegExp(self::URI_REGEX, $uploadSession->uploadUrl);
@@ -1327,14 +1319,12 @@ EOF;
             'Test file',
             $string,
             [
-                'conflictBehavior' => 'replace',
-                'streamSize'       => $size,
-                'chunkSize'        => 320 * 1024,
+                'Content-Type' => 'text/plain',
             ]
         );
 
         $this->assertUploadSessionProxy($uploadSession);
-        $item = $uploadSession->run();
+        $item = $uploadSession->complete();
         $this->assertDriveItemProxy($item);
         $this->assertNotNull($item->parentReference);
         $this->assertEquals($sandbox->id, $item->parentReference->id);
@@ -1354,14 +1344,12 @@ EOF;
             'Test file',
             $stream,
             [
-                'conflictBehavior' => 'replace',
-                'streamSize'       => $size,
-                'chunkSize'        => 320 * 1024,
+                'Content-Type' => 'text/plain',
             ]
         );
 
         $this->assertUploadSessionProxy($uploadSession);
-        $item = $uploadSession->run();
+        $item = $uploadSession->complete();
         $this->assertDriveItemProxy($item);
         $this->assertNotNull($item->parentReference);
         $this->assertEquals($sandbox->id, $item->parentReference->id);
