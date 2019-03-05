@@ -1243,7 +1243,7 @@ EOF;
             'Test file',
             'Test content',
             [
-                'Content-Type: text/plain',
+                'Content-Type' => 'text/plain',
             ]
         );
 
@@ -1264,7 +1264,7 @@ EOF;
             'Test file',
             $content,
             [
-                'Content-Type: text/plain',
+                'Content-Type' => 'text/plain',
             ]
         );
 
@@ -1305,7 +1305,7 @@ EOF;
             $name,
             $content,
             [
-                'Content-Type: text/plain',
+                'Content-Type' => 'text/plain',
             ]
         );
     }
