@@ -3,43 +3,75 @@
 namespace Krizalys\Onedrive\Proxy;
 
 use GuzzleHttp\Psr7;
+use GuzzleHttp\Psr7\LimitStream;
 use GuzzleHttp\Psr7\Stream;
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model\DriveItem;
 use Microsoft\Graph\Model\UploadSession;
 
-class UploadSessionProxy extends EntityProxy {
-	
-	private $name;
-	private $resource;
-	private $options;
-	
-	const MIN_CHUNK_SIZE  = 320 * 1024; //minimal chunk size 320 KiB
-	const MAX_CHUNK_SIZE  = 60 * 1024 * 1024; //minimal chunk size 60 MiB
-	
-	/**
+class UploadSessionProxy extends EntityProxy
+{
+    /**
+     * @var int
+     *      Range size multiple. OneDrive requires 320 KiB.
+     */
+    const RANGE_SIZE_MULTIPLE = 320 * 1024;
+
+    /**
+     * @var int
+     *      Minimum range size.
+     */
+    const MIN_RANGE_SIZE = self::RANGE_SIZE_MULTIPLE;
+
+    /**
+     * @var int
+     *      Maximal range size. OneDrive limits to 60 MiB.
+     */
+    const MAX_RANGE_SIZE = 60 * 1024 * 1024;
+
+    /**
+     * @var string|resource|\GuzzleHttp\Psr7\Stream
+     *      The content.
+     */
+    private $content;
+
+    /**
+     * @var int
+     *      The type.
+     */
+    private $type;
+
+    /**
+     * @var int
+     *      The chunk size, in bytes.
+     */
+    private $rangeSize;
+
+    /**
      * Constructor.
      *
-     * @param Graph
+     * @param Graph $graph
      *        The graph.
-     * @param UploadSession
+     * @param UploadSession $uploadSession
      *        The upload session.
-	 * @param string Name
-	 *        The name.
-	 * @param string|resource|\GuzzleHttp\Psr7\Stream
-	 *        The content.
-	 * @param array options
-	 *        The options.
+     * @param string|resource|\GuzzleHttp\Psr7\Stream $content
+     *        The content.
+     * @param array $options
+     *        The options.
      */
-	public function __construct(Graph $graph, UploadSession $uploadSession, string $name, $resource, array $options = [])
-	{
-		parent::__construct($graph, $uploadSession);
-		$this->name = $name;
-		$this->resource = $resource;
-		$this->options = $options;
-	}
-	
-	/**
+    public function __construct(
+        Graph $graph,
+        UploadSession $uploadSession,
+        $content,
+        array $options = []
+    ) {
+        parent::__construct($graph, $uploadSession);
+        $this->content   = $content;
+        $this->type      = array_key_exists('type', $options) ? $options['type'] : null;
+        $this->rangeSize = array_key_exists('range_size', $options) ? $options['range_size'] : null;
+    }
+
+    /**
      * Getter.
      *
      * @param string $name
@@ -55,111 +87,81 @@ class UploadSessionProxy extends EntityProxy {
         switch ($name) {
             case 'expirationDateTime':
                 return $uploadSession->getExpirationDateTime();
-				
-			case 'nextExpectedRanges':
+
+            case 'nextExpectedRanges':
                 return $uploadSession->getNextExpectedRanges();
-				
-			case 'uploadUrl':
+
+            case 'uploadUrl':
                 return $uploadSession->getUploadUrl();
-			
+
             default:
                 return parent::__get($name);
         }
     }
-	
-	/**
-     * Checks options array for key.
-     *
-     * @param string $key
-     *        The key.
-     *
-     * @return bool
-     *         The boolean value.
-     */
-	private function isOptionExists(string $key)
-	{
-		return array_key_exists($key, $this->options);
-	}
-	
-	/**
-     * Gets value corresponding to key
-	 * from options array
-     *
-     * @param string $key
-     *        The key.
-     *
-     * @return mixed
-     *         The value.
-     */
-	private function getOption(string $key)
-	{
-		return $this->options[$key];
-	}
-	
-	/**
-     * Uploads file contents as chunks.
-	 *
-     * @todo Support retry on error while uploading chunks.
-     */
-	public function run()
-	{
-		
-		$resourceStream =  $this->resource instanceof Stream ? $this->resource : Psr7\stream_for($this->resource);
-		$bytes = "";
-		$bytesRead=0;
-		$totalSize = 0;
-		
-		//Get the resource size from options array. If not available, calculate from stream contents
-		$totalSize = $this->isOptionExists("streamSize") ? $this->getOption("streamSize") : strlen($resourceStream ->getContents());
-		$resourceStream->rewind(); //rewind stream handle to start of stream
-		
-		//Default chunk size to MIN_CHUNK_SIZE
-		$chunkSize = UploadSessionProxy::MIN_CHUNK_SIZE;
-		
-		//If user defined chunk size exists in options array get the size matching the range 320 KiB < chunkSize < 60 MiB
-		if($this->isOptionExists("chunkSize")) {
-			$chunkSize = min(max($chunkSize, $this->getOption("chunkSize")), UploadSessionProxy::MAX_CHUNK_SIZE);
-		}
-		
-		while (!$resourceStream->eof()) {
-			
-			$bytes = $resourceStream->read($chunkSize);
-			$bytesLength = strlen($bytes);
-			
-			//initialise bytes read, and interval range
-			$byteIntervalStart=$bytesRead;
-			$bytesRead += $bytesLength;
-			$byteIntervalEnd=$bytesRead-1;
-			
-			//upload headers containing bytes Content length and range
-			$sessionHeaders = [
-				"Content-Length" => $bytesLength,
-				"Content-Range" => "bytes $byteIntervalStart-$byteIntervalEnd/$totalSize",
-			];
-			
-			//create a PUT request for chunks
-			$response = $this
-				->graph
-				->createRequest('PUT', $this->uploadUrl)
-				->addHeaders($sessionHeaders)
-				->attachBody($bytes)
-				->execute();
-			
-			$status = $response->getStatus();
-			
-			if($status != 201 && $status != 202){
-				throw new \Exception("Unexpected status code produced by 'PUT $endpoint': $status");
-			}
-			
-			if($status === 201){
-				//resource created in onedrive return response object as DriveItem
-				return $response->getResponseAsObject(DriveItem::class);
-			}
-			
-		}
-		
-		return new self($this->graph, $this->uploadSession, $this->name, $this->resource, $this->options);
-	}
-}
 
-?>
+    /**
+     * Uploads the content in multiple ranges and completes this session.
+     *
+     * @return DriveItemProxy
+     *         The drive item created.
+     *
+     * @todo Support retries on errors.
+     */
+    public function complete()
+    {
+        $stream = $this->content instanceof Stream ?
+            $this->content
+            : Psr7\stream_for($this->content);
+
+        if ($this->rangeSize !== null) {
+            $rangeSize = $options['range_size'];
+            $rangeSize = $rangeSize - $rangeSize / self::RANGE_SIZE_MULTIPLE;
+            $rangeSize = max($rangeSize, self::MAX_RANGE_SIZE);
+            $rangeSize = min($rangeSize, self::MIN_RANGE_SIZE);
+        } else {
+            $rangeSize = self::RANGE_SIZE_MULTIPLE;
+        }
+
+        $size   = $stream->getSize();
+        $offset = 0;
+
+        while (!$stream->eof()) {
+            $rangeStream = new LimitStream($stream, $rangeSize, $offset);
+            $rangeSize   = $rangeStream->getSize();
+            $body        = $rangeStream->getContents();
+            $rangeFirst  = $offset;
+            $offset += $rangeSize;
+            $rangeLast = $offset - 1;
+
+            $headers = [
+                'Content-Length' => $rangeSize,
+                'Content-Range'  => "bytes $rangeFirst-$rangeLast/$size",
+            ];
+
+            if ($this->type !== null) {
+                $headers['Content-Type'] = $this->type;
+            }
+
+            $response = $this
+                ->graph
+                ->createRequest('PUT', $this->uploadUrl)
+                ->addHeaders($headers)
+                ->attachBody($body)
+                ->execute();
+
+            $status = $response->getStatus();
+
+            if ($status == 200 || $status == 201) {
+                $driveItem = $response->getResponseAsObject(DriveItem::class);
+
+                return new DriveItemProxy($this->graph, $driveItem);
+            }
+
+            if ($status != 202) {
+                throw new \Exception("Unexpected status code produced by 'PUT {$this->uploadUrl}': $status");
+            }
+        }
+
+        throw new \Exception('OneDrive did not create a drive item for the uploaded file');
+    }
+}
