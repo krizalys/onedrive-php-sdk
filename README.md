@@ -37,16 +37,15 @@ For development, you also require:
 Installation
 ------------
 
-From the root of this repository, get the required dependencies using
+The recommended way to install OneDrive SDK for PHP is to install it using
 [Composer][composer]:
 
-```
-$ composer install -n --no-dev
+```sh
+composer require krizalys/onedrive-php-sdk
 ```
 
-During the process, a `vendor/autoload.php` file will be created and allows you
-to use classes from OneDrive SDK for PHP without needing to explicitly
-`require()` files that define them.
+If you are not already using Composer in your PHP project, refer to [the
+Composer documentation][composer] to learn how to set it up first.
 
 Quick start
 -----------
@@ -97,7 +96,6 @@ return [
      */
     'ONEDRIVE_REDIRECT_URI' => 'http://your.domain.com/redirect.php',
 ];
-?>
 ```
 
 ### Step 2: direct your users to the sign in page
@@ -105,14 +103,14 @@ return [
 This script is responsible for, given a set of privileges, fetching a login URL
 from the OneDrive API. It then needs to guide the users to this URL so they
 initiate their log in and privilege granting process. The script should look
-like (replace `/path/to` by the appropriate values):
+like this:
 
 ```php
 <?php
 // index.php
 
-($config = include '/path/to/config.php') or die('Configuration file not found');
-require_once '/path/to/onedrive-php-sdk/vendor/autoload.php';
+($config = include __DIR__ . '/config.php') or die('Configuration file not found');
+require_once __DIR__ . '/vendor/autoload.php';
 
 use GuzzleHttp\Client as GuzzleHttpClient;
 use Krizalys\Onedrive\Client;
@@ -137,13 +135,11 @@ $url = $client->getLogInUrl([
 session_start();
 
 // Persist the OneDrive client' state for next API requests.
-$_SESSION = [
-    'onedrive.client.state' => $client->getState(),
-];
+$_SESSION['onedrive.client.state'] = $client->getState();
 
-// Guide the user to the log in URL (you may also use an HTTP/JS redirect).
-echo "<a href='$url'>Next step</a>";
-?>
+// Redirect the user to the log in URL.
+header('HTTP/1.1 302 Found', true, 302);
+header("Location: $url");
 ```
 
 ### Step 3: get an OAuth access token
@@ -169,8 +165,8 @@ It typically looks like (replace `/path/to` by the appropriate values):
 <?php
 // redirect.php
 
-($config = include '/path/to/config.php') or die('Configuration file not found');
-require_once '/path/to/onedrive-php-sdk/vendor/autoload.php';
+($config = include __DIR__ . '/config.php') or die('Configuration file not found');
+require_once __DIR__ . '/vendor/autoload.php';
 
 use GuzzleHttp\Client as GuzzleHttpClient;
 use Krizalys\Onedrive\Client;
@@ -209,8 +205,11 @@ $client->obtainAccessToken($config['ONEDRIVE_CLIENT_SECRET'], $_GET['code']);
 $_SESSION['onedrive.client.state'] = $client->getState();
 
 // Past this point, you can start using file/folder functions from the SDK, eg:
-var_dump($client->getDrives());
-?>
+$file = $client->getRoot()->upload('hello.txt', 'Hello World!');
+echo $file->download('hello.txt');
+// => Hello World!
+
+$file->delete();
 ```
 
 For details about classes and methods available, see the [project
@@ -224,14 +223,14 @@ To run the functional test suite:
 1. Set your application configuration at `test/functional/config.php` ;
 2. Run your WebDriver server, for example:
 
-```
+```sh
 java -jar selenium-server-standalone-3.14.0.jar
 ```
 
 3. Run the functional test (it assumes that your Selenium WebDriver is listening
    on port 4444):
 
-```
+```sh
 vendor/bin/phpunit -c test/functional
 ```
 
