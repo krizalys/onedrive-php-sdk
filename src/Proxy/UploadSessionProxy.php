@@ -115,9 +115,9 @@ class UploadSessionProxy extends EntityProxy
 
         if ($this->rangeSize !== null) {
             $rangeSize = $options['range_size'];
-            $rangeSize = $rangeSize - $rangeSize / self::RANGE_SIZE_MULTIPLE;
-            $rangeSize = max($rangeSize, self::MAX_RANGE_SIZE);
-            $rangeSize = min($rangeSize, self::MIN_RANGE_SIZE);
+            $rangeSize = $rangeSize - $rangeSize % self::RANGE_SIZE_MULTIPLE;
+            $rangeSize = min($rangeSize, self::MAX_RANGE_SIZE);
+            $rangeSize = max($rangeSize, self::MIN_RANGE_SIZE);
         } else {
             $rangeSize = self::RANGE_SIZE_MULTIPLE;
         }
