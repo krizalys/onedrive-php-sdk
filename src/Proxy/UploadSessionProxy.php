@@ -114,7 +114,7 @@ class UploadSessionProxy extends EntityProxy
             : Psr7\stream_for($this->content);
 
         if ($this->rangeSize !== null) {
-            $rangeSize = $options['range_size'];
+            $rangeSize = $this->rangeSize;
             $rangeSize = $rangeSize - $rangeSize % self::RANGE_SIZE_MULTIPLE;
             $rangeSize = min($rangeSize, self::MAX_RANGE_SIZE);
             $rangeSize = max($rangeSize, self::MIN_RANGE_SIZE);
