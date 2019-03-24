@@ -43,45 +43,11 @@ class UploadSessionProxyTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('http://uplo.ad/url', $sut->uploadUrl);
     }
 
-    public function testCompleteShouldReturnExpectedValue()
+    public function testCompleteWithStringContentShouldReturnExpectedValue()
     {
         $item = $this->createMock(DriveItem::class);
         $item->method('getId')->willReturn('123abc');
 
-        $response = $this->createMock(GraphResponse::class);
-        $response->method('getStatus')->willReturn('201');
-        $response->method('getResponseAsObject')->willReturn($item);
-
-        $request = $this->createMock(GraphRequest::class);
-        $request->method('addHeaders')->willReturnSelf();
-        $request->method('attachBody')->willReturnSelf();
-        $request->method('execute')->willReturn($response);
-
-        $graph = $this->createMock(Graph::class);
-        $graph->method('createRequest')->willReturn($request);
-
-        $uploadSession = $this->createMock(UploadSession::class);
-        $content       = '';
-        $sut           = new UploadSessionProxy($graph, $uploadSession, $content, []);
-        $actual        = $sut->complete();
-        $this->assertInstanceOf(DriveItemProxy::class, $actual);
-        $this->assertSame('123abc', $actual->id);
-    }
-
-    public static function getSampleContent()
-    {
-        $content = '';
-        for ($i=1; $i <= 20000; ++$i) { //creates a 340KiB  file content
-            $content .= "Sample text $i" . PHP_EOL;
-        }
-
-        return $content;
-    }
-
-    public function testCompleteWithTextContentShouldReturnExpectedValue()
-    {
-        $item = $this->createMock(DriveItem::class);
-        $item->method('getId')->willReturn('test123');
         $response = $this->createMock(GraphResponse::class);
         $response->method('getStatus')->will($this->onConsecutiveCalls(202, 201));
         $response->method('getResponseAsObject')->willReturn($item);
@@ -95,26 +61,105 @@ class UploadSessionProxyTest extends \PHPUnit_Framework_TestCase
         $graph->method('createRequest')->willReturn($request);
 
         $uploadSession = $this->createMock(UploadSession::class);
+        $content       = str_repeat('1', 327680 + 1);
 
         $options = [
-            'range_size' => 348894,
-            'type'       => 'text/plain',
+            'range_size' => 327680,
         ];
 
-        $sut           = new UploadSessionProxy($graph, $uploadSession, self::getSampleContent(), $options);
-        $actual        = $sut->complete();
+        $sut    = new UploadSessionProxy($graph, $uploadSession, $content, $options);
+        $actual = $sut->complete();
         $this->assertInstanceOf(DriveItemProxy::class, $actual);
-        $this->assertSame('test123', $actual->id);
+        $this->assertSame('123abc', $actual->id);
+    }
+
+    public function testCompleteWithStreamContentShouldReturnExpectedValue()
+    {
+        $item = $this->createMock(DriveItem::class);
+        $item->method('getId')->willReturn('123abc');
+
+        $response = $this->createMock(GraphResponse::class);
+        $response->method('getStatus')->will($this->onConsecutiveCalls(202, 201));
+        $response->method('getResponseAsObject')->willReturn($item);
+
+        $request = $this->createMock(GraphRequest::class);
+        $request->method('addHeaders')->willReturnSelf();
+        $request->method('attachBody')->willReturnSelf();
+        $request->method('execute')->willReturn($response);
+
+        $graph = $this->createMock(Graph::class);
+        $graph->method('createRequest')->willReturn($request);
+
+        $uploadSession = $this->createMock(UploadSession::class);
+        $content       = Psr7\stream_for(str_repeat('1', 327680 + 1));
+
+        $options = [
+            'range_size' => 327680,
+        ];
+
+        $sut    = new UploadSessionProxy($graph, $uploadSession, $content, $options);
+        $actual = $sut->complete();
+        $this->assertInstanceOf(DriveItemProxy::class, $actual);
+        $this->assertSame('123abc', $actual->id);
+    }
+
+    public function testCompleteContentShouldSendExpectedHeaders()
+    {
+        $item = $this->createMock(DriveItem::class);
+        $item->method('getId')->willReturn('123abc');
+
+        $response = $this->createMock(GraphResponse::class);
+        $response->method('getStatus')->will($this->onConsecutiveCalls(202, 201));
+        $response->method('getResponseAsObject')->willReturn($item);
+
+        $request = $this->createMock(GraphRequest::class);
+        $request->method('attachBody')->willReturnSelf();
+        $request->method('execute')->willReturn($response);
+
+        $request
+            ->expects($this->exactly(2))
+            ->method('addHeaders')
+            ->withConsecutive(
+                [$this->callback(function ($headers) {
+                    return
+                        $headers['Content-Type'] == 'text/plain'
+                        && $headers['Content-Length'] == '655360'
+                        && $headers['Content-Range'] == 'bytes 0-655359/655361';
+                })],
+                [$this->callback(function ($headers) {
+                    return
+                        $headers['Content-Type'] == 'text/plain'
+                        && $headers['Content-Length'] == '1'
+                        && $headers['Content-Range'] == 'bytes 655360-655360/655361';
+                })]
+            )
+            ->willReturnSelf();
+
+        $graph = $this->createMock(Graph::class);
+        $graph->method('createRequest')->willReturn($request);
+
+        $uploadSession = $this->createMock(UploadSession::class);
+        $content       = str_repeat('1', 655360 + 1);
+
+        $options = [
+            'type'       => 'text/plain',
+            'range_size' => 655360,
+        ];
+
+        $sut = new UploadSessionProxy($graph, $uploadSession, $content, $options);
+        $sut->complete();
     }
 
     /**
      * @expectedException Exception
-     * @expectedExceptionMessage OneDrive did not create a drive item for the uploaded file
+     *
+     * @expectedExceptionMessage OneDrive did not create a drive item for the
+     *                           uploaded file
      */
-    public function testCompleteWithTextContentShouldThrowFileCreationException()
+    public function testCompleteShouldThrowFileNotCreatedException()
     {
         $item = $this->createMock(DriveItem::class);
-        $item->method('getId')->willReturn('test123');
+        $item->method('getId')->willReturn('123abc');
 
         $response = $this->createMock(GraphResponse::class);
         $response->method('getStatus')->will($this->onConsecutiveCalls(202, 202));
@@ -129,24 +174,26 @@ class UploadSessionProxyTest extends \PHPUnit_Framework_TestCase
         $graph->method('createRequest')->willReturn($request);
 
         $uploadSession = $this->createMock(UploadSession::class);
+        $content       = str_repeat('1', 327680 + 1);
 
         $options = [
-            'range_size' => 348894,
-            'type'       => 'text/plain',
+            'range_size' => 327680,
         ];
 
-        $sut           = new UploadSessionProxy($graph, $uploadSession, self::getSampleContent(), $options);
-        $actual        = $sut->complete();
+        $sut = new UploadSessionProxy($graph, $uploadSession, $content, $options);
+        $sut->complete();
     }
 
     /**
      * @expectedException Exception
-     * @expectedExceptionMessage Unexpected status code produced by 'PUT http://uplo.ad/url': 503
+     *
+     * @expectedExceptionMessage Unexpected status code produced by 'PUT
+     *                           http://uplo.ad/url': 503
      */
-    public function testCompleteWithTextContentShouldThrowStatusCodeException()
+    public function testCompleteShouldThrowUnexpectedStatusCodeException()
     {
         $item = $this->createMock(DriveItem::class);
-        $item->method('getId')->willReturn('test123');
+        $item->method('getId')->willReturn('123abc');
 
         $response = $this->createMock(GraphResponse::class);
         $response->method('getStatus')->will($this->onConsecutiveCalls(202, 503));
@@ -163,14 +210,13 @@ class UploadSessionProxyTest extends \PHPUnit_Framework_TestCase
         $uploadSession = $this->createMock(UploadSession::class);
         $uploadSession->method('getUploadUrl')->willReturn('http://uplo.ad/url');
 
+        $content = str_repeat('1', 327680 + 1);
+
         $options = [
-            'range_size' => 348894,
-            'type'       => 'text/plain',
+            'range_size' => 327680,
         ];
 
-        $contentStream = Psr7\stream_for(self::getSampleContent());
-
-        $sut           = new UploadSessionProxy($graph, $uploadSession, $contentStream, $options);
-        $actual        = $sut->complete();
+        $sut = new UploadSessionProxy($graph, $uploadSession, $content, $options);
+        $sut->complete();
     }
 }
