@@ -1,6 +1,14 @@
 Change log
 ==========
 
+[Unreleased][unreleased]
+------------------------
+
+### Fixed
+
+- `Krizalys\Onedrive\Proxy\UploadSessionProxy::complete()`: was ignoring the
+`range_size` option.
+
 [2.1.0] - 2019-03-13
 --------------------
 
