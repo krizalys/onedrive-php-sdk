@@ -535,6 +535,33 @@ class Client
     }
 
     /**
+     * @param $path The path.
+     * @return DriveItemProxy The path drive item.
+     * @throws \Microsoft\Graph\Exception\GraphException
+     */
+    public function getPath($path)
+    {
+        $driveLocator = '/me/drive';
+        $itemLocator  = '/root:/' . $path;
+        $endpoint     = "$driveLocator$itemLocator";
+
+        $response = $this
+            ->graph
+            ->createRequest('GET', $endpoint)
+            ->execute();
+
+        $status = $response->getStatus();
+
+        if ($status != 200) {
+            throw new \Exception("Unexpected status code produced by 'GET $endpoint': $status");
+        }
+
+        $driveItem = $response->getResponseAsObject(Model\DriveItem::class);
+
+        return new DriveItemProxy($this->graph, $driveItem);
+    }
+
+    /**
      * @param string $specialFolderName
      *        The special folder name. Supported values:
      *          - 'documents'
