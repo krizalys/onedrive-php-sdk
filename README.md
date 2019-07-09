@@ -224,17 +224,17 @@ To run the functional test suite:
 2. Run your WebDriver server, for example:
 
 ```sh
-java -jar selenium-server-standalone-3.14.0.jar
+java -jar selenium-server-standalone-3.141.59.jar
 ```
 
-3. Run the functional test (it assumes that your Selenium WebDriver is listening
-   on port 4444):
+3. Run the functional test suite (it assumes that WebDriver listening on port
+4444):
 
 ```sh
 vendor/bin/phpunit -c test/functional
 ```
 
-4. Repeat steps 4 to 5 as needed.
+4. Repeat step 3 as needed.
 
 License
 -------
