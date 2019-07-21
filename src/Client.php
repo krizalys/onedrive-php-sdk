@@ -304,6 +304,8 @@ class Client
             'obtained' => time(),
             'data'     => $data,
         ];
+
+        $this->graph->setAccessToken($this->_state->token->data->access_token);
     }
 
     /**

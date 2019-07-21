@@ -1,6 +1,14 @@
 Change log
 ==========
 
+[Unreleased][unreleased]
+------------------------
+
+### Fixed
+
+- `Krizalys\Onedrive\Client::renewAccessToken()`: was not updating the access
+token on its Microsoft Graph client.
+
 [2.1.1] - 2019-03-24
 --------------------
 

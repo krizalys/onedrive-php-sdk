@@ -209,7 +209,8 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             $response        = $this->createMock(ResponseInterface::class);
 
             $response->method('getBody')->willReturn(json_encode([
-                'key'=> 'value',
+                'access_token' => 'AcCeSs+ToKeN',
+                'key'          => 'value',
             ]));
 
             return $response;
@@ -253,7 +254,8 @@ class ClientTest extends \PHPUnit_Framework_TestCase
                 'obtained' => strtotime('1999-01-01Z'),
 
                 'data' => (object) [
-                    'key' => 'value',
+                    'access_token' => 'AcCeSs+ToKeN',
+                    'key'          => 'value',
                 ],
             ],
         ], $actual);
