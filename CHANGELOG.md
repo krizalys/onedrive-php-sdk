@@ -1,8 +1,8 @@
 Change log
 ==========
 
-[Unreleased][unreleased]
-------------------------
+[2.1.2] - 2019-07-21
+--------------------
 
 ### Fixed
 
@@ -174,7 +174,8 @@ error.
 
 - Support for SSL.
 
-[unreleased]: https://github.com/krizalys/onedrive-php-sdk/compare/2.1.1...HEAD
+[unreleased]: https://github.com/krizalys/onedrive-php-sdk/compare/2.1.2...HEAD
+[2.1.2]:      https://github.com/krizalys/onedrive-php-sdk/compare/2.1.1...2.1.2
 [2.1.1]:      https://github.com/krizalys/onedrive-php-sdk/compare/2.1.0...2.1.1
 [2.1.0]:      https://github.com/krizalys/onedrive-php-sdk/compare/2.0.2...2.1.0
 [2.0.2]:      https://github.com/krizalys/onedrive-php-sdk/compare/2.0.1...2.0.2
