@@ -30,7 +30,7 @@
         "psr/log": "^1.0.2"
     },
     "require-dev": {
-        "facebook/webdriver": "^1.5.0",
+        "facebook/webdriver": "^1.7.0",
         "mockery/mockery": "^1.0.0-alpha1",
         "monolog/monolog": "^1.22.0",
         "phpunit/phpunit": "^5.7.13",
