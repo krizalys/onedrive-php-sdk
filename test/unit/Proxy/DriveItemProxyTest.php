@@ -358,7 +358,8 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
     {
         $item      = $this->mockDriveItem();
         $childItem = $this->mockDriveItem(['id' => self::DRIVE_ITEM_ID]);
-        $graph     = $this->mockGraphWithResponse(201, ['body' => $childItem]);
+        $response  = $this->mockResponse(201, ['body' => $childItem]);
+        $graph     = $this->mockGraph($response);
         $sut       = new DriveItemProxy($graph, $item);
         $actual    = $sut->createFolder('Irrelevant', []);
         $this->assertInstanceOf(DriveItemProxy::class, $actual);
@@ -391,7 +392,8 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
     {
         $item      = $this->mockDriveItem();
         $childItem = $this->mockDriveItem(['id' => self::DRIVE_ITEM_ID]);
-        $graph     = $this->mockGraphWithResponse(201, ['body' => $childItem]);
+        $response  = $this->mockResponse(201, ['body' => $childItem]);
+        $graph     = $this->mockGraph($response);
         $sut       = new DriveItemProxy($graph, $item);
         $actual    = $sut->upload('Irrelevant', 'Test content', []);
         $this->assertInstanceOf(DriveItemProxy::class, $actual);
@@ -402,7 +404,8 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
     {
         $item          = $this->mockDriveItem();
         $uploadSession = $this->mockUploadSession(['id' => self::UPLOAD_SESSION_ID]);
-        $graph         = $this->mockGraphWithResponse(200, ['body' => $uploadSession]);
+        $response      = $this->mockResponse(200, ['body' => $uploadSession]);
+        $graph         = $this->mockGraph($response);
         $sut           = new DriveItemProxy($graph, $item);
         $actual        = $sut->startUpload('Irrelevant', 'Test content', []);
         $this->assertInstanceOf(UploadSessionProxy::class, $actual);
@@ -412,18 +415,19 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
     public function testDownloadShouldReturnExpectedValue()
     {
         $item     = $this->mockDriveItem();
-        $expected = $this->mockStream();
-        $graph    = $this->mockGraphWithResponse(200, ['body' => $expected]);
+        $stream   = $this->mockStream();
+        $graph    = $this->mockGraph($stream);
         $sut      = new DriveItemProxy($graph, $item);
         $actual   = $sut->download();
-        $this->assertSame($expected, $actual);
+        $this->assertSame($stream, $actual);
     }
 
     public function testRenameShouldReturnExpectedValue()
     {
         $item        = $this->mockDriveItem();
         $renamedItem = $this->mockDriveItem(['id' => self::DRIVE_ITEM_ID]);
-        $graph       = $this->mockGraphWithResponse(200, ['body' => $renamedItem]);
+        $response    = $this->mockResponse(200, ['body' => $renamedItem]);
+        $graph       = $this->mockGraph($response);
         $sut         = new DriveItemProxy($graph, $item);
         $actual      = $sut->rename('Irrelevant', []);
         $this->assertInstanceOf(DriveItemProxy::class, $actual);
@@ -435,7 +439,8 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
         $item            = $this->mockDriveItem();
         $movedItem       = $this->mockDriveItem(['id' => self::DRIVE_ITEM_ID]);
         $destinationItem = $this->mockDriveItemProxy();
-        $graph           = $this->mockGraphWithResponse(200, ['body' => $movedItem]);
+        $response        = $this->mockResponse(200, ['body' => $movedItem]);
+        $graph           = $this->mockGraph($response);
         $sut             = new DriveItemProxy($graph, $item);
         $actual          = $sut->move($destinationItem, []);
         $this->assertInstanceOf(DriveItemProxy::class, $actual);
@@ -446,7 +451,8 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
     {
         $item            = $this->mockDriveItem();
         $destinationItem = $this->mockDriveItemProxy();
-        $graph           = $this->mockGraphWithResponse(202, ['headers' => ['Location' => ['http://progre.ss/url']]]);
+        $response        = $this->mockResponse(202, ['headers' => ['Location' => ['http://progre.ss/url']]]);
+        $graph           = $this->mockGraph($response);
         $sut             = new DriveItemProxy($graph, $item);
         $actual          = $sut->copy($destinationItem, []);
         $this->assertInternalType('string', $actual);
@@ -460,7 +466,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
         return $stream;
     }
 
-    private function mockGraphWithResponse($status, array $options = [])
+    private function mockResponse($status, array $options = [])
     {
         $response = $this->createMock(GraphResponse::class);
         $response->method('getStatus')->willReturn((string) $status);
@@ -473,12 +479,18 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
             $response->method('getResponseAsObject')->willReturn($options['body']);
         }
 
+        return $response;
+    }
+
+    private function mockGraph($response)
+    {
         $request = $this->createMock(GraphRequest::class);
+        $request->method('addHeaders')->willReturnSelf();
+        $request->method('attachBody')->willReturnSelf();
+        $request->method('setReturnType')->willReturnSelf();
         $request->method('execute')->willReturn($response);
         $graph = $this->createMock(Graph::class);
         $graph->method('createRequest')->willReturn($request);
-        $request->method('addHeaders')->willReturnSelf();
-        $request->method('attachBody')->willReturnSelf();
 
         return $graph;
     }

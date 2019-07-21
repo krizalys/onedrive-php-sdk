@@ -8,6 +8,9 @@ Change log
 
 - `Krizalys\Onedrive\Client::renewAccessToken()`: was not updating the access
 token on its Microsoft Graph client.
+- `Krizalys\Onedrive\Proxy\DriveItem::download()`: was treating the response
+obtained from executing its request as a `Microsoft\Graph\Http\GraphResponse`;
+it is always a `GuzzleHttp\Psr7\Stream` since `1.7.0`.
 
 [2.1.1] - 2019-03-24
 --------------------

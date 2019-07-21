@@ -354,18 +354,11 @@ class DriveItemProxy extends BaseItemProxy
         $itemLocator  = "/items/{$this->id}";
         $endpoint     = "$driveLocator$itemLocator/content";
 
-        $response = $this
+        return $this
             ->graph
             ->createRequest('GET', $endpoint)
+            ->setReturnType(Stream::class)
             ->execute();
-
-        $status = $response->getStatus();
-
-        if ($status != 200) {
-            throw new \Exception("Unexpected status code produced by 'GET $endpoint': $status");
-        }
-
-        return $response->getResponseAsObject(Stream::class);
     }
 
     /**
