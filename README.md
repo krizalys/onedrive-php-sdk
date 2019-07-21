@@ -206,7 +206,7 @@ $_SESSION['onedrive.client.state'] = $client->getState();
 
 // Past this point, you can start using file/folder functions from the SDK, eg:
 $file = $client->getRoot()->upload('hello.txt', 'Hello World!');
-echo $file->download('hello.txt');
+echo $file->download();
 // => Hello World!
 
 $file->delete();
@@ -239,8 +239,8 @@ vendor/bin/phpunit -c test/functional
 License
 -------
 
-The OneDrive SDK for PHP is licensed under the [BSD 3-Clause
-License][bsd-3-clause].
+The OneDrive SDK for PHP is licensed under the [3-Clause
+BSD License][bsd-3-clause].
 
 Credits
 -------
