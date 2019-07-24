@@ -37,8 +37,6 @@ class IdentityProxy extends EntityProxy
             case 'displayName':
                 return $identity->getDisplayName();
 
-//            case 'thumbnails": [{ "@odata.type": "microsoft.graph.thumbnailSet" }]
-
             default:
                 return parent::__get($name);
         }
