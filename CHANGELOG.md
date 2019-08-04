@@ -1,6 +1,14 @@
 Change log
 ==========
 
+[Unreleased][unreleased]
+------------------------
+
+### Added
+
+- Support for retrieving drive items by path: see
+`Krizalys\Onedrive\Client::getDriveItemByPath()`
+
 [2.1.2] - 2019-07-21
 --------------------
 

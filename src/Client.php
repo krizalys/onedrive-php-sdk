@@ -603,20 +603,23 @@ class Client
     }
 
     /**
-     * Gets the root drive item.
+     * Gets a drive item by path.
+     *
+     * @param string $path
+     *        The path.
      *
      * @return DriveItemProxy
-     *         The root drive item.
+     *         The drive item.
      *
-     * @since 2.0.0
+     * @since 2.2.0
      *
      * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_get?view=odsp-graph-online
      *       Get a DriveItem resource
      */
-    public function getRoot()
+    public function getDriveItemByPath($path)
     {
         $driveLocator = '/me/drive';
-        $itemLocator  = '/root';
+        $itemLocator  = "/root:$path";
         $endpoint     = "$driveLocator$itemLocator";
 
         $response = $this
@@ -636,14 +639,20 @@ class Client
     }
 
     /**
-     * @param $path The path.
-     * @return DriveItemProxy The path drive item.
-     * @throws \Microsoft\Graph\Exception\GraphException
+     * Gets the root drive item.
+     *
+     * @return DriveItemProxy
+     *         The root drive item.
+     *
+     * @since 2.0.0
+     *
+     * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_get?view=odsp-graph-online
+     *       Get a DriveItem resource
      */
-    public function getPath($path)
+    public function getRoot()
     {
         $driveLocator = '/me/drive';
-        $itemLocator  = '/root:/' . $path;
+        $itemLocator  = '/root';
         $endpoint     = "$driveLocator$itemLocator";
 
         $response = $this

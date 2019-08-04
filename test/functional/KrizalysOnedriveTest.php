@@ -161,6 +161,17 @@ EOF;
         $this->assertDriveItemProxy($item);
     }
 
+    public function testGetDriveItemByPath()
+    {
+        self::runInFolder(__FUNCTION__, function (DriveItemProxy $sandbox) {
+            self::upload($sandbox, 'Test file');
+            $prefix = $sandbox->name;
+            $item   = self::$client->getDriveItemByPath("/$prefix/Test file");
+            $this->assertDriveItemProxy($item);
+            $this->assertEquals('Test file', $item->name);
+        });
+    }
+
     public function testGetRoot()
     {
         $item = self::$client->getRoot();
