@@ -1,5 +1,17 @@
 <?php
 
+/**
+ * This file is part of Krizalys' OneDrive SDK for PHP.
+ *
+ * For the full copyright and license information, please view the LICENSE file
+ * that was distributed with this source code.
+ *
+ * @author    Christophe Vidal
+ * @copyright 2008-2019 Christophe Vidal (http://www.krizalys.com)
+ * @license   https://opensource.org/licenses/BSD-3-Clause 3-Clause BSD License
+ * @link      https://github.com/krizalys/onedrive-php-sdk
+ */
+
 namespace Krizalys\Onedrive\Proxy;
 
 use GuzzleHttp\Psr7;
@@ -9,6 +21,20 @@ use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model\DriveItem;
 use Microsoft\Graph\Model\UploadSession;
 
+/**
+ * A proxy to a \Microsoft\Graph\Model\UploadSession instance.
+ *
+ * @property-read \DateTime $expirationDateTime
+ *                The expiration date/time.
+ * @property-read string $nextExpectedRanges
+ *                The next expected ranges.
+ * @property-read string $uploadUrl
+ *                The upload URL.
+ *
+ * @since 2.1.0
+ *
+ * @link https://github.com/microsoftgraph/msgraph-sdk-php/blob/dev/src/Model/UploadSession.php
+ */
 class UploadSessionProxy extends EntityProxy
 {
     /**
@@ -51,13 +77,15 @@ class UploadSessionProxy extends EntityProxy
      * Constructor.
      *
      * @param Graph $graph
-     *        The graph.
+     *        The Microsoft Graph.
      * @param UploadSession $uploadSession
      *        The upload session.
      * @param string|resource|\GuzzleHttp\Psr7\Stream $content
      *        The content.
      * @param array $options
      *        The options.
+     *
+     * @since 2.1.0
      */
     public function __construct(
         Graph $graph,
@@ -79,6 +107,8 @@ class UploadSessionProxy extends EntityProxy
      *
      * @return mixed
      *         The value.
+     *
+     * @since 2.1.0
      */
     public function __get($name)
     {
@@ -104,6 +134,11 @@ class UploadSessionProxy extends EntityProxy
      *
      * @return DriveItemProxy
      *         The drive item created.
+     *
+     * @since 2.1.0
+     *
+     * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_createuploadsession?view=odsp-graph-online#upload-bytes-to-the-upload-session
+     *       Upload bytes to the upload session
      *
      * @todo Support retries on errors.
      */

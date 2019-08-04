@@ -1,5 +1,17 @@
 <?php
 
+/**
+ * This file is part of Krizalys' OneDrive SDK for PHP.
+ *
+ * For the full copyright and license information, please view the LICENSE file
+ * that was distributed with this source code.
+ *
+ * @author    Christophe Vidal
+ * @copyright 2008-2019 Christophe Vidal (http://www.krizalys.com)
+ * @license   https://opensource.org/licenses/BSD-3-Clause 3-Clause BSD License
+ * @link      https://github.com/krizalys/onedrive-php-sdk
+ */
+
 namespace Krizalys\Onedrive;
 
 use GuzzleHttp\ClientInterface;
@@ -9,13 +21,19 @@ use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model;
 
 /**
- * @class Client
+ * A client interface to communicate with the OneDrive API.
  *
- * A Client instance allows communication with the OneDrive API and perform
- * operations programmatically.
+ * Client applications use `Client` instances to perform OneDrive operations
+ * programmatically.
  *
- * To manage your Live Connect applications, see here:
- * https://apps.dev.microsoft.com/#/appList
+ * Applications are managed via Microsoft accounts. Two types of applications
+ * are supported:
+ *   - Microsoft identity platform (v2.0) applications, recommended for new
+ *     applications; see
+ *     {@link https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade "App registrations" in Microsoft Azure} ;
+ *   - Live SDK applications, deprecated; see
+ *     {@link https://apps.dev.microsoft.com/#/appList "My applications" in Microsoft
+ *     Application Registration Portal}.
  */
 class Client
 {
@@ -35,7 +53,7 @@ class Client
      * @var string
      *      The legacy date/time format.
      *
-     * @deprecated Use ISO-8601 date/times instead.
+     * @deprecated 2.0.0 Non-standard format. Use ISO-8601 date/times instead.
      */
     const LEGACY_DATETIME_FORMAT = 'Y-m-d\TH:i:sO';
 
@@ -46,13 +64,13 @@ class Client
     private $clientId;
 
     /**
-     * @var Microsoft\Graph\Graph
+     * @var \Microsoft\Graph\Graph
      *      The Microsoft Graph.
      */
     private $graph;
 
     /**
-     * @var GuzzleHttp\ClientInterface
+     * @var \GuzzleHttp\ClientInterface
      *      The Guzzle HTTP client.
      */
     private $httpClient;
@@ -68,10 +86,10 @@ class Client
      *
      * @param string $clientId
      *        The client ID.
-     * @param Microsoft\Graph\Graph $graph
-     *        The graph.
-     * @param GuzzleHttp\ClientInterface $httpClient
-     *        The HTTP client.
+     * @param \Microsoft\Graph\Graph $graph
+     *        The Microsoft Graph.
+     * @param \GuzzleHttp\ClientInterface $httpClient
+     *        The Guzzle HTTP client.
      * @param mixed $logger
      *        Deprecated and will be removed in version 3; omit this parameter,
      *        or pass null or options instead.
@@ -81,8 +99,10 @@ class Client
      *          - 'state' (object) When defined, it should contain a valid
      *            OneDrive client state, as returned by getState(). Default: [].
      *
-     * @throws Exception
-     *         Thrown if $clientId is null.
+     * @throws \Exception
+     *         Thrown if `$clientId` is null.
+     *
+     * @since 1.0.0
      */
     public function __construct(
         $clientId,
@@ -117,11 +137,15 @@ class Client
     }
 
     /**
-     * Gets the current state of this Client instance. Typically saved in the
-     * session and passed back to the Client constructor for further requests.
+     * Gets the current state of this Client instance.
+     *
+     * Typically saved in the session and passed back to the `Client`
+     * constructor for further requests.
      *
      * @return object
-     *         The state of this Client instance.
+     *         The state of this `Client` instance.
+     *
+     * @since 1.0.0
      */
     public function getState()
     {
@@ -129,26 +153,33 @@ class Client
     }
 
     /**
-     * Gets the URL of the log in form. After login, the browser is redirected
-     * to the redirect URI, and a code is passed as a query string parameter to
-     * this URI.
+     * Gets the URL of the log in form.
      *
-     * The browser is also redirected to the redirect URI if the user is already
-     * logged in.
+     * Users should visit this URL in their browser to first be presented a form
+     * where the user is first allowed to log in to their OneDrive account, and
+     * then to grant the requested permissions to the OneDrive application.
+     *
+     * After login, the browser is redirected to the given redirect URI, and a
+     * code is passed as a query string parameter to this URI.
+     *
+     * The browser is also directly redirected to the given redirect URI if the
+     * user is already logged in.
      *
      * @param array $scopes
      *        The OneDrive scopes requested by the application. Supported
      *        values:
-     *          - 'offline_access'
-     *          - 'files.read'
-     *          - 'files.read.all'
-     *          - 'files.readwrite'
-     *          - 'files.readwrite.all'
+     *          - 'offline_access' ;
+     *          - 'files.read' ;
+     *          - 'files.read.all' ;
+     *          - 'files.readwrite' ;
+     *          - 'files.readwrite.all'.
      * @param string $redirectUri
      *        The URI to which to redirect to upon successful log in.
      *
      * @return string
      *         The log in URL.
+     *
+     * @since 1.0.0
      */
     public function getLogInUrl(array $scopes, $redirectUri)
     {
@@ -177,6 +208,8 @@ class Client
      *
      * @return int
      *         The token expiration delay, in seconds.
+     *
+     * @since 1.0.0
      */
     public function getTokenExpire()
     {
@@ -189,10 +222,12 @@ class Client
      *
      * @return int
      *         The status of the current access token:
-     *           -  0 No access token.
-     *           - -1 Access token will expire soon (1 minute or less).
-     *           - -2 Access token is expired.
-     *           -  1 Access token is valid.
+     *           - `0`: No access token ;
+     *           - `-1`: Access token will expire soon (1 minute or less) ;
+     *           - `-2`: Access token is expired ;
+     *           - `1`: Access token is valid.
+     *
+     * @since 1.0.0
      */
     public function getAccessTokenStatus()
     {
@@ -214,18 +249,22 @@ class Client
     }
 
     /**
-     * Obtains a new access token from OAuth. This token is valid for one hour.
+     * Obtains a new access token from OAuth.
+     *
+     * This token is valid for one hour.
      *
      * @param string $clientSecret
      *        The OneDrive client secret.
      * @param string $code
      *        The code returned by OneDrive after successful log in.
      *
-     * @throws Exception
-     *         Thrown if the redirect URI of this Client instance's state is not
-     *         set.
-     * @throws Exception
+     * @throws \Exception
+     *         Thrown if the redirect URI of this `Client` instance's state is
+     *         not set.
+     * @throws \Exception
      *         Thrown if the HTTP response body cannot be JSON-decoded.
+     *
+     * @since 1.0.0
      */
     public function obtainAccessToken($clientSecret, $code)
     {
@@ -267,10 +306,14 @@ class Client
     }
 
     /**
-     * Renews the access token from OAuth. This token is valid for one hour.
+     * Renews the access token from OAuth.
+     *
+     * This token is valid for one hour.
      *
      * @param string $clientSecret
      *        The client secret.
+     *
+     * @since 1.1.0
      */
     public function renewAccessToken($clientSecret)
     {
@@ -304,11 +347,20 @@ class Client
             'obtained' => time(),
             'data'     => $data,
         ];
+
+        $this->graph->setAccessToken($this->_state->token->data->access_token);
     }
 
     /**
+     * Gets the current user's drive.
+     *
      * @return array
      *         The drives.
+     *
+     * @since 2.0.0
+     *
+     * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/drive_list?view=odsp-graph-online#list-the-current-users-drives
+     *       List the current user's drives
      */
     public function getDrives()
     {
@@ -338,8 +390,15 @@ class Client
     }
 
     /**
+     * Gets the signed in user's drive.
+     *
      * @return DriveProxy
      *         The drive.
+     *
+     * @since 2.0.0
+     *
+     * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/drive_get?view=odsp-graph-online#get-current-users-onedrive
+     *       Get current user's OneDrive
      */
     public function getMyDrive()
     {
@@ -363,11 +422,18 @@ class Client
     }
 
     /**
+     * Gets a drive by ID.
+     *
      * @param string $driveId
      *        The drive ID.
      *
      * @return DriveProxy
      *         The drive.
+     *
+     * @since 2.0.0
+     *
+     * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/drive_get?view=odsp-graph-online#get-a-drive-by-id
+     *       Get a drive by ID
      */
     public function getDriveById($driveId)
     {
@@ -391,11 +457,18 @@ class Client
     }
 
     /**
+     * Gets a user's OneDrive.
+     *
      * @param string $idOrUserPrincipalName
      *        The ID or user principal name.
      *
      * @return DriveProxy
      *         The drive.
+     *
+     * @since 2.0.0
+     *
+     * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/drive_get?view=odsp-graph-online#get-a-users-onedrive
+     *       Get a user's OneDrive
      */
     public function getDriveByUser($idOrUserPrincipalName)
     {
@@ -420,11 +493,18 @@ class Client
     }
 
     /**
+     * Gets the document library associated with a group.
+     *
      * @param string $groupId
      *        The group ID.
      *
      * @return DriveProxy
      *         The drive.
+     *
+     * @since 2.0.0
+     *
+     * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/drive_get?view=odsp-graph-online#get-the-document-library-associated-with-a-group
+     *       Get the document library associated with a group
      */
     public function getDriveByGroup($groupId)
     {
@@ -449,11 +529,18 @@ class Client
     }
 
     /**
+     * Gets the document library for a site.
+     *
      * @param string $siteId
      *        The site ID.
      *
      * @return DriveProxy
      *         The drive.
+     *
+     * @since 2.0.0
+     *
+     * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/drive_get?view=odsp-graph-online#get-the-document-library-for-a-site
+     *       Get the document library for a site
      */
     public function getDriveBySite($siteId)
     {
@@ -478,6 +565,8 @@ class Client
     }
 
     /**
+     * Gets a drive item by ID and drive ID.
+     *
      * @param string $driveId
      *        The drive ID.
      * @param string $itemId
@@ -485,6 +574,11 @@ class Client
      *
      * @return DriveItemProxy
      *         The drive item.
+     *
+     * @since 2.0.0
+     *
+     * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_get?view=odsp-graph-online
+     *       Get a DriveItem resource
      */
     public function getDriveItemById($driveId, $itemId)
     {
@@ -509,8 +603,15 @@ class Client
     }
 
     /**
+     * Gets the root drive item.
+     *
      * @return DriveItemProxy
      *         The root drive item.
+     *
+     * @since 2.0.0
+     *
+     * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_get?view=odsp-graph-online
+     *       Get a DriveItem resource
      */
     public function getRoot()
     {
@@ -562,16 +663,23 @@ class Client
     }
 
     /**
+     * Gets a special folder by name.
+     *
      * @param string $specialFolderName
      *        The special folder name. Supported values:
-     *          - 'documents'
-     *          - 'photos'
-     *          - 'cameraroll'
-     *          - 'approot'
-     *          - 'music'
+     *          - 'documents' ;
+     *          - 'photos' ;
+     *          - 'cameraroll' ;
+     *          - 'approot' ;
+     *          - 'music'.
      *
      * @return DriveItemProxy
      *         The root drive item.
+     *
+     * @since 2.0.0
+     *
+     * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/drive_get_specialfolder?view=odsp-graph-online
+     *       Get a special folder by name
      */
     public function getSpecialFolder($specialFolderName)
     {
@@ -596,8 +704,15 @@ class Client
     }
 
     /**
+     * Gets items shared with the signed-in user.
+     *
      * @return array
      *         The shared drive items.
+     *
+     * @since 2.0.0
+     *
+     * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/drive_sharedwithme?view=odsp-graph-online
+     *       List items shared with the signed-in user
      */
     public function getShared()
     {
@@ -627,8 +742,15 @@ class Client
     }
 
     /**
+     * Gets recent files.
+     *
      * @return array
      *         The recent drive items.
+     *
+     * @since 2.0.0
+     *
+     * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/drive_recent?view=odsp-graph-online
+     *       List recent files
      */
     public function getRecent()
     {
@@ -662,6 +784,9 @@ class Client
     /**
      * Creates a folder in the current OneDrive account.
      *
+     * This operation is supported only on folders (as opposed to files): it
+     * fails if `$parentId` does not refer to a folder.
+     *
      * @param string $name
      *        The name of the OneDrive folder to be created.
      * @param null|string $parentId
@@ -676,14 +801,18 @@ class Client
      *         The folder created, as a Folder instance referencing to the
      *         OneDrive folder created.
      *
-     * @deprecated Use Krizalys\Onedrive\Proxy\DriveItemProxy::createFolder()
-     *             instead.
+     * @since 1.0.0
+     *
+     * @deprecated 2.0.0 Superseded by
+     *             \Krizalys\Onedrive\Proxy\DriveItemProxy::createFolder().
+     *
+     * @see \Krizalys\Onedrive\Proxy\DriveItemProxy::createFolder()
      */
     public function createFolder($name, $parentId = null, $description = null)
     {
         $message = sprintf(
             '%s() is deprecated and will be removed in version 3;'
-                . ' use Krizalys\Onedrive\Proxy\DriveItemProxy::createFolder()'
+                . ' use \Krizalys\Onedrive\Proxy\DriveItemProxy::createFolder()'
                 . ' instead',
             __METHOD__
         );
@@ -712,6 +841,9 @@ class Client
     /**
      * Creates a file in the current OneDrive account.
      *
+     * This operation is supported only on folders (as opposed to files): it
+     * fails if `$parentId` does not refer to a folder.
+     *
      * @param string $name
      *        The name of the OneDrive file to be created.
      * @param null|string $parentId
@@ -728,10 +860,15 @@ class Client
      *         The file created, as File instance referencing to the OneDrive
      *         file created.
      *
-     * @throws Exception
+     * @throws \Exception
      *         Thrown on I/O errors.
      *
-     * @deprecated Use Krizalys\Onedrive\Proxy\DriveItemProxy::upload() instead.
+     * @since 1.0.0
+     *
+     * @deprecated 2.0.0 Superseded by
+     *             \Krizalys\Onedrive\Proxy\DriveItemProxy::upload().
+     *
+     * @see \Krizalys\Onedrive\Proxy\DriveItemProxy::upload()
      *
      * @todo Support name conflict behavior.
      * @todo Support content type in options.
@@ -744,7 +881,7 @@ class Client
     ) {
         $message = sprintf(
             '%s() is deprecated and will be removed in version 3;'
-                . ' use Krizalys\Onedrive\Proxy\DriveItemProxy::upload()'
+                . ' use \Krizalys\Onedrive\Proxy\DriveItemProxy::upload()'
                 . ' instead',
             __METHOD__
         );
@@ -773,13 +910,18 @@ class Client
      *         The drive item fetched, as a DriveItem instance referencing to
      *         the OneDrive drive item fetched.
      *
-     * @deprecated Use Krizalys\Onedrive\Client::getDriveItemById() instead.
+     * @since 2.0.0
+     *
+     * @deprecated 2.0.0 Superseded by
+     *             \Krizalys\Onedrive\Client::getDriveItemById()..
+     *
+     * @see \Krizalys\Onedrive\Client::getDriveItemById()
      */
     public function fetchDriveItem($driveItemId = null)
     {
         $message = sprintf(
             '%s() is deprecated and will be removed in version 3;'
-                . ' use Krizalys\Onedrive\Client::getDriveItemById() instead.',
+                . ' use \Krizalys\Onedrive\Client::getDriveItemById() instead.',
             __METHOD__
         );
 
@@ -804,13 +946,18 @@ class Client
      *         The root folder, as a Folder instance referencing to the OneDrive
      *         root folder.
      *
-     * @deprecated Use Krizalys\Onedrive\Client::getRoot() instead.
+     * @since 1.0.0
+     *
+     * @deprecated 2.0.0 Superseded by
+     *             \Krizalys\Onedrive\Client::getRoot().
+     *
+     * @see \Krizalys\Onedrive\Client::getRoot()
      */
     public function fetchRoot()
     {
         $message = sprintf(
             '%s() is deprecated and will be removed in version 3;'
-                . ' use Krizalys\Onedrive\Client::getRoot() instead.',
+                . ' use \Krizalys\Onedrive\Client::getRoot() instead.',
             __METHOD__
         );
 
@@ -828,13 +975,19 @@ class Client
      *         The "Camera Roll" folder, as a Folder instance referencing to the
      *         OneDrive "Camera Roll" folder.
      *
-     * @deprecated Use Krizalys\Onedrive\Client::getSpecialFolder() instead.
+     * @since 1.0.0
+     *
+     * @deprecated 2.0.0 Superseded by
+     *             \Krizalys\Onedrive\Client::getSpecialFolder('cameraroll').
+     *
+     * @see \Krizalys\Onedrive\Client::getSpecialFolder()
      */
     public function fetchCameraRoll()
     {
         $message = sprintf(
-            '%s() is deprecated and will be removed in version 3;'
-                . ' use Krizalys\Onedrive\Client::getSpecialFolder() instead.',
+            '%s() is deprecated and will be removed in version 3; use'
+                . ' \Krizalys\Onedrive\Client::getSpecialFolder(\'cameraroll\')'
+                . ' instead.',
             __METHOD__
         );
 
@@ -852,13 +1005,19 @@ class Client
      *         The "Documents" folder, as a Folder instance referencing to the
      *         OneDrive "Documents" folder.
      *
-     * @deprecated Use Krizalys\Onedrive\Client::getSpecialFolder() instead.
+     * @since 1.0.0
+     *
+     * @deprecated 2.0.0 Superseded by
+     *             \Krizalys\Onedrive\Client::getSpecialFolder('documents').
+     *
+     * @see \Krizalys\Onedrive\Client::getSpecialFolder()
      */
     public function fetchDocs()
     {
         $message = sprintf(
-            '%s() is deprecated and will be removed in version 3;'
-                . ' use Krizalys\Onedrive\Client::getSpecialFolder() instead.',
+            '%s() is deprecated and will be removed in version 3; use'
+                . ' \Krizalys\Onedrive\Client::getSpecialFolder(\'documents\')'
+                . ' instead.',
             __METHOD__
         );
 
@@ -876,13 +1035,19 @@ class Client
      *         The "Pictures" folder, as a Folder instance referencing to the
      *         OneDrive "Pictures" folder.
      *
-     * @deprecated Use Krizalys\Onedrive\Client::getSpecialFolder() instead.
+     * @since 1.0.0
+     *
+     * @deprecated 2.0.0 Superseded by
+     *             \Krizalys\Onedrive\Client::getSpecialFolder().
+     *
+     * @see \Krizalys\Onedrive\Client::getSpecialFolder()
      */
     public function fetchPics()
     {
         $message = sprintf(
-            '%s() is deprecated and will be removed in version 3;'
-                . ' use Krizalys\Onedrive\Client::getSpecialFolder() instead.',
+            '%s() is deprecated and will be removed in version 3; use'
+                . ' \Krizalys\Onedrive\Client::getSpecialFolder(\'photos\')'
+                . ' instead.',
             __METHOD__
         );
 
@@ -903,13 +1068,18 @@ class Client
      * @return object
      *         The properties of the drive item fetched.
      *
-     * @deprecated Use Krizalys\Onedrive\Client::getDriveItemById() instead.
+     * @since 1.0.0
+     *
+     * @deprecated 2.0.0 Superseded by
+     *             \Krizalys\Onedrive\Client::getDriveItemById().
+     *
+     * @see \Krizalys\Onedrive\Client::getDriveItemById()
      */
     public function fetchProperties($driveItemId = null)
     {
         $message = sprintf(
             '%s() is deprecated and will be removed in version 3;'
-                . ' use Krizalys\Onedrive\Client::getDriveItemById() instead',
+                . ' use \Krizalys\Onedrive\Client::getDriveItemById() instead',
             __METHOD__
         );
 
@@ -934,6 +1104,9 @@ class Client
     /**
      * Fetches the drive items in a folder in the current OneDrive account.
      *
+     * This operation is supported only on folders (as opposed to files): it
+     * fails if `$parentId` does not refer to a folder.
+     *
      * @param null|string $driveItemId
      *        The drive item ID, or null to fetch the OneDrive root folder.
      *        Default: null.
@@ -942,14 +1115,18 @@ class Client
      *         The drive items in the folder fetched, as DriveItem instances
      *         referencing OneDrive drive items.
      *
-     * @deprecated Use Krizalys\Onedrive\Proxy\DriveItemProxy::children
-     *             instead.
+     * @since 2.0.0
+     *
+     * @deprecated 2.0.0 Superseded by
+     *             \Krizalys\Onedrive\Proxy\DriveItemProxy::children.
+     *
+     * @see \Krizalys\Onedrive\Proxy\DriveItemProxy::children
      */
     public function fetchDriveItems($driveItemId = null)
     {
         $message = sprintf(
             '%s() is deprecated and will be removed in version 3;'
-                . ' use Krizalys\Onedrive\Proxy\DriveItemProxy::children'
+                . ' use \Krizalys\Onedrive\Proxy\DriveItemProxy::children'
                 . ' instead.',
             __METHOD__
         );
@@ -980,16 +1157,21 @@ class Client
      * @param bool $temp
      *        Option to allow save to a temporary file in case of large files.
      *
-     * @throws Exception
+     * @throws \Exception
      *         Thrown on I/O errors.
      *
-     * @deprecated Use Krizalys\Onedrive\Proxy\DriveItemProxy::rename() instead.
+     * @since 2.0.0
+     *
+     * @deprecated 2.0.0 Superseded by
+     *             \Krizalys\Onedrive\Proxy\DriveItemProxy::rename().
+     *
+     * @see \Krizalys\Onedrive\Proxy\DriveItemProxy::rename()
      */
     public function updateDriveItem($driveItemId, $properties = [], $temp = false)
     {
         $message = sprintf(
             '%s() is deprecated and will be removed in version 3;'
-                . ' use Krizalys\Onedrive\Proxy\DriveItemProxy::rename()'
+                . ' use \Krizalys\Onedrive\Proxy\DriveItemProxy::rename()'
                 . ' instead',
             __METHOD__
         );
@@ -1019,19 +1201,26 @@ class Client
     /**
      * Moves a drive item into another folder.
      *
+     * `$destinationId` must refer to a folder.
+     *
      * @param string $driveItemId
      *        The unique ID of the drive item to move.
      * @param null|string $destinationId
      *        The unique ID of the folder into which to move the drive item, or
      *        null to move it to the OneDrive root folder. Default: null.
      *
-     * @deprecated Use Krizalys\Onedrive\Proxy\DriveItemProxy::move() instead.
+     * @since 2.0.0
+     *
+     * @deprecated 2.0.0 Superseded by
+     *             \Krizalys\Onedrive\Proxy\DriveItemProxy::move().
+     *
+     * @see \Krizalys\Onedrive\Proxy\DriveItemProxy::move()
      */
     public function moveDriveItem($driveItemId, $destinationId = null)
     {
         $message = sprintf(
             '%s() is deprecated and will be removed in version 3;'
-                . ' use Krizalys\Onedrive\Proxy\DriveItemProxy::move()'
+                . ' use \Krizalys\Onedrive\Proxy\DriveItemProxy::move()'
                 . ' instead.',
             __METHOD__
         );
@@ -1048,8 +1237,12 @@ class Client
     }
 
     /**
-     * Copies a file into another folder. OneDrive does not support copying
-     * folders.
+     * Copies a file into another folder.
+     *
+     * This operation is supported only on files (as opposed to folders): it
+     * fails if `$driveItemId` does not refer to a file.
+     *
+     * Additionally, `$destinationId` must refer to a folder.
      *
      * @param string $driveItemId
      *        The unique ID of the file to copy.
@@ -1057,13 +1250,18 @@ class Client
      *        The unique ID of the folder into which to copy the file, or null
      *        to copy it to the OneDrive root folder. Default: null.
      *
-     * @deprecated Use Krizalys\Onedrive\Proxy\DriveItemProxy::copy() instead.
+     * @since 1.0.0
+     *
+     * @deprecated 2.0.0 Superseded by
+     *             \Krizalys\Onedrive\Proxy\DriveItemProxy::copy().
+     *
+     * @see \Krizalys\Onedrive\Proxy\DriveItemProxy::copy()
      */
     public function copyFile($driveItemId, $destinationId = null)
     {
         $message = sprintf(
             '%s() is deprecated and will be removed in version 3;'
-                . ' use Krizalys\Onedrive\Proxy\DriveItemProxy::copy()'
+                . ' use \Krizalys\Onedrive\Proxy\DriveItemProxy::copy()'
                 . ' instead.',
             __METHOD__
         );
@@ -1085,13 +1283,18 @@ class Client
      * @param string $driveItemId
      *        The unique ID of the drive item to delete.
      *
-     * @deprecated Use Krizalys\Onedrive\Proxy\DriveItemProxy::delete() instead.
+     * @since 2.0.0
+     *
+     * @deprecated 2.0.0 Superseded by
+     *             \Krizalys\Onedrive\Proxy\DriveItemProxy::delete().
+     *
+     * @see \Krizalys\Onedrive\Proxy\DriveItemProxy::delete()
      */
     public function deleteDriveItem($driveItemId)
     {
         $message = sprintf(
             '%s() is deprecated and will be removed in version 3;'
-                . ' use Krizalys\Onedrive\Proxy\DriveItemProxy::delete()'
+                . ' use \Krizalys\Onedrive\Proxy\DriveItemProxy::delete()'
                 . ' instead',
             __METHOD__
         );
@@ -1107,16 +1310,21 @@ class Client
      *
      * @return object
      *         An object with the following properties:
-     *           - 'quota' (int) The total space, in bytes.
+     *           - 'quota' (int) The total space, in bytes ;
      *           - 'available' (int) The available space, in bytes.
      *
-     * @deprecated Use Krizalys\Onedrive\Proxy\DriveProxy::quota instead.
+     * @since 1.0.0
+     *
+     * @deprecated 2.0.0 Superseded by
+     *             \Krizalys\Onedrive\Proxy\DriveProxy::quota.
+     *
+     * @see \Krizalys\Onedrive\Proxy\DriveProxy::quota
      */
     public function fetchQuota()
     {
         $message = sprintf(
             '%s() is deprecated and will be removed in version 3;'
-                . ' use Krizalys\Onedrive\Proxy\DriveProxy::quota instead',
+                . ' use \Krizalys\Onedrive\Proxy\DriveProxy::quota instead',
             __METHOD__
         );
 
@@ -1137,13 +1345,18 @@ class Client
      *         An object with the following properties:
      *           - 'data' (array) The list of the recent documents uploaded.
      *
-     * @deprecated Use Krizalys\Onedrive\Client::getRecent() instead.
+     * @since 1.0.0
+     *
+     * @deprecated 2.0.0 Superseded by
+     *             \Krizalys\Onedrive\Client::getRecent().
+     *
+     * @see \Krizalys\Onedrive\Client::getRecent()
      */
     public function fetchRecentDocs()
     {
         $message = sprintf(
             '%s() is deprecated and will be removed in version 3;'
-                . ' use Krizalys\Onedrive\Client::getRecent() instead',
+                . ' use \Krizalys\Onedrive\Client::getRecent() instead',
             __METHOD__
         );
 
@@ -1164,13 +1377,18 @@ class Client
      *         An object with the following properties:
      *           - 'data' (array) The list of the shared drive items.
      *
-     * @deprecated Use Krizalys\Onedrive\Client::getShared() instead.
+     * @since 1.0.0
+     *
+     * @deprecated 2.0.0 Superseded by
+     *             \Krizalys\Onedrive\Client::getShared().
+     *
+     * @see \Krizalys\Onedrive\Client::getShared()
      */
     public function fetchShared()
     {
         $message = sprintf(
             '%s() is deprecated and will be removed in version 3;'
-                . ' use Krizalys\Onedrive\Client::getShared() instead',
+                . ' use \Krizalys\Onedrive\Client::getShared() instead',
             __METHOD__
         );
 
@@ -1192,6 +1410,10 @@ class Client
      *
      * @return bool
      *         Whether the drive item is a folder.
+     *
+     * @since 2.0.0
+     *
+     * @deprecated 2.0.0 Deprecated dependency.
      */
     public function isFolder(DriveItemProxy $item)
     {
@@ -1199,6 +1421,8 @@ class Client
     }
 
     /**
+     * Builds options for legacy File and Folder constructors.
+     *
      * @param DriveItemProxy $item
      *        The drive item.
      * @param array $options
@@ -1206,6 +1430,10 @@ class Client
      *
      * @return array
      *         The options.
+     *
+     * @since 2.0.0
+     *
+     * @deprecated 2.0.0 Deprecated dependency.
      */
     public function buildOptions(DriveItemProxy $item, array $options = [])
     {

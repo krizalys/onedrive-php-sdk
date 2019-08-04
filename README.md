@@ -206,14 +206,15 @@ $_SESSION['onedrive.client.state'] = $client->getState();
 
 // Past this point, you can start using file/folder functions from the SDK, eg:
 $file = $client->getRoot()->upload('hello.txt', 'Hello World!');
-echo $file->download('hello.txt');
+echo $file->download();
 // => Hello World!
 
 $file->delete();
 ```
 
-For details about classes and methods available, see the [project
-page][ondrive-php-sdk] on [Krizalys][krizalys].
+For details about classes and methods available, see the [API
+reference][api-reference] or the [project page][onedrive-php-sdk] on
+[Krizalys][krizalys].
 
 Testing
 -------
@@ -224,23 +225,23 @@ To run the functional test suite:
 2. Run your WebDriver server, for example:
 
 ```sh
-java -jar selenium-server-standalone-3.14.0.jar
+java -jar selenium-server-standalone-3.141.59.jar
 ```
 
-3. Run the functional test (it assumes that your Selenium WebDriver is listening
-   on port 4444):
+3. Run the functional test suite (it assumes that WebDriver listening on port
+4444):
 
 ```sh
 vendor/bin/phpunit -c test/functional
 ```
 
-4. Repeat steps 4 to 5 as needed.
+4. Repeat step 3 as needed.
 
 License
 -------
 
-The OneDrive SDK for PHP is licensed under the [BSD 3-Clause
-License][bsd-3-clause].
+The OneDrive SDK for PHP is licensed under the [3-Clause
+BSD License][bsd-3-clause].
 
 Credits
 -------
@@ -254,6 +255,7 @@ The OneDrive SDK for PHP is developed and maintained by Christophe Vidal.
 [microsoft-account-login]:    https://login.live.com/
 [app-registration-portal]:    https://apps.dev.microsoft.com/
 [register-app]:               https://apps.dev.microsoft.com/portal/register-app
-[ondrive-php-sdk]:            http://www.krizalys.com/software/onedrive-php-sdk
+[api-reference]:              https://github.com/krizalys/onedrive-php-sdk/wiki/ApiIndex
+[onedrive-php-sdk]:           http://www.krizalys.com/software/onedrive-php-sdk
 [krizalys]:                   http://www.krizalys.com/
 [bsd-3-clause]:               https://opensource.org/licenses/BSD-3-Clause

@@ -1,5 +1,17 @@
 <?php
 
+/**
+ * This file is part of Krizalys' OneDrive SDK for PHP.
+ *
+ * For the full copyright and license information, please view the LICENSE file
+ * that was distributed with this source code.
+ *
+ * @author    Christophe Vidal
+ * @copyright 2008-2019 Christophe Vidal (http://www.krizalys.com)
+ * @license   https://opensource.org/licenses/BSD-3-Clause 3-Clause BSD License
+ * @link      https://github.com/krizalys/onedrive-php-sdk
+ */
+
 namespace Krizalys\Onedrive\Proxy;
 
 use GuzzleHttp\Psr7;
@@ -11,15 +23,79 @@ use Microsoft\Graph\Model\Permission;
 use Microsoft\Graph\Model\Thumbnail;
 use Microsoft\Graph\Model\UploadSession;
 
+/**
+ * A proxy to a \Microsoft\Graph\Model\DriveItem instance.
+ *
+ * @property-read \Krizalys\Onedrive\Proxy\AudioProxy $audio
+ *                The audio.
+ * @property-read \GuzzleHttp\Psr7\Stream $content
+ *                The content.
+ * @property-read string $cTag
+ *                The CTag.
+ * @property-read \Krizalys\Onedrive\Proxy\DeletedProxy $deleted
+ *                The deleted.
+ * @property-read \Krizalys\Onedrive\Proxy\FileProxy $file
+ *                The file.
+ * @property-read \Krizalys\Onedrive\Proxy\FileSystemInfoProxy $fileSystemInfo
+ *                The file system info.
+ * @property-read \Krizalys\Onedrive\Proxy\FolderProxy $folder
+ *                The folder.
+ * @property-read \Krizalys\Onedrive\Proxy\ImageProxy $image
+ *                The image.
+ * @property-read \Krizalys\Onedrive\Proxy\GeoCoordinatesProxy $location
+ *                The location.
+ * @property-read \Krizalys\Onedrive\Proxy\PackageProxy $package
+ *                The package.
+ * @property-read \Krizalys\Onedrive\Proxy\PhotoProxy $photo
+ *                The photo.
+ * @property-read \Krizalys\Onedrive\Proxy\PublicationFacetProxy $publication
+ *                The publication.
+ * @property-read \Krizalys\Onedrive\Proxy\RemoteItemProxy $remoteItem
+ *                The remote item.
+ * @property-read \Krizalys\Onedrive\Proxy\RootProxy $root
+ *                The root.
+ * @property-read \Krizalys\Onedrive\Proxy\SearchResultProxy $searchResult
+ *                The search result.
+ * @property-read \Krizalys\Onedrive\Proxy\SharedProxy $shared
+ *                The shared.
+ * @property-read \Krizalys\Onedrive\Proxy\SharepointIdsProxy $sharepointIds
+ *                The SharePoint IDs.
+ * @property-read int $size
+ *                The size.
+ * @property-read \Krizalys\Onedrive\Proxy\SpecialFolderProxy $specialFolder
+ *                The special folder.
+ * @property-read \Krizalys\Onedrive\Proxy\VideoProxy $video
+ *                The video.
+ * @property-read string $webDavUrl
+ *                The WebDAV URL.
+ * @property-read \Krizalys\Onedrive\Proxy\DriveItem[] $children
+ *                The children.
+ * @property-read \Krizalys\Onedrive\Proxy\ListItemProxy $listItem
+ *                The list item.
+ * @property-read \Krizalys\Onedrive\Proxy\PermissionProxy[] $permissions
+ *                The permissions.
+ * @property-read \Krizalys\Onedrive\Proxy\ThumbnailProxy[] $thumbnails
+ *                The thumbnails.
+ * @property-read \Krizalys\Onedrive\Proxy\DriveItemVersionProxy[] $versions
+ *                The versions.
+ * @property-read \Krizalys\Onedrive\Proxy\WorkbookProxy $workbook
+ *                The workbook.
+ *
+ * @since 2.0.0
+ *
+ * @link https://github.com/microsoftgraph/msgraph-sdk-php/blob/dev/src/Model/DriveItem.php
+ */
 class DriveItemProxy extends BaseItemProxy
 {
     /**
      * Constructor.
      *
      * @param Graph
-     *        The graph.
+     *        The Microsoft Graph.
      * @param DriveItem
      *        The drive item.
+     *
+     * @since 2.0.0
      */
     public function __construct(Graph $graph, DriveItem $driveItem)
     {
@@ -34,6 +110,8 @@ class DriveItemProxy extends BaseItemProxy
      *
      * @return mixed
      *         The value.
+     *
+     * @since 2.0.0
      */
     public function __get($name)
     {
@@ -160,6 +238,9 @@ class DriveItemProxy extends BaseItemProxy
     /**
      * Creates a folder under this folder drive item.
      *
+     * This operation is supported only on folders (as opposed to files): it
+     * fails if this `DriveItemProxy` instance does not refer to a folder.
+     *
      * @param string $name
      *        The name.
      * @param array $options
@@ -167,6 +248,11 @@ class DriveItemProxy extends BaseItemProxy
      *
      * @return DriveItemProxy
      *         The drive item created.
+     *
+     * @since 2.0.0
+     *
+     * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_post_children?view=odsp-graph-online
+     *       Create a new folder in a drive
      *
      * @todo Support name conflict behavior.
      */
@@ -203,8 +289,16 @@ class DriveItemProxy extends BaseItemProxy
     /**
      * Gets this folder drive item's children.
      *
+     * This operation is supported only on folders (as opposed to files): it
+     * fails if this `DriveItemProxy` instance does not refer to a folder.
+     *
      * @return array
      *         The child drive items.
+     *
+     * @since 2.0.0
+     *
+     * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_list_children?view=odsp-graph-online
+     *       List children of a driveItem
      *
      * @todo Support pagination using a native iterator.
      */
@@ -238,6 +332,11 @@ class DriveItemProxy extends BaseItemProxy
 
     /**
      * Deletes this drive item.
+     *
+     * @since 2.0.0
+     *
+     * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_delete?view=odsp-graph-online
+     *       Delete a DriveItem
      */
     public function delete()
     {
@@ -260,6 +359,9 @@ class DriveItemProxy extends BaseItemProxy
     /**
      * Uploads a file under this folder drive item.
      *
+     * This operation is supported only on folders (as opposed to files): it
+     * fails if this `DriveItemProxy` instance does not refer to a folder.
+     *
      * @param string $name
      *        The name.
      * @param string|resource|\GuzzleHttp\Psr7\Stream $content
@@ -269,6 +371,11 @@ class DriveItemProxy extends BaseItemProxy
      *
      * @return DriveItemProxy
      *         The drive item created.
+     *
+     * @since 2.0.0
+     *
+     * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_put_content?view=odsp-graph-online
+     *       Upload or replace the contents of a DriveItem
      *
      * @todo Support name conflict behavior.
      * @todo Support content type in options.
@@ -306,6 +413,28 @@ class DriveItemProxy extends BaseItemProxy
      * Creates an upload session to upload a large file in multiple ranges under
      * this folder drive item.
      *
+     * This operation is supported only on folders (as opposed to files): it
+     * fails if this `DriveItemProxy` instance does not refer to a folder.
+     *
+     * Uploading files using this method involves two steps:
+     *     1. first, create the upload session for a given file using this
+     *        method ;
+     *     2. then, complete it using
+     *        {@see \Krizalys\Onedrive\Proxy\UploadSessionProxy::complete() complete()}
+     *        on the instance it returns.
+     *
+     * For example:
+     *
+     * ```php
+     * $uploadSession = $driveItem->startUpload(
+     *     'file.txt',
+     *     'Some content',
+     *     ['type' => 'text/plain']
+     * );
+     *
+     * $uploadSession->complete();
+     * ```
+     *
      * @param string $name
      *        The name.
      * @param string|resource|\GuzzleHttp\Psr7\Stream $content
@@ -315,6 +444,11 @@ class DriveItemProxy extends BaseItemProxy
      *
      * @return UploadSessionProxy
      *         The upload session created.
+     *
+     * @since 2.1.0
+     *
+     * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_createuploadsession?view=odsp-graph-online
+     *       Upload large files with an upload session
      *
      * @todo Support name conflict behavior.
      * @todo Support content type in options.
@@ -345,8 +479,16 @@ class DriveItemProxy extends BaseItemProxy
     /**
      * Downloads this file drive item.
      *
-     * @return GuzzleHttp\Psr7\Stream
+     * This operation is supported only on files (as opposed to folders): it
+     * fails if this `DriveItemProxy` instance does not refer to a file.
+     *
+     * @return \GuzzleHttp\Psr7\Stream
      *         The content.
+     *
+     * @since 2.0.0
+     *
+     * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_get_content?view=odsp-graph-online
+     *       Download the contents of a DriveItem
      */
     public function download()
     {
@@ -354,22 +496,15 @@ class DriveItemProxy extends BaseItemProxy
         $itemLocator  = "/items/{$this->id}";
         $endpoint     = "$driveLocator$itemLocator/content";
 
-        $response = $this
+        return $this
             ->graph
             ->createRequest('GET', $endpoint)
+            ->setReturnType(Stream::class)
             ->execute();
-
-        $status = $response->getStatus();
-
-        if ($status != 200) {
-            throw new \Exception("Unexpected status code produced by 'GET $endpoint': $status");
-        }
-
-        return $response->getResponseAsObject(Stream::class);
     }
 
     /**
-     * Renames this file item.
+     * Renames this drive item.
      *
      * @param string $name
      *        The name.
@@ -378,6 +513,11 @@ class DriveItemProxy extends BaseItemProxy
      *
      * @return DriveItemProxy
      *         The drive item renamed.
+     *
+     * @since 2.0.0
+     *
+     * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_move?view=odsp-graph-online
+     *       Move a DriveItem to a new folder
      */
     public function rename($name, array $options = [])
     {
@@ -409,6 +549,8 @@ class DriveItemProxy extends BaseItemProxy
     /**
      * Moves this drive item.
      *
+     * The `$destinationItem` instance must refer to a folder.
+     *
      * @param DriveItemProxy $destinationItem
      *        The destination item.
      * @param array $options
@@ -416,6 +558,11 @@ class DriveItemProxy extends BaseItemProxy
      *
      * @return DriveItemProxy
      *         The drive item.
+     *
+     * @since 2.0.0
+     *
+     * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_move?view=odsp-graph-online
+     *       Move a DriveItem to a new folder
      */
     public function move(self $destinationItem, array $options = [])
     {
@@ -447,7 +594,20 @@ class DriveItemProxy extends BaseItemProxy
     }
 
     /**
-     * Copies this drive item.
+     * Copies this file drive item.
+     *
+     * This operation is supported only on files (as opposed to folders): it
+     * fails if this `DriveItemProxy` instance does not refer to a file.
+     *
+     * Additionally, the `$destinationItem` instance must refer to a folder.
+     *
+     * To copy a whole folder and its children, applications can explicitly
+     * create an empty folder, using
+     * {@see \Krizalys\Onedrive\Proxy\DriveItemProxy::createFolder() createFolder()},
+     * and copy the children from the original folder to the new folder, using
+     * {@see \Krizalys\Onedrive\Proxy\DriveItemProxy::copy() copy()}. This
+     * process can be repeated recursively if support for multiple levels
+     * of children is needed.
      *
      * @param DriveItemProxy $destinationItem
      *        The destination item.
@@ -456,6 +616,11 @@ class DriveItemProxy extends BaseItemProxy
      *
      * @return string
      *         The progress URI.
+     *
+     * @since 2.0.0
+     *
+     * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_copy?view=odsp-graph-online
+     *       Copy a DriveItem
      *
      * @todo Support asynchronous Graph operation.
      */

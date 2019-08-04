@@ -151,7 +151,7 @@ class UploadSessionProxyTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      *
      * @expectedExceptionMessage OneDrive did not create a drive item for the
      *                           uploaded file
@@ -185,7 +185,7 @@ class UploadSessionProxyTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Exception
      *
      * @expectedExceptionMessage Unexpected status code produced by 'PUT
      *                           http://uplo.ad/url': 503

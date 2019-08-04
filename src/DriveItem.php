@@ -1,19 +1,38 @@
 <?php
 
+/**
+ * This file is part of Krizalys' OneDrive SDK for PHP.
+ *
+ * For the full copyright and license information, please view the LICENSE file
+ * that was distributed with this source code.
+ *
+ * @author    Christophe Vidal
+ * @copyright 2008-2019 Christophe Vidal (http://www.krizalys.com)
+ * @license   https://opensource.org/licenses/BSD-3-Clause 3-Clause BSD License
+ * @link      https://github.com/krizalys/onedrive-php-sdk
+ */
+
 namespace Krizalys\Onedrive;
 
 /**
- * @class DriveItem
+ * A proxy to an item stored on a OneDrive drive.
  *
- * A DriveItem instance is an entity that may be stored in a OneDrive account.
- * There are two types of drive items: file or a folder, each of which being a
- * subclass of the DriveItem class.
+ * `DriveItem` is an abstract class for either:
+ *   - a {@see File file}, or
+ *   - a {@see Folder folder}.
  *
- * Note that DriveItem instances are only "proxy" to actual OneDrive drive items
- * (eg. destroying a DriveItem instance will not delete the actual OneDrive
- * drive item it is referencing to).
+ * A `DriveItem` instance is only an interface to an actual OneDrive item. The
+ * underlying item is affected only when using exposed methods, such as
+ * {@see DriveItem::move() move()}.
  *
- * @deprecated Use Krizalys\Onedrive\Proxy\DriveItemProxy instead.
+ * This class also exposes accessors, such as {@see DriveItem::getParentId()
+ * getParentId()}, which retrieve the actual value from the underlying OneDrive
+ * item. For better performance, these values are cached on the `DriveItem`
+ * instance after first call.
+ *
+ * @deprecated 2.0.0 Superseded by \Krizalys\Onedrive\Proxy\DriveItemProxy.
+ *
+ * @see \Krizalys\Onedrive\Proxy\DriveItemProxy
  */
 abstract class DriveItem
 {
@@ -76,27 +95,29 @@ abstract class DriveItem
      * Constructor.
      *
      * @param Client $client
-     *        The Client instance owning this DriveItem instance.
+     *        The `Client` instance owning this `DriveItem` instance.
      * @param null|string $id
      *        The unique ID of the OneDrive drive item referenced by this
-     *        DriveItem instance.
+     *        `DriveItem` instance.
      * @param array|object $options
      *        An array/object with one or more of the following keys/properties:
      *          - 'parent_id' string
      *            The unique ID of the parent OneDrive folder of this drive
-     *            item.
+     *            item ;
      *          - 'name' (string)
-     *            The name of this drive item.
+     *            The name of this drive item ;
      *          - 'description' (string)
-     *            The description of this drive item. May be empty.
+     *            The description of this drive item. May be empty ;
      *          - 'size' (int)
-     *            The size of this drive item, in bytes.
+     *            The size of this drive item, in bytes ;
      *          - 'source' (string)
-     *            The source link of this drive item.
+     *            The source link of this drive item ;
      *          - 'created_time' (string)
-     *            The creation time, as a RFC date/time.
+     *            The creation time, as a RFC date/time ;
      *          - 'updated_time' (string)
      *            The last modification time, as a RFC date/time.
+     *
+     * @since 2.0.0
      */
     public function __construct(Client $client, $id, $options = [])
     {
@@ -131,8 +152,10 @@ abstract class DriveItem
      * instance is a folder.
      *
      * @return bool
-     *         true if the OneDrive drive item referenced by this DriveItem
+     *         true if the OneDrive drive item referenced by this `DriveItem`
      *         instance is a folder, false otherwise.
+     *
+     * @since 1.0.0
      */
     public function isFolder()
     {
@@ -141,12 +164,15 @@ abstract class DriveItem
 
     /**
      * Fetches the properties of the OneDrive drive item referenced by this
-     * DriveItem instance. Some properties are cached for faster subsequent
-     * access.
+     * DriveItem instance.
+     *
+     * Some properties are cached for faster subsequent access.
      *
      * @return array
      *         The properties of the OneDrive drive item referenced by this
-     *         DriveItem instance.
+     *         `DriveItem` instance.
+     *
+     * @since 2.0.0
      */
     public function fetchProperties()
     {
@@ -177,7 +203,9 @@ abstract class DriveItem
      *
      * @return string
      *         The unique ID of the OneDrive drive item referenced by this
-     *         DriveItem instance.
+     *         `DriveItem` instance.
+     *
+     * @since 2.0.0
      */
     public function getId()
     {
@@ -190,7 +218,9 @@ abstract class DriveItem
      *
      * @return string
      *         The unique ID of the OneDrive folder containing the drive item
-     *         referenced by this DriveItem instance.
+     *         referenced by this `DriveItem` instance.
+     *
+     * @since 2.0.0
      */
     public function getParentId()
     {
@@ -206,8 +236,10 @@ abstract class DriveItem
      * instance.
      *
      * @return string
-     *         The name of the OneDrive drive item referenced by this DriveItem
-     *         instance.
+     *         The name of the OneDrive drive item referenced by this
+     *         `DriveItem` instance.
+     *
+     * @since 2.0.0
      */
     public function getName()
     {
@@ -224,7 +256,9 @@ abstract class DriveItem
      *
      * @return string
      *         The description of the OneDrive drive item referenced by this
-     *         DriveItem instance.
+     *         `DriveItem` instance.
+     *
+     * @since 2.0.0
      */
     public function getDescription()
     {
@@ -240,8 +274,10 @@ abstract class DriveItem
      * instance.
      *
      * @return int
-     *         The size of the OneDrive drive item referenced by this DriveItem
-     *         instance.
+     *         The size of the OneDrive drive item referenced by this
+     *         `DriveItem` instance.
+     *
+     * @since 2.0.0
      */
     public function getSize()
     {
@@ -258,7 +294,9 @@ abstract class DriveItem
      *
      * @return string
      *         The source link of the OneDrive drive item referenced by this
-     *         DriveItem instance.
+     *         `DriveItem` instance.
+     *
+     * @since 2.0.0
      */
     public function getSource()
     {
@@ -274,8 +312,10 @@ abstract class DriveItem
      * DriveItem instance.
      *
      * @return int
-     *         The creation time of the drive item referenced by this DriveItem
-     *         instance, in seconds since UNIX epoch.
+     *         The creation time of the drive item referenced by this
+     *         `DriveItem` instance, in seconds since UNIX epoch.
+     *
+     * @since 2.0.0
      */
     public function getCreatedTime()
     {
@@ -292,7 +332,9 @@ abstract class DriveItem
      *
      * @return int
      *         The last modification time of the drive item referenced by this
-     *         DriveItem instance, in seconds since UNIX epoch.
+     *         `DriveItem` instance, in seconds since UNIX epoch.
+     *
+     * @since 2.0.0
      */
     public function getUpdatedTime()
     {
@@ -307,12 +349,19 @@ abstract class DriveItem
      * Moves the OneDrive drive item referenced by this DriveItem instance into
      * another OneDrive folder.
      *
+     * `$destinationId` must refer to a folder.
+     *
      * @param null|string $destinationId
      *        The unique ID of the OneDrive folder into which to move the
-     *        OneDrive drive item referenced by this DriveItem instance, or null
-     *        to move it to the OneDrive root folder. Default: null.
+     *        OneDrive drive item referenced by this `DriveItem` instance, or
+     *        null to move it to the OneDrive root folder. Default: null.
      *
-     * @deprecated Use Krizalys\Onedrive\Proxy\DriveItemProxy::move() instead.
+     * @since 2.0.0
+     *
+     * @deprecated 2.0.0 Superseded by
+     *             \Krizalys\Onedrive\Proxy\DriveItemProxy::move().
+     *
+     * @see \Krizalys\Onedrive\Proxy\DriveItemProxy::move()
      */
     public function move($destinationId = null)
     {
@@ -320,7 +369,7 @@ abstract class DriveItem
 
         $message = sprintf(
             '%s() is deprecated and will be removed in version 3;'
-                . ' use Krizalys\Onedrive\Proxy\DriveItemProxy::move()'
+                . ' use \Krizalys\Onedrive\Proxy\DriveItemProxy::move()'
                 . ' instead.',
             __METHOD__
         );
