@@ -212,8 +212,9 @@ echo $file->download();
 $file->delete();
 ```
 
-For details about classes and methods available, see the [project
-page][ondrive-php-sdk] on [Krizalys][krizalys].
+For details about classes and methods available, see the [API
+reference][api-reference] or the [project page][onedrive-php-sdk] on
+[Krizalys][krizalys].
 
 Testing
 -------
@@ -254,6 +255,7 @@ The OneDrive SDK for PHP is developed and maintained by Christophe Vidal.
 [microsoft-account-login]:    https://login.live.com/
 [app-registration-portal]:    https://apps.dev.microsoft.com/
 [register-app]:               https://apps.dev.microsoft.com/portal/register-app
-[ondrive-php-sdk]:            http://www.krizalys.com/software/onedrive-php-sdk
+[api-reference]:              https://github.com/krizalys/onedrive-php-sdk/wiki/ApiIndex
+[onedrive-php-sdk]:           http://www.krizalys.com/software/onedrive-php-sdk
 [krizalys]:                   http://www.krizalys.com/
 [bsd-3-clause]:               https://opensource.org/licenses/BSD-3-Clause
