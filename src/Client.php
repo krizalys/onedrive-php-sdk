@@ -603,6 +603,42 @@ class Client
     }
 
     /**
+     * Gets a drive item by path.
+     *
+     * @param string $path
+     *        The path.
+     *
+     * @return DriveItemProxy
+     *         The drive item.
+     *
+     * @since 2.2.0
+     *
+     * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_get?view=odsp-graph-online
+     *       Get a DriveItem resource
+     */
+    public function getDriveItemByPath($path)
+    {
+        $driveLocator = '/me/drive';
+        $itemLocator  = "/root:$path";
+        $endpoint     = "$driveLocator$itemLocator";
+
+        $response = $this
+            ->graph
+            ->createRequest('GET', $endpoint)
+            ->execute();
+
+        $status = $response->getStatus();
+
+        if ($status != 200) {
+            throw new \Exception("Unexpected status code produced by 'GET $endpoint': $status");
+        }
+
+        $driveItem = $response->getResponseAsObject(Model\DriveItem::class);
+
+        return new DriveItemProxy($this->graph, $driveItem);
+    }
+
+    /**
      * Gets the root drive item.
      *
      * @return DriveItemProxy
