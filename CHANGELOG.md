@@ -12,6 +12,9 @@ Change log
 `Krizalys\Onedrive\Proxy\DriveProxy::getDriveItemByPath()`
 - Support for retrieving drive items by ID from a drive: see
 `Krizalys\Onedrive\Proxy\DriveProxy::getDriveItemById()`
+- Complete PHPDoc on all public & maintained interfaces.
+- Online [API reference][api-reference].
+- Some unit test cases.
 
 [2.1.2] - 2019-07-21
 --------------------
@@ -186,15 +189,16 @@ error.
 
 - Support for SSL.
 
-[unreleased]: https://github.com/krizalys/onedrive-php-sdk/compare/2.1.2...HEAD
-[2.1.2]:      https://github.com/krizalys/onedrive-php-sdk/compare/2.1.1...2.1.2
-[2.1.1]:      https://github.com/krizalys/onedrive-php-sdk/compare/2.1.0...2.1.1
-[2.1.0]:      https://github.com/krizalys/onedrive-php-sdk/compare/2.0.2...2.1.0
-[2.0.2]:      https://github.com/krizalys/onedrive-php-sdk/compare/2.0.1...2.0.2
-[2.0.1]:      https://github.com/krizalys/onedrive-php-sdk/compare/2.0.0...2.0.1
-[2.0.0]:      https://github.com/krizalys/onedrive-php-sdk/compare/1.2.0...2.0.0
-[1.2.0]:      https://github.com/krizalys/onedrive-php-sdk/compare/1.1.1...1.2.0
-[1.1.1]:      https://github.com/krizalys/onedrive-php-sdk/compare/1.1.0...1.1.1
-[1.1.0]:      https://github.com/krizalys/onedrive-php-sdk/compare/1.0.0...1.1.0
-[1.0.1]:      https://github.com/krizalys/onedrive-php-sdk/compare/1.0.0...1.0.1
-[monolog]:    https://github.com/seldaek/monolog
+[unreleased]:    https://github.com/krizalys/onedrive-php-sdk/compare/2.1.2...HEAD
+[2.1.2]:         https://github.com/krizalys/onedrive-php-sdk/compare/2.1.1...2.1.2
+[2.1.1]:         https://github.com/krizalys/onedrive-php-sdk/compare/2.1.0...2.1.1
+[2.1.0]:         https://github.com/krizalys/onedrive-php-sdk/compare/2.0.2...2.1.0
+[2.0.2]:         https://github.com/krizalys/onedrive-php-sdk/compare/2.0.1...2.0.2
+[2.0.1]:         https://github.com/krizalys/onedrive-php-sdk/compare/2.0.0...2.0.1
+[2.0.0]:         https://github.com/krizalys/onedrive-php-sdk/compare/1.2.0...2.0.0
+[1.2.0]:         https://github.com/krizalys/onedrive-php-sdk/compare/1.1.1...1.2.0
+[1.1.1]:         https://github.com/krizalys/onedrive-php-sdk/compare/1.1.0...1.1.1
+[1.1.0]:         https://github.com/krizalys/onedrive-php-sdk/compare/1.0.0...1.1.0
+[1.0.1]:         https://github.com/krizalys/onedrive-php-sdk/compare/1.0.0...1.0.1
+[api-reference]: https://github.com/krizalys/onedrive-php-sdk/wiki/ApiIndex
+[monolog]:       https://github.com/seldaek/monolog
