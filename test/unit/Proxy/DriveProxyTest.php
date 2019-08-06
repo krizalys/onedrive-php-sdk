@@ -139,6 +139,17 @@ class DriveProxyTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('1234', $sut->special->id);
     }
 
+    public function testGetDriveItemByPathShouldReturnExpectedValue()
+    {
+        $item   = $this->mockDriveItem(self::DRIVE_ITEM_ID);
+        $graph  = $this->mockGraphWithResponse($item);
+        $drive  = $this->createMock(Drive::class);
+        $sut    = new DriveProxy($graph, $drive);
+        $actual = $sut->getDriveItemByPath('/path');
+        $this->assertInstanceOf(DriveItemProxy::class, $actual);
+        $this->assertSame(self::DRIVE_ITEM_ID, $actual->id);
+    }
+
     public function testGetRootShouldReturnExpectedValue()
     {
         $item   = $this->mockDriveItem(self::DRIVE_ITEM_ID);

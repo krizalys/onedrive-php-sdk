@@ -144,6 +144,18 @@ EOF;
         });
     }
 
+    public function testDriveGetDriveItemByPath()
+    {
+        self::runInFolder(__FUNCTION__, function (DriveItemProxy $sandbox) {
+            self::upload($sandbox, 'Test file');
+            $drive  = self::$client->getDriveById($sandbox->parentReference->driveId);
+            $prefix = $sandbox->name;
+            $item   = $drive->getDriveItemByPath("/$prefix/Test file");
+            $this->assertDriveItemProxy($item);
+            $this->assertEquals('Test file', $item->name);
+        });
+    }
+
     public function testGetRoot()
     {
         $item = self::$client->getRoot();
