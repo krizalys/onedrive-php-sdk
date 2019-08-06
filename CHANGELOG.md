@@ -10,6 +10,8 @@ Change log
 `Krizalys\Onedrive\Client::getDriveItemByPath()`
 - Support for retrieving drive items by path from a drive: see
 `Krizalys\Onedrive\Proxy\DriveProxy::getDriveItemByPath()`
+- Support for retrieving drive items by ID from a drive: see
+`Krizalys\Onedrive\Proxy\DriveProxy::getDriveItemById()`
 
 [2.1.2] - 2019-07-21
 --------------------

@@ -133,6 +133,14 @@ EOF;
         $this->assertDriveItemProxy($item);
     }
 
+    public function testDriveGetDriveItemById()
+    {
+        $item  = self::getRoot();
+        $drive = self::$client->getDriveById($item->parentReference->driveId);
+        $item  = $drive->getDriveItemById($item->id);
+        $this->assertDriveItemProxy($item);
+    }
+
     public function testGetDriveItemByPath()
     {
         self::runInFolder(__FUNCTION__, function (DriveItemProxy $sandbox) {
