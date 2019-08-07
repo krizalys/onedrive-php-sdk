@@ -565,12 +565,14 @@ class Client
     }
 
     /**
-     * Gets a drive item by ID and drive ID.
+     * Gets a drive item by ID.
      *
      * @param string $driveId
-     *        The drive ID.
-     * @param string $itemId
-     *        The drive item ID.
+     *        The drive ID. Deprecated and will change in version 3; pass the
+     *        drive item ID instead.
+     * @param mixed $itemId
+     *        The drive item ID. Deprecated and will be removed in version 3;
+     *        Omit this parameter.
      *
      * @return DriveItemProxy
      *         The drive item.
@@ -580,11 +582,32 @@ class Client
      * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_get?view=odsp-graph-online
      *       Get a DriveItem resource
      */
-    public function getDriveItemById($driveId, $itemId)
+    public function getDriveItemById($driveId, $itemId = null)
     {
-        $driveLocator = "/drives/$driveId";
-        $itemLocator  = "/items/$itemId";
-        $endpoint     = "$driveLocator$itemLocator";
+        if (func_num_args() == 1) {
+            $itemId  = $driveId;
+            $driveId = null;
+        }
+
+        if ($driveId === null) {
+            $driveLocator = '/me/drive';
+        } else {
+            $message = sprintf(
+                '%s()\'s behavior will change in version 3: the $driveId'
+                    . ' argument will be removed and the method will get a'
+                    . ' drive item from the default drive;'
+                    . ' use'
+                    . ' \Krizalys\Onedrive\Proxy\DriveProxy::getDriveItemById()'
+                    . ' for to retrieve a drive item ID from a given drive',
+                __METHOD__
+            );
+
+            @trigger_error($message, E_USER_DEPRECATED);
+            $driveLocator = "/drives/$driveId";
+        }
+
+        $itemLocator = "/items/$itemId";
+        $endpoint    = "$driveLocator$itemLocator";
 
         $response = $this
             ->graph

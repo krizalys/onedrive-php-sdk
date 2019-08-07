@@ -16,6 +16,13 @@ Change log
 - Online [API reference][api-reference].
 - Some unit test cases.
 
+### Deprecated
+
+- `Krizalys\Onedrive\Client::getDriveItemById()`: the $driveId argument is
+now deprecated. Omit it to retrieve a drive item by ID from the default drive,
+or use `Krizalys\Onedrive\Proxy\DriveProxy::getDriveItemById()` to retrieve a
+drive item by ID from a given drive.
+
 [2.1.2] - 2019-07-21
 --------------------
 
