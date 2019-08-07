@@ -1,8 +1,8 @@
 Change log
 ==========
 
-[Unreleased][unreleased]
-------------------------
+[2.2.0] - 2019-08-07
+--------------------
 
 ### Added
 
@@ -197,7 +197,8 @@ as the official PHP Docker image.
 
 - Support for SSL.
 
-[unreleased]:    https://github.com/krizalys/onedrive-php-sdk/compare/2.1.2...HEAD
+[unreleased]:    https://github.com/krizalys/onedrive-php-sdk/compare/2.2.0...HEAD
+[2.2.0]:         https://github.com/krizalys/onedrive-php-sdk/compare/2.1.2...2.2.0
 [2.1.2]:         https://github.com/krizalys/onedrive-php-sdk/compare/2.1.1...2.1.2
 [2.1.1]:         https://github.com/krizalys/onedrive-php-sdk/compare/2.1.0...2.1.1
 [2.1.0]:         https://github.com/krizalys/onedrive-php-sdk/compare/2.0.2...2.1.0
