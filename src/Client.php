@@ -413,7 +413,7 @@ class Client
         $status = $response->getStatus();
 
         if ($status != 200) {
-            throw new \Exception();
+            throw new \Exception("Unexpected status code produced by 'GET $endpoint': $status");
         }
 
         $drive = $response->getResponseAsObject(Model\Drive::class);
@@ -448,7 +448,7 @@ class Client
         $status = $response->getStatus();
 
         if ($status != 200) {
-            throw new \Exception();
+            throw new \Exception("Unexpected status code produced by 'GET $endpoint': $status");
         }
 
         $drive = $response->getResponseAsObject(Model\Drive::class);
@@ -484,7 +484,7 @@ class Client
         $status = $response->getStatus();
 
         if ($status != 200) {
-            throw new \Exception();
+            throw new \Exception("Unexpected status code produced by 'GET $endpoint': $status");
         }
 
         $drive = $response->getResponseAsObject(Model\Drive::class);
@@ -520,7 +520,7 @@ class Client
         $status = $response->getStatus();
 
         if ($status != 200) {
-            throw new \Exception();
+            throw new \Exception("Unexpected status code produced by 'GET $endpoint': $status");
         }
 
         $drive = $response->getResponseAsObject(Model\Drive::class);
@@ -556,7 +556,7 @@ class Client
         $status = $response->getStatus();
 
         if ($status != 200) {
-            throw new \Exception();
+            throw new \Exception("Unexpected status code produced by 'GET $endpoint': $status");
         }
 
         $drive = $response->getResponseAsObject(Model\Drive::class);
@@ -617,7 +617,7 @@ class Client
         $status = $response->getStatus();
 
         if ($status != 200) {
-            throw new \Exception();
+            throw new \Exception("Unexpected status code produced by 'GET $endpoint': $status");
         }
 
         $driveItem = $response->getResponseAsObject(Model\DriveItem::class);

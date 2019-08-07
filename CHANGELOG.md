@@ -15,6 +15,7 @@ Change log
 - Complete PHPDoc on all public & maintained interfaces.
 - Online [API reference][api-reference].
 - Some unit test cases.
+- Messages to all exceptions.
 
 ### Deprecated
 
