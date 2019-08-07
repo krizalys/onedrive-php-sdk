@@ -152,12 +152,12 @@ If they do, they are redirected back to your *Redirect URI* and a code is passed
 in the query string of this URL. The script residing at this URL essentially:
 
 1. Instantiates a `Client` from your configuration and the state from previous
-instantiations
+   instantiations
 2. Obtains an OAuth access token using `Client::obtainAccessToken()`
-passing it the code received
+   passing it the code received
 3. May start interacting with the files and folders stored in their OneDrive
-account, or delegates this responsibility to other scripts instantiating a
-`Client` from the same state
+   account, or delegates this responsibility to other scripts instantiating a
+   `Client` from the same state
 
 It typically looks like (replace `/path/to` by the appropriate values):
 
@@ -224,16 +224,16 @@ To run the functional test suite:
 1. Set your application configuration at `test/functional/config.php` ;
 2. Run your WebDriver server, for example:
 
-```sh
-java -jar selenium-server-standalone-3.141.59.jar
-```
+   ```sh
+   java -jar selenium-server-standalone-3.141.59.jar
+   ```
 
 3. Run the functional test suite (it assumes that WebDriver listening on port
-4444):
+   4444):
 
-```sh
-vendor/bin/phpunit -c test/functional
-```
+   ```sh
+   vendor/bin/phpunit -c test/functional
+   ```
 
 4. Repeat step 3 as needed.
 

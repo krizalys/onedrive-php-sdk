@@ -7,11 +7,11 @@ Change log
 ### Added
 
 - Support for retrieving drive items by path: see
-`Krizalys\Onedrive\Client::getDriveItemByPath()`
+  `Krizalys\Onedrive\Client::getDriveItemByPath()`
 - Support for retrieving drive items by path from a drive: see
-`Krizalys\Onedrive\Proxy\DriveProxy::getDriveItemByPath()`
+  `Krizalys\Onedrive\Proxy\DriveProxy::getDriveItemByPath()`
 - Support for retrieving drive items by ID from a drive: see
-`Krizalys\Onedrive\Proxy\DriveProxy::getDriveItemById()`
+  `Krizalys\Onedrive\Proxy\DriveProxy::getDriveItemById()`
 - Complete PHPDoc on all public & maintained interfaces.
 - Online [API reference][api-reference].
 - Some unit test cases.
@@ -19,9 +19,9 @@ Change log
 ### Deprecated
 
 - `Krizalys\Onedrive\Client::getDriveItemById()`: the $driveId argument is
-now deprecated. Omit it to retrieve a drive item by ID from the default drive,
-or use `Krizalys\Onedrive\Proxy\DriveProxy::getDriveItemById()` to retrieve a
-drive item by ID from a given drive.
+  now deprecated. Omit it to retrieve a drive item by ID from the default drive,
+  or use `Krizalys\Onedrive\Proxy\DriveProxy::getDriveItemById()` to retrieve a
+  drive item by ID from a given drive.
 
 [2.1.2] - 2019-07-21
 --------------------
@@ -29,10 +29,10 @@ drive item by ID from a given drive.
 ### Fixed
 
 - `Krizalys\Onedrive\Client::renewAccessToken()`: was not updating the access
-token on its Microsoft Graph client.
+  token on its Microsoft Graph client.
 - `Krizalys\Onedrive\Proxy\DriveItem::download()`: was treating the response
-obtained from executing its request as a `Microsoft\Graph\Http\GraphResponse`;
-it is always a `GuzzleHttp\Psr7\Stream` since `1.7.0`.
+  obtained from executing its request as a `Microsoft\Graph\Http\GraphResponse`;
+  it is always a `GuzzleHttp\Psr7\Stream` since `1.7.0`.
 
 [2.1.1] - 2019-03-24
 --------------------
@@ -40,7 +40,7 @@ it is always a `GuzzleHttp\Psr7\Stream` since `1.7.0`.
 ### Fixed
 
 - `Krizalys\Onedrive\Proxy\UploadSessionProxy::complete()`: was ignoring the
-`range_size` option.
+  `range_size` option.
 
 [2.1.0] - 2019-03-13
 --------------------
@@ -76,22 +76,22 @@ as the official PHP Docker image.
 ### Changed
 
 - `Krizalys\Onedrive\Proxy\DriveItem::versions`: returns an array of
-`Krizalys\Onedrive\Proxy\DriveItemVersionProxy` instances.
+  `Krizalys\Onedrive\Proxy\DriveItemVersionProxy` instances.
 - `Krizalys\Onedrive\Proxy\SharePointIdsProxy`: renamed into
-`SharepointIdsProxy` to match its Microsoft Graph model.
+  `SharepointIdsProxy` to match its Microsoft Graph model.
 
 ### Fixed
 
 - `Krizalys\Onedrive\Proxy\DriveItemProxy::createFolder()` was throwing an
-exception when a folder with the same name already existed despite the conflict
-behavior being set to `replace`.
+  exception when a folder with the same name already existed despite the
+  conflict behavior being set to `replace`.
 - `Krizalys\Onedrive\Proxy\DriveItemProxy::upload()` was throwing an exception
-when a file with the same name already existed despite the conflict behavior
-being set to `replace`.
+  when a file with the same name already existed despite the conflict behavior
+  being set to `replace`.
 - `Krizalys\Onedrive\Proxy\BaseItemProxy::lastModifiedByUser` was causing a
-fatal error.
+  fatal error.
 - `Krizalys\Onedrive\Proxy\SystemFacetProxy::__construct()` was causing a fatal
-error.
+  error.
 
 [2.0.1] - 2018-11-11
 --------------------
