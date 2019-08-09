@@ -294,6 +294,50 @@ class DriveItemProxy extends BaseItemProxy
      * This operation is supported only on folders (as opposed to files): it
      * fails if this `DriveItemProxy` instance does not refer to a folder.
      *
+     * The retrieved result set may be refined via the `$options` parameter. For
+     * example, to retrieve the first ten children sorted by name in descending
+     * order:
+     *
+     * ```php
+     * $childDriveItems = $driveItem->getChildren([
+     *     'top' => 10,
+     *     'orderby' => [
+     *         ['name', 'desc'],
+     *     ],
+     * ]);
+     * ```
+     *
+     * @param array $options
+     *        The options. Supported options:
+     *          - `'top'` *(number)*: The number of items to retrieve. Default:
+     *            `200` ;
+     *          - `'orderby'` *(array<array<string>>)*: The list of
+     *            property-direction tuples to use to sort retrieved items. Each
+     *            tuple consists of a property and a direction, separated from
+     *            each other by whitespace.
+     *            Although the official OneDrive documentation claims to support
+     *            sorting by multiple properties, we did not acknowledge this
+     *            behavior, yet, and instead got Bad Request errors from the
+     *            OneDrive API. We do not recommend relying on this feature.
+     *            This option anticipates a related changes in the OneDrive API
+     *            and is designed to support this feature without introducing
+     *            breaking changes.
+     *            Supported properties:
+     *              - `'name'`: sorts by name ;
+     *              - `'size'`: sorts by size ;
+     *              - `'lastModifiedDateTime'`: sorts by last modified date;
+     *              - `'url'`: sorts by URL.
+     *            Some properties are supported only on some versions of
+     *            OneDrive. See
+     *            {@link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/concepts/optional-query-parameters?view=odsp-graph-online#sorting-collections}
+     *            for the reference.
+     *            The direction defaults to ascending if not given. Supported
+     *            directions:
+     *              - `'asc'`: sorts by the given property in ascending in
+     *                order ;
+     *              - `'desc'`: sorts by the given property in descending in
+     *                order.
+     *
      * @return DriveItemProxy[]
      *         The child drive items.
      *
@@ -303,12 +347,50 @@ class DriveItemProxy extends BaseItemProxy
      *       List children of a driveItem
      *
      * @todo Support pagination using a native iterator.
+     * @todo Support more query string parameters.
      */
-    public function getChildren()
+    public function getChildren(array $options = [])
     {
+        $supportedQueryParams = [
+            'top' => function ($top) {
+                return $top;
+            },
+
+            'orderby' => function (array $orderBy) {
+                $properties = array_map(function (array $tuple) {
+                    list($property, $direction) = $tuple;
+
+                    return "$property $direction";
+                }, $orderBy);
+
+                return implode(',', $properties);
+            },
+        ];
+
+        $queryParams = array_intersect_key($supportedQueryParams, $options);
+        $queryKeys   = array_keys($queryParams);
+
+        $queryValues = array_map(function ($key) use ($options, $queryParams) {
+            $map   = $queryParams[$key];
+            $value = $options[$key];
+
+            return $map($value);
+        }, $queryKeys);
+
+        $queryKeys = array_map(function ($key) {
+            return "\$$key";
+        }, $queryKeys);
+
+        $query = array_combine($queryKeys, $queryValues);
+
         $driveLocator = "/drives/{$this->parentReference->driveId}";
         $itemLocator  = "/items/{$this->id}";
         $endpoint     = "$driveLocator$itemLocator/children";
+
+        if (!empty($query)) {
+            $queryString = http_build_query($query, '', '&', PHP_QUERY_RFC3986);
+            $endpoint    = "$endpoint?$queryString";
+        }
 
         $response = $this
             ->graph

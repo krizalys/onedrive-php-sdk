@@ -9,6 +9,8 @@ Change log
 - More PHPDoc details & examples.
 - A facade to expose main OneDrive functionality while hiding implementation
   details: see `Krizalys\Onedrive\Onedrive`
+- `Krizalys\Onedrive\Proxy\DriveItemProxy::getChildren()` now accepts an
+  optional `$options` parameter to refine the retrieved result set.
 
 [2.2.0] - 2019-08-07
 --------------------

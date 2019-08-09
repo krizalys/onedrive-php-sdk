@@ -206,8 +206,20 @@ EOF;
     {
         self::withSandbox(__FUNCTION__, function (DriveItemProxy $sandbox) {
             self::createFolder($sandbox, 'Test folder');
-            self::upload($sandbox, 'Test file');
-            $children = $sandbox->getChildren();
+
+            for ($i = 1; $i <= 2; ++$i) {
+                self::upload($sandbox, "Test file #$i");
+            }
+
+            $children = $sandbox->getChildren(
+                [
+                    'top' => 2,
+
+                    'orderby' => [
+                        ['name', 'desc'],
+                    ],
+                ]
+            );
 
             foreach ($children as $child) {
                 $this->assertDriveItemProxy($child);
@@ -215,7 +227,7 @@ EOF;
 
             $this->assertCount(2, $children);
             $this->assertEquals('Test folder', $children[0]->name);
-            $this->assertEquals('Test file', $children[1]->name);
+            $this->assertEquals('Test file #2', $children[1]->name);
         });
     }
 
