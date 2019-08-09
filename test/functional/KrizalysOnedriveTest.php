@@ -872,7 +872,7 @@ EOF;
             'Test file',
             'Test content',
             [
-                'Content-Type' => 'text/plain',
+                'contentType' => 'text/plain',
             ]
         );
 
@@ -893,7 +893,7 @@ EOF;
             'Test file',
             $content,
             [
-                'Content-Type' => 'text/plain',
+                'contentType' => 'text/plain',
             ]
         );
 
@@ -916,7 +916,7 @@ EOF;
             'Test file',
             $string,
             [
-                'Content-Type' => 'text/plain',
+                'contentType' => 'text/plain',
             ]
         );
 
@@ -941,7 +941,7 @@ EOF;
             'Test file',
             $stream,
             [
-                'Content-Type' => 'text/plain',
+                'contentType' => 'text/plain',
             ]
         );
 
@@ -983,7 +983,7 @@ EOF;
             $name,
             $content,
             [
-                'Content-Type' => 'text/plain',
+                'contentType' => 'text/plain',
             ]
         );
     }

@@ -16,6 +16,7 @@ namespace Krizalys\Onedrive\Proxy;
 
 use GuzzleHttp\Psr7;
 use GuzzleHttp\Psr7\Stream;
+use Krizalys\Onedrive\Parameter\DriveItemParameterDirectorInterface;
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model\DriveItem;
 use Microsoft\Graph\Model\DriveItemVersion;
@@ -88,18 +89,30 @@ use Microsoft\Graph\Model\UploadSession;
 class DriveItemProxy extends BaseItemProxy
 {
     /**
+     * @var DriveItemParameterDirectorInterface
+     *      The drive item parameter director.
+     */
+    private $parameterDirector;
+
+    /**
      * Constructor.
      *
-     * @param Graph
+     * @param Graph $graph
      *        The Microsoft Graph.
-     * @param DriveItem
+     * @param DriveItem $driveItem
      *        The drive item.
+     * @param DriveItemParameterDirectorInterface $parameterDirector
+     *        The drive item parameter director.
      *
      * @since 2.0.0
      */
-    public function __construct(Graph $graph, DriveItem $driveItem)
-    {
+    public function __construct(
+        Graph $graph,
+        DriveItem $driveItem,
+        DriveItemParameterDirectorInterface $parameterDirector
+    ) {
         parent::__construct($graph, $driveItem);
+        $this->parameterDirector = $parameterDirector;
     }
 
     /**
@@ -285,7 +298,7 @@ class DriveItemProxy extends BaseItemProxy
 
         $driveItem = $response->getResponseAsObject(DriveItem::class);
 
-        return new self($this->graph, $driveItem);
+        return new self($this->graph, $driveItem, $this->parameterDirector);
     }
 
     /**
@@ -351,41 +364,13 @@ class DriveItemProxy extends BaseItemProxy
      */
     public function getChildren(array $options = [])
     {
-        $supportedQueryParams = [
-            'top' => function ($top) {
-                return $top;
-            },
-
-            'orderby' => function (array $orderBy) {
-                $properties = array_map(function (array $tuple) {
-                    list($property, $direction) = $tuple;
-
-                    return "$property $direction";
-                }, $orderBy);
-
-                return implode(',', $properties);
-            },
-        ];
-
-        $queryParams = array_intersect_key($supportedQueryParams, $options);
-        $queryKeys   = array_keys($queryParams);
-
-        $queryValues = array_map(function ($key) use ($options, $queryParams) {
-            $map   = $queryParams[$key];
-            $value = $options[$key];
-
-            return $map($value);
-        }, $queryKeys);
-
-        $queryKeys = array_map(function ($key) {
-            return "\$$key";
-        }, $queryKeys);
-
-        $query = array_combine($queryKeys, $queryValues);
-
         $driveLocator = "/drives/{$this->parentReference->driveId}";
         $itemLocator  = "/items/{$this->id}";
         $endpoint     = "$driveLocator$itemLocator/children";
+
+        $query = $this
+            ->parameterDirector
+            ->buildGetChildren($options);
 
         if (!empty($query)) {
             $queryString = http_build_query($query, '', '&', PHP_QUERY_RFC3986);
@@ -410,7 +395,7 @@ class DriveItemProxy extends BaseItemProxy
         }
 
         return array_map(function (DriveItem $driveItem) {
-            return new self($this->graph, $driveItem);
+            return new self($this->graph, $driveItem, $this->parameterDirector);
         }, $driveItems);
     }
 
@@ -478,10 +463,21 @@ class DriveItemProxy extends BaseItemProxy
      */
     public function upload($name, $content, array $options = [])
     {
+        if (array_key_exists('Content-Type', $options)) {
+            $message = 'The \'Content-Type\' option is deprecated and will'
+                . ' be removed in version 3; use \'contentType\' instead';
+
+            @trigger_error($message, E_USER_DEPRECATED);
+        }
+
         $name         = rawurlencode($name);
         $driveLocator = "/drives/{$this->parentReference->driveId}";
         $itemLocator  = "/items/{$this->id}";
         $endpoint     = "$driveLocator$itemLocator:/$name:/content";
+
+        $headers = $this
+            ->parameterDirector
+            ->buildPutContent($options);
 
         $body = $content instanceof Stream ?
             $content
@@ -490,7 +486,7 @@ class DriveItemProxy extends BaseItemProxy
         $response = $this
             ->graph
             ->createRequest('PUT', $endpoint)
-            ->addHeaders($options)
+            ->addHeaders($headers)
             ->attachBody($body)
             ->execute();
 
@@ -502,7 +498,7 @@ class DriveItemProxy extends BaseItemProxy
 
         $driveItem = $response->getResponseAsObject(DriveItem::class);
 
-        return new self($this->graph, $driveItem);
+        return new self($this->graph, $driveItem, $this->parameterDirector);
     }
 
     /**
@@ -569,7 +565,13 @@ class DriveItemProxy extends BaseItemProxy
 
         $uploadSession = $response->getResponseAsObject(UploadSession::class);
 
-        return new UploadSessionProxy($this->graph, $uploadSession, $content, $options);
+        return new UploadSessionProxy(
+            $this->graph,
+            $uploadSession,
+            $content,
+            $this->parameterDirector,
+            $options
+        );
     }
 
     /**
@@ -650,7 +652,7 @@ class DriveItemProxy extends BaseItemProxy
 
         $driveItem = $response->getResponseAsObject(DriveItem::class);
 
-        return new self($this->graph, $driveItem);
+        return new self($this->graph, $driveItem, $this->parameterDirector);
     }
 
     /**
@@ -708,7 +710,7 @@ class DriveItemProxy extends BaseItemProxy
 
         $driveItem = $response->getResponseAsObject(DriveItem::class);
 
-        return new self($this->graph, $driveItem);
+        return new self($this->graph, $driveItem, $this->parameterDirector);
     }
 
     /**
