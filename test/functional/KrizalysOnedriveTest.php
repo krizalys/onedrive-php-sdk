@@ -24,8 +24,6 @@ class KrizalysOnedriveTest extends \PHPUnit_Framework_TestCase
 {
     use Assertions;
 
-    const REDIRECT_URI_PORT = 7777;
-
     const ASYNC_POLL_TIMEOUT = 10; // In seconds.
 
     const ASYNC_POLL_INTERVAL = 1; // In seconds.
@@ -1050,7 +1048,10 @@ EOF;
 
     private static function getAuthenticationCode(Client $client, $clientId, $username, $password)
     {
-        $command = sprintf('php -S localhost:%d %s/router.php', self::REDIRECT_URI_PORT, __DIR__);
+        // Random registered port.
+        $redirectUriPort = rand(1024, 49151);
+
+        $command = sprintf('php -S localhost:%d %s/router.php', $redirectUriPort, __DIR__);
         $server  = new Process($command);
         $server->start();
         $opts = new ChromeOptions();
@@ -1064,7 +1065,7 @@ EOF;
         $caps = DesiredCapabilities::chrome();
         $caps->setCapability(ChromeOptions::CAPABILITY, $opts);
         $seleniumUrl = sprintf('http://localhost:%d/wd/hub', 4444);
-        $redirectUri = sprintf('http://localhost:%d/', self::REDIRECT_URI_PORT);
+        $redirectUri = sprintf('http://localhost:%d/', $redirectUriPort);
 
         $scopes = [
             'files.read',
@@ -1109,6 +1110,7 @@ EOF;
         }
 
         $server->stop();
+
         return $code;
     }
 
