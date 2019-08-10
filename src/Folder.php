@@ -227,13 +227,6 @@ class Folder extends DriveItem
         $drive   = $client->getMyDrive();
         $item    = $client->getDriveItemById($drive->id, $this->_id);
         $options = [];
-
-        if ($description !== null) {
-            $options += [
-                'description' => (string) $description,
-            ];
-        }
-
         $item    = $item->upload($name, $content, $options);
         $options = $client->buildOptions($item, ['parent_id' => $parentId]);
 
