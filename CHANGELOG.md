@@ -7,6 +7,8 @@ Change log
 ### Added
 
 - More PHPDoc details & examples.
+- A facade to expose main OneDrive functionality while hiding implementation
+  details: see `Krizalys\Onedrive\Onedrive`
 
 [2.2.0] - 2019-08-07
 --------------------

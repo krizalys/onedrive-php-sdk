@@ -112,16 +112,10 @@ like this:
 ($config = include __DIR__ . '/config.php') or die('Configuration file not found');
 require_once __DIR__ . '/vendor/autoload.php';
 
-use GuzzleHttp\Client as GuzzleHttpClient;
-use Krizalys\Onedrive\Client;
-use Microsoft\Graph\Graph;
+use Krizalys\Onedrive\Onedrive;
 
 // Instantiates a OneDrive client bound to your OneDrive application.
-$client = new Client(
-    $config['ONEDRIVE_CLIENT_ID'],
-    new Graph(),
-    new GuzzleHttpClient()
-);
+$client = Onedrive::client($config['ONEDRIVE_CLIENT_ID']);
 
 // Gets a log in URL with sufficient privileges from the OneDrive API.
 $url = $client->getLogInUrl([
@@ -168,9 +162,7 @@ It typically looks like (replace `/path/to` by the appropriate values):
 ($config = include __DIR__ . '/config.php') or die('Configuration file not found');
 require_once __DIR__ . '/vendor/autoload.php';
 
-use GuzzleHttp\Client as GuzzleHttpClient;
-use Krizalys\Onedrive\Client;
-use Microsoft\Graph\Graph;
+use Krizalys\Onedrive\Onedrive;
 
 // If we don't have a code in the query string (meaning that the user did not
 // log in successfully or did not grant privileges requested), we cannot proceed
@@ -187,14 +179,12 @@ if (!array_key_exists('onedrive.client.state', $_SESSION)) {
     throw new \Exception('onedrive.client.state undefined in $_SESSION');
 }
 
-$client = new Client(
+$client = Onedrive::client(
     $config['ONEDRIVE_CLIENT_ID'],
-    new Graph(),
-    new GuzzleHttpClient(),
     [
         // Restore the previous state while instantiating this client to proceed
         // in obtaining an access token.
-        'state' => $_SESSION['onedrive.client.state']
+        'state' => $_SESSION['onedrive.client.state'],
     ]
 );
 

@@ -3,9 +3,7 @@
 namespace Test\Functional\Krizalys\Onedrive;
 
 use Facebook\WebDriver\WebDriver;
-use GuzzleHttp\Client as GuzzleHttpClient;
-use Krizalys\Onedrive\Client;
-use Microsoft\Graph\Graph;
+use Krizalys\Onedrive\Onedrive;
 use Symfony\Component\Process\Process;
 
 trait ClientFactoryTrait
@@ -36,9 +34,7 @@ trait ClientFactoryTrait
 
     private static function createClient($clientId, $username, $password, $secret)
     {
-        $graph      = new Graph();
-        $httpClient = new GuzzleHttpClient();
-        $client     = new Client($clientId, $graph, $httpClient);
+        $client = Onedrive::client($clientId);
 
         // Random registered port.
         $redirectUriPort = rand(self::$minRedirectPort, self::$maxRedirectPort);
