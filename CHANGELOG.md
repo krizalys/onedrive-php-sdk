@@ -1,6 +1,13 @@
 Change log
 ==========
 
+[Unreleased][unreleased]
+------------------------
+
+### Added
+
+- More PHPDoc details & examples.
+
 [2.2.0] - 2019-08-07
 --------------------
 

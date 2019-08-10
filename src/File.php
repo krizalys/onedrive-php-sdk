@@ -38,8 +38,8 @@ class File extends DriveItem
      * @param null|string $id
      *        The unique ID of the OneDrive drive item referenced by this
      *        DriveItem instance.
-     * @param array|object $options
-     *        Options to pass to the DriveItem constructor.
+     * @param mixed[]|object $options
+     *        The options. See DriveItem::__construct() for supported options.
      *
      * @since 1.0.0
      */
@@ -52,8 +52,8 @@ class File extends DriveItem
      * Fetches the content of the OneDrive file referenced by this File
      * instance.
      *
-     * @param array $options
-     *        Extra cURL options to apply.
+     * @param mixed[] $options
+     *        The extra cURL options to apply.
      *
      * @return string
      *         The content of the OneDrive file referenced by this `File`
@@ -93,8 +93,8 @@ class File extends DriveItem
      *
      * @param null|string $destinationId
      *        The unique ID of the OneDrive folder into which to copy the
-     *        OneDrive file referenced by this `File` instance, or null to copy
-     *        it in the OneDrive root folder. Default: null.
+     *        OneDrive file referenced by this `File` instance, or `null` to
+     *        copy it in the OneDrive root folder. Default: `null`.
      *
      * @since 1.0.0
      *

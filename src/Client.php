@@ -23,8 +23,15 @@ use Microsoft\Graph\Model;
 /**
  * A client interface to communicate with the OneDrive API.
  *
- * Client applications use `Client` instances to perform OneDrive operations
- * programmatically.
+ * `Client` instances act as entry points allowing client applications to
+ * perform currently implemented OneDrive operations programmatically.
+ *
+ * For example, assuming you have instantiated a client and the user has logged
+ * successfully and authorized your client application:
+ *
+ * ```php
+ * $client->getRoot()->upload('hello.txt', 'Hello World!');
+ * ```
  *
  * Applications are managed via Microsoft accounts. Two types of applications
  * are supported:
@@ -92,15 +99,14 @@ class Client
      *        The Guzzle HTTP client.
      * @param mixed $logger
      *        Deprecated and will be removed in version 3; omit this parameter,
-     *        or pass null or options instead.
-     * @param array $options
-     *        The options to use while creating this object.
-     *        Valid supported keys are:
-     *          - 'state' (object) When defined, it should contain a valid
-     *            OneDrive client state, as returned by getState(). Default: [].
+     *        or pass `null` or options instead.
+     * @param mixed[] $options
+     *        The options to use while creating this object. Supported options:
+     *          - `'state'` *(object)*: the OneDrive client state, as returned
+     *            by `getState()`. Default: `[]`.
      *
      * @throws \Exception
-     *         Thrown if `$clientId` is null.
+     *         Thrown if `$clientId` is `null`.
      *
      * @since 1.0.0
      */
@@ -165,14 +171,14 @@ class Client
      * The browser is also directly redirected to the given redirect URI if the
      * user is already logged in.
      *
-     * @param array $scopes
+     * @param string[] $scopes
      *        The OneDrive scopes requested by the application. Supported
      *        values:
-     *          - 'offline_access' ;
-     *          - 'files.read' ;
-     *          - 'files.read.all' ;
-     *          - 'files.readwrite' ;
-     *          - 'files.readwrite.all'.
+     *          - `'offline_access'` ;
+     *          - `'files.read'` ;
+     *          - `'files.read.all'` ;
+     *          - `'files.readwrite'` ;
+     *          - `'files.readwrite.all'`.
      * @param string $redirectUri
      *        The URI to which to redirect to upon successful log in.
      *
@@ -221,11 +227,11 @@ class Client
      * Gets the status of the current access token.
      *
      * @return int
-     *         The status of the current access token:
-     *           - `0`: No access token ;
-     *           - `-1`: Access token will expire soon (1 minute or less) ;
-     *           - `-2`: Access token is expired ;
-     *           - `1`: Access token is valid.
+     *         The status of the current access token. Defined statuses:
+     *           - `0`: no access token ;
+     *           - `-1`: access token will expire soon (1 minute or less) ;
+     *           - `-2`: access token is expired ;
+     *           - `1`: access token is valid.
      *
      * @since 1.0.0
      */
@@ -354,7 +360,7 @@ class Client
     /**
      * Gets the current user's drive.
      *
-     * @return array
+     * @return DriveProxy[]
      *         The drives.
      *
      * @since 2.0.0
@@ -628,6 +634,13 @@ class Client
     /**
      * Gets a drive item by path.
      *
+     * The path is given as an absolute path from the root of the drive, for
+     * example:
+     *
+     * ```php
+     * $driveItem = $client->getDriveItemByPath('/path/to/file.txt');
+     * ```
+     *
      * @param string $path
      *        The path.
      *
@@ -699,11 +712,11 @@ class Client
      *
      * @param string $specialFolderName
      *        The special folder name. Supported values:
-     *          - 'documents' ;
-     *          - 'photos' ;
-     *          - 'cameraroll' ;
-     *          - 'approot' ;
-     *          - 'music'.
+     *          - `'documents'` ;
+     *          - `'photos'` ;
+     *          - `'cameraroll'` ;
+     *          - `'approot'` ;
+     *          - `'music'`.
      *
      * @return DriveItemProxy
      *         The root drive item.
@@ -738,7 +751,7 @@ class Client
     /**
      * Gets items shared with the signed-in user.
      *
-     * @return array
+     * @return DriveItemProxy[]
      *         The shared drive items.
      *
      * @since 2.0.0
@@ -776,7 +789,7 @@ class Client
     /**
      * Gets recent files.
      *
-     * @return array
+     * @return DriveItemProxy[]
      *         The recent drive items.
      *
      * @since 2.0.0
@@ -823,11 +836,11 @@ class Client
      *        The name of the OneDrive folder to be created.
      * @param null|string $parentId
      *        The ID of the OneDrive folder into which to create the OneDrive
-     *        folder, or null to create it in the OneDrive root folder. Default:
-     *        null.
+     *        folder, or `null` to create it in the OneDrive root folder.
+     *        Default: `null`.
      * @param null|string $description
-     *        The description of the OneDrive folder to be created, or null to
-     *        create it without a description. Default: null.
+     *        The description of the OneDrive folder to be created, or `null` to
+     *        create it without a description. Default: `null`.
      *
      * @return Folder
      *         The folder created, as a Folder instance referencing to the
@@ -880,13 +893,13 @@ class Client
      *        The name of the OneDrive file to be created.
      * @param null|string $parentId
      *        The ID of the OneDrive folder into which to create the OneDrive
-     *        file, or null to create it in the OneDrive root folder. Default:
-     *        null.
+     *        file, or `null` to create it in the OneDrive root folder. Default:
+     *        `null`.
      * @param string|resource|\GuzzleHttp\Psr7\Stream $content
      *        The content of the OneDrive file to be created, as a string or as
-     *        a resource to an already opened file. Default: ''.
-     * @param array $options
-     *        The options.
+     *        a resource to an already opened file. Default: `''`.
+     * @param mixed[] $options
+     *        The options. Unused.
      *
      * @return File
      *         The file created, as File instance referencing to the OneDrive
@@ -935,8 +948,8 @@ class Client
      * Fetches a drive item from the current OneDrive account.
      *
      * @param null|string $driveItemId
-     *        The unique ID of the OneDrive drive item to fetch, or null to
-     *        fetch the OneDrive root folder. Default: null.
+     *        The unique ID of the OneDrive drive item to fetch, or `null` to
+     *        fetch the OneDrive root folder. Default: `null`.
      *
      * @return object
      *         The drive item fetched, as a DriveItem instance referencing to
@@ -1094,8 +1107,8 @@ class Client
      * Fetches the properties of a drive item in the current OneDrive account.
      *
      * @param null|string $driveItemId
-     *        The drive item ID, or null to fetch the OneDrive root folder.
-     *        Default: null.
+     *        The drive item ID, or `null` to fetch the OneDrive root folder.
+     *        Default: `null`.
      *
      * @return object
      *         The properties of the drive item fetched.
@@ -1140,10 +1153,10 @@ class Client
      * fails if `$parentId` does not refer to a folder.
      *
      * @param null|string $driveItemId
-     *        The drive item ID, or null to fetch the OneDrive root folder.
-     *        Default: null.
+     *        The drive item ID, or `null` to fetch the OneDrive root folder.
+     *        Default: `null`.
      *
-     * @return array
+     * @return DriveItem
      *         The drive items in the folder fetched, as DriveItem instances
      *         referencing OneDrive drive items.
      *
@@ -1184,8 +1197,8 @@ class Client
      *
      * @param string $driveItemId
      *        The unique ID of the drive item to update.
-     * @param array|object $properties
-     *        The properties to update. Default: [].
+     * @param mixed[]|object $properties
+     *        The properties to update. Default: `[]`.
      * @param bool $temp
      *        Option to allow save to a temporary file in case of large files.
      *
@@ -1239,7 +1252,7 @@ class Client
      *        The unique ID of the drive item to move.
      * @param null|string $destinationId
      *        The unique ID of the folder into which to move the drive item, or
-     *        null to move it to the OneDrive root folder. Default: null.
+     *        `null` to move it to the OneDrive root folder. Default: `null`.
      *
      * @since 2.0.0
      *
@@ -1279,8 +1292,8 @@ class Client
      * @param string $driveItemId
      *        The unique ID of the file to copy.
      * @param null|string $destinationId
-     *        The unique ID of the folder into which to copy the file, or null
-     *        to copy it to the OneDrive root folder. Default: null.
+     *        The unique ID of the folder into which to copy the file, or `null`
+     *        to copy it to the OneDrive root folder. Default: `null`.
      *
      * @since 1.0.0
      *
@@ -1457,10 +1470,10 @@ class Client
      *
      * @param DriveItemProxy $item
      *        The drive item.
-     * @param array $options
+     * @param mixed[] $options
      *        The options.
      *
-     * @return array
+     * @return mixed[]
      *         The options.
      *
      * @since 2.0.0

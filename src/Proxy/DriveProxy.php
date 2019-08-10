@@ -159,6 +159,13 @@ class DriveProxy extends BaseItemProxy
     /**
      * Gets a drive item by path from this instance.
      *
+     * The path is given as an absolute path from the root of the drive, for
+     * example:
+     *
+     * ```php
+     * $driveItem = $driveItem->getDriveItemByPath('/path/to/file.txt');
+     * ```
+     *
      * @param string $path
      *        The path.
      *

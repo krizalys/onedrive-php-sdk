@@ -15,7 +15,7 @@ class GlobalNamespace
      * Stubs global functions and force them to behave as if they were
      * successful & running within the realistic contexts.
      *
-     * @param array $expectations
+     * @param callable[] $expectations
      */
     public static function reset(array $expectations = [])
     {

@@ -82,8 +82,10 @@ class UploadSessionProxy extends EntityProxy
      *        The upload session.
      * @param string|resource|\GuzzleHttp\Psr7\Stream $content
      *        The content.
-     * @param array $options
-     *        The options.
+     * @param mixed[] $options
+     *        The options. Supported options:
+     *          - `'type'` *(string)*: the MIME type of the uploaded file ;
+     *          - `'range_size'` *(int)*: the range size, in bytes.
      *
      * @since 2.1.0
      */

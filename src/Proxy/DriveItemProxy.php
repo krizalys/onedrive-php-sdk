@@ -243,8 +243,10 @@ class DriveItemProxy extends BaseItemProxy
      *
      * @param string $name
      *        The name.
-     * @param array $options
-     *        The options.
+     * @param mixed[] $options
+     *        The options. Supported options:
+     *          - `'description'` *(string)*: the description of the folder
+     *            created.
      *
      * @return DriveItemProxy
      *         The drive item created.
@@ -292,7 +294,7 @@ class DriveItemProxy extends BaseItemProxy
      * This operation is supported only on folders (as opposed to files): it
      * fails if this `DriveItemProxy` instance does not refer to a folder.
      *
-     * @return array
+     * @return DriveItemProxy[]
      *         The child drive items.
      *
      * @since 2.0.0
@@ -362,12 +364,24 @@ class DriveItemProxy extends BaseItemProxy
      * This operation is supported only on folders (as opposed to files): it
      * fails if this `DriveItemProxy` instance does not refer to a folder.
      *
+     * The MIME type of the drive item may be given as a `Content-Type` option,
+     * for example:
+     *
+     * ```php
+     * $driveItem = $parentDriveItem->upload(
+     *     'file.txt',
+     *     'Content',
+     *     ['Content-Type' => 'text/plain']
+     * );
+     * ```
+     *
      * @param string $name
      *        The name.
      * @param string|resource|\GuzzleHttp\Psr7\Stream $content
      *        The content.
-     * @param array $options
-     *        The options.
+     * @param mixed[] $options
+     *        The options. Supported options:
+     *          - `Content-Type` *(string)*: the MIME type of the uploaded file.
      *
      * @return DriveItemProxy
      *         The drive item created.
@@ -426,7 +440,7 @@ class DriveItemProxy extends BaseItemProxy
      * For example:
      *
      * ```php
-     * $uploadSession = $driveItem->startUpload(
+     * $uploadSession = $parentDriveItem->startUpload(
      *     'file.txt',
      *     'Some content',
      *     ['type' => 'text/plain']
@@ -439,8 +453,8 @@ class DriveItemProxy extends BaseItemProxy
      *        The name.
      * @param string|resource|\GuzzleHttp\Psr7\Stream $content
      *        The content.
-     * @param array $options
-     *        The options.
+     * @param mixed[] $options
+     *        The options. See UploadSession::__construct for supported options.
      *
      * @return UploadSessionProxy
      *         The upload session created.
@@ -506,10 +520,21 @@ class DriveItemProxy extends BaseItemProxy
     /**
      * Renames this drive item.
      *
+     * When renaming a drive item, its description may also be changed.
+     *
+     * ```php
+     * $driveItem = $driveItem->rename(
+     *     'new-name.txt',
+     *     ['description' => 'New description']
+     * );
+     * ```
+     *
      * @param string $name
      *        The name.
-     * @param array $options
-     *        The options.
+     * @param mixed[] $options
+     *        The options. Supported options:
+     *          - `$description` *(string)*: the new description to set after
+     *            the drive item is renamed.
      *
      * @return DriveItemProxy
      *         The drive item renamed.
@@ -551,10 +576,21 @@ class DriveItemProxy extends BaseItemProxy
      *
      * The `$destinationItem` instance must refer to a folder.
      *
+     * When moving a drive item,.its name may also be changed.
+     *
+     * ```php
+     * $driveItem = $driveItem->move(
+     *     $parentDriveitem,
+     *     ['name' => 'new-name.txt']
+     * );
+     * ```
+     *
      * @param DriveItemProxy $destinationItem
      *        The destination item.
-     * @param array $options
-     *        The options.
+     * @param mixed[] $options
+     *        The options. Supported options:
+     *          - `$name` *(string)*: the new name to set after the drive item
+     *            is moved.
      *
      * @return DriveItemProxy
      *         The drive item.
@@ -601,8 +637,19 @@ class DriveItemProxy extends BaseItemProxy
      *
      * Additionally, the `$destinationItem` instance must refer to a folder.
      *
-     * To copy a whole folder and its children, applications can explicitly
-     * create an empty folder, using
+     * When copying a file, the name of the copy may also be changed. A new name
+     * is required if copying to the same folder.
+     *
+     * ```php
+     * $driveItem = $driveItem->copy(
+     *     $parentDriveitem,
+     *     ['name' => 'new-name.txt']
+     * );
+     * ```
+     *
+     * Copying folders is not directly supported by OneDrive. To copy a whole
+     * folder and its children, applications can explicitly create an empty
+     * folder, using
      * {@see \Krizalys\Onedrive\Proxy\DriveItemProxy::createFolder() createFolder()},
      * and copy the children from the original folder to the new folder, using
      * {@see \Krizalys\Onedrive\Proxy\DriveItemProxy::copy() copy()}. This
@@ -611,8 +658,9 @@ class DriveItemProxy extends BaseItemProxy
      *
      * @param DriveItemProxy $destinationItem
      *        The destination item.
-     * @param array $options
-     *        The options.
+     * @param mixed[] $options
+     *        The options. Supported options:
+     *          - `$name` *(string)*: the name of the copied file.
      *
      * @return string
      *         The progress URI.

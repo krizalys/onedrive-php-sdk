@@ -99,23 +99,19 @@ abstract class DriveItem
      * @param null|string $id
      *        The unique ID of the OneDrive drive item referenced by this
      *        `DriveItem` instance.
-     * @param array|object $options
-     *        An array/object with one or more of the following keys/properties:
-     *          - 'parent_id' string
-     *            The unique ID of the parent OneDrive folder of this drive
-     *            item ;
-     *          - 'name' (string)
-     *            The name of this drive item ;
-     *          - 'description' (string)
-     *            The description of this drive item. May be empty ;
-     *          - 'size' (int)
-     *            The size of this drive item, in bytes ;
-     *          - 'source' (string)
-     *            The source link of this drive item ;
-     *          - 'created_time' (string)
-     *            The creation time, as a RFC date/time ;
-     *          - 'updated_time' (string)
-     *            The last modification time, as a RFC date/time.
+     * @param mixed[]|object $options
+     *        The options. Supported options:
+     *          - `'parent_id'` *(string)*: the unique ID of the parent OneDrive
+     *            folder of this drive item ;
+     *          - `'name'` *(string)*: the name of this drive item ;
+     *          - `'description'` *(string)*: the description of this drive
+     *            item. May be empty ;
+     *          - `'size'` *(int)*: the size of this drive item, in bytes ;
+     *          - `'source'` *(string)*: the source link of this drive item ;
+     *          - `'created_time'` *(string)*: the creation time, as an RFC
+     *            date/time ;
+     *          - `'updated_time'` *(string)*: the last modification time, as an
+     *            RFC date/time.
      *
      * @since 2.0.0
      */
@@ -152,8 +148,8 @@ abstract class DriveItem
      * instance is a folder.
      *
      * @return bool
-     *         true if the OneDrive drive item referenced by this `DriveItem`
-     *         instance is a folder, false otherwise.
+     *         `true` if the OneDrive drive item referenced by this `DriveItem`
+     *         instance is a folder, `false` otherwise.
      *
      * @since 1.0.0
      */
@@ -168,7 +164,7 @@ abstract class DriveItem
      *
      * Some properties are cached for faster subsequent access.
      *
-     * @return array
+     * @return mixed[]
      *         The properties of the OneDrive drive item referenced by this
      *         `DriveItem` instance.
      *
@@ -354,7 +350,7 @@ abstract class DriveItem
      * @param null|string $destinationId
      *        The unique ID of the OneDrive folder into which to move the
      *        OneDrive drive item referenced by this `DriveItem` instance, or
-     *        null to move it to the OneDrive root folder. Default: null.
+     *        null to move it to the OneDrive root folder. Default: `null`.
      *
      * @since 2.0.0
      *

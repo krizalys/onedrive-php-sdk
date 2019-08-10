@@ -48,10 +48,10 @@ class Folder extends DriveItem
      *        The `Client` instance owning this DriveItem instance.
      * @param null|string $id
      *        The unique ID of the OneDrive drive item referenced by this
-     *        DriveItem instance, or null to reference the OneDrive root folder.
-     *        Default: null.
-     * @param array|object $options
-     *        Options to pass to the DriveItem constructor.
+     *        DriveItem instance, or `null` to reference the OneDrive root
+     *        folder. Default: `null`.
+     * @param mixed[]|object $options
+     *        The options. See DriveItem::__construct() for supported options.
      *
      * @since 1.0.0
      */
@@ -64,7 +64,7 @@ class Folder extends DriveItem
      * Gets the drive items in the OneDrive folder referenced by this Folder
      * instance.
      *
-     * @return array
+     * @return DriveItem[]
      *         The drive items in the OneDrive folder referenced by this
      *         `Folder` instance, as DriveItem instances.
      *
@@ -103,7 +103,7 @@ class Folder extends DriveItem
      * Gets the child drive items in the OneDrive folder referenced by this
      * Folder instance.
      *
-     * @return array
+     * @return DriveItem[]
      *         The drive items in the OneDrive folder referenced by this
      *         `Folder` instance, as DriveItem instances.
      *
@@ -145,8 +145,8 @@ class Folder extends DriveItem
      * @param string $name
      *        The name of the OneDrive folder to be created.
      * @param null|string $description
-     *        The description of the OneDrive folder to be created, or null to
-     *        create it without a description. Default: null.
+     *        The description of the OneDrive folder to be created, or `null` to
+     *        create it without a description. Default: `null`.
      *
      * @return Folder
      *         The folder created, as a `Folder` instance.
@@ -195,9 +195,9 @@ class Folder extends DriveItem
      *        The content of the OneDrive file to be created, as a string or
      *        handle to an already opened file. In the latter case, the
      *        responsibility to close the handle is is left to the calling
-     *        function. Default: ''.
-     * @param array $options
-     *        The options.
+     *        function. Default: `''`.
+     * @param mixed[] $options
+     *        The options. Unused.
      *
      * @return File
      *         The file created, as a File instance.
