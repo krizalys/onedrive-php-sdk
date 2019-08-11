@@ -980,8 +980,7 @@ EOF;
 
     private static function getDriveItemById($id)
     {
-        $item = self::getRoot();
-        return self::$client->getDriveItemById($item->parentReference->driveId, $id);
+        return self::$client->getDriveItemById($id);
     }
 
     private static function getPhotosFolder()
