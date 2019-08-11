@@ -232,7 +232,7 @@ To run the functional test suite:
    4444):
 
    ```sh
-   vendor/bin/phpunit -c test/functional
+   vendor/bin/phpunit --configuration test/functional
    ```
 
 4. Repeat step 3 as needed.
