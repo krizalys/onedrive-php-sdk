@@ -147,7 +147,7 @@ EOF;
 
     public function testGetDriveItemByPath()
     {
-        self::runInFolder(__FUNCTION__, function (DriveItemProxy $sandbox) {
+        self::withSandbox(__FUNCTION__, function (DriveItemProxy $sandbox) {
             self::upload($sandbox, 'Test file');
             $prefix = $sandbox->name;
             $item   = self::$client->getDriveItemByPath("/$prefix/Test file");
@@ -158,7 +158,7 @@ EOF;
 
     public function testDriveGetDriveItemByPath()
     {
-        self::runInFolder(__FUNCTION__, function (DriveItemProxy $sandbox) {
+        self::withSandbox(__FUNCTION__, function (DriveItemProxy $sandbox) {
             self::upload($sandbox, 'Test file');
             $drive  = self::$client->getDriveById($sandbox->parentReference->driveId);
             $prefix = $sandbox->name;
@@ -222,7 +222,7 @@ EOF;
 
     public function testCreateFolder()
     {
-        self::runInFolder(__FUNCTION__, function (DriveItemProxy $sandbox) {
+        self::withSandbox(__FUNCTION__, function (DriveItemProxy $sandbox) {
             // Upload a new file.
             $this->assertCreateFolder($sandbox);
 
@@ -233,7 +233,7 @@ EOF;
 
     public function testGetChildren()
     {
-        self::runInFolder(__FUNCTION__, function (DriveItemProxy $sandbox) {
+        self::withSandbox(__FUNCTION__, function (DriveItemProxy $sandbox) {
             self::createFolder($sandbox, 'Test folder');
             self::upload($sandbox, 'Test file');
             $children = $sandbox->getChildren();
@@ -250,7 +250,7 @@ EOF;
 
     public function testDeleteFile()
     {
-        self::runInFolder(__FUNCTION__, function (DriveItemProxy $sandbox) {
+        self::withSandbox(__FUNCTION__, function (DriveItemProxy $sandbox) {
             $item = self::upload($sandbox, 'Test file');
             $item->delete();
             $children = $sandbox->children;
@@ -260,7 +260,7 @@ EOF;
 
     public function testDeleteFolder()
     {
-        self::runInFolder(__FUNCTION__, function (DriveItemProxy $sandbox) {
+        self::withSandbox(__FUNCTION__, function (DriveItemProxy $sandbox) {
             $item = self::createFolder($sandbox, 'Test folder');
             $item->delete();
             $children = $sandbox->children;
@@ -270,7 +270,7 @@ EOF;
 
     public function testUploadString()
     {
-        self::runInFolder(__FUNCTION__, function (DriveItemProxy $sandbox) {
+        self::withSandbox(__FUNCTION__, function (DriveItemProxy $sandbox) {
             // Upload a new file.
             $this->assertUploadString($sandbox);
 
@@ -281,7 +281,7 @@ EOF;
 
     public function testUploadStream()
     {
-        self::runInFolder(__FUNCTION__, function (DriveItemProxy $sandbox) {
+        self::withSandbox(__FUNCTION__, function (DriveItemProxy $sandbox) {
             // Upload a new file.
             $this->assertUploadStream($sandbox);
 
@@ -292,7 +292,7 @@ EOF;
 
     public function testStartUploadString()
     {
-        self::runInFolder(__FUNCTION__, function (DriveItemProxy $sandbox) {
+        self::withSandbox(__FUNCTION__, function (DriveItemProxy $sandbox) {
             // Upload a new file.
             $this->assertStartUploadString($sandbox);
 
@@ -303,7 +303,7 @@ EOF;
 
     public function testStartUploadStream()
     {
-        self::runInFolder(__FUNCTION__, function (DriveItemProxy $sandbox) {
+        self::withSandbox(__FUNCTION__, function (DriveItemProxy $sandbox) {
             // Upload a new file.
             $this->assertStartUploadStream($sandbox);
 
@@ -314,7 +314,7 @@ EOF;
 
     public function testRename()
     {
-        self::runInFolder(__FUNCTION__, function (DriveItemProxy $sandbox) {
+        self::withSandbox(__FUNCTION__, function (DriveItemProxy $sandbox) {
             $item        = self::upload($sandbox, 'Test file');
             $destination = self::createFolder($sandbox, 'Test destination');
 
@@ -335,7 +335,7 @@ EOF;
 
     public function testMoveFile()
     {
-        self::runInFolder(__FUNCTION__, function (DriveItemProxy $sandbox) {
+        self::withSandbox(__FUNCTION__, function (DriveItemProxy $sandbox) {
             $item        = self::upload($sandbox, 'Test file');
             $destination = self::createFolder($sandbox, 'Test destination');
 
@@ -355,7 +355,7 @@ EOF;
 
     public function testMoveFolder()
     {
-        self::runInFolder(__FUNCTION__, function (DriveItemProxy $sandbox) {
+        self::withSandbox(__FUNCTION__, function (DriveItemProxy $sandbox) {
             $item        = self::createFolder($sandbox, 'Test folder');
             $destination = self::createFolder($sandbox, 'Test destination');
 
@@ -377,7 +377,7 @@ EOF;
 
     public function testCopyFile()
     {
-        self::runInFolder(__FUNCTION__, function (DriveItemProxy $sandbox) {
+        self::withSandbox(__FUNCTION__, function (DriveItemProxy $sandbox) {
             $item        = self::upload($sandbox, 'Test file');
             $destination = self::createFolder($sandbox, 'Test destination');
 
@@ -400,7 +400,7 @@ EOF;
 
     public function testCopyFolder()
     {
-        self::runInFolder(__FUNCTION__, function (DriveItemProxy $sandbox) {
+        self::withSandbox(__FUNCTION__, function (DriveItemProxy $sandbox) {
             $item        = self::createFolder($sandbox, 'Test folder');
             $destination = self::createFolder($sandbox, 'Test destination');
 
@@ -459,7 +459,7 @@ EOF;
         $this->assertEquals('Test description folder #2', $folder2->getDescription());
         self::deleteLegacy($folder2);
 
-        self::runInFolder(__FUNCTION__, function (DriveItemProxy $parent) {
+        self::withSandbox(__FUNCTION__, function (DriveItemProxy $parent) {
             $folder3 = self::$client->createFolder('Test folder #3', $parent->id, null);
             $this->assertInstanceOf(Folder::class, $folder3);
             $this->assertEquals('Test folder #3', $folder3->getName());
@@ -475,7 +475,7 @@ EOF;
 
     public function testClientCreateFileLegacy()
     {
-        self::runInFolder(__FUNCTION__, function (DriveItemProxy $parent) {
+        self::withSandbox(__FUNCTION__, function (DriveItemProxy $parent) {
             // Test with a text file.
             $file1 = self::$client->createFile('Test file #1.txt', $parent->id, 'Test content');
             $this->assertInstanceOf(File::class, $file1);
@@ -621,7 +621,7 @@ EOF;
 
     public function testClientMoveDriveItemLegacy()
     {
-        self::runInFolder(__FUNCTION__, function (DriveItemProxy $parent) {
+        self::withSandbox(__FUNCTION__, function (DriveItemProxy $parent) {
             $item        = self::createFolder($parent, 'Test item');
             $destination = self::createFolder($parent, 'Test destination');
             self::$client->moveDriveItem($item->id, $destination->id);
@@ -645,7 +645,7 @@ EOF;
 
     public function testClientCopyDriveItemLegacy()
     {
-        self::runInFolder(__FUNCTION__, function (DriveItemProxy $parent) {
+        self::withSandbox(__FUNCTION__, function (DriveItemProxy $parent) {
             $item        = self::upload($parent, 'Test item');
             $destination = self::createFolder($parent, 'Test destination');
             self::$client->copyFile($item->id, $destination->id);
@@ -661,7 +661,7 @@ EOF;
 
     public function testClientDeleteDriveItemLegacy()
     {
-        self::runInFolder(__FUNCTION__, function (DriveItemProxy $parent) {
+        self::withSandbox(__FUNCTION__, function (DriveItemProxy $parent) {
             $item = self::createFolder($parent, 'Test folder');
             self::$client->deleteDriveItem($item->id);
 
@@ -705,7 +705,7 @@ EOF;
 
     public function testDriveItemMoveLegacy()
     {
-        self::runInFolder(__FUNCTION__, function (DriveItemProxy $parent) {
+        self::withSandbox(__FUNCTION__, function (DriveItemProxy $parent) {
             $item        = self::upload($parent, 'Test item');
             $destination = self::createFolder($parent, 'Test destination');
 
@@ -730,7 +730,7 @@ EOF;
 
     public function testFileFetchContentLegacy()
     {
-        self::runInFolder(__FUNCTION__, function (DriveItemProxy $parent) {
+        self::withSandbox(__FUNCTION__, function (DriveItemProxy $parent) {
             $item   = self::upload($parent, 'Test item', 'Test content');
             $item   = new File(self::$client, $item->id);
             $actual = $item->fetchContent();
@@ -740,7 +740,7 @@ EOF;
 
     public function testFileCopyLegacy()
     {
-        self::runInFolder(__FUNCTION__, function (DriveItemProxy $parent) {
+        self::withSandbox(__FUNCTION__, function (DriveItemProxy $parent) {
             $item        = self::upload($parent, 'Test item');
             $destination = self::createFolder($parent, 'Test destination');
             (new File(self::$client, $item->id))->copy($destination->id);
@@ -800,7 +800,7 @@ EOF;
 
     public function testFolderCreateFolderLegacy()
     {
-        self::runInFolder(__FUNCTION__, function (DriveItemProxy $parent) {
+        self::withSandbox(__FUNCTION__, function (DriveItemProxy $parent) {
             $item = (new Folder(self::$client, $parent->id))->createFolder('Test folder', 'Test description');
             $this->assertInstanceOf(Folder::class, $item);
             $this->assertEquals($parent->id, $item->getParentId());
@@ -817,7 +817,7 @@ EOF;
 
     public function testFolderCreateFileLegacy()
     {
-        self::runInFolder(__FUNCTION__, function (DriveItemProxy $parent) {
+        self::withSandbox(__FUNCTION__, function (DriveItemProxy $parent) {
             $item = (new Folder(self::$client, $parent->id))->createFile('Test file', 'Test content');
             $this->assertInstanceOf(File::class, $item);
             $this->assertEquals($parent->id, $item->getParentId());
@@ -1021,10 +1021,11 @@ EOF;
         return $drives[0];
     }
 
-    private static function runInFolder($name, callable $function)
+    private static function withSandbox($name, callable $function)
     {
         $root   = self::getRoot();
-        $name   = $name . '_' . gmdate('YmdHis');
+        $suffix = sprintf('%08X', rand(0x00000000, 0xffffffff));
+        $name   = $name . '_' . gmdate('YmdHis') . "_$suffix";
         $folder = self::createFolder($root, $name);
 
         try {
