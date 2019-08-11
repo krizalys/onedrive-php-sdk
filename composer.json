@@ -28,9 +28,10 @@
         "microsoft/microsoft-graph": "^1.7.0"
     },
     "require-dev": {
+        "brianium/paratest": "^6.0.0",
         "php-webdriver/webdriver": "^1.7.0",
         "phpunit/phpunit": "^9.0.0",
-        "symfony/process": "^3.4.1"
+        "symfony/process": "^4.0.0"
     },
     "autoload": {
         "psr-4": {
@@ -39,9 +40,11 @@
     },
     "scripts": {
         "test:functional": "vendor/bin/phpunit --configuration test --testsuite 'Functional tests' --bootstrap test/functional/bootstrap.php",
-        "test:functional:parallel": "vendor/bin/phpunit --configuration test --testsuite 'Functional tests' --bootstrap test/functional/bootstrap.php test/functional/KrizalysOnedriveTest.php & vendor/bin/phpunit --configuration test --testsuite 'Functional tests' --bootstrap test/functional/bootstrap.php test/functional/ClientTest.php & vendor/bin/phpunit --configuration test --testsuite 'Functional tests' --bootstrap test/functional/bootstrap.php test/functional/Proxy/DriveProxyTest.php & vendor/bin/phpunit --configuration test --testsuite 'Functional tests' --bootstrap test/functional/bootstrap.php test/functional/Proxy/DriveItemProxyTest.php & wait",
+        "test:functional:parallel": "vendor/bin/paratest --functional --configuration test --testsuite 'Functional tests' --bootstrap test/functional/bootstrap.php test/functional/KrizalysOnedriveTest.php & vendor/bin/paratest --functional --configuration test --testsuite 'Functional tests' --bootstrap test/functional/bootstrap.php test/functional/ClientTest.php & vendor/bin/paratest --functional --configuration test --testsuite 'Functional tests' --bootstrap test/functional/bootstrap.php test/functional/Proxy/DriveProxyTest.php & vendor/bin/paratest --functional --configuration test --testsuite 'Functional tests' --bootstrap test/functional/bootstrap.php test/functional/Proxy/DriveItemProxyTest.php & wait",
         "test:unit": "vendor/bin/phpunit --configuration test --testsuite 'Unit tests' --bootstrap test/unit/bootstrap.php",
-        "test:unit:coverage": "vendor/bin/phpunit --configuration test --testsuite 'Unit tests' --bootstrap test/unit/bootstrap.php --coverage-clover coverage.xml"
+        "test:unit:coverage": "vendor/bin/phpunit --configuration test --testsuite 'Unit tests' --bootstrap test/unit/bootstrap.php --coverage-clover coverage.xml",
+        "test:unit:coverage:parallel": "vendor/bin/paratest --configuration test --testsuite 'Unit tests' --bootstrap test/unit/bootstrap.php --coverage-clover coverage.xml",
+        "test:unit:parallel": "vendor/bin/paratest --configuration test --testsuite 'Unit tests' --bootstrap test/unit/bootstrap.php"
     },
     "config": {
         "platform": {
