@@ -30,6 +30,7 @@ use Krizalys\Onedrive\Proxy\SharepointIdsProxy;
 use Krizalys\Onedrive\Proxy\SpecialFolderProxy;
 use Krizalys\Onedrive\Proxy\SystemProxy;
 use Krizalys\Onedrive\Proxy\ThumbnailProxy;
+use Krizalys\Onedrive\Proxy\UploadSessionProxy;
 use Krizalys\Onedrive\Proxy\UserProxy;
 use Krizalys\Onedrive\Proxy\VideoProxy;
 use Krizalys\Onedrive\Proxy\WorkbookProxy;
@@ -419,5 +420,14 @@ trait Assertions
     private function assertThumbnailProxy($thumbnail)
     {
         $this->assertInstanceOf(ThumbnailProxy::class, $thumbnail);
+    }
+
+    private function assertUploadSessionProxy($uploadSession)
+    {
+        $this->assertInstanceOf(UploadSessionProxy::class, $uploadSession);
+        $this->assertInstanceOf(\DateTime::class, $uploadSession->expirationDateTime);
+        $this->assertCount(1, $uploadSession->nextExpectedRanges);
+        $this->assertEquals('0-', $uploadSession->nextExpectedRanges[0]);
+        $this->assertRegExp(self::URI_REGEX, $uploadSession->uploadUrl);
     }
 }

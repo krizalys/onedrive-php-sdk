@@ -13,7 +13,6 @@ use Krizalys\Onedrive\DriveItem;
 use Krizalys\Onedrive\File;
 use Krizalys\Onedrive\Folder;
 use Krizalys\Onedrive\Proxy\DriveItemProxy;
-use Krizalys\Onedrive\Proxy\UploadSessionProxy;
 use Microsoft\Graph\Graph;
 use Symfony\Component\Process\Process;
 
@@ -865,15 +864,6 @@ EOF;
         }
 
         return $items[0];
-    }
-
-    private function assertUploadSessionProxy($uploadSession)
-    {
-        $this->assertInstanceOf(UploadSessionProxy::class, $uploadSession);
-        $this->assertInstanceOf(\DateTime::class, $uploadSession->expirationDateTime);
-        $this->assertCount(1, $uploadSession->nextExpectedRanges);
-        $this->assertEquals('0-', $uploadSession->nextExpectedRanges[0]);
-        $this->assertRegExp(self::URI_REGEX, $uploadSession->uploadUrl);
     }
 
     private function assertCreateFolder(DriveItemProxy $sandbox)
