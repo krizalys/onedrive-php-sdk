@@ -7,6 +7,7 @@ Change log
 ### Added
 
 - Support for PHP 8.0.
+- Paratest to run test suites in parallel.
 
 ### Changed
 
