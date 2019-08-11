@@ -576,7 +576,7 @@ class DriveItemProxy extends BaseItemProxy
      *
      * The `$destinationItem` instance must refer to a folder.
      *
-     * When moving a drive item,.its name may also be changed.
+     * When moving a drive item, its name may also be changed.
      *
      * ```php
      * $driveItem = $driveItem->move(
