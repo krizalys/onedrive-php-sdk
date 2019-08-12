@@ -22,6 +22,7 @@ use Symfony\Component\Process\Process;
 class KrizalysOnedriveTest extends \PHPUnit_Framework_TestCase
 {
     use Assertions;
+    use Configuration;
 
     const ASYNC_POLL_TIMEOUT = 10; // In seconds.
 
@@ -37,35 +38,28 @@ EOF;
 
     private static $client;
 
-    private static $clientSecret;
-
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        $config = sprintf('%s/config.php', __DIR__);
-
-        if (!file_exists($config)) {
-            throw new \Exception("Configuration file not found. Please create a $config file from the sample provided.");
-        }
-
-        $config = require $config;
 
         $client = new Client(
-            $config['CLIENT_ID'],
+            self::getConfig('CLIENT_ID'),
             new Graph(),
             new GuzzleHttpClient()
         );
 
-        self::$clientSecret = $config['SECRET'];
-
         $code = self::getAuthenticationCode(
             $client,
-            $config['CLIENT_ID'],
-            $config['USERNAME'],
-            $config['PASSWORD']
+            self::getConfig('CLIENT_ID'),
+            self::getConfig('USERNAME'),
+            self::getConfig('PASSWORD')
         );
 
-        $client->obtainAccessToken(self::$clientSecret, $code);
+        $client->obtainAccessToken(
+            self::getConfig('SECRET'),
+            $code
+        );
+
         self::$client = $client;
     }
 
@@ -424,8 +418,9 @@ EOF;
     // Legacy support //////////////////////////////////////////////////////////
     public function testClientRenewAccessTokenLegacy()
     {
+        $secret = self::getConfig('SECRET');
         $before = clone self::$client->getState()->token;
-        self::$client->renewAccessToken(self::$clientSecret);
+        self::$client->renewAccessToken($secret);
         $after = clone self::$client->getState()->token;
         $this->assertNotEquals($before->obtained, $after->data->obtained);
         $this->assertNotEquals($before->data->access_token, $after->data->access_token);
