@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/5.7/phpunit.xsd"
-    bootstrap="./bootstrap.php"
-    colors="true"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/5.7/phpunit.xsd"
+  bootstrap="./bootstrap.php"
+  colors="true"
 >
-    <testsuites>
-        <testsuite name="Unit test suite">
-            <directory>.</directory>
-        </testsuite>
-    </testsuites>
+  <testsuites>
+    <testsuite name="Unit test suite">
+      <directory>.</directory>
+    </testsuite>
+  </testsuites>
 
-    <groups>
-        <exclude>
-            <group>legacy</group>
-        </exclude>
-    </groups>
+  <groups>
+    <exclude>
+      <group>legacy</group>
+    </exclude>
+  </groups>
 
-    <filter>
-        <whitelist>
-            <directory>../../src</directory>
-            <exclude>
-                <directory>.</directory>
-            </exclude>
-        </whitelist>
-    </filter>
+  <filter>
+    <whitelist>
+      <directory>../../src</directory>
+      <exclude>
+        <directory>.</directory>
+      </exclude>
+    </whitelist>
+  </filter>
 </phpunit>
