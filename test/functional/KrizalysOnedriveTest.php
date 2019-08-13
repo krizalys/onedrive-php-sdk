@@ -2,19 +2,10 @@
 
 namespace Test\Functional\Krizalys\Onedrive;
 
-use Facebook\WebDriver\Chrome\ChromeOptions;
-use Facebook\WebDriver\Remote\DesiredCapabilities;
-use Facebook\WebDriver\Remote\RemoteWebDriver;
-use Facebook\WebDriver\WebDriverBy;
-use Facebook\WebDriver\WebDriverExpectedCondition;
-use GuzzleHttp\Client as GuzzleHttpClient;
-use Krizalys\Onedrive\Client;
 use Krizalys\Onedrive\DriveItem;
 use Krizalys\Onedrive\File;
 use Krizalys\Onedrive\Folder;
 use Krizalys\Onedrive\Proxy\DriveItemProxy;
-use Microsoft\Graph\Graph;
-use Symfony\Component\Process\Process;
 
 /**
  * @group functional
@@ -22,6 +13,7 @@ use Symfony\Component\Process\Process;
 class KrizalysOnedriveTest extends \PHPUnit_Framework_TestCase
 {
     use Assertions;
+    use ClientFactoryTrait;
     use Configuration;
 
     const ASYNC_POLL_TIMEOUT = 10; // In seconds.
@@ -41,26 +33,11 @@ EOF;
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-
-        $client = new Client(
-            self::getConfig('CLIENT_ID'),
-            new Graph(),
-            new GuzzleHttpClient()
-        );
-
-        $code = self::getAuthenticationCode(
-            $client,
-            self::getConfig('CLIENT_ID'),
-            self::getConfig('USERNAME'),
-            self::getConfig('PASSWORD')
-        );
-
-        $client->obtainAccessToken(
-            self::getConfig('SECRET'),
-            $code
-        );
-
-        self::$client = $client;
+        $clientId     = self::getConfig('CLIENT_ID');
+        $username     = self::getConfig('USERNAME');
+        $password     = self::getConfig('PASSWORD');
+        $secret       = self::getConfig('SECRET');
+        self::$client = self::createClient($clientId, $username, $password, $secret);
     }
 
     public function testGetDrives()
@@ -1028,85 +1005,6 @@ EOF;
             throw $exception;
         } finally {
             self::delete($folder);
-        }
-    }
-
-    private static function getAuthenticationCode(Client $client, $clientId, $username, $password)
-    {
-        // Random registered port.
-        $redirectUriPort = rand(1024, 49151);
-
-        $command = sprintf('php -S localhost:%d %s/router.php', $redirectUriPort, __DIR__);
-        $server  = new Process($command);
-        $server->start();
-        $opts = new ChromeOptions();
-
-        $args = [
-            '--headless',
-            '--incognito',
-        ];
-
-        $opts->addArguments($args);
-        $caps = DesiredCapabilities::chrome();
-        $caps->setCapability(ChromeOptions::CAPABILITY, $opts);
-        $seleniumUrl = sprintf('http://localhost:%d/wd/hub', 4444);
-        $redirectUri = sprintf('http://localhost:%d/', $redirectUriPort);
-
-        $scopes = [
-            'files.read',
-            'files.read.all',
-            'files.readwrite',
-            'files.readwrite.all',
-            'offline_access',
-        ];
-
-        $logInUrl  = $client->getLogInUrl($scopes, $redirectUri);
-        $webDriver = RemoteWebDriver::create($seleniumUrl, $caps);
-        $webDriver->get($logInUrl);
-        $usernameLocator = WebDriverBy::id('i0116');
-        $passwordLocator = WebDriverBy::id('i0118');
-        $nextLocator     = WebDriverBy::id('idSIButton9');
-        $webDriver->wait()->until(WebDriverExpectedCondition::presenceOfElementLocated($usernameLocator));
-        $webDriver->wait()->until(WebDriverExpectedCondition::visibilityOfElementLocated($usernameLocator));
-        $webDriver->findElement($usernameLocator)->sendKeys($username);
-        $webDriver->wait()->until(WebDriverExpectedCondition::presenceOfElementLocated($nextLocator));
-        $webDriver->wait()->until(WebDriverExpectedCondition::visibilityOfElementLocated($nextLocator));
-        $webDriver->findElement($nextLocator)->click();
-        $webDriver->wait()->until(WebDriverExpectedCondition::presenceOfElementLocated($passwordLocator));
-        $webDriver->wait()->until(WebDriverExpectedCondition::visibilityOfElementLocated($passwordLocator));
-        $webDriver->findElement($passwordLocator)->sendKeys($password);
-        $webDriver->wait()->until(WebDriverExpectedCondition::presenceOfElementLocated($nextLocator));
-        $webDriver->wait()->until(WebDriverExpectedCondition::visibilityOfElementLocated($nextLocator));
-        $webDriver->findElement($nextLocator)->click();
-        $webDriver->wait()->until(WebDriverExpectedCondition::urlMatches('|^' . preg_quote($redirectUri) . '|'));
-        $webDriver->quit();
-
-        foreach ($server as $type => $buffer) {
-            if ($type == Process::OUT) {
-                $lines = explode("\n", $buffer);
-                $code  = self::findAuthenticationCode($lines);
-
-                if ($code !== null) {
-                    break;
-                }
-            } else {
-                throw new \Exception($buffer);
-            }
-        }
-
-        $server->stop();
-
-        return $code;
-    }
-
-    private static function findAuthenticationCode($lines)
-    {
-        foreach ($lines as $line) {
-            $line = trim($line);
-
-            if (preg_match('/M[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/', $line)) {
-                return $line;
-            }
         }
     }
 }
