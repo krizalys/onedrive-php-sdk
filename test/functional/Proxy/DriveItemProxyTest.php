@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Test\Functional\Krizalys\Onedrive\Proxy;
 
 use Krizalys\Onedrive\Constant\ConflictBehavior;

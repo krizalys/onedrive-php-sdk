@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Test\Unit\Krizalys\Onedrive\Serializer;
 
 use Krizalys\Onedrive\Serializer\OrderBySerializer;
