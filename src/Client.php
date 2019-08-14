@@ -294,7 +294,7 @@ class Client
             ['form_params' => $values]
         );
 
-        $body = $response->getBody();
+        $body = (string) $response->getBody();
         $data = json_decode($body);
 
         if ($data === null) {
@@ -342,7 +342,7 @@ class Client
             ['form_params' => $values]
         );
 
-        $body = $response->getBody();
+        $body = (string) $response->getBody();
         $data = json_decode($body);
 
         if ($data === null) {
