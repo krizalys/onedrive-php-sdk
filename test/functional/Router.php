@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Test\Functional\Krizalys\Onedrive;
 
 require __DIR__ . '/../../vendor/autoload.php';

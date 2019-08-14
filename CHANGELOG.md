@@ -12,6 +12,7 @@ Change log
 ### Changed
 
 - Upgraded to PHPUnit 9.
+- Using strict typing for all PHP files.
 
 ### Removed
 

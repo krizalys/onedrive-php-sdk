@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     // The application registered on Microsoft Azure to run the functional test
     // suite.

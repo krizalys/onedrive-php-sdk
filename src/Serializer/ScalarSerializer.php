@@ -12,6 +12,8 @@
  * @link      https://github.com/krizalys/onedrive-php-sdk
  */
 
+declare(strict_types=1);
+
 namespace Krizalys\Onedrive\Serializer;
 
 /**
