@@ -5,6 +5,7 @@ namespace Test\Unit\Krizalys\Onedrive;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\ClientInterface;
 use Krizalys\Onedrive\Client;
+use Krizalys\Onedrive\Parameter\DriveItemParameterDirectorInterface;
 use Krizalys\Onedrive\Proxy\DriveItemProxy;
 use Krizalys\Onedrive\Proxy\DriveProxy;
 use Microsoft\Graph\Graph;
@@ -33,14 +34,26 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     {
         $graph      = $this->mockGraph();
         $httpClient = $this->createMock(ClientInterface::class);
-        new Client(null, $graph, $httpClient, []);
+
+        $driveItemParameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        new Client(null, $graph, $httpClient, $driveItemParameterDirector, []);
     }
 
     public function testGetLogInUrlShouldReturnExpectedValue()
     {
         $graph      = $this->mockGraph();
         $httpClient = $this->createMock(ClientInterface::class);
-        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, []);
+
+        $driveItemParameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new Client(
+            self::CLIENT_ID,
+            $graph,
+            $httpClient,
+            $driveItemParameterDirector,
+            []
+        );
 
         $scopes = [
             'test.scope.1',
@@ -266,8 +279,18 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $drive      = $this->mockDrive(self::DRIVE_ID);
         $graph      = $this->mockGraphWithCollectionResponse([$drive]);
         $httpClient = $this->createMock(ClientInterface::class);
-        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, []);
-        $actual     = $sut->getDrives();
+
+        $driveItemParameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new Client(
+            self::CLIENT_ID,
+            $graph,
+            $httpClient,
+            $driveItemParameterDirector,
+            []
+        );
+
+        $actual = $sut->getDrives();
         $this->assertInternalType('array', $actual);
         $this->assertCount(1, $actual);
 
@@ -282,8 +305,18 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $drive      = $this->mockDrive(self::DRIVE_ID);
         $graph      = $this->mockGraphWithResponse($drive);
         $httpClient = $this->createMock(ClientInterface::class);
-        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, []);
-        $actual     = $sut->getMyDrive();
+
+        $driveItemParameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new Client(
+            self::CLIENT_ID,
+            $graph,
+            $httpClient,
+            $driveItemParameterDirector,
+            []
+        );
+
+        $actual = $sut->getMyDrive();
         $this->assertInstanceOf(DriveProxy::class, $actual);
         $this->assertSame(self::DRIVE_ID, $actual->id);
     }
@@ -293,8 +326,18 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $drive      = $this->mockDrive(self::DRIVE_ID);
         $graph      = $this->mockGraphWithResponse($drive);
         $httpClient = $this->createMock(ClientInterface::class);
-        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, []);
-        $actual     = $sut->getDriveById(self::DRIVE_ID);
+
+        $driveItemParameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new Client(
+            self::CLIENT_ID,
+            $graph,
+            $httpClient,
+            $driveItemParameterDirector,
+            []
+        );
+
+        $actual = $sut->getDriveById(self::DRIVE_ID);
         $this->assertInstanceOf(DriveProxy::class, $actual);
         $this->assertSame(self::DRIVE_ID, $actual->id);
     }
@@ -304,8 +347,18 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $drive      = $this->mockDrive(self::DRIVE_ID);
         $graph      = $this->mockGraphWithResponse($drive);
         $httpClient = $this->createMock(ClientInterface::class);
-        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, []);
-        $actual     = $sut->getDriveByUser(self::USER_ID);
+
+        $driveItemParameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new Client(
+            self::CLIENT_ID,
+            $graph,
+            $httpClient,
+            $driveItemParameterDirector,
+            []
+        );
+
+        $actual = $sut->getDriveByUser(self::USER_ID);
         $this->assertInstanceOf(DriveProxy::class, $actual);
         $this->assertSame(self::DRIVE_ID, $actual->id);
     }
@@ -315,8 +368,18 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $drive      = $this->mockDrive(self::DRIVE_ID);
         $graph      = $this->mockGraphWithResponse($drive);
         $httpClient = $this->createMock(ClientInterface::class);
-        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, []);
-        $actual     = $sut->getDriveByGroup(self::GROUP_ID);
+
+        $driveItemParameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new Client(
+            self::CLIENT_ID,
+            $graph,
+            $httpClient,
+            $driveItemParameterDirector,
+            []
+        );
+
+        $actual = $sut->getDriveByGroup(self::GROUP_ID);
         $this->assertInstanceOf(DriveProxy::class, $actual);
         $this->assertSame(self::DRIVE_ID, $actual->id);
     }
@@ -326,8 +389,18 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $drive      = $this->mockDrive(self::DRIVE_ID);
         $graph      = $this->mockGraphWithResponse($drive);
         $httpClient = $this->createMock(ClientInterface::class);
-        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, []);
-        $actual     = $sut->getDriveBySite(self::SITE_ID);
+
+        $driveItemParameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new Client(
+            self::CLIENT_ID,
+            $graph,
+            $httpClient,
+            $driveItemParameterDirector,
+            []
+        );
+
+        $actual = $sut->getDriveBySite(self::SITE_ID);
         $this->assertInstanceOf(DriveProxy::class, $actual);
         $this->assertSame(self::DRIVE_ID, $actual->id);
     }
@@ -337,8 +410,18 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $item       = $this->mockDriveItem(self::DRIVE_ITEM_ID);
         $graph      = $this->mockGraphWithResponse($item);
         $httpClient = $this->createMock(ClientInterface::class);
-        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, []);
-        $actual     = $sut->getDriveItemById(self::DRIVE_ID, self::DRIVE_ITEM_ID);
+
+        $driveItemParameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new Client(
+            self::CLIENT_ID,
+            $graph,
+            $httpClient,
+            $driveItemParameterDirector,
+            []
+        );
+
+        $actual = $sut->getDriveItemById(self::DRIVE_ID, self::DRIVE_ITEM_ID);
         $this->assertInstanceOf(DriveItemProxy::class, $actual);
         $this->assertSame(self::DRIVE_ITEM_ID, $actual->id);
     }
@@ -348,8 +431,18 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $item       = $this->mockDriveItem(self::DRIVE_ITEM_ID);
         $graph      = $this->mockGraphWithResponse($item);
         $httpClient = $this->createMock(ClientInterface::class);
-        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, []);
-        $actual     = $sut->getRoot();
+
+        $driveItemParameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new Client(
+            self::CLIENT_ID,
+            $graph,
+            $httpClient,
+            $driveItemParameterDirector,
+            []
+        );
+
+        $actual = $sut->getRoot();
         $this->assertInstanceOf(DriveItemProxy::class, $actual);
         $this->assertSame(self::DRIVE_ITEM_ID, $actual->id);
     }
@@ -359,8 +452,18 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $item       = $this->mockDriveItem(self::DRIVE_ITEM_ID);
         $graph      = $this->mockGraphWithResponse($item);
         $httpClient = $this->createMock(ClientInterface::class);
-        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, []);
-        $actual     = $sut->getSpecialFolder('documents');
+
+        $driveItemParameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new Client(
+            self::CLIENT_ID,
+            $graph,
+            $httpClient,
+            $driveItemParameterDirector,
+            []
+        );
+
+        $actual = $sut->getSpecialFolder('documents');
         $this->assertInstanceOf(DriveItemProxy::class, $actual);
         $this->assertSame(self::DRIVE_ITEM_ID, $actual->id);
     }
@@ -370,8 +473,18 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $item       = $this->mockDriveItem(self::DRIVE_ITEM_ID);
         $graph      = $this->mockGraphWithCollectionResponse([$item]);
         $httpClient = $this->createMock(ClientInterface::class);
-        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, []);
-        $actual     = $sut->getShared();
+
+        $driveItemParameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new Client(
+            self::CLIENT_ID,
+            $graph,
+            $httpClient,
+            $driveItemParameterDirector,
+            []
+        );
+
+        $actual = $sut->getShared();
 
         foreach ($actual as $item) {
             $this->assertInstanceOf(DriveItemProxy::class, $item);
@@ -384,8 +497,18 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $item       = $this->mockDriveItem(self::DRIVE_ITEM_ID);
         $graph      = $this->mockGraphWithCollectionResponse([$item]);
         $httpClient = $this->createMock(ClientInterface::class);
-        $sut        = new Client(self::CLIENT_ID, $graph, $httpClient, []);
-        $actual     = $sut->getRecent();
+
+        $driveItemParameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new Client(
+            self::CLIENT_ID,
+            $graph,
+            $httpClient,
+            $driveItemParameterDirector,
+            []
+        );
+
+        $actual = $sut->getRecent();
 
         foreach ($actual as $item) {
             $this->assertInstanceOf(DriveItemProxy::class, $item);
@@ -399,6 +522,8 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             $options['httpClient']
             : $this->createMock(ClientInterface::class);
 
+        $driveItemParameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
         $options = array_key_exists('options', $options) ?
             $options['options']
             : [];
@@ -407,6 +532,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             self::CLIENT_ID,
             $graph,
             $httpClient,
+            $driveItemParameterDirector,
             $options
         );
     }
