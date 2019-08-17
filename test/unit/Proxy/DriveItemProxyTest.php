@@ -3,6 +3,7 @@
 namespace Test\Unit\Krizalys\Onedrive\Proxy;
 
 use GuzzleHttp\Psr7\Stream;
+use Krizalys\Onedrive\Parameter\DriveItemParameterDirectorInterface;
 use Krizalys\Onedrive\Proxy\AudioProxy;
 use Krizalys\Onedrive\Proxy\DeletedProxy;
 use Krizalys\Onedrive\Proxy\DriveItemProxy;
@@ -63,11 +64,16 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
 
     public function testAudioShouldReturnExpectedValue()
     {
-        $graph     = $this->createMock(Graph::class);
-        $audio     = $this->createMock(Audio::class);
+        $graph = $this->createMock(Graph::class);
+
+        $audio = $this->createMock(Audio::class);
+
         $driveItem = $this->createMock(DriveItem::class);
         $driveItem->method('getAudio')->willReturn($audio);
-        $sut = new DriveItemProxy($graph, $driveItem);
+
+        $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new DriveItemProxy($graph, $driveItem, $parameterDirector);
         $this->assertInstanceOf(AudioProxy::class, $sut->audio);
     }
 
@@ -78,190 +84,282 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
 
     public function testCTagShouldReturnExpectedValue()
     {
-        $graph     = $this->createMock(Graph::class);
+        $graph = $this->createMock(Graph::class);
+
         $driveItem = $this->createMock(DriveItem::class);
         $driveItem->method('getCTag')->willReturn('1234');
-        $sut = new DriveItemProxy($graph, $driveItem);
+
+        $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new DriveItemProxy($graph, $driveItem, $parameterDirector);
         $this->assertInternalType('string', $sut->cTag);
         $this->assertSame('1234', $sut->cTag);
     }
 
     public function testDeletedShouldReturnExpectedValue()
     {
-        $graph     = $this->createMock(Graph::class);
-        $deleted   = $this->createMock(Deleted::class);
+        $graph = $this->createMock(Graph::class);
+
+        $deleted = $this->createMock(Deleted::class);
+
         $driveItem = $this->createMock(DriveItem::class);
         $driveItem->method('getDeleted')->willReturn($deleted);
-        $sut = new DriveItemProxy($graph, $driveItem);
+
+        $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new DriveItemProxy($graph, $driveItem, $parameterDirector);
         $this->assertInstanceOf(DeletedProxy::class, $sut->deleted);
     }
 
     public function testFileShouldReturnExpectedValue()
     {
-        $graph     = $this->createMock(Graph::class);
-        $file      = $this->createMock(File::class);
+        $graph = $this->createMock(Graph::class);
+
+        $file = $this->createMock(File::class);
+
         $driveItem = $this->createMock(DriveItem::class);
         $driveItem->method('getFile')->willReturn($file);
-        $sut = new DriveItemProxy($graph, $driveItem);
+
+        $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new DriveItemProxy($graph, $driveItem, $parameterDirector);
         $this->assertInstanceOf(FileProxy::class, $sut->file);
     }
 
     public function testFileSystemInfoShouldReturnExpectedValue()
     {
-        $graph          = $this->createMock(Graph::class);
+        $graph = $this->createMock(Graph::class);
+
         $fileSystemInfo = $this->createMock(FileSystemInfo::class);
-        $driveItem      = $this->createMock(DriveItem::class);
+
+        $driveItem = $this->createMock(DriveItem::class);
         $driveItem->method('getFileSystemInfo')->willReturn($fileSystemInfo);
-        $sut = new DriveItemProxy($graph, $driveItem);
+
+        $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new DriveItemProxy($graph, $driveItem, $parameterDirector);
         $this->assertInstanceOf(FileSystemInfoProxy::class, $sut->fileSystemInfo);
     }
 
     public function testFolderShouldReturnExpectedValue()
     {
-        $graph     = $this->createMock(Graph::class);
-        $folder    = $this->createMock(Folder::class);
+        $graph = $this->createMock(Graph::class);
+
+        $folder = $this->createMock(Folder::class);
+
         $driveItem = $this->createMock(DriveItem::class);
         $driveItem->method('getFolder')->willReturn($folder);
-        $sut = new DriveItemProxy($graph, $driveItem);
+
+        $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new DriveItemProxy($graph, $driveItem, $parameterDirector);
         $this->assertInstanceOf(FolderProxy::class, $sut->folder);
     }
 
     public function testImageShouldReturnExpectedValue()
     {
-        $graph     = $this->createMock(Graph::class);
-        $image     = $this->createMock(Image::class);
+        $graph = $this->createMock(Graph::class);
+
+        $image = $this->createMock(Image::class);
+
         $driveItem = $this->createMock(DriveItem::class);
         $driveItem->method('getImage')->willReturn($image);
-        $sut = new DriveItemProxy($graph, $driveItem);
+
+        $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new DriveItemProxy($graph, $driveItem, $parameterDirector);
         $this->assertInstanceOf(ImageProxy::class, $sut->image);
     }
 
     public function testLocationShouldReturnExpectedValue()
     {
-        $graph          = $this->createMock(Graph::class);
+        $graph = $this->createMock(Graph::class);
+
         $geoCoordinates = $this->createMock(GeoCoordinates::class);
-        $driveItem      = $this->createMock(DriveItem::class);
+
+        $driveItem = $this->createMock(DriveItem::class);
         $driveItem->method('getLocation')->willReturn($geoCoordinates);
-        $sut = new DriveItemProxy($graph, $driveItem);
+
+        $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new DriveItemProxy($graph, $driveItem, $parameterDirector);
         $this->assertInstanceOf(GeoCoordinatesProxy::class, $sut->location);
     }
 
     public function testPackageShouldReturnExpectedValue()
     {
-        $graph     = $this->createMock(Graph::class);
-        $package   = $this->createMock(Package::class);
+        $graph = $this->createMock(Graph::class);
+
+        $package = $this->createMock(Package::class);
+
         $driveItem = $this->createMock(DriveItem::class);
         $driveItem->method('getPackage')->willReturn($package);
-        $sut = new DriveItemProxy($graph, $driveItem);
+
+        $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new DriveItemProxy($graph, $driveItem, $parameterDirector);
         $this->assertInstanceOf(PackageProxy::class, $sut->package);
     }
 
     public function testPhotoShouldReturnExpectedValue()
     {
-        $graph     = $this->createMock(Graph::class);
-        $photo     = $this->createMock(Photo::class);
+        $graph = $this->createMock(Graph::class);
+
+        $photo = $this->createMock(Photo::class);
+
         $driveItem = $this->createMock(DriveItem::class);
         $driveItem->method('getPhoto')->willReturn($photo);
-        $sut = new DriveItemProxy($graph, $driveItem);
+
+        $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new DriveItemProxy($graph, $driveItem, $parameterDirector);
         $this->assertInstanceOf(PhotoProxy::class, $sut->photo);
     }
 
     public function testPublicationShouldReturnExpectedValue()
     {
-        $graph            = $this->createMock(Graph::class);
+        $graph = $this->createMock(Graph::class);
+
         $publicationFacet = $this->createMock(PublicationFacet::class);
-        $driveItem        = $this->createMock(DriveItem::class);
+
+        $driveItem = $this->createMock(DriveItem::class);
         $driveItem->method('getPublication')->willReturn($publicationFacet);
-        $sut = new DriveItemProxy($graph, $driveItem);
+
+        $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new DriveItemProxy($graph, $driveItem, $parameterDirector);
         $this->assertInstanceOf(PublicationFacetProxy::class, $sut->publication);
     }
 
     public function testRemoteItemShouldReturnExpectedValue()
     {
-        $graph      = $this->createMock(Graph::class);
+        $graph = $this->createMock(Graph::class);
+
         $remoteItem = $this->createMock(RemoteItem::class);
-        $driveItem  = $this->createMock(DriveItem::class);
+
+        $driveItem = $this->createMock(DriveItem::class);
         $driveItem->method('getRemoteItem')->willReturn($remoteItem);
-        $sut = new DriveItemProxy($graph, $driveItem);
+
+        $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new DriveItemProxy($graph, $driveItem, $parameterDirector);
         $this->assertInstanceOf(RemoteItemProxy::class, $sut->remoteItem);
     }
 
     public function testRootShouldReturnExpectedValue()
     {
-        $graph     = $this->createMock(Graph::class);
-        $root      = $this->createMock(Root::class);
+        $graph = $this->createMock(Graph::class);
+
+        $root = $this->createMock(Root::class);
+
         $driveItem = $this->createMock(DriveItem::class);
         $driveItem->method('getRoot')->willReturn($root);
-        $sut = new DriveItemProxy($graph, $driveItem);
+
+        $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new DriveItemProxy($graph, $driveItem, $parameterDirector);
         $this->assertInstanceOf(RootProxy::class, $sut->root);
     }
 
     public function testSearchResultShouldReturnExpectedValue()
     {
-        $graph        = $this->createMock(Graph::class);
+        $graph = $this->createMock(Graph::class);
+
         $searchResult = $this->createMock(SearchResult::class);
-        $driveItem    = $this->createMock(DriveItem::class);
+
+        $driveItem = $this->createMock(DriveItem::class);
         $driveItem->method('getSearchResult')->willReturn($searchResult);
-        $sut = new DriveItemProxy($graph, $driveItem);
+
+        $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new DriveItemProxy($graph, $driveItem, $parameterDirector);
         $this->assertInstanceOf(SearchResultProxy::class, $sut->searchResult);
     }
 
     public function testSharedShouldReturnExpectedValue()
     {
-        $graph     = $this->createMock(Graph::class);
-        $shared    = $this->createMock(Shared::class);
+        $graph = $this->createMock(Graph::class);
+
+        $shared = $this->createMock(Shared::class);
+
         $driveItem = $this->createMock(DriveItem::class);
         $driveItem->method('getShared')->willReturn($shared);
-        $sut = new DriveItemProxy($graph, $driveItem);
+
+        $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new DriveItemProxy($graph, $driveItem, $parameterDirector);
         $this->assertInstanceOf(SharedProxy::class, $sut->shared);
     }
 
     public function testSharepointIdsShouldReturnExpectedValue()
     {
-        $graph         = $this->createMock(Graph::class);
+        $graph = $this->createMock(Graph::class);
+
         $sharepointIds = $this->createMock(SharepointIds::class);
-        $driveItem     = $this->createMock(DriveItem::class);
+
+        $driveItem = $this->createMock(DriveItem::class);
         $driveItem->method('getSharepointIds')->willReturn($sharepointIds);
-        $sut = new DriveItemProxy($graph, $driveItem);
+
+        $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new DriveItemProxy($graph, $driveItem, $parameterDirector);
         $this->assertInstanceOf(SharepointIdsProxy::class, $sut->sharepointIds);
     }
 
     public function testSizeShouldReturnExpectedValue()
     {
-        $graph     = $this->createMock(Graph::class);
+        $graph = $this->createMock(Graph::class);
+
         $driveItem = $this->createMock(DriveItem::class);
         $driveItem->method('getSize')->willReturn(1234);
-        $sut = new DriveItemProxy($graph, $driveItem);
+
+        $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new DriveItemProxy($graph, $driveItem, $parameterDirector);
         $this->assertInternalType('int', $sut->size);
         $this->assertSame(1234, $sut->size);
     }
 
     public function testSpecialFolderShouldReturnExpectedValue()
     {
-        $graph         = $this->createMock(Graph::class);
+        $graph = $this->createMock(Graph::class);
+
         $specialFolder = $this->createMock(SpecialFolder::class);
-        $driveItem     = $this->createMock(DriveItem::class);
+
+        $driveItem = $this->createMock(DriveItem::class);
         $driveItem->method('getSpecialFolder')->willReturn($specialFolder);
-        $sut = new DriveItemProxy($graph, $driveItem);
+
+        $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new DriveItemProxy($graph, $driveItem, $parameterDirector);
         $this->assertInstanceOf(SpecialFolderProxy::class, $sut->specialFolder);
     }
 
     public function testVideoShouldReturnExpectedValue()
     {
-        $graph     = $this->createMock(Graph::class);
-        $video     = $this->createMock(Video::class);
+        $graph = $this->createMock(Graph::class);
+
+        $video = $this->createMock(Video::class);
+
         $driveItem = $this->createMock(DriveItem::class);
         $driveItem->method('getVideo')->willReturn($video);
-        $sut = new DriveItemProxy($graph, $driveItem);
+
+        $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new DriveItemProxy($graph, $driveItem, $parameterDirector);
         $this->assertInstanceOf(VideoProxy::class, $sut->video);
     }
 
     public function testWebDavUrlShouldReturnExpectedValue()
     {
-        $graph     = $this->createMock(Graph::class);
+        $graph = $this->createMock(Graph::class);
+
         $driveItem = $this->createMock(DriveItem::class);
         $driveItem->method('getWebDavUrl')->willReturn('http://webd.av/url');
-        $sut = new DriveItemProxy($graph, $driveItem);
+
+        $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new DriveItemProxy($graph, $driveItem, $parameterDirector);
         $this->assertInternalType('string', $sut->webDavUrl);
         $this->assertSame('http://webd.av/url', $sut->webDavUrl);
     }
@@ -273,11 +371,16 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
 
     public function testListItemShouldReturnExpectedValue()
     {
-        $graph     = $this->createMock(Graph::class);
-        $listItem  = $this->createMock(ListItem::class);
+        $graph = $this->createMock(Graph::class);
+
+        $listItem = $this->createMock(ListItem::class);
+
         $driveItem = $this->createMock(DriveItem::class);
         $driveItem->method('getListItem')->willReturn($listItem);
-        $sut = new DriveItemProxy($graph, $driveItem);
+
+        $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new DriveItemProxy($graph, $driveItem, $parameterDirector);
         $this->assertInstanceOf(ListItemProxy::class, $sut->listItem);
     }
 
@@ -292,7 +395,10 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
 
         $driveItem = $this->createMock(DriveItem::class);
         $driveItem->method('getPermissions')->willReturn($permissions);
-        $sut    = new DriveItemProxy($graph, $driveItem);
+
+        $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut    = new DriveItemProxy($graph, $driveItem, $parameterDirector);
         $actual = $sut->permissions;
         $this->assertInternalType('array', $actual);
         $this->assertCount(2, $actual);
@@ -313,7 +419,10 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
 
         $driveItem = $this->createMock(DriveItem::class);
         $driveItem->method('getThumbnails')->willReturn($thumbnails);
-        $sut    = new DriveItemProxy($graph, $driveItem);
+
+        $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut    = new DriveItemProxy($graph, $driveItem, $parameterDirector);
         $actual = $sut->thumbnails;
         $this->assertInternalType('array', $actual);
         $this->assertCount(2, $actual);
@@ -334,7 +443,10 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
 
         $driveItem = $this->createMock(DriveItem::class);
         $driveItem->method('getVersions')->willReturn($driveItemVersions);
-        $sut    = new DriveItemProxy($graph, $driveItem);
+
+        $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut    = new DriveItemProxy($graph, $driveItem, $parameterDirector);
         $actual = $sut->versions;
         $this->assertInternalType('array', $actual);
         $this->assertCount(2, $actual);
@@ -346,22 +458,33 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
 
     public function testWorkbookShouldReturnExpectedValue()
     {
-        $graph     = $this->createMock(Graph::class);
-        $workbook  = $this->createMock(Workbook::class);
+        $graph = $this->createMock(Graph::class);
+
+        $workbook = $this->createMock(Workbook::class);
+
         $driveItem = $this->createMock(DriveItem::class);
         $driveItem->method('getWorkbook')->willReturn($workbook);
-        $sut = new DriveItemProxy($graph, $driveItem);
+
+        $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new DriveItemProxy($graph, $driveItem, $parameterDirector);
         $this->assertInstanceOf(WorkbookProxy::class, $sut->workbook);
     }
 
     public function testCreateFolderShouldReturnExpectedValue()
     {
-        $item      = $this->mockDriveItem();
+        $item = $this->mockDriveItem();
+
         $childItem = $this->mockDriveItem(['id' => self::DRIVE_ITEM_ID]);
-        $response  = $this->mockResponse(201, ['body' => $childItem]);
-        $graph     = $this->mockGraph($response);
-        $sut       = new DriveItemProxy($graph, $item);
-        $actual    = $sut->createFolder('Irrelevant', []);
+
+        $response = $this->mockResponse(201, ['body' => $childItem]);
+
+        $graph = $this->mockGraph($response);
+
+        $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut    = new DriveItemProxy($graph, $item, $parameterDirector);
+        $actual = $sut->createFolder('Irrelevant', []);
         $this->assertInstanceOf(DriveItemProxy::class, $actual);
         $this->assertSame(self::DRIVE_ITEM_ID, $actual->id);
     }
@@ -373,9 +496,13 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
             $this->mockDriveItem(['id' => '0002']),
         ];
 
-        $item   = $this->mockDriveItem();
-        $graph  = $this->mockGraphWithCollectionResponse($childItems);
-        $sut    = new DriveItemProxy($graph, $item);
+        $item = $this->mockDriveItem();
+
+        $graph = $this->mockGraphWithCollectionResponse($childItems);
+
+        $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut    = new DriveItemProxy($graph, $item, $parameterDirector);
         $actual = $sut->getChildren();
         $this->assertInternalType('array', $actual);
         $this->assertCount(2, $actual);
@@ -390,71 +517,105 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
 
     public function testUploadShouldReturnExpectedValue()
     {
-        $item      = $this->mockDriveItem();
+        $item = $this->mockDriveItem();
+
         $childItem = $this->mockDriveItem(['id' => self::DRIVE_ITEM_ID]);
-        $response  = $this->mockResponse(201, ['body' => $childItem]);
-        $graph     = $this->mockGraph($response);
-        $sut       = new DriveItemProxy($graph, $item);
-        $actual    = $sut->upload('Irrelevant', 'Test content', []);
+
+        $response = $this->mockResponse(201, ['body' => $childItem]);
+
+        $graph = $this->mockGraph($response);
+
+        $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut    = new DriveItemProxy($graph, $item, $parameterDirector);
+        $actual = $sut->upload('Irrelevant', 'Test content', []);
         $this->assertInstanceOf(DriveItemProxy::class, $actual);
         $this->assertSame(self::DRIVE_ITEM_ID, $actual->id);
     }
 
     public function testStartUploadShouldReturnExpectedValue()
     {
-        $item          = $this->mockDriveItem();
+        $item = $this->mockDriveItem();
+
         $uploadSession = $this->mockUploadSession(['id' => self::UPLOAD_SESSION_ID]);
-        $response      = $this->mockResponse(200, ['body' => $uploadSession]);
-        $graph         = $this->mockGraph($response);
-        $sut           = new DriveItemProxy($graph, $item);
-        $actual        = $sut->startUpload('Irrelevant', 'Test content', []);
+
+        $response = $this->mockResponse(200, ['body' => $uploadSession]);
+
+        $graph = $this->mockGraph($response);
+
+        $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut    = new DriveItemProxy($graph, $item, $parameterDirector);
+        $actual = $sut->startUpload('Irrelevant', 'Test content', []);
         $this->assertInstanceOf(UploadSessionProxy::class, $actual);
         $this->assertSame(self::UPLOAD_SESSION_ID, $actual->id);
     }
 
     public function testDownloadShouldReturnExpectedValue()
     {
-        $item     = $this->mockDriveItem();
-        $stream   = $this->mockStream();
-        $graph    = $this->mockGraph($stream);
-        $sut      = new DriveItemProxy($graph, $item);
-        $actual   = $sut->download();
+        $item = $this->mockDriveItem();
+        $stream = $this->mockStream();
+        $graph = $this->mockGraph($stream);
+
+        $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new DriveItemProxy($graph, $item, $parameterDirector);
+        $actual = $sut->download();
         $this->assertSame($stream, $actual);
     }
 
     public function testRenameShouldReturnExpectedValue()
     {
-        $item        = $this->mockDriveItem();
+        $item = $this->mockDriveItem();
+
         $renamedItem = $this->mockDriveItem(['id' => self::DRIVE_ITEM_ID]);
-        $response    = $this->mockResponse(200, ['body' => $renamedItem]);
-        $graph       = $this->mockGraph($response);
-        $sut         = new DriveItemProxy($graph, $item);
-        $actual      = $sut->rename('Irrelevant', []);
+
+        $response = $this->mockResponse(200, ['body' => $renamedItem]);
+
+        $graph = $this->mockGraph($response);
+
+        $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut    = new DriveItemProxy($graph, $item, $parameterDirector);
+        $actual = $sut->rename('Irrelevant', []);
         $this->assertInstanceOf(DriveItemProxy::class, $actual);
         $this->assertSame($actual->id, self::DRIVE_ITEM_ID);
     }
 
     public function testMoveShouldReturnExpectedValue()
     {
-        $item            = $this->mockDriveItem();
-        $movedItem       = $this->mockDriveItem(['id' => self::DRIVE_ITEM_ID]);
+        $item = $this->mockDriveItem();
+
+        $movedItem = $this->mockDriveItem(['id' => self::DRIVE_ITEM_ID]);
+
         $destinationItem = $this->mockDriveItemProxy();
-        $response        = $this->mockResponse(200, ['body' => $movedItem]);
-        $graph           = $this->mockGraph($response);
-        $sut             = new DriveItemProxy($graph, $item);
-        $actual          = $sut->move($destinationItem, []);
+
+        $response = $this->mockResponse(200, ['body' => $movedItem]);
+
+        $graph = $this->mockGraph($response);
+
+        $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut    = new DriveItemProxy($graph, $item, $parameterDirector);
+        $actual = $sut->move($destinationItem, []);
         $this->assertInstanceOf(DriveItemProxy::class, $actual);
         $this->assertSame($actual->id, self::DRIVE_ITEM_ID);
     }
 
     public function testCopyShouldReturnExpectedValue()
     {
-        $item            = $this->mockDriveItem();
+        $item = $this->mockDriveItem();
+
         $destinationItem = $this->mockDriveItemProxy();
-        $response        = $this->mockResponse(202, ['headers' => ['Location' => ['http://progre.ss/url']]]);
-        $graph           = $this->mockGraph($response);
-        $sut             = new DriveItemProxy($graph, $item);
-        $actual          = $sut->copy($destinationItem, []);
+
+        $response = $this->mockResponse(202, ['headers' => ['Location' => ['http://progre.ss/url']]]);
+
+        $graph = $this->mockGraph($response);
+
+        $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut = new DriveItemProxy($graph, $item, $parameterDirector);
+        $actual = $sut->copy($destinationItem, []);
         $this->assertInternalType('string', $actual);
         $this->assertSame('http://progre.ss/url', $actual);
     }
