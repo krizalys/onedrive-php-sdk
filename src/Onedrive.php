@@ -15,6 +15,7 @@
 namespace Krizalys\Onedrive;
 
 use GuzzleHttp\Client as GuzzleHttpClient;
+use Krizalys\Onedrive\Parameter\DriveItemParameterDirector;
 use Microsoft\Graph\Graph;
 
 /**
@@ -50,9 +51,16 @@ class Onedrive
      */
     public static function client($clientId, array $options = [])
     {
-        $graph      = new Graph();
-        $httpClient = new GuzzleHttpClient();
+        $graph                      = new Graph();
+        $httpClient                 = new GuzzleHttpClient();
+        $driveItemParameterDirector = new DriveItemParameterDirector();
 
-        return new Client($clientId, $graph, $httpClient, $options);
+        return new Client(
+            $clientId,
+            $graph,
+            $httpClient,
+            $driveItemParameterDirector,
+            $options
+        );
     }
 }
