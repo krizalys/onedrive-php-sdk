@@ -14,6 +14,7 @@
 
 namespace Krizalys\Onedrive\Proxy;
 
+use Krizalys\Onedrive\Parameter\DriveItemParameterDirectorInterface;
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model\Drive;
 use Microsoft\Graph\Model\DriveItem;
@@ -47,18 +48,30 @@ use Microsoft\Graph\Model\DriveItem;
 class DriveProxy extends BaseItemProxy
 {
     /**
+     * @var DriveItemParameterDirectorInterface
+     *      The drive item parameter director.
+     */
+    private $driveItemParameterDirector;
+
+    /**
      * Constructor.
      *
      * @param Graph $graph
      *        The Microsoft Graph.
      * @param Drive $drive
      *        The drive.
+     * @param DriveItemParameterDirectorInterface $driveItemParameterDirector
+     *        The drive item parameter director.
      *
      * @since 2.0.0
      */
-    public function __construct(Graph $graph, Drive $drive)
-    {
+    public function __construct(
+        Graph $graph,
+        Drive $drive,
+        DriveItemParameterDirectorInterface $driveItemParameterDirector
+    ) {
         parent::__construct($graph, $drive);
+        $this->driveItemParameterDirector = $driveItemParameterDirector;
     }
 
     /**
@@ -100,7 +113,11 @@ class DriveProxy extends BaseItemProxy
                 $items = $drive->getItems();
 
                 return $items !== null ? array_map(function (DriveItem $item) {
-                    return new DriveItemProxy($this->graph, $item);
+                    return new DriveItemProxy(
+                        $this->graph,
+                        $item,
+                        $this->driveItemParameterDirector
+                    );
                 }, $items) : null;
 
             case 'list':
@@ -109,11 +126,23 @@ class DriveProxy extends BaseItemProxy
 
             case 'root':
                 $root = $drive->getRoot();
-                return $root !== null ? new DriveItemProxy($this->graph, $root) : null;
+                return $root !== null ?
+                    new DriveItemProxy(
+                        $this->graph,
+                        $root,
+                        $this->driveItemParameterDirector
+                    )
+                    : null;
 
             case 'special':
                 $special = $drive->getSpecial();
-                return $special !== null ? new DriveItemProxy($this->graph, $special) : null;
+                return $special !== null ?
+                    new DriveItemProxy(
+                        $this->graph,
+                        $special,
+                        $this->driveItemParameterDirector
+                    )
+                    : null;
 
             default:
                 return parent::__get($name);
@@ -153,7 +182,11 @@ class DriveProxy extends BaseItemProxy
 
         $driveItem = $response->getResponseAsObject(DriveItem::class);
 
-        return new DriveItemProxy($this->graph, $driveItem);
+        return new DriveItemProxy(
+            $this->graph,
+            $driveItem,
+            $this->driveItemParameterDirector
+        );
     }
 
     /**
@@ -196,7 +229,11 @@ class DriveProxy extends BaseItemProxy
 
         $driveItem = $response->getResponseAsObject(DriveItem::class);
 
-        return new DriveItemProxy($this->graph, $driveItem);
+        return new DriveItemProxy(
+            $this->graph,
+            $driveItem,
+            $this->driveItemParameterDirector
+        );
     }
 
     /**
@@ -229,6 +266,10 @@ class DriveProxy extends BaseItemProxy
 
         $driveItem = $response->getResponseAsObject(DriveItem::class);
 
-        return new DriveItemProxy($this->graph, $driveItem);
+        return new DriveItemProxy(
+            $this->graph,
+            $driveItem,
+            $this->driveItemParameterDirector
+        );
     }
 }
