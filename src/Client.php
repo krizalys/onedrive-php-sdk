@@ -41,6 +41,8 @@ use Microsoft\Graph\Model;
  *   - Live SDK applications, deprecated; see
  *     {@link https://apps.dev.microsoft.com/#/appList "My applications" in Microsoft
  *     Application Registration Portal}.
+ *
+ * @since 1.0.0
  */
 class Client
 {

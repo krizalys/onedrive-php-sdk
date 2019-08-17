@@ -30,6 +30,8 @@ use Microsoft\Graph\Graph;
  * ```php
  * $client = Onedrive::client('<YOUR_CLIENT_ID>');
  * ```
+ *
+ * @since 2.3.0
  */
 class Onedrive
 {

@@ -22,6 +22,8 @@ namespace Krizalys\Onedrive;
  * {@see File::fetchContent() fetchContent()}, but may not have child OneDrive
  * items.
  *
+ * @since 1.0.0
+ *
  * @deprecated 2.0.0 Superseded by \Krizalys\Onedrive\Proxy\DriveItemProxy and
  *             \Krizalys\Onedrive\Proxy\File.
  *

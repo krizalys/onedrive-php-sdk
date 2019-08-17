@@ -30,6 +30,8 @@ namespace Krizalys\Onedrive;
  * item. For better performance, these values are cached on the `DriveItem`
  * instance after first call.
  *
+ * @since 1.2.0
+ *
  * @deprecated 2.0.0 Superseded by \Krizalys\Onedrive\Proxy\DriveItemProxy.
  *
  * @see \Krizalys\Onedrive\Proxy\DriveItemProxy

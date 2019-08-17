@@ -25,6 +25,8 @@ use Krizalys\Onedrive\Proxy\DriveItemProxy;
  * {@see Folder::fetchChildDriveItems() fetchChildDriveItems()}, but may not
  * have content.
  *
+ * @since 1.0.0
+ *
  * @deprecated 2.0.0 Superseded by \Krizalys\Onedrive\Proxy\DriveItemProxy and
  *             \Krizalys\Onedrive\Proxy\Folder.
  *
