@@ -17,6 +17,7 @@ namespace Krizalys\Onedrive\Proxy;
 use GuzzleHttp\Psr7;
 use GuzzleHttp\Psr7\LimitStream;
 use GuzzleHttp\Psr7\Stream;
+use Krizalys\Onedrive\Parameter\DriveItemParameterDirectorInterface;
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model\DriveItem;
 use Microsoft\Graph\Model\UploadSession;
@@ -62,6 +63,12 @@ class UploadSessionProxy extends EntityProxy
     private $content;
 
     /**
+     * @var DriveItemParameterDirectorInterface
+     *      The drive item parameter director.
+     */
+    private $driveItemParameterDirector;
+
+    /**
      * @var int
      *      The type.
      */
@@ -82,6 +89,8 @@ class UploadSessionProxy extends EntityProxy
      *        The upload session.
      * @param string|resource|\GuzzleHttp\Psr7\Stream $content
      *        The content.
+     * @param DriveItemParameterDirectorInterface $parameterDirector
+     *        The drive item parameter director.
      * @param mixed[] $options
      *        The options. Supported options:
      *          - `'type'` *(string)*: the MIME type of the uploaded file ;
@@ -93,12 +102,20 @@ class UploadSessionProxy extends EntityProxy
         Graph $graph,
         UploadSession $uploadSession,
         $content,
+        DriveItemParameterDirectorInterface $driveItemParameterDirector,
         array $options = []
     ) {
         parent::__construct($graph, $uploadSession);
-        $this->content   = $content;
-        $this->type      = array_key_exists('type', $options) ? $options['type'] : null;
-        $this->rangeSize = array_key_exists('range_size', $options) ? $options['range_size'] : null;
+        $this->content                    = $content;
+        $this->driveItemParameterDirector = $driveItemParameterDirector;
+
+        $this->type = array_key_exists('type', $options) ?
+            $options['type']
+            : null;
+
+        $this->rangeSize = array_key_exists('range_size', $options) ?
+            $options['range_size']
+            : null;
     }
 
     /**
@@ -191,7 +208,11 @@ class UploadSessionProxy extends EntityProxy
             if ($status == 200 || $status == 201) {
                 $driveItem = $response->getResponseAsObject(DriveItem::class);
 
-                return new DriveItemProxy($this->graph, $driveItem);
+                return new DriveItemProxy(
+                    $this->graph,
+                    $driveItem,
+                    $this->driveItemParameterDirector
+                );
             }
 
             if ($status != 202) {
