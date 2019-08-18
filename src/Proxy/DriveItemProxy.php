@@ -431,14 +431,14 @@ class DriveItemProxy extends BaseItemProxy
      * This operation is supported only on folders (as opposed to files): it
      * fails if this `DriveItemProxy` instance does not refer to a folder.
      *
-     * The MIME type of the drive item may be given as a `Content-Type` option,
+     * The MIME type of the drive item may be given as a `contentType` option,
      * for example:
      *
      * ```php
      * $driveItem = $parentDriveItem->upload(
      *     'file.txt',
      *     'Content',
-     *     ['Content-Type' => 'text/plain']
+     *     ['contentType' => 'text/plain']
      * );
      * ```
      *
@@ -448,7 +448,7 @@ class DriveItemProxy extends BaseItemProxy
      *        The content.
      * @param mixed[] $options
      *        The options. Supported options:
-     *          - `Content-Type` *(string)*: the MIME type of the uploaded file.
+     *          - `contentType` *(string)*: the MIME type of the uploaded file.
      *
      * @return DriveItemProxy
      *         The drive item created.
