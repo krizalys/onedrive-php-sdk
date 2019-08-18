@@ -7,9 +7,6 @@ use Krizalys\Onedrive\File;
 use Krizalys\Onedrive\Folder;
 use Krizalys\Onedrive\Proxy\DriveItemProxy;
 
-/**
- * @group functional
- */
 class KrizalysOnedriveTest extends \PHPUnit_Framework_TestCase
 {
     use Assertions;
