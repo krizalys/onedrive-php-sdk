@@ -35,7 +35,7 @@ use Krizalys\Onedrive\Proxy\UserProxy;
 use Krizalys\Onedrive\Proxy\VideoProxy;
 use Krizalys\Onedrive\Proxy\WorkbookProxy;
 
-trait Assertions
+trait AssertionsTrait
 {
     private function assertBaseItemProxy($baseItem)
     {

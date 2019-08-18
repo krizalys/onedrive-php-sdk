@@ -9,9 +9,9 @@ use Krizalys\Onedrive\Proxy\DriveItemProxy;
 
 class KrizalysOnedriveTest extends \PHPUnit_Framework_TestCase
 {
-    use Assertions;
+    use AssertionsTrait;
     use ClientFactoryTrait;
-    use Configuration;
+    use ConfigurationTrait;
 
     const ASYNC_POLL_TIMEOUT = 10; // In seconds.
 

@@ -2,7 +2,7 @@
 
 namespace Test\Functional\Krizalys\Onedrive;
 
-trait Configuration
+trait ConfigurationTrait
 {
     private static $config;
 
