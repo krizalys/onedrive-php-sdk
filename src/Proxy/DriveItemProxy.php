@@ -332,7 +332,7 @@ class DriveItemProxy extends BaseItemProxy
      *            sorting by multiple properties, we did not acknowledge this
      *            behavior, yet, and instead got Bad Request errors from the
      *            OneDrive API. We do not recommend relying on this feature.
-     *            This option anticipates a related changes in the OneDrive API
+     *            This option anticipates a related change in the OneDrive API
      *            and is designed to support this feature without introducing
      *            breaking changes.
      *            Supported properties:
