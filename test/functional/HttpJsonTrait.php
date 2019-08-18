@@ -1,0 +1,22 @@
+<?php
+
+namespace Test\Functional\Krizalys\Onedrive;
+
+use GuzzleHttp\Client as GuzzleHttpClient;
+
+trait HttpJsonTrait
+{
+    private $httpClient;
+
+    private function getAndDecode($uri)
+    {
+        if ($httpClient === null) {
+            $this->httpClient = new GuzzleHttpClient();
+        }
+
+        $response = $this->httpClient->get($uri);
+        $json     = (string) $response->getBody();
+
+        return json_decode($json);
+    }
+}
