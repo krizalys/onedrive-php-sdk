@@ -457,4 +457,73 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals('Test folder (copied)', $driveItem->name);
         });
     }
+
+    /**
+     * @dataProvider provideLinkTypes
+     */
+    public function testCreateLinkToFileWhenNotExisting($type)
+    {
+        self::withOnedriveSandbox(self::$driveItem, __CLASS__ . '_' . __FUNCTION__, function (DriveItemProxy $sandbox) use ($type) {
+            $driveItem = $sandbox->upload(
+                'Test file',
+                'Test content',
+                ['contentType' => 'text/plain']
+            );
+
+            $permission = $driveItem->createLink($type);
+            $this->assertPermissionProxy($permission);
+        });
+    }
+
+    /**
+     * @dataProvider provideLinkTypes
+     */
+    public function testCreateLinkToFileWhenExisting($type)
+    {
+        self::withOnedriveSandbox(self::$driveItem, __CLASS__ . '_' . __FUNCTION__, function (DriveItemProxy $sandbox) use ($type) {
+            $driveItem = $sandbox->upload(
+                'Test file',
+                'Test content',
+                ['contentType' => 'text/plain']
+            );
+
+            $driveItem->createLink($type);
+            $permission = $driveItem->createLink($type);
+            $this->assertPermissionProxy($permission);
+        });
+    }
+
+    /**
+     * @dataProvider provideLinkTypes
+     */
+    public function testCreateLinkToFolderWhenNotExisting($type)
+    {
+        self::withOnedriveSandbox(self::$driveItem, __CLASS__ . '_' . __FUNCTION__, function (DriveItemProxy $sandbox) use ($type) {
+            $driveItem  = $sandbox->createFolder('Test folder');
+            $permission = $driveItem->createLink($type);
+            $this->assertPermissionProxy($permission);
+        });
+    }
+
+    /**
+     * @dataProvider provideLinkTypes
+     */
+    public function testCreateLinkToFolderWhenExisting($type)
+    {
+        self::withOnedriveSandbox(self::$driveItem, __CLASS__ . '_' . __FUNCTION__, function (DriveItemProxy $sandbox) use ($type) {
+            $driveItem = $sandbox->createFolder('Test folder');
+            $driveItem->createLink($type);
+            $permission = $driveItem->createLink($type);
+            $this->assertPermissionProxy($permission);
+        });
+    }
+
+    public function provideLinkTypes()
+    {
+        return [
+            ['view'],
+            ['edit'],
+            ['embed'],
+        ];
+    }
 }

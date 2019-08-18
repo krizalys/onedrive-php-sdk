@@ -14,6 +14,7 @@ use Krizalys\Onedrive\Proxy\FileSystemInfoProxy;
 use Krizalys\Onedrive\Proxy\FolderProxy;
 use Krizalys\Onedrive\Proxy\GeoCoordinatesProxy;
 use Krizalys\Onedrive\Proxy\GraphListProxy;
+use Krizalys\Onedrive\Proxy\IdentityProxy;
 use Krizalys\Onedrive\Proxy\IdentitySetProxy;
 use Krizalys\Onedrive\Proxy\ImageProxy;
 use Krizalys\Onedrive\Proxy\ItemReferenceProxy;
@@ -28,6 +29,7 @@ use Krizalys\Onedrive\Proxy\RootProxy;
 use Krizalys\Onedrive\Proxy\SearchResultProxy;
 use Krizalys\Onedrive\Proxy\SharedProxy;
 use Krizalys\Onedrive\Proxy\SharepointIdsProxy;
+use Krizalys\Onedrive\Proxy\SharingLinkProxy;
 use Krizalys\Onedrive\Proxy\SpecialFolderProxy;
 use Krizalys\Onedrive\Proxy\SystemProxy;
 use Krizalys\Onedrive\Proxy\ThumbnailProxy;
@@ -406,9 +408,15 @@ trait AssertionsTrait
         $this->assertInternalType('string', $entity->id);
     }
 
+    private function assertIdentity($identity)
+    {
+        $this->assertInstanceOf(IdentityProxy::class, $identity);
+    }
+
     private function assertPermissionProxy($permission)
     {
         $this->assertInstanceOf(PermissionProxy::class, $permission);
+        $this->assertSharingLinkProxy($permission->link);
     }
 
     private function assertQuotaProxy($quota)
@@ -430,6 +438,26 @@ trait AssertionsTrait
     {
         $this->assertInstanceOf(SpecialFolderProxy::class, $specialFolder);
         $this->assertInternalType('string', $specialFolder->name);
+    }
+
+    private function assertSharingLinkProxy($sharingLink)
+    {
+        $this->assertInstanceOf(SharingLinkProxy::class, $sharingLink);
+
+        if ($sharingLink->type != 'embed') {
+            $this->assertIdentity($sharingLink->application);
+        }
+
+        $this->assertThat(
+            $sharingLink->scope,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->contains(['anonymous', 'organization'])
+            )
+        );
+
+        $this->assertContains($sharingLink->type, ['view', 'edit', 'embed']);
+        $this->assertRegExp(self::$uriRegex, $sharingLink->webUrl);
     }
 
     private function assertThumbnailProxy($thumbnail)

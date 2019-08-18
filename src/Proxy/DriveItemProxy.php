@@ -805,4 +805,55 @@ class DriveItemProxy extends BaseItemProxy
 
         return $headers['Location'][0];
     }
+
+    /**
+     * Creates a sharing link to this drive item.
+     *
+     * @param string $type
+     *        The type. Supported values:
+     *          - `'view'` ;
+     *          - `'edit` ;
+     *          - `'embed'`.
+     * @param mixed[string] $options
+     *        The options. Supported values:
+     *          - `'scope'` *(string)*: the scope supported values:
+     *            - `'anonymous'` ;
+     *            - `'organization'`.
+     *
+     * @return PermissionProxy
+     *         The permission.
+     *
+     * @since 2.4.0
+     *
+     * @api
+     *
+     * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_createlink?view=odsp-graph-online
+     *       Create a sharing link for a DriveItem
+     */
+    public function createLink($type, array $options = [])
+    {
+        $driveLocator = "/drives/{$this->parentReference->driveId}";
+        $itemLocator  = "/items/{$this->id}";
+        $endpoint     = "$driveLocator$itemLocator/createLink";
+
+        $body = [
+            'type' => $type,
+        ];
+
+        $response = $this
+            ->graph
+            ->createRequest('POST', $endpoint)
+            ->attachBody($body)
+            ->execute();
+
+        $status = $response->getStatus();
+
+        if ($status != 200 && $status != 201) {
+            throw new \Exception("Unexpected status code produced by 'POST $endpoint': $status");
+        }
+
+        $permission = $response->getResponseAsObject(Permission::class);
+
+        return new PermissionProxy($this->graph, $permission);
+    }
 }

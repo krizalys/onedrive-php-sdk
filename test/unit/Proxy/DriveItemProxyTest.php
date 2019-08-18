@@ -23,6 +23,7 @@ use Krizalys\Onedrive\Proxy\RootProxy;
 use Krizalys\Onedrive\Proxy\SearchResultProxy;
 use Krizalys\Onedrive\Proxy\SharedProxy;
 use Krizalys\Onedrive\Proxy\SharepointIdsProxy;
+use Krizalys\Onedrive\Proxy\SharingLinkProxy;
 use Krizalys\Onedrive\Proxy\SpecialFolderProxy;
 use Krizalys\Onedrive\Proxy\ThumbnailProxy;
 use Krizalys\Onedrive\Proxy\UploadSessionProxy;
@@ -51,6 +52,7 @@ use Microsoft\Graph\Model\Root;
 use Microsoft\Graph\Model\SearchResult;
 use Microsoft\Graph\Model\Shared;
 use Microsoft\Graph\Model\SharepointIds;
+use Microsoft\Graph\Model\SharingLink;
 use Microsoft\Graph\Model\SpecialFolder;
 use Microsoft\Graph\Model\Thumbnail;
 use Microsoft\Graph\Model\UploadSession;
@@ -554,12 +556,14 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
     public function testDownloadShouldReturnExpectedValue()
     {
         $item = $this->mockDriveItem();
+
         $stream = $this->mockStream();
+
         $graph = $this->mockGraph($stream);
 
         $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
 
-        $sut = new DriveItemProxy($graph, $item, $parameterDirector);
+        $sut    = new DriveItemProxy($graph, $item, $parameterDirector);
         $actual = $sut->download();
         $this->assertSame($stream, $actual);
     }
@@ -614,10 +618,34 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
 
         $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
 
-        $sut = new DriveItemProxy($graph, $item, $parameterDirector);
+        $sut    = new DriveItemProxy($graph, $item, $parameterDirector);
         $actual = $sut->copy($destinationItem, []);
         $this->assertInternalType('string', $actual);
         $this->assertSame('http://progre.ss/url', $actual);
+    }
+
+    public function testCreateLinkShouldReturnExpectedValue()
+    {
+        $item = $this->mockDriveItem();
+
+        $sharingLink = $this->createMock(SharingLink::class);
+        $sharingLink->method('getScope')->willReturn('anonymous');
+
+        $permission = $this->createMock(Permission::class);
+        $permission->method('getLink')->willReturn($sharingLink);
+
+        $response = $this->mockResponse(201, ['body' => $permission]);
+
+        $graph = $this->mockGraph($response);
+
+        $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+
+        $sut    = new DriveItemProxy($graph, $item, $parameterDirector);
+        $actual = $sut->createLink('view', []);
+        $this->assertInstanceOf(PermissionProxy::class, $actual);
+        $this->assertInstanceOf(SharingLinkProxy::class, $actual->link);
+        $this->assertInternalType('string', $actual->link->scope);
+        $this->assertSame('anonymous', $actual->link->scope);
     }
 
     private function mockStream()

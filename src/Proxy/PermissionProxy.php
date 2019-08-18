@@ -20,6 +20,9 @@ use Microsoft\Graph\Model\Permission;
 /**
  * A proxy to a \Microsoft\Graph\Model\Permission instance.
  *
+ * @property-read \Krizalys\Onedrive\Proxy\SharingLinkProxy $link
+ *                The link.
+ *
  * @since 2.0.0
  *
  * @api
@@ -41,5 +44,33 @@ class PermissionProxy extends EntityProxy
     public function __construct(Graph $graph, Permission $permission)
     {
         parent::__construct($graph, $permission);
+    }
+
+    /**
+     * Getter.
+     *
+     * @param string $name
+     *        The name.
+     *
+     * @return mixed
+     *         The value.
+     *
+     * @since 2.4.0
+     */
+    public function __get($name)
+    {
+        $permission = $this->entity;
+
+        /**
+         * @todo Support all properties.
+         */
+        switch ($name) {
+            case 'link':
+                $link = $permission->getLink();
+                return $link !== null ? new SharingLinkProxy($this->graph, $link) : null;
+
+            default:
+                return parent::__get($name);
+        }
     }
 }

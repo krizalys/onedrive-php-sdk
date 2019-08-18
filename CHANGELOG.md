@@ -4,6 +4,11 @@ Change log
 [Unreleased][unreleased]
 ------------------------
 
+### Added
+
+- Support for creating sharing links to drive items: see
+  `Krizalys\Onedrive\Proxy\DriveItemProxy::createLink()`
+
 ### Changed
 
 - Improved usefulness of some assertions in unit tests.
