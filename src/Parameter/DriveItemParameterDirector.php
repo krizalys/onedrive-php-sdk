@@ -46,7 +46,7 @@ class DriveItemParameterDirector implements DriveItemParameterDirectorInterface
         if (self::$getChildrenParameterDefinitions === null) {
             self::$getChildrenParameterDefinitions = [
                 'top'     => new QueryStringParameterDefinition('top', new ScalarSerializer()),
-                'orderby' => new QueryStringParameterDefinition('orderby', new OrderBySerializer()),
+                'orderBy' => new QueryStringParameterDefinition('orderby', new OrderBySerializer()),
             ];
         }
 

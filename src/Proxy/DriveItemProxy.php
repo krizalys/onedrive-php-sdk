@@ -314,7 +314,7 @@ class DriveItemProxy extends BaseItemProxy
      * ```php
      * $childDriveItems = $driveItem->getChildren([
      *     'top' => 10,
-     *     'orderby' => [
+     *     'orderBy' => [
      *         ['name', 'desc'],
      *     ],
      * ]);
@@ -324,7 +324,7 @@ class DriveItemProxy extends BaseItemProxy
      *        The options. Supported options:
      *          - `'top'` *(number)*: The number of items to retrieve. Default:
      *            `200` ;
-     *          - `'orderby'` *(array<array<string>>)*: The list of
+     *          - `'orderBy'` *(array<array<string>>)*: The list of
      *            property-direction tuples to use to sort retrieved items. Each
      *            tuple consists of a property and a direction, separated from
      *            each other by whitespace.
