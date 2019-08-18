@@ -22,7 +22,15 @@ namespace Krizalys\Onedrive\Serializer;
 class OrderBySerializer implements SerializerInterface
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
+     *
+     * @param string[][] $value
+     *        The value to serialize.
+     *
+     * @return string
+     *         The serialized value.
+     *
+     * @since 2.3.0
      */
     public function serialize($value)
     {

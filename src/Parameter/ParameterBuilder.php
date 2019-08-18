@@ -22,13 +22,13 @@ namespace Krizalys\Onedrive\Parameter;
 class ParameterBuilder implements ParameterBuilderInterface
 {
     /**
-     * @var array<string, \Krizalys\Onedrive\Parameter\Definition\ParameterDefinitionInterface>
+     * @var \Krizalys\Onedrive\Parameter\Definition\ParameterDefinitionInterface[string]
      *      The parameter definitions.
      */
     private $parameterDefinitions;
 
     /**
-     * @var array<string, mixed>
+     * @var mixed[string]
      *      The options.
      */
     private $options;
@@ -45,7 +45,15 @@ class ParameterBuilder implements ParameterBuilderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
+     *
+     * @param ParameterDefinitionInterface[string] $parameterDefinitions
+     *        The parameter definitions.
+     *
+     * @return ParameterBuilderInterface
+     *         This instance.
+     *
+     * @since 2.3.0
      */
     public function setParameterDefinitions(array $parameterDefinitions)
     {
@@ -55,7 +63,15 @@ class ParameterBuilder implements ParameterBuilderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
+     *
+     * @param mixed[string] $options
+     *        The options.
+     *
+     * @return ParameterBuilderInterface
+     *         This instance.
+     *
+     * @since 2.3.0
      */
     public function setOptions(array $options)
     {
@@ -65,7 +81,12 @@ class ParameterBuilder implements ParameterBuilderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
+     *
+     * @return string[string]
+     *         The parameters.
+     *
+     * @since 2.3.0
      */
     public function build()
     {

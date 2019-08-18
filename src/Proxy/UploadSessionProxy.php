@@ -89,7 +89,7 @@ class UploadSessionProxy extends EntityProxy
      *        The upload session.
      * @param string|resource|\GuzzleHttp\Psr7\Stream $content
      *        The content.
-     * @param DriveItemParameterDirectorInterface $parameterDirector
+     * @param DriveItemParameterDirectorInterface $driveItemParameterDirector
      *        The drive item parameter director.
      * @param mixed[] $options
      *        The options. Supported options:

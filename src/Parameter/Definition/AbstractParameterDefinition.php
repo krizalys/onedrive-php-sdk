@@ -40,12 +40,20 @@ abstract class AbstractParameterDefinition implements ParameterDefinitionInterfa
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     abstract public function serializeKey();
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
+     *
+     * @param mixed $value
+     *        The value to serialize.
+     *
+     * @return string
+     *         The serialized value.
+     *
+     * @since 2.3.0
      */
     public function serializeValue($value)
     {

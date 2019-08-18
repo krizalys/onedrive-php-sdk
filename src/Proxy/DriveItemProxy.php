@@ -324,10 +324,10 @@ class DriveItemProxy extends BaseItemProxy
      *        The options. Supported options:
      *          - `'top'` *(number)*: The number of items to retrieve. Default:
      *            `200` ;
-     *          - `'orderBy'` *(array<array<string>>)*: The list of
-     *            property-direction tuples to use to sort retrieved items. Each
-     *            tuple consists of a property and a direction, separated from
-     *            each other by whitespace.
+     *          - `'orderBy'` *(string[][])*: The list of property-direction
+     *            tuples to use to sort retrieved items. Each tuple consists of
+     *            a property and a direction, separated from each other by
+     *            whitespace.
      *            Although the official OneDrive documentation claims to support
      *            sorting by multiple properties, we did not acknowledge this
      *            behavior, yet, and instead got Bad Request errors from the

@@ -26,7 +26,7 @@ interface ParameterBuilderInterface
     /**
      * Sets parameter definitions to this instance.
      *
-     * @param array<string, ParameterDefinitionInterface> $parameterDefinitions
+     * @param ParameterDefinitionInterface[string] $parameterDefinitions
      *        The parameter definitions.
      *
      * @return ParameterBuilderInterface
@@ -39,7 +39,7 @@ interface ParameterBuilderInterface
     /**
      * Sets options to this instance.
      *
-     * @param array<string, mixed> $options
+     * @param mixed[string] $options
      *        The options.
      *
      * @return ParameterBuilderInterface
@@ -52,7 +52,7 @@ interface ParameterBuilderInterface
     /**
      * Builds parameters from this instance.
      *
-     * @return array<string, string>
+     * @return string[string]
      *         The parameters.
      *
      * @since 2.3.0

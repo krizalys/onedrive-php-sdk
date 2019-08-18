@@ -27,19 +27,27 @@ use Krizalys\Onedrive\Serializer\ScalarSerializer;
 class DriveItemParameterDirector implements DriveItemParameterDirectorInterface
 {
     /**
-     * @var array<string, ParameterDefinitionInterface>
+     * @var ParameterDefinitionInterface[string]
      *      The get children parameter definitions.
      */
     private static $getChildrenParameterDefinitions;
 
     /**
-     * @var array<string, ParameterDefinitionInterface>
+     * @var ParameterDefinitionInterface[string]
      *      The put content parameter definitions.
      */
     private static $putContentParameterDefinitions;
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
+     *
+     * @param mixed[string] $options
+     *        The options.
+     *
+     * @return string[string]
+     *         The parameters.
+     *
+     * @since 2.3.0
      */
     public function buildGetChildren(array $options)
     {
@@ -59,7 +67,15 @@ class DriveItemParameterDirector implements DriveItemParameterDirectorInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
+     *
+     * @param mixed[string] $options
+     *        The options.
+     *
+     * @return string[string]
+     *         The parameters.
+     *
+     * @since 2.3.0
      */
     public function buildPutContent(array $options)
     {

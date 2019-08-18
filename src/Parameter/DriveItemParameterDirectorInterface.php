@@ -24,10 +24,10 @@ interface DriveItemParameterDirectorInterface
     /**
      * Builds parameters from this instance and given options.
      *
-     * @param array<string, mixed> $options
+     * @param mixed[string] $options
      *        The options.
      *
-     * @return array<string, string>
+     * @return string[string]
      *         The parameters.
      *
      * @since 2.3.0
@@ -37,10 +37,10 @@ interface DriveItemParameterDirectorInterface
     /**
      * Builds parameters from this instance and given options.
      *
-     * @param array<string, mixed> $options
+     * @param mixed[string] $options
      *        The options.
      *
-     * @return array<string, string>
+     * @return string[string]
      *         The parameters.
      *
      * @since 2.3.0
