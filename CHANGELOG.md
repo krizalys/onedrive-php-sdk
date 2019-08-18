@@ -127,19 +127,6 @@ as the official PHP Docker image.
 - Support for logging, using [monolog/monolog][monolog] by default.
 - Additional functional test cases.
 
-### Removed
-
-- Support for PHP 5.4 and PHP 5.5.
-- Example application.
-- `Krizalys\Onedrive\Folder::fetchDescendantDriveItems()`.
-- `Krizalys\Onedrive\Client::apiDelete()`.
-- `Krizalys\Onedrive\Client::apiPost()`.
-- `Krizalys\Onedrive\Client::apiPut()`.
-- `Krizalys\Onedrive\Client::apiMove()`.
-- `Krizalys\Onedrive\Client::apiCopy()`.
-- `Krizalys\Onedrive\Client::fetchPublicDocs`.
-- `Krizalys\Onedrive\Client::fetchAccountInfo`.
-
 ### Changed
 
 - License: GNU General Public License v3.0 => BSD 3-Clause License.
@@ -169,6 +156,19 @@ as the official PHP Docker image.
   warning.
 - `Krizalys\Onedrive\Folder::createFolder()`: deprecated & logs a warning.
 - `Krizalys\Onedrive\Folder::createFile()`: deprecated & logs a warning.
+
+### Removed
+
+- Support for PHP 5.4 and PHP 5.5.
+- Example application.
+- `Krizalys\Onedrive\Folder::fetchDescendantDriveItems()`.
+- `Krizalys\Onedrive\Client::apiDelete()`.
+- `Krizalys\Onedrive\Client::apiPost()`.
+- `Krizalys\Onedrive\Client::apiPut()`.
+- `Krizalys\Onedrive\Client::apiMove()`.
+- `Krizalys\Onedrive\Client::apiCopy()`.
+- `Krizalys\Onedrive\Client::fetchPublicDocs`.
+- `Krizalys\Onedrive\Client::fetchAccountInfo`.
 
 [1.2.0] - 2017-12-09
 --------------------
