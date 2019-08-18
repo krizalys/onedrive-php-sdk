@@ -2,6 +2,7 @@
 
 namespace Test\Functional\Krizalys\Onedrive;
 
+use GuzzleHttp\Exception\ClientException;
 use Krizalys\Onedrive\Proxy\AudioProxy;
 use Krizalys\Onedrive\Proxy\BaseItemProxy;
 use Krizalys\Onedrive\Proxy\DeletedProxy;
@@ -294,7 +295,19 @@ trait AssertionsTrait
         );
 
         foreach ($item->children as $child) {
-            $this->assertDriveItemProxy($child);
+            // Assert safely to prevent transient items created by parallel
+            // processes from not being found anymore.
+            try {
+                $this->assertDriveItemProxy($child);
+            } catch (ClientException $exception) {
+                $statusCode = $exception
+                    ->getResponse()
+                    ->getStatusCode();
+
+                if ($statusCode != 404) {
+                    throw $exception;
+                }
+            }
         }
 
         $this->assertThat(
