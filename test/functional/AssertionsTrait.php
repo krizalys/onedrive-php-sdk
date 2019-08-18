@@ -37,6 +37,8 @@ use Krizalys\Onedrive\Proxy\WorkbookProxy;
 
 trait AssertionsTrait
 {
+    private static $uriRegex = '|^([^:/?#]+:)?(//[^/?#]*)?[^?#]*(\?[^#]*)?(#.*)?|';
+
     private function assertBaseItemProxy($baseItem)
     {
         $this->assertEntityProxy($baseItem);
@@ -110,7 +112,7 @@ trait AssertionsTrait
             $baseItem->webUrl,
             $this->logicalOr(
                 $this->isNull(),
-                $this->matchesRegularExpression(self::URI_REGEX)
+                $this->matchesRegularExpression(self::$uriRegex)
             )
         );
 
@@ -287,7 +289,7 @@ trait AssertionsTrait
             $item->webDavUrl,
             $this->logicalOr(
                 $this->isNull(),
-                $this->matchesRegularExpression(self::URI_REGEX)
+                $this->matchesRegularExpression(self::$uriRegex)
             )
         );
 
@@ -428,6 +430,6 @@ trait AssertionsTrait
         $this->assertInstanceOf(\DateTime::class, $uploadSession->expirationDateTime);
         $this->assertCount(1, $uploadSession->nextExpectedRanges);
         $this->assertEquals('0-', $uploadSession->nextExpectedRanges[0]);
-        $this->assertRegExp(self::URI_REGEX, $uploadSession->uploadUrl);
+        $this->assertRegExp(self::$uriRegex, $uploadSession->uploadUrl);
     }
 }
