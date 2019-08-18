@@ -14,6 +14,13 @@ Change log
 - `Krizalys\Onedrive\Proxy\DriveItemProxy::upload()`: the `'Content-Type'`
 option is now deprecated & reports a notice; use `'contentType'` instead.
 
+### Changed
+
+- `Krizalys\Onedrive\Client::__construct()`: not passing a
+  `\Krizalys\Onedrive\Parameter\DriveItemParameterDirectorInterface` instance
+  via `$driveItemParameterDirector` is deprecated & reports a notice. Pass this
+  parameter.
+
 [2.2.0] - 2019-08-07
 --------------------
 
