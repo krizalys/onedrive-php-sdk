@@ -2,7 +2,7 @@
 
 namespace Test\Unit\Krizalys\Onedrive;
 
-use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Client as GuzzleHttpClient;
 use GuzzleHttp\ClientInterface;
 use Krizalys\Onedrive\Client;
 use Krizalys\Onedrive\Parameter\DriveItemParameterDirectorInterface;
@@ -585,7 +585,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     }
 }
 
-class ClientMock extends GuzzleClient
+class ClientMock extends GuzzleHttpClient
 {
     public $postCallback;
 
