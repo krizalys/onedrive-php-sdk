@@ -10,9 +10,11 @@ class SpecialFolderProxyTest extends \PHPUnit_Framework_TestCase
 {
     public function testNameShouldReturnExpectedValue()
     {
-        $graph         = $this->createMock(Graph::class);
+        $graph = $this->createMock(Graph::class);
+
         $specialFolder = $this->createMock(SpecialFolder::class);
         $specialFolder->method('getName')->willReturn('Name');
+
         $sut = new SpecialFolderProxy($graph, $specialFolder);
         $this->assertInternalType('string', $sut->name);
         $this->assertSame('Name', $sut->name);

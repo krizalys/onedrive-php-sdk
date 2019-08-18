@@ -11,50 +11,60 @@ class QuotaProxyTest extends \PHPUnit_Framework_TestCase
     public function testDeletedShouldReturnExpectedValue()
     {
         $graph = $this->createMock(Graph::class);
+
         $quota = $this->createMock(Quota::class);
         $quota->method('getDeleted')->willReturn(1234);
+
         $sut = new QuotaProxy($graph, $quota);
-        $this->assertInstanceOf(QuotaProxy::class, $sut);
+        $this->assertInternalType('int', $sut->deleted);
         $this->assertSame(1234, $sut->deleted);
     }
 
     public function testRemainingShouldReturnExpectedValue()
     {
         $graph = $this->createMock(Graph::class);
+
         $quota = $this->createMock(Quota::class);
         $quota->method('getRemaining')->willReturn(1234);
+
         $sut = new QuotaProxy($graph, $quota);
-        $this->assertInstanceOf(QuotaProxy::class, $sut);
+        $this->assertInternalType('int', $sut->remaining);
         $this->assertSame(1234, $sut->remaining);
     }
 
     public function testStateShouldReturnExpectedValue()
     {
         $graph = $this->createMock(Graph::class);
+
         $quota = $this->createMock(Quota::class);
         $quota->method('getState')->willReturn(1234);
+
         $sut = new QuotaProxy($graph, $quota);
-        $this->assertInstanceOf(QuotaProxy::class, $sut);
+        $this->assertInternalType('int', $sut->state);
         $this->assertSame(1234, $sut->state);
     }
 
     public function testTotalShouldReturnExpectedValue()
     {
         $graph = $this->createMock(Graph::class);
+
         $quota = $this->createMock(Quota::class);
         $quota->method('getTotal')->willReturn(1234);
+
         $sut = new QuotaProxy($graph, $quota);
-        $this->assertInstanceOf(QuotaProxy::class, $sut);
+        $this->assertInternalType('int', $sut->total);
         $this->assertSame(1234, $sut->total);
     }
 
     public function testUsedShouldReturnExpectedValue()
     {
         $graph = $this->createMock(Graph::class);
+
         $quota = $this->createMock(Quota::class);
         $quota->method('getUsed')->willReturn(1234);
+
         $sut = new QuotaProxy($graph, $quota);
-        $this->assertInstanceOf(QuotaProxy::class, $sut);
+        $this->assertInternalType('int', $sut->used);
         $this->assertSame(1234, $sut->used);
     }
 }

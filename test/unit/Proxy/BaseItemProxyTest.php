@@ -17,13 +17,17 @@ class BaseItemProxyTest extends \PHPUnit_Framework_TestCase
 {
     public function testCreatedByShouldReturnExpectedValue()
     {
-        $graph    = $this->createMock(Graph::class);
+        $graph = $this->createMock(Graph::class);
+
         $identity = $this->createMock(Identity::class);
         $identity->method('getDisplayName')->willReturn('Display Name');
+
         $identitySet = $this->createMock(IdentitySet::class);
         $identitySet->method('getUser')->willReturn($identity);
+
         $baseItem = $this->createMock(BaseItem::class);
         $baseItem->method('getCreatedBy')->willReturn($identitySet);
+
         $sut = new BaseItemProxy($graph, $baseItem);
         $this->assertInstanceOf(IdentitySetProxy::class, $sut->createdBy);
         $this->assertSame('Display Name', $sut->createdBy->user->displayName);
@@ -31,19 +35,24 @@ class BaseItemProxyTest extends \PHPUnit_Framework_TestCase
 
     public function testCreatedDateTimeShouldReturnExpectedValue()
     {
-        $graph    = $this->createMock(Graph::class);
+        $graph = $this->createMock(Graph::class);
+
         $dateTime = new \DateTime();
+
         $baseItem = $this->createMock(BaseItem::class);
         $baseItem->method('getCreatedDateTime')->willReturn($dateTime);
+
         $sut = new BaseItemProxy($graph, $baseItem);
         $this->assertSame($dateTime, $sut->createdDateTime);
     }
 
     public function testDescriptionShouldReturnExpectedValue()
     {
-        $graph    = $this->createMock(Graph::class);
+        $graph = $this->createMock(Graph::class);
+
         $baseItem = $this->createMock(BaseItem::class);
         $baseItem->method('getDescription')->willReturn('Description');
+
         $sut = new BaseItemProxy($graph, $baseItem);
         $this->assertInternalType('string', $sut->description);
         $this->assertSame('Description', $sut->description);
@@ -51,9 +60,11 @@ class BaseItemProxyTest extends \PHPUnit_Framework_TestCase
 
     public function testETagShouldReturnExpectedValue()
     {
-        $graph    = $this->createMock(Graph::class);
+        $graph = $this->createMock(Graph::class);
+
         $baseItem = $this->createMock(BaseItem::class);
         $baseItem->method('getETag')->willReturn('1234');
+
         $sut = new BaseItemProxy($graph, $baseItem);
         $this->assertInternalType('string', $sut->eTag);
         $this->assertSame('1234', $sut->eTag);
@@ -61,13 +72,17 @@ class BaseItemProxyTest extends \PHPUnit_Framework_TestCase
 
     public function testLastModifiedByShouldReturnExpectedValue()
     {
-        $graph    = $this->createMock(Graph::class);
+        $graph = $this->createMock(Graph::class);
+
         $identity = $this->createMock(Identity::class);
         $identity->method('getDisplayName')->willReturn('Display Name');
+
         $identitySet = $this->createMock(IdentitySet::class);
         $identitySet->method('getUser')->willReturn($identity);
+
         $baseItem = $this->createMock(BaseItem::class);
         $baseItem->method('getLastModifiedBy')->willReturn($identitySet);
+
         $sut = new BaseItemProxy($graph, $baseItem);
         $this->assertInstanceOf(IdentitySetProxy::class, $sut->lastModifiedBy);
         $this->assertSame('Display Name', $sut->lastModifiedBy->user->displayName);
@@ -75,19 +90,24 @@ class BaseItemProxyTest extends \PHPUnit_Framework_TestCase
 
     public function testLastModifiedDateTimeShouldReturnExpectedValue()
     {
-        $graph    = $this->createMock(Graph::class);
+        $graph = $this->createMock(Graph::class);
+
         $dateTime = new \DateTime();
+
         $baseItem = $this->createMock(BaseItem::class);
         $baseItem->method('getLastModifiedDateTime')->willReturn($dateTime);
+
         $sut = new BaseItemProxy($graph, $baseItem);
         $this->assertSame($dateTime, $sut->lastModifiedDateTime);
     }
 
     public function testNameShouldReturnExpectedValue()
     {
-        $graph    = $this->createMock(Graph::class);
+        $graph = $this->createMock(Graph::class);
+
         $baseItem = $this->createMock(BaseItem::class);
         $baseItem->method('getName')->willReturn('Name');
+
         $sut = new BaseItemProxy($graph, $baseItem);
         $this->assertInternalType('string', $sut->name);
         $this->assertSame('Name', $sut->name);
@@ -95,11 +115,14 @@ class BaseItemProxyTest extends \PHPUnit_Framework_TestCase
 
     public function testParentReferenceShouldReturnExpectedValue()
     {
-        $graph         = $this->createMock(Graph::class);
-        $baseItem      = $this->createMock(BaseItem::class);
+        $graph = $this->createMock(Graph::class);
+
         $itemReference = $this->createMock(ItemReference::class);
         $itemReference->method('getId')->willReturn('1234');
+
+        $baseItem = $this->createMock(BaseItem::class);
         $baseItem->method('getParentReference')->willReturn($itemReference);
+
         $sut = new BaseItemProxy($graph, $baseItem);
         $this->assertInstanceOf(ItemReferenceProxy::class, $sut->parentReference);
         $this->assertSame('1234', $sut->parentReference->id);
@@ -107,9 +130,11 @@ class BaseItemProxyTest extends \PHPUnit_Framework_TestCase
 
     public function testWebUrlShouldReturnExpectedValue()
     {
-        $graph    = $this->createMock(Graph::class);
+        $graph = $this->createMock(Graph::class);
+
         $baseItem = $this->createMock(BaseItem::class);
         $baseItem->method('getWebUrl')->willReturn('http://w.eb/url');
+
         $sut = new BaseItemProxy($graph, $baseItem);
         $this->assertInternalType('string', $sut->webUrl);
         $this->assertSame('http://w.eb/url', $sut->webUrl);
@@ -117,20 +142,26 @@ class BaseItemProxyTest extends \PHPUnit_Framework_TestCase
 
     public function testCreatedByUserShouldReturnExpectedValue()
     {
-        $graph    = $this->createMock(Graph::class);
+        $graph = $this->createMock(Graph::class);
+
+        $user = $this->createMock(User::class);
+
         $baseItem = $this->createMock(BaseItem::class);
-        $user     = $this->createMock(User::class);
         $baseItem->method('getCreatedByUser')->willReturn($user);
+
         $sut = new BaseItemProxy($graph, $baseItem);
         $this->assertInstanceOf(UserProxy::class, $sut->createdByUser);
     }
 
     public function testLastModifiedByUserShouldReturnExpectedValue()
     {
-        $graph    = $this->createMock(Graph::class);
+        $graph = $this->createMock(Graph::class);
+
+        $user = $this->createMock(User::class);
+
         $baseItem = $this->createMock(BaseItem::class);
-        $user     = $this->createMock(User::class);
         $baseItem->method('getLastModifiedByUser')->willReturn($user);
+
         $sut = new BaseItemProxy($graph, $baseItem);
         $this->assertInstanceOf(UserProxy::class, $sut->lastModifiedByUser);
     }

@@ -4,6 +4,10 @@ Change log
 [Unreleased][unreleased]
 ------------------------
 
+### Changed
+
+- Improved usefulness of some assertions in unit tests.
+
 ### Deprecated
 
 - `\Krizalys\Onedrive\Proxy\DriveItemProxy::upload()`: The `'Content-Type'`
