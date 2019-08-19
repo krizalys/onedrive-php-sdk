@@ -43,7 +43,46 @@ interface DriveItemParameterDirectorInterface
      * @return string[string]
      *         The parameters.
      *
+     * @since 2.4.0
+     */
+    public function buildPostChildrenBodyParameters(array $options);
+
+    /**
+     * Builds parameters from this instance and given options.
+     *
+     * @param mixed[string] $options
+     *        The options.
+     *
+     * @return string[string]
+     *         The parameters.
+     *
+     * @since 2.4.0
+     */
+    public function buildPutContentQueryStringParameters(array $options);
+
+    /**
+     * Builds parameters from this instance and given options.
+     *
+     * @param mixed[string] $options
+     *        The options.
+     *
+     * @return string[string]
+     *         The parameters.
+     *
      * @since 2.3.0
      */
-    public function buildPutContent(array $options);
+    public function buildPutContentHeaderParameters(array $options);
+
+    /**
+     * Builds parameters from this instance and given options.
+     *
+     * @param mixed[string] $options
+     *        The options.
+     *
+     * @return string[string]
+     *         The parameters.
+     *
+     * @since 2.4.0
+     */
+    public function buildPostCreateUploadSessionBodyParameters(array $options);
 }

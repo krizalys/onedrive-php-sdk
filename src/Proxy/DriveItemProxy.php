@@ -14,8 +14,10 @@
 
 namespace Krizalys\Onedrive\Proxy;
 
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7;
 use GuzzleHttp\Psr7\Stream;
+use Krizalys\Onedrive\Exception\ConflictException;
 use Krizalys\Onedrive\Parameter\DriveItemParameterDirectorInterface;
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model\DriveItem;
@@ -256,12 +258,26 @@ class DriveItemProxy extends BaseItemProxy
      * This operation is supported only on folders (as opposed to files): it
      * fails if this `DriveItemProxy` instance does not refer to a folder.
      *
+     * The conflict behavior may be given as an option, for example:
+     *
+     * ```php
+     * $driveItem->createFolder('folder');
+     * // => Folder 'folder' created under $driveItem.
+     *
+     * $childDriveItem1 = $driveItem->createFolder(
+     *     'folder',
+     *     ['conflictBehavior' => ConflictBehavior::RENAME]
+     * );
+     * // => Folder 'folder 1' created under $driveItem.
+     * ```
+     *
      * @param string $name
      *        The name.
      * @param mixed[string] $options
      *        The options. Supported options:
      *          - `'description'` *(string)*: the description of the folder
-     *            created.
+     *            created ;
+     *          - `'conflictBehavior'` *(string)*: the conflict behavior.
      *
      * @return DriveItemProxy
      *         The drive item created.
@@ -272,8 +288,6 @@ class DriveItemProxy extends BaseItemProxy
      *
      * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_post_children?view=odsp-graph-online
      *       Create a new folder in a drive
-     *
-     * @todo Support name conflict behavior.
      */
     public function createFolder($name, array $options = [])
     {
@@ -281,28 +295,49 @@ class DriveItemProxy extends BaseItemProxy
         $itemLocator  = "/items/{$this->id}";
         $endpoint     = "$driveLocator$itemLocator/children";
 
+        $bodyParams = $this
+            ->parameterDirector
+            ->buildPostChildrenBodyParameters($options);
+
         $body = [
             'folder' => [
                 '@odata.type' => 'microsoft.graph.folder',
             ],
             'name' => (string) $name,
-        ];
+        ] + $bodyParams;
 
-        $response = $this
-            ->graph
-            ->createRequest('POST', $endpoint)
-            ->attachBody($body + $options)
-            ->execute();
+        try {
+            $response = $this
+                ->graph
+                ->createRequest('POST', $endpoint)
+                ->attachBody($body)
+                ->execute();
 
-        $status = $response->getStatus();
+            $status = $response->getStatus();
 
-        if ($status != 200 && $status != 201) {
-            throw new \Exception("Unexpected status code produced by 'POST $endpoint': $status");
+            if ($status != 200 && $status != 201) {
+                throw new \Exception("Unexpected status code produced by 'POST $endpoint': $status");
+            }
+
+            $driveItem = $response->getResponseAsObject(DriveItem::class);
+
+            return new self($this->graph, $driveItem, $this->parameterDirector);
+        } catch (ClientException $exception) {
+            $status = $exception
+                ->getResponse()
+                ->getStatusCode();
+
+            if ($status == 409) {
+                $message = sprintf(
+                    'There is already a drive item named "%s" in this folder',
+                    $name
+                );
+
+                throw new ConflictException($message);
+            }
+
+            throw $exception;
         }
-
-        $driveItem = $response->getResponseAsObject(DriveItem::class);
-
-        return new self($this->graph, $driveItem, $this->parameterDirector);
     }
 
     /**
@@ -374,12 +409,12 @@ class DriveItemProxy extends BaseItemProxy
         $itemLocator  = "/items/{$this->id}";
         $endpoint     = "$driveLocator$itemLocator/children";
 
-        $query = $this
+        $queryParams = $this
             ->parameterDirector
             ->buildGetChildren($options);
 
-        if (!empty($query)) {
-            $queryString = http_build_query($query, '', '&', PHP_QUERY_RFC3986);
+        if (!empty($queryParams)) {
+            $queryString = http_build_query($queryParams, '', '&', PHP_QUERY_RFC3986);
             $endpoint    = "$endpoint?$queryString";
         }
 
@@ -439,15 +474,26 @@ class DriveItemProxy extends BaseItemProxy
      * This operation is supported only on folders (as opposed to files): it
      * fails if this `DriveItemProxy` instance does not refer to a folder.
      *
-     * The MIME type of the drive item may be given as a `contentType` option,
-     * for example:
+     * The conflict behavior and the MIME type of the drive item may be given as
+     * options, for example:
      *
      * ```php
-     * $driveItem = $parentDriveItem->upload(
+     * $driveItem->upload(
      *     'file.txt',
-     *     'Content',
+     *     'Some content',
      *     ['contentType' => 'text/plain']
      * );
+     * // => Text file 'file.txt' created under $driveItem.
+     *
+     * $childDriveItem1 = $driveItem->upload(
+     *     'file.txt',
+     *     'Some other content',
+     *     [
+     *         'conflictBehavior' => ConflictBehavior::RENAME,
+     *         'contentType'      => 'text/plain',
+     *     ]
+     * );
+     * // => Text file 'file 1.txt' created under $driveItem.
      * ```
      *
      * @param string $name
@@ -456,6 +502,7 @@ class DriveItemProxy extends BaseItemProxy
      *        The content.
      * @param mixed[string] $options
      *        The options. Supported options:
+     *          - `'conflictBehavior'` *(string)*: the conflict behavior ;
      *          - `'contentType'` *(string)*: the MIME type of the uploaded
      *            file.
      *
@@ -469,7 +516,6 @@ class DriveItemProxy extends BaseItemProxy
      * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_put_content?view=odsp-graph-online
      *       Upload or replace the contents of a DriveItem
      *
-     * @todo Support name conflict behavior.
      * @todo Support content type in options.
      */
     public function upload($name, $content, array $options = [])
@@ -486,30 +532,56 @@ class DriveItemProxy extends BaseItemProxy
         $itemLocator  = "/items/{$this->id}";
         $endpoint     = "$driveLocator$itemLocator:/$name:/content";
 
-        $headers = $this
+        $queryParams = $this
             ->parameterDirector
-            ->buildPutContent($options);
+            ->buildPutContentQueryStringParameters($options);
+
+        if (!empty($queryParams)) {
+            $queryString = http_build_query($queryParams, '', '&', PHP_QUERY_RFC3986);
+            $endpoint    = "$endpoint?$queryString";
+        }
+
+        $headerParams = $this
+            ->parameterDirector
+            ->buildPutContentHeaderParameters($options);
 
         $body = $content instanceof Stream ?
             $content
             : Psr7\stream_for($content);
 
-        $response = $this
-            ->graph
-            ->createRequest('PUT', $endpoint)
-            ->addHeaders($headers)
-            ->attachBody($body)
-            ->execute();
+        try {
+            $response = $this
+                ->graph
+                ->createRequest('PUT', $endpoint)
+                ->addHeaders($headerParams)
+                ->attachBody($body)
+                ->execute();
 
-        $status = $response->getStatus();
+            $status = $response->getStatus();
 
-        if ($status != 200 && $status != 201) {
-            throw new \Exception("Unexpected status code produced by 'PUT $endpoint': $status");
+            if ($status != 200 && $status != 201) {
+                throw new \Exception("Unexpected status code produced by 'PUT $endpoint': $status");
+            }
+
+            $driveItem = $response->getResponseAsObject(DriveItem::class);
+
+            return new self($this->graph, $driveItem, $this->parameterDirector);
+        } catch (ClientException $exception) {
+            $status = $exception
+                ->getResponse()
+                ->getStatusCode();
+
+            if ($status == 409) {
+                $message = sprintf(
+                    'There is already a drive item named "%s" in this folder',
+                    $name
+                );
+
+                throw new ConflictException($message);
+            }
+
+            throw $exception;
         }
-
-        $driveItem = $response->getResponseAsObject(DriveItem::class);
-
-        return new self($this->graph, $driveItem, $this->parameterDirector);
     }
 
     /**
@@ -529,13 +601,24 @@ class DriveItemProxy extends BaseItemProxy
      * For example:
      *
      * ```php
-     * $uploadSession = $parentDriveItem->startUpload(
+     * $driveItem->upload(
      *     'file.txt',
      *     'Some content',
-     *     ['type' => 'text/plain']
+     *     ['contentType' => 'text/plain']
+     * );
+     * // => Text file 'file.txt' created under $driveItem.
+     *
+     * $uploadSession1 = $driveItem->startUpload(
+     *     'file.txt',
+     *     'Some other content',
+     *     [
+     *         'conflictBehavior' => ConflictBehavior::RENAME,
+     *         'type'             => 'text/plain',
+     *     ]
      * );
      *
-     * $uploadSession->complete();
+     * $childDriveItem = $uploadSession1->complete();
+     * // => Text file 'file 1.txt' created under $driveItem.
      * ```
      *
      * @param string $name
@@ -555,7 +638,6 @@ class DriveItemProxy extends BaseItemProxy
      * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_createuploadsession?view=odsp-graph-online
      *       Upload large files with an upload session
      *
-     * @todo Support name conflict behavior.
      * @todo Support content type in options.
      */
     public function startUpload($name, $content, array $options = [])
@@ -565,26 +647,48 @@ class DriveItemProxy extends BaseItemProxy
         $itemLocator  = "/items/{$this->id}";
         $endpoint     = "$driveLocator$itemLocator:/$name:/createUploadSession";
 
-        $response = $this
-            ->graph
-            ->createRequest('POST', $endpoint)
-            ->execute();
+        $bodyParams = $this
+            ->parameterDirector
+            ->buildPostCreateUploadSessionBodyParameters($options);
 
-        $status = $response->getStatus();
+        try {
+            $response = $this
+                ->graph
+                ->createRequest('POST', $endpoint)
+                ->attachBody($bodyParams)
+                ->execute();
 
-        if ($status != 200) {
-            throw new \Exception("Unexpected status code produced by 'POST $endpoint': $status");
+            $status = $response->getStatus();
+
+            if ($status != 200) {
+                throw new \Exception("Unexpected status code produced by 'POST $endpoint': $status");
+            }
+
+            $uploadSession = $response->getResponseAsObject(UploadSession::class);
+
+            return new UploadSessionProxy(
+                $this->graph,
+                $uploadSession,
+                $content,
+                $this->parameterDirector,
+                $options
+            );
+        } catch (ClientException $exception) {
+            $status = $exception
+                ->getResponse()
+                ->getStatusCode();
+
+            if ($status == 409) {
+                $message = sprintf(
+                    'There is already a drive item named "%s" in this folder',
+                    $name
+                );
+
+                throw new ConflictException($message);
+            }
+
+            throw $exception;
         }
-
-        $uploadSession = $response->getResponseAsObject(UploadSession::class);
-
-        return new UploadSessionProxy(
-            $this->graph,
-            $uploadSession,
-            $content,
-            $this->parameterDirector,
-            $options
-        );
     }
 
     /**

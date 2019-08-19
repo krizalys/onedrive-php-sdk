@@ -17,23 +17,8 @@ namespace Krizalys\Onedrive\Parameter\Definition;
 /**
  * An implementation for a query string parameter definition.
  *
- * These parameters always have their name prefixed by '$', as recommended by
- * the OneDrive documentation.
- *
  * @since 2.3.0
  */
 class QueryStringParameterDefinition extends AbstractParameterDefinition
 {
-    /**
-     * {@inheritdoc}
-     *
-     * @return string
-     *         The serialized key.
-     *
-     * @since 2.3.0
-     */
-    public function serializeKey()
-    {
-        return "\${$this->name}";
-    }
 }

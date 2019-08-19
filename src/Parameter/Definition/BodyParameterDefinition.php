@@ -15,10 +15,10 @@
 namespace Krizalys\Onedrive\Parameter\Definition;
 
 /**
- * An implementation for an HTTP header parameter definition.
+ * An implementation for a body parameter definition.
  *
- * @since 2.3.0
+ * @since 2.4.0
  */
-class HeaderParameterDefinition extends AbstractParameterDefinition
+class BodyParameterDefinition extends AbstractParameterDefinition
 {
 }

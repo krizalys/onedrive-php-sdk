@@ -12,13 +12,15 @@
  * @link      https://github.com/krizalys/onedrive-php-sdk
  */
 
-namespace Krizalys\Onedrive\Parameter\Definition;
+namespace Krizalys\Onedrive\Exception;
 
 /**
- * An implementation for an HTTP header parameter definition.
+ * A conflict exception.
  *
- * @since 2.3.0
+ * @since 2.4.0
+ *
+ * @api
  */
-class HeaderParameterDefinition extends AbstractParameterDefinition
+class ConflictException extends \Exception
 {
 }

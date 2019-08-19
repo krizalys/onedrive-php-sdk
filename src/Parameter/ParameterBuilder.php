@@ -83,26 +83,22 @@ class ParameterBuilder implements ParameterBuilderInterface
     /**
      * {@inheritDoc}
      *
-     * @return string[string]
+     * @return mixed[string]
      *         The parameters.
      *
      * @since 2.3.0
      */
     public function build()
     {
+        $opts = [];
         $defs = array_intersect_key($this->parameterDefinitions, $this->options);
-        $keys = array_keys($defs);
 
-        $values = array_map(function ($key) use ($defs) {
+        foreach ($defs as $key => $def) {
             $value = $this->options[$key];
+            $value = $def->serializeValue($value);
+            $opts  = $def->injectValue($opts, $value);
+        }
 
-            return $defs[$key]->serializeValue($value);
-        }, $keys);
-
-        $keys = array_map(function ($key) use ($defs) {
-            return $defs[$key]->serializeKey();
-        }, $keys);
-
-        return array_combine($keys, $values);
+        return $opts;
     }
 }

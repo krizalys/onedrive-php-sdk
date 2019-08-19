@@ -18,35 +18,41 @@ namespace Krizalys\Onedrive;
  * The behavior to apply when an uploaded file name conflict with an existing
  * one.
  *
- * @since 1.1.0
+ * @since 2.4.0
  *
- * @deprecated 2.4.0 Superseded by \Krizalys\Onedrive\ConflictBehavior.
+ * @api
  */
-class NameConflictBehavior
+class ConflictBehavior
 {
     /**
-     * @var int
+     * @var string
      *      Fail behavior: fail the operation if the drive item exists.
      *
-     * @since 1.1.0
+     * @since 2.4.0
+     *
+     * @api
      */
-    const FAIL = 1;
+    const FAIL = 'fail';
 
     /**
-     * @var int
+     * @var string
      *      Rename behavior: rename the drive item if it already exists. The
      *      drive item is renamed as "<original name> 1", incrementing the
      *      trailing number until an available file name is discovered.
      *
-     * @since 1.1.0
+     * @since 2.4.0
+     *
+     * @api
      */
-    const RENAME = 2;
+    const RENAME = 'rename';
 
     /**
-     * @var int
+     * @var string
      *      Replace behavior: replace the drive item if it already exists.
      *
-     * @since 1.1.0
+     * @since 2.4.0
+     *
+     * @api
      */
-    const REPLACE = 3;
+    const REPLACE = 'replace';
 }

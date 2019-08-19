@@ -2,6 +2,7 @@
 
 namespace Test\Unit\Krizalys\Onedrive\Parameter\Definition;
 
+use Krizalys\Onedrive\Parameter\Injector\InjectorInterface;
 use Krizalys\Onedrive\Serializer\SerializerInterface;
 use Krizalys\Onedrive\Parameter\Definition\AbstractParameterDefinition;
 
@@ -9,25 +10,41 @@ class AbstractParameterDefinitionTest extends \PHPUnit_Framework_TestCase
 {
     public function testSerializeValueShouldInteractWithItsSerializerAsExpected()
     {
+        $injector = $this->createMock(InjectorInterface::class);
+
         $serializer = $this->createMock(SerializerInterface::class);
 
         $serializer
             ->expects($this->once())
             ->method('serialize')
             ->with('Value')
-            ->willReturn('serialized_value');
+            ->willReturn('Serialized value');
 
-        $sut = new TestAbstractParameterDefinition('name', $serializer);
+        $sut = new TestAbstractParameterDefinition($injector, $serializer);
 
         $actual = $sut->serializeValue('Value');
-        $this->assertSame('serialized_value', $actual);
+        $this->assertSame('Serialized value', $actual);
+    }
+
+    public function testInjectValueShouldInteractWithItsInjectorAsExpected()
+    {
+        $injector = $this->createMock(InjectorInterface::class);
+
+        $injector
+            ->expects($this->once())
+            ->method('inject')
+            ->with(['key' => 'value'], 'Value')
+            ->willReturn(['injected_key' => 'Injected value']);
+
+        $serializer = $this->createMock(SerializerInterface::class);
+
+        $sut = new TestAbstractParameterDefinition($injector, $serializer);
+
+        $actual = $sut->injectValue(['key' => 'value'], 'Value');
+        $this->assertSame(['injected_key' => 'Injected value'], $actual);
     }
 }
 
 class TestAbstractParameterDefinition extends AbstractParameterDefinition
 {
-    public function serializeKey()
-    {
-        return '';
-    }
 }

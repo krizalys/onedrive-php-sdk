@@ -484,6 +484,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
         $graph = $this->mockGraph($response);
 
         $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+        $parameterDirector->method('buildPostChildrenBodyParameters')->willReturn([]);
 
         $sut    = new DriveItemProxy($graph, $item, $parameterDirector);
         $actual = $sut->createFolder('Irrelevant', []);
@@ -546,6 +547,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
         $graph = $this->mockGraph($response);
 
         $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+        $parameterDirector->method('buildPostChildrenBodyParameters')->willReturn([]);
 
         $sut    = new DriveItemProxy($graph, $item, $parameterDirector);
         $actual = $sut->startUpload('Irrelevant', 'Test content', []);

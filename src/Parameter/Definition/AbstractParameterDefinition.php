@@ -14,6 +14,7 @@
 
 namespace Krizalys\Onedrive\Parameter\Definition;
 
+use Krizalys\Onedrive\Parameter\Injector\InjectorInterface;
 use Krizalys\Onedrive\Serializer\SerializerInterface;
 
 /**
@@ -24,10 +25,10 @@ use Krizalys\Onedrive\Serializer\SerializerInterface;
 abstract class AbstractParameterDefinition implements ParameterDefinitionInterface
 {
     /**
-     * @var string
-     *      The name.
+     * @var InjectorInterface
+     *      The injector.
      */
-    protected $name;
+    private $injector;
 
     /**
      * @var SerializerInterface
@@ -38,28 +39,20 @@ abstract class AbstractParameterDefinition implements ParameterDefinitionInterfa
     /**
      * Constructor.
      *
-     * @param string $name
-     *        The name.
+     * @param InjectorInterface $injector
+     *        The injector.
      * @param SerializerInterface $serializer
      *        The serializer.
      *
      * @since 2.3.0
      */
-    public function __construct($name, SerializerInterface $serializer)
-    {
-        $this->name       = $name;
+    public function __construct(
+        InjectorInterface $injector,
+        SerializerInterface $serializer
+    ) {
+        $this->injector   = $injector;
         $this->serializer = $serializer;
     }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return string
-     *         The serialized key.
-     *
-     * @since 2.3.0
-     */
-    abstract public function serializeKey();
 
     /**
      * {@inheritDoc}
@@ -75,5 +68,23 @@ abstract class AbstractParameterDefinition implements ParameterDefinitionInterfa
     public function serializeValue($value)
     {
         return $this->serializer->serialize($value);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param mixed[string] $values
+     *        The array of values.
+     * @param mixed $value
+     *        The value to inject.
+     *
+     * @return mixed[string]
+     *         The resulting array of values.
+     *
+     * @since 2.4.0
+     */
+    public function injectValue(array $values, $value)
+    {
+        return $this->injector->inject($values, $value);
     }
 }

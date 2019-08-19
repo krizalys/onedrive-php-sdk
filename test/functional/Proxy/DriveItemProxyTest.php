@@ -2,6 +2,7 @@
 
 namespace Test\Functional\Krizalys\Onedrive\Proxy;
 
+use Krizalys\Onedrive\ConflictBehavior;
 use Krizalys\Onedrive\Proxy\DriveItemProxy;
 use Test\Functional\Krizalys\Onedrive\AssertionsTrait;
 use Test\Functional\Krizalys\Onedrive\AsynchronousTrait;
@@ -56,14 +57,70 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
         });
     }
 
-    public function testCreateFolderWhenExisting()
+    /**
+     * @expectedException \Krizalys\Onedrive\Exception\ConflictException
+     *
+     * @expectedExceptionMessage There is already a drive item named "Test
+     *                           folder" in this folder
+     */
+    public function testCreateFolderWhenExistingAndFailConflictBehavior()
     {
         self::withOnedriveSandbox(self::$driveItem, __CLASS__ . '_' . __FUNCTION__, function (DriveItemProxy $sandbox) {
             $sandbox->createFolder('Test folder');
 
             $driveItem = $sandbox->createFolder(
                 'Test folder',
-                ['description' => 'Test description']
+                ['conflictBehavior' => ConflictBehavior::FAIL]
+            );
+        });
+    }
+
+    public function testCreateFolderWhenExistingAndRenameConflictBehavior()
+    {
+        self::withOnedriveSandbox(self::$driveItem, __CLASS__ . '_' . __FUNCTION__, function (DriveItemProxy $sandbox) {
+            $sandbox->createFolder('Test folder');
+
+            $driveItem = $sandbox->createFolder(
+                'Test folder',
+                [
+                    'conflictBehavior' => ConflictBehavior::RENAME,
+                    'description'      => 'Test description',
+                ]
+            );
+
+            $this->assertDriveItemProxy($driveItem);
+            $this->assertNotNull($driveItem->parentReference);
+            $this->assertEquals($sandbox->id, $driveItem->parentReference->id);
+            $this->assertEquals('Test folder 1', $driveItem->name);
+            $this->assertEquals('Test description', $driveItem->description);
+
+            $driveItem = $sandbox->createFolder(
+                'Test folder',
+                [
+                    'conflictBehavior' => ConflictBehavior::RENAME,
+                    'description'      => 'Test description',
+                ]
+            );
+
+            $this->assertDriveItemProxy($driveItem);
+            $this->assertNotNull($driveItem->parentReference);
+            $this->assertEquals($sandbox->id, $driveItem->parentReference->id);
+            $this->assertEquals('Test folder 2', $driveItem->name);
+            $this->assertEquals('Test description', $driveItem->description);
+        });
+    }
+
+    public function testCreateFolderWhenExistingAndReplaceConflictBehavior()
+    {
+        self::withOnedriveSandbox(self::$driveItem, __CLASS__ . '_' . __FUNCTION__, function (DriveItemProxy $sandbox) {
+            $sandbox->createFolder('Test folder');
+
+            $driveItem = $sandbox->createFolder(
+                'Test folder',
+                [
+                    'conflictBehavior' => ConflictBehavior::REPLACE,
+                    'description'      => 'Test description',
+                ]
             );
 
             $this->assertDriveItemProxy($driveItem);
@@ -149,7 +206,13 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
         });
     }
 
-    public function testUploadStringWhenExisting()
+    /**
+     * @expectedException \Krizalys\Onedrive\Exception\ConflictException
+     *
+     * @expectedExceptionMessage There is already a drive item named "Test
+     *                           folder" in this folder
+     */
+    public function testUploadStringWhenExistingAndFailConflictBehavior()
     {
         self::withOnedriveSandbox(self::$driveItem, __CLASS__ . '_'  . __FUNCTION__, function (DriveItemProxy $sandbox) {
             $sandbox->upload(
@@ -161,7 +224,53 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
             $driveItem = $sandbox->upload(
                 'Test file',
                 'Test content',
+                ['conflictBehavior' => ConflictBehavior::FAIL]
+            );
+        });
+    }
+
+    public function testUploadStringWhenExistingAndRenameConflictBehavior()
+    {
+        self::withOnedriveSandbox(self::$driveItem, __CLASS__ . '_'  . __FUNCTION__, function (DriveItemProxy $sandbox) {
+            $sandbox->upload(
+                'Test file',
+                'Test content',
                 ['contentType' => 'text/plain']
+            );
+
+            $driveItem = $sandbox->upload(
+                'Test file',
+                'Test content',
+                [
+                    'conflictBehavior' => ConflictBehavior::RENAME,
+                    'contentType'      => 'text/plain',
+                ]
+            );
+
+            $this->assertDriveItemProxy($driveItem);
+            $this->assertNotNull($driveItem->parentReference);
+            $this->assertEquals($sandbox->id, $driveItem->parentReference->id);
+            $this->assertEquals('Test file 1', $driveItem->name);
+            $this->assertEquals('Test content', $driveItem->content);
+        });
+    }
+
+    public function testUploadStringWhenExistingAndReplaceConflictBehavior()
+    {
+        self::withOnedriveSandbox(self::$driveItem, __CLASS__ . '_'  . __FUNCTION__, function (DriveItemProxy $sandbox) {
+            $sandbox->upload(
+                'Test file',
+                'Test content',
+                ['contentType' => 'text/plain']
+            );
+
+            $driveItem = $sandbox->upload(
+                'Test file',
+                'Test content',
+                [
+                    'conflictBehavior' => ConflictBehavior::REPLACE,
+                    'contentType'      => 'text/plain',
+                ]
             );
 
             $this->assertDriveItemProxy($driveItem);
@@ -196,7 +305,13 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
         });
     }
 
-    public function testUploadStreamWhenExisting()
+    /**
+     * @expectedException \Krizalys\Onedrive\Exception\ConflictException
+     *
+     * @expectedExceptionMessage There is already a drive item named "Test
+     *                           folder" in this folder
+     */
+    public function testUploadStreamWhenExistingAndFailConflictBehavior()
     {
         self::withOnedriveSandbox(self::$driveItem, __CLASS__ . '_'  . __FUNCTION__, function (DriveItemProxy $sandbox) {
             $sandbox->upload(
@@ -212,7 +327,67 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
             $driveItem = $sandbox->upload(
                 'Test file',
                 $content,
+                ['conflictBehavior' => ConflictBehavior::FAIL]
+            );
+
+            // No need to fclose $content; it is done internally by Guzzle when
+            // instantiating a Guzzle stream from it.
+        });
+    }
+
+    public function testUploadStreamWhenExistingAndRenameConflictBehavior()
+    {
+        self::withOnedriveSandbox(self::$driveItem, __CLASS__ . '_'  . __FUNCTION__, function (DriveItemProxy $sandbox) {
+            $sandbox->upload(
+                'test-file.txt',
+                'Test content',
                 ['contentType' => 'text/plain']
+            );
+
+            $content = fopen('php://memory', 'rb+');
+            fwrite($content, 'Test content');
+            rewind($content);
+
+            $driveItem = $sandbox->upload(
+                'test-file.txt',
+                $content,
+                [
+                    'conflictBehavior' => ConflictBehavior::RENAME,
+                    'contentType'      => 'text/plain',
+                ]
+            );
+
+            $this->assertDriveItemProxy($driveItem);
+            $this->assertNotNull($driveItem->parentReference);
+            $this->assertEquals($sandbox->id, $driveItem->parentReference->id);
+            $this->assertEquals('test-file 1.txt', $driveItem->name);
+            $this->assertEquals('Test content', $driveItem->content);
+
+            // No need to fclose $content; it is done internally by Guzzle when
+            // instantiating a Guzzle stream from it.
+        });
+    }
+
+    public function testUploadStreamWhenExistingAndReplaceConflictBehavior()
+    {
+        self::withOnedriveSandbox(self::$driveItem, __CLASS__ . '_'  . __FUNCTION__, function (DriveItemProxy $sandbox) {
+            $sandbox->upload(
+                'Test file',
+                'Test content',
+                ['contentType' => 'text/plain']
+            );
+
+            $content = fopen('php://memory', 'rb+');
+            fwrite($content, 'Test content');
+            rewind($content);
+
+            $driveItem = $sandbox->upload(
+                'Test file',
+                $content,
+                [
+                    'conflictBehavior' => ConflictBehavior::REPLACE,
+                    'contentType'      => 'text/plain',
+                ]
             );
 
             $this->assertDriveItemProxy($driveItem);
@@ -247,7 +422,35 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
         });
     }
 
-    public function testStartUploadStringWhenExisting()
+    /**
+     * @expectedException \Krizalys\Onedrive\Exception\ConflictException
+     *
+     * @expectedExceptionMessage There is already a drive item named "Test
+     *                           folder" in this folder
+     */
+    public function testStartUploadStringWhenExistingAndFailConflictBehavior()
+    {
+        self::withOnedriveSandbox(self::$driveItem, __CLASS__ . '_'  . __FUNCTION__, function (DriveItemProxy $sandbox) {
+            $sandbox->upload(
+                'Test file',
+                'Test content',
+                ['contentType' => 'text/plain']
+            );
+
+            $string = str_repeat("Test content\n", 100000);
+
+            $sandbox->startUpload(
+                'Test file',
+                $string,
+                [
+                    'conflictBehavior' => ConflictBehavior::FAIL,
+                    'contentType'      => 'text/plain',
+                ]
+            );
+        });
+    }
+
+    public function testStartUploadStringWhenExistingAndRenameConflictBehavior()
     {
         self::withOnedriveSandbox(self::$driveItem, __CLASS__ . '_'  . __FUNCTION__, function (DriveItemProxy $sandbox) {
             $sandbox->upload(
@@ -261,7 +464,40 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
             $uploadSession = $sandbox->startUpload(
                 'Test file',
                 $string,
+                [
+                    'conflictBehavior' => ConflictBehavior::RENAME,
+                    'contentType'      => 'text/plain',
+                ]
+            );
+
+            $this->assertUploadSessionProxy($uploadSession);
+            $driveItem = $uploadSession->complete();
+            $this->assertDriveItemProxy($driveItem);
+            $this->assertNotNull($driveItem->parentReference);
+            $this->assertEquals($sandbox->id, $driveItem->parentReference->id);
+            $this->assertEquals('Test file 1', $driveItem->name);
+            $this->assertEquals($string, $driveItem->content);
+        });
+    }
+
+    public function testStartUploadStringWhenExistingAndReplaceConflictBehavior()
+    {
+        self::withOnedriveSandbox(self::$driveItem, __CLASS__ . '_'  . __FUNCTION__, function (DriveItemProxy $sandbox) {
+            $sandbox->upload(
+                'Test file',
+                'Test content',
                 ['contentType' => 'text/plain']
+            );
+
+            $string = str_repeat("Test content\n", 100000);
+
+            $uploadSession = $sandbox->startUpload(
+                'Test file',
+                $string,
+                [
+                    'conflictBehavior' => ConflictBehavior::REPLACE,
+                    'contentType'      => 'text/plain',
+                ]
             );
 
             $this->assertUploadSessionProxy($uploadSession);
@@ -301,7 +537,41 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
         });
     }
 
-    public function testStartUploadStreamWhenExisting()
+    /**
+     * @expectedException \Krizalys\Onedrive\Exception\ConflictException
+     *
+     * @expectedExceptionMessage There is already a drive item named "Test
+     *                           folder" in this folder
+     */
+    public function testStartUploadStreamWhenExistingAndFailConflictBehavior()
+    {
+        self::withOnedriveSandbox(self::$driveItem, __CLASS__ . '_'  . __FUNCTION__, function (DriveItemProxy $sandbox) {
+            $sandbox->upload(
+                'Test file',
+                'Test content',
+                ['contentType' => 'text/plain']
+            );
+
+            $content = str_repeat("Test content\n", 100000);
+            $stream  = fopen('php://memory', 'rb+');
+            fwrite($stream, $content);
+            rewind($stream);
+
+            $sandbox->startUpload(
+                'Test file',
+                $stream,
+                [
+                    'conflictBehavior' => ConflictBehavior::FAIL,
+                    'contentType'      => 'text/plain',
+                ]
+            );
+
+            // No need to fclose $stream; it is done internally by Guzzle when
+            // instantiating a Guzzle stream from it.
+        });
+    }
+
+    public function testStartUploadStreamWhenExistingAndRenameConflictBehavior()
     {
         self::withOnedriveSandbox(self::$driveItem, __CLASS__ . '_'  . __FUNCTION__, function (DriveItemProxy $sandbox) {
             $sandbox->upload(
@@ -318,7 +588,46 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
             $uploadSession = $sandbox->startUpload(
                 'Test file',
                 $stream,
+                [
+                    'conflictBehavior' => ConflictBehavior::RENAME,
+                    'contentType'      => 'text/plain',
+                ]
+            );
+
+            $this->assertUploadSessionProxy($uploadSession);
+            $driveItem = $uploadSession->complete();
+            $this->assertDriveItemProxy($driveItem);
+            $this->assertNotNull($driveItem->parentReference);
+            $this->assertEquals($sandbox->id, $driveItem->parentReference->id);
+            $this->assertEquals('Test file 1', $driveItem->name);
+            $this->assertEquals($content, $driveItem->content);
+
+            // No need to fclose $stream; it is done internally by Guzzle when
+            // instantiating a Guzzle stream from it.
+        });
+    }
+
+    public function testStartUploadStreamWhenExistingAndReplaceConflictBehavior()
+    {
+        self::withOnedriveSandbox(self::$driveItem, __CLASS__ . '_'  . __FUNCTION__, function (DriveItemProxy $sandbox) {
+            $sandbox->upload(
+                'Test file',
+                'Test content',
                 ['contentType' => 'text/plain']
+            );
+
+            $content = str_repeat("Test content\n", 100000);
+            $stream  = fopen('php://memory', 'rb+');
+            fwrite($stream, $content);
+            rewind($stream);
+
+            $uploadSession = $sandbox->startUpload(
+                'Test file',
+                $stream,
+                [
+                    'conflictBehavior' => ConflictBehavior::REPLACE,
+                    'contentType'      => 'text/plain',
+                ]
             );
 
             $this->assertUploadSessionProxy($uploadSession);

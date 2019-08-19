@@ -8,6 +8,7 @@ Change log
 
 - Support for creating sharing links to drive items: see
   `Krizalys\Onedrive\Proxy\DriveItemProxy::createLink()`
+- Support for conflict behavior.
 
 ### Changed
 

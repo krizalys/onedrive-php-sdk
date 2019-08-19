@@ -12,30 +12,36 @@
  * @link      https://github.com/krizalys/onedrive-php-sdk
  */
 
-namespace Krizalys\Onedrive\Parameter\Definition;
+namespace Krizalys\Onedrive\Parameter\Injector;
 
 /**
- * An interface defining the contract for a parameter definition.
+ * A class supporting flat parameter injection.
  *
- * @since 2.3.0
+ * @since 2.4.0
  */
-interface ParameterDefinitionInterface
+class FlatInjector implements InjectorInterface
 {
     /**
-     * Serializes a given value into a string using this instance.
-     *
-     * @param mixed $value
-     *        The value to serialize.
-     *
-     * @return string
-     *         The serialized value.
-     *
-     * @since 2.3.0
+     * @var string
+     *      The name.
      */
-    public function serializeValue($value);
+    private $name;
 
     /**
-     * Injects a given value into a given array of values.
+     * Constructor.
+     *
+     * @param string $name
+     *        The name.
+     *
+     * @since 2.4.0
+     */
+    public function __construct($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * {@inheritDoc}
      *
      * @param mixed[string] $values
      *        The array of values.
@@ -47,5 +53,10 @@ interface ParameterDefinitionInterface
      *
      * @since 2.4.0
      */
-    public function injectValue(array $values, $value);
+    public function inject(array $values, $value)
+    {
+        return $values + [
+            $this->name => $value,
+        ];
+    }
 }
