@@ -1,10 +1,10 @@
 <?php
 
-namespace Test\Unit\Krizalys\Onedrive\Parameter\Definition;
+namespace Test\Unit\Krizalys\Onedrive\Definition\Parameter;
 
+use Krizalys\Onedrive\Definition\Parameter\AbstractParameterDefinition;
 use Krizalys\Onedrive\Parameter\Injector\InjectorInterface;
 use Krizalys\Onedrive\Serializer\SerializerInterface;
-use Krizalys\Onedrive\Parameter\Definition\AbstractParameterDefinition;
 use PHPUnit\Framework\TestCase;
 
 class AbstractParameterDefinitionTest extends TestCase

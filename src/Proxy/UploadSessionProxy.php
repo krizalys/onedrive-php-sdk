@@ -17,7 +17,7 @@ namespace Krizalys\Onedrive\Proxy;
 use GuzzleHttp\Psr7;
 use GuzzleHttp\Psr7\LimitStream;
 use GuzzleHttp\Psr7\Stream;
-use Krizalys\Onedrive\Parameter\DriveItemParameterDirectorInterface;
+use Krizalys\Onedrive\Definition\ResourceDefinitionInterface;
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model\DriveItem;
 use Microsoft\Graph\Model\UploadSession;
@@ -65,10 +65,10 @@ class UploadSessionProxy extends EntityProxy
     private $content;
 
     /**
-     * @var DriveItemParameterDirectorInterface
-     *      The drive item parameter director.
+     * @var \Krizalys\Onedrive\Definition\ResourceDefinitionInterface
+     *      The drive item resource definition.
      */
-    private $driveItemParameterDirector;
+    private $driveItemResourceDefinition;
 
     /**
      * @var int
@@ -91,8 +91,8 @@ class UploadSessionProxy extends EntityProxy
      *        The upload session.
      * @param string|resource|\GuzzleHttp\Psr7\Stream $content
      *        The content.
-     * @param DriveItemParameterDirectorInterface $driveItemParameterDirector
-     *        The drive item parameter director.
+     * @param \Krizalys\Onedrive\Definition\ResourceDefinitionInterface $driveItemResourceDefinition
+     *        The drive item resource definition.
      * @param mixed[string] $options
      *        The options. Supported options:
      *          - `'type'` *(string)*: the MIME type of the uploaded file ;
@@ -104,12 +104,12 @@ class UploadSessionProxy extends EntityProxy
         Graph $graph,
         UploadSession $uploadSession,
         $content,
-        DriveItemParameterDirectorInterface $driveItemParameterDirector,
+        ResourceDefinitionInterface $driveItemResourceDefinition,
         array $options = []
     ) {
         parent::__construct($graph, $uploadSession);
-        $this->content                    = $content;
-        $this->driveItemParameterDirector = $driveItemParameterDirector;
+        $this->content                     = $content;
+        $this->driveItemResourceDefinition = $driveItemResourceDefinition;
 
         $this->type = array_key_exists('type', $options) ?
             $options['type']
@@ -215,7 +215,7 @@ class UploadSessionProxy extends EntityProxy
                 return new DriveItemProxy(
                     $this->graph,
                     $driveItem,
-                    $this->driveItemParameterDirector
+                    $this->driveItemResourceDefinition
                 );
             }
 

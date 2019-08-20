@@ -17,8 +17,8 @@ namespace Krizalys\Onedrive\Proxy;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7;
 use GuzzleHttp\Psr7\Stream;
+use Krizalys\Onedrive\Definition\ResourceDefinitionInterface;
 use Krizalys\Onedrive\Exception\ConflictException;
-use Krizalys\Onedrive\Parameter\DriveItemParameterDirectorInterface;
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model\DriveItem;
 use Microsoft\Graph\Model\DriveItemVersion;
@@ -93,10 +93,10 @@ use Microsoft\Graph\Model\UploadSession;
 class DriveItemProxy extends BaseItemProxy
 {
     /**
-     * @var DriveItemParameterDirectorInterface
-     *      The drive item parameter director.
+     * @var \Krizalys\Onedrive\Definition\ResourceDefinitionInterface
+     *      The resource definition.
      */
-    private $parameterDirector;
+    private $resourceDefinition;
 
     /**
      * Constructor.
@@ -105,18 +105,18 @@ class DriveItemProxy extends BaseItemProxy
      *        The Microsoft Graph.
      * @param DriveItem $driveItem
      *        The drive item.
-     * @param DriveItemParameterDirectorInterface $parameterDirector
-     *        The drive item parameter director.
+     * @param \Krizalys\Onedrive\Definition\ResourceDefinitionInterface $resourceDefinition
+     *        The resource definition.
      *
      * @since 2.0.0
      */
     public function __construct(
         Graph $graph,
         DriveItem $driveItem,
-        DriveItemParameterDirectorInterface $parameterDirector
+        ResourceDefinitionInterface $resourceDefinition
     ) {
         parent::__construct($graph, $driveItem);
-        $this->parameterDirector = $parameterDirector;
+        $this->resourceDefinition = $resourceDefinition;
     }
 
     /**
@@ -291,13 +291,17 @@ class DriveItemProxy extends BaseItemProxy
      */
     public function createFolder($name, array $options = [])
     {
+        $opDef = $this->resourceDefinition
+            ->getResourceDefinition('children')
+            ->getOperationDefinition('post');
+
         $driveLocator = "/drives/{$this->parentReference->driveId}";
         $itemLocator  = "/items/{$this->id}";
         $endpoint     = "$driveLocator$itemLocator/children";
 
-        $bodyParams = $this
-            ->parameterDirector
-            ->buildPostChildrenBodyParameters($options);
+        $bodyParams = $opDef
+            ->getBodyParameterDefinitions()
+            ->buildOptions($options);
 
         $body = array_replace_recursive([
             'folder' => [
@@ -321,7 +325,11 @@ class DriveItemProxy extends BaseItemProxy
 
             $driveItem = $response->getResponseAsObject(DriveItem::class);
 
-            return new self($this->graph, $driveItem, $this->parameterDirector);
+            return new self(
+                $this->graph,
+                $driveItem,
+                $this->resourceDefinition
+            );
         } catch (ClientException $exception) {
             $status = $exception
                 ->getResponse()
@@ -405,13 +413,17 @@ class DriveItemProxy extends BaseItemProxy
      */
     public function getChildren(array $options = [])
     {
+        $opDef = $this->resourceDefinition
+            ->getResourceDefinition('children')
+            ->getOperationDefinition('get');
+
         $driveLocator = "/drives/{$this->parentReference->driveId}";
         $itemLocator  = "/items/{$this->id}";
         $endpoint     = "$driveLocator$itemLocator/children";
 
-        $queryParams = $this
-            ->parameterDirector
-            ->buildGetChildren($options);
+        $queryParams = $opDef
+            ->getQueryStringParameterDefinitions()
+            ->buildOptions($options);
 
         if (!empty($queryParams)) {
             $queryString = http_build_query($queryParams, '', '&', PHP_QUERY_RFC3986);
@@ -436,7 +448,11 @@ class DriveItemProxy extends BaseItemProxy
         }
 
         return array_map(function (DriveItem $driveItem) {
-            return new self($this->graph, $driveItem, $this->parameterDirector);
+            return new self(
+                $this->graph,
+                $driveItem,
+                $this->resourceDefinition
+            );
         }, $driveItems);
     }
 
@@ -527,23 +543,27 @@ class DriveItemProxy extends BaseItemProxy
             @trigger_error($message, E_USER_DEPRECATED);
         }
 
+        $opDef = $this->resourceDefinition
+            ->getResourceDefinition('content')
+            ->getOperationDefinition('put');
+
         $name         = rawurlencode($name);
         $driveLocator = "/drives/{$this->parentReference->driveId}";
         $itemLocator  = "/items/{$this->id}";
         $endpoint     = "$driveLocator$itemLocator:/$name:/content";
 
-        $queryParams = $this
-            ->parameterDirector
-            ->buildPutContentQueryStringParameters($options);
+        $headerParams = $opDef
+            ->getHeaderParameterDefinitions()
+            ->buildOptions($options);
+
+        $queryParams = $opDef
+            ->getQueryStringParameterDefinitions()
+            ->buildOptions($options);
 
         if (!empty($queryParams)) {
             $queryString = http_build_query($queryParams, '', '&', PHP_QUERY_RFC3986);
             $endpoint    = "$endpoint?$queryString";
         }
-
-        $headerParams = $this
-            ->parameterDirector
-            ->buildPutContentHeaderParameters($options);
 
         $body = $content instanceof Stream ?
             $content
@@ -565,7 +585,11 @@ class DriveItemProxy extends BaseItemProxy
 
             $driveItem = $response->getResponseAsObject(DriveItem::class);
 
-            return new self($this->graph, $driveItem, $this->parameterDirector);
+            return new self(
+                $this->graph,
+                $driveItem,
+                $this->resourceDefinition
+            );
         } catch (ClientException $exception) {
             $status = $exception
                 ->getResponse()
@@ -642,14 +666,18 @@ class DriveItemProxy extends BaseItemProxy
      */
     public function startUpload($name, $content, array $options = [])
     {
+        $opDef = $this->resourceDefinition
+            ->getResourceDefinition('createUploadSession')
+            ->getOperationDefinition('post');
+
         $name         = rawurlencode($name);
         $driveLocator = "/drives/{$this->parentReference->driveId}";
         $itemLocator  = "/items/{$this->id}";
         $endpoint     = "$driveLocator$itemLocator:/$name:/createUploadSession";
 
-        $bodyParams = $this
-            ->parameterDirector
-            ->buildPostCreateUploadSessionBodyParameters($options);
+        $bodyParams = $opDef
+            ->getBodyParameterDefinitions()
+            ->buildOptions($options);
 
         try {
             $response = $this
@@ -670,7 +698,7 @@ class DriveItemProxy extends BaseItemProxy
                 $this->graph,
                 $uploadSession,
                 $content,
-                $this->parameterDirector,
+                $this->resourceDefinition,
                 $options
             );
         } catch (ClientException $exception) {
@@ -773,7 +801,11 @@ class DriveItemProxy extends BaseItemProxy
 
         $driveItem = $response->getResponseAsObject(DriveItem::class);
 
-        return new self($this->graph, $driveItem, $this->parameterDirector);
+        return new self(
+            $this->graph,
+            $driveItem,
+            $this->resourceDefinition
+        );
     }
 
     /**
@@ -833,7 +865,11 @@ class DriveItemProxy extends BaseItemProxy
 
         $driveItem = $response->getResponseAsObject(DriveItem::class);
 
-        return new self($this->graph, $driveItem, $this->parameterDirector);
+        return new self(
+            $this->graph,
+            $driveItem,
+            $this->resourceDefinition
+        );
     }
 
     /**

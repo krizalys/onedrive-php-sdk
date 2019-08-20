@@ -12,13 +12,25 @@
  * @link      https://github.com/krizalys/onedrive-php-sdk
  */
 
-namespace Krizalys\Onedrive\Parameter\Definition;
+namespace Krizalys\Onedrive\Parameter;
 
 /**
- * An implementation for a body parameter definition.
+ * An interface defining the contract for a parameter definition collection.
  *
- * @since 2.4.0
+ * @since 2.5.0
  */
-class BodyParameterDefinition extends AbstractParameterDefinition
+interface ParameterDefinitionCollectionInterface
 {
+    /**
+     * Builds options.
+     *
+     * @param mixed[string] $options
+     *        The options.
+     *
+     * @return mixed[string]
+     *         The options.
+     *
+     * @since 2.5.0
+     */
+    public function buildOptions(array $options);
 }

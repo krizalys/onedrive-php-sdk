@@ -3,7 +3,7 @@
 namespace Test\Unit\Krizalys\Onedrive\Proxy;
 
 use Krizalys\Onedrive\Constant\DriveType;
-use Krizalys\Onedrive\Parameter\DriveItemParameterDirectorInterface;
+use Krizalys\Onedrive\Definition\ResourceDefinitionInterface;
 use Krizalys\Onedrive\Proxy\DriveItemProxy;
 use Krizalys\Onedrive\Proxy\DriveProxy;
 use Krizalys\Onedrive\Proxy\GraphListProxy;
@@ -35,9 +35,9 @@ class DriveProxyTest extends TestCase
         $drive = $this->createMock(Drive::class);
         $drive->method('getDriveType')->willReturn(DriveType::PERSONAL);
 
-        $driveItemParameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+        $driveItemResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
-        $sut = new DriveProxy($graph, $drive, $driveItemParameterDirector);
+        $sut = new DriveProxy($graph, $drive, $driveItemResourceDefinition);
         $this->assertInternalType('string', $sut->driveType);
         $this->assertSame(DriveType::PERSONAL, $sut->driveType);
     }
@@ -55,9 +55,9 @@ class DriveProxyTest extends TestCase
         $drive = $this->createMock(Drive::class);
         $drive->method('getOwner')->willReturn($identitySet);
 
-        $driveItemParameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+        $driveItemResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
-        $sut = new DriveProxy($graph, $drive, $driveItemParameterDirector);
+        $sut = new DriveProxy($graph, $drive, $driveItemResourceDefinition);
         $this->assertInstanceOf(IdentitySetProxy::class, $sut->owner);
         $this->assertSame('Display Name', $sut->owner->user->displayName);
     }
@@ -72,9 +72,9 @@ class DriveProxyTest extends TestCase
         $drive = $this->createMock(Drive::class);
         $drive->method('getQuota')->willReturn($quota);
 
-        $driveItemParameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+        $driveItemResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
-        $sut = new DriveProxy($graph, $drive, $driveItemParameterDirector);
+        $sut = new DriveProxy($graph, $drive, $driveItemResourceDefinition);
         $this->assertInstanceOf(QuotaProxy::class, $sut->quota);
         $this->assertSame(1234, $sut->quota->total);
     }
@@ -88,9 +88,9 @@ class DriveProxyTest extends TestCase
         $drive = $this->createMock(Drive::class);
         $drive->method('getSharePointIds')->willReturn($sharepointIds);
 
-        $driveItemParameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+        $driveItemResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
-        $sut = new DriveProxy($graph, $drive, $driveItemParameterDirector);
+        $sut = new DriveProxy($graph, $drive, $driveItemResourceDefinition);
         $this->assertInstanceOf(SharepointIdsProxy::class, $sut->sharePointIds);
     }
 
@@ -103,9 +103,9 @@ class DriveProxyTest extends TestCase
         $drive = $this->createMock(Drive::class);
         $drive->method('getSystem')->willReturn($systemFacet);
 
-        $driveItemParameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+        $driveItemResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
-        $sut = new DriveProxy($graph, $drive, $driveItemParameterDirector);
+        $sut = new DriveProxy($graph, $drive, $driveItemResourceDefinition);
         $this->assertInstanceOf(SystemFacetProxy::class, $sut->system);
     }
 
@@ -121,9 +121,9 @@ class DriveProxyTest extends TestCase
         $drive = $this->createMock(Drive::class);
         $drive->method('getItems')->willReturn($items);
 
-        $driveItemParameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+        $driveItemResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
-        $sut    = new DriveProxy($graph, $drive, $driveItemParameterDirector);
+        $sut    = new DriveProxy($graph, $drive, $driveItemResourceDefinition);
         $actual = $sut->items;
         $this->assertInternalType('array', $actual);
         $this->assertCount(2, $actual);
@@ -145,9 +145,9 @@ class DriveProxyTest extends TestCase
         $drive = $this->createMock(Drive::class);
         $drive->method('getList')->willReturn($graphList);
 
-        $driveItemParameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+        $driveItemResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
-        $sut = new DriveProxy($graph, $drive, $driveItemParameterDirector);
+        $sut = new DriveProxy($graph, $drive, $driveItemResourceDefinition);
         $this->assertInstanceOf(GraphListProxy::class, $sut->list);
     }
 
@@ -161,9 +161,9 @@ class DriveProxyTest extends TestCase
         $drive = $this->createMock(Drive::class);
         $drive->method('getRoot')->willReturn($driveItem);
 
-        $driveItemParameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+        $driveItemResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
-        $sut = new DriveProxy($graph, $drive, $driveItemParameterDirector);
+        $sut = new DriveProxy($graph, $drive, $driveItemResourceDefinition);
         $this->assertInstanceOf(DriveItemProxy::class, $sut->root);
         $this->assertSame('1234', $sut->root->id);
     }
@@ -178,9 +178,9 @@ class DriveProxyTest extends TestCase
         $drive = $this->createMock(Drive::class);
         $drive->method('getSpecial')->willReturn($driveItem);
 
-        $driveItemParameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+        $driveItemResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
-        $sut = new DriveProxy($graph, $drive, $driveItemParameterDirector);
+        $sut = new DriveProxy($graph, $drive, $driveItemResourceDefinition);
         $this->assertInstanceOf(DriveItemProxy::class, $sut->special);
         $this->assertSame('1234', $sut->special->id);
     }
@@ -193,9 +193,9 @@ class DriveProxyTest extends TestCase
 
         $drive  = $this->createMock(Drive::class);
 
-        $driveItemParameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+        $driveItemResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
-        $sut    = new DriveProxy($graph, $drive, $driveItemParameterDirector);
+        $sut    = new DriveProxy($graph, $drive, $driveItemResourceDefinition);
         $actual = $sut->getDriveItemById('1234');
         $this->assertInstanceOf(DriveItemProxy::class, $actual);
         $this->assertSame(self::DRIVE_ITEM_ID, $actual->id);
@@ -209,9 +209,9 @@ class DriveProxyTest extends TestCase
 
         $drive = $this->createMock(Drive::class);
 
-        $driveItemParameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+        $driveItemResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
-        $sut    = new DriveProxy($graph, $drive, $driveItemParameterDirector);
+        $sut    = new DriveProxy($graph, $drive, $driveItemResourceDefinition);
         $actual = $sut->getDriveItemByPath('/path');
         $this->assertInstanceOf(DriveItemProxy::class, $actual);
         $this->assertSame(self::DRIVE_ITEM_ID, $actual->id);
@@ -225,9 +225,9 @@ class DriveProxyTest extends TestCase
 
         $drive = $this->createMock(Drive::class);
 
-        $driveItemParameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+        $driveItemResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
-        $sut    = new DriveProxy($graph, $drive, $driveItemParameterDirector);
+        $sut    = new DriveProxy($graph, $drive, $driveItemResourceDefinition);
         $actual = $sut->getRoot();
         $this->assertInstanceOf(DriveItemProxy::class, $actual);
         $this->assertSame(self::DRIVE_ITEM_ID, $actual->id);

@@ -15,7 +15,18 @@
 namespace Krizalys\Onedrive;
 
 use GuzzleHttp\Client as GuzzleHttpClient;
-use Krizalys\Onedrive\Parameter\DriveItemParameterDirector;
+use Krizalys\Onedrive\Definition\OperationDefinition;
+use Krizalys\Onedrive\Definition\Parameter\BodyParameterDefinition;
+use Krizalys\Onedrive\Definition\Parameter\HeaderParameterDefinition;
+use Krizalys\Onedrive\Definition\Parameter\QueryStringParameterDefinition;
+use Krizalys\Onedrive\Definition\ResourceDefinition;
+use Krizalys\Onedrive\Definition\ServiceDefinition;
+use Krizalys\Onedrive\Parameter\Injector\FlatInjector;
+use Krizalys\Onedrive\Parameter\Injector\HierarchicalInjector;
+use Krizalys\Onedrive\Parameter\ParameterBuilder;
+use Krizalys\Onedrive\Parameter\ParameterDefinitionCollection;
+use Krizalys\Onedrive\Serializer\OrderBySerializer;
+use Krizalys\Onedrive\Serializer\ScalarSerializer;
 use Microsoft\Graph\Graph;
 
 /**
@@ -55,16 +66,103 @@ class Onedrive
      */
     public static function client($clientId, array $options = [])
     {
-        $graph                      = new Graph();
-        $httpClient                 = new GuzzleHttpClient();
-        $driveItemParameterDirector = new DriveItemParameterDirector();
+        $graph             = new Graph();
+        $httpClient        = new GuzzleHttpClient();
+        $serviceDefinition = self::buildServiceDefinition();
 
         return new Client(
             $clientId,
             $graph,
             $httpClient,
-            $driveItemParameterDirector,
+            $serviceDefinition,
             $options
         );
+    }
+
+    /**
+     * Builds a service definition.
+     *
+     * @return \Krizalys\Onedrive\Definition\ServiceDefinitionInterface
+     *         The service definition.
+     *
+     * @since 2.5.0
+     */
+    public static function buildServiceDefinition()
+    {
+        $orderBySerializer = new OrderBySerializer();
+        $scalarSerializer  = new ScalarSerializer();
+        $parameterBuilder  = new ParameterBuilder();
+
+        return new ServiceDefinition([
+            'driveItem' => new ResourceDefinition([], [
+                'children' => new ResourceDefinition([
+                    'get' => new OperationDefinition(
+                        new ParameterDefinitionCollection($parameterBuilder, []),
+                        new ParameterDefinitionCollection($parameterBuilder, []),
+                        new ParameterDefinitionCollection($parameterBuilder, [
+                            'top' => new QueryStringParameterDefinition(
+                                new FlatInjector('$top'),
+                                $scalarSerializer
+                            ),
+                            'orderBy' => new QueryStringParameterDefinition(
+                                new FlatInjector('$orderby'),
+                                $orderBySerializer
+                            ),
+                        ])
+                    ),
+                    'post' => new OperationDefinition(
+                        new ParameterDefinitionCollection($parameterBuilder, [
+                            'conflictBehavior' => new BodyParameterDefinition(
+                                new HierarchicalInjector(['@microsoft.graph.conflictBehavior']),
+                                $scalarSerializer
+                            ),
+                            'description' => new BodyParameterDefinition(
+                                new HierarchicalInjector(['description']),
+                                $scalarSerializer
+                            ),
+                        ]),
+                        new ParameterDefinitionCollection($parameterBuilder, []),
+                        new ParameterDefinitionCollection($parameterBuilder, [])
+                    ),
+                ], []),
+                'content' => new ResourceDefinition([
+                    'put' => new OperationDefinition(
+                        new ParameterDefinitionCollection($parameterBuilder, []),
+                        new ParameterDefinitionCollection($parameterBuilder, [
+                            'contentType' => new HeaderParameterDefinition(
+                                new FlatInjector('Content-Type'),
+                                $scalarSerializer
+                            ),
+                            'Content-Type' => new HeaderParameterDefinition(
+                                new FlatInjector('Content-Type'),
+                                $orderBySerializer
+                            ),
+                        ]),
+                        new ParameterDefinitionCollection($parameterBuilder, [
+                            'conflictBehavior' => new QueryStringParameterDefinition(
+                                new FlatInjector('@microsoft.graph.conflictBehavior'),
+                                $scalarSerializer
+                            ),
+                        ])
+                    ),
+                ], []),
+                'createUploadSession' => new ResourceDefinition([
+                    'post' => new OperationDefinition(
+                        new ParameterDefinitionCollection($parameterBuilder, [
+                            'conflictBehavior' => new BodyParameterDefinition(
+                                new HierarchicalInjector(['item', '@microsoft.graph.conflictBehavior']),
+                                $scalarSerializer
+                            ),
+                            'description' => new BodyParameterDefinition(
+                                new HierarchicalInjector(['item', 'description']),
+                                $scalarSerializer
+                            ),
+                        ]),
+                        new ParameterDefinitionCollection($parameterBuilder, []),
+                        new ParameterDefinitionCollection($parameterBuilder, [])
+                    ),
+                ], []),
+            ]),
+        ]);
     }
 }

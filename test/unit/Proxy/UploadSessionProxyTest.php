@@ -3,7 +3,7 @@
 namespace Test\Unit\Krizalys\Onedrive\Proxy;
 
 use GuzzleHttp\Psr7;
-use Krizalys\Onedrive\Parameter\DriveItemParameterDirectorInterface;
+use Krizalys\Onedrive\Definition\ResourceDefinitionInterface;
 use Krizalys\Onedrive\Proxy\DriveItemProxy;
 use Krizalys\Onedrive\Proxy\UploadSessionProxy;
 use Microsoft\Graph\Graph;
@@ -24,9 +24,15 @@ class UploadSessionProxyTest extends TestCase
         $uploadSession = $this->createMock(UploadSession::class);
         $uploadSession->method('getExpirationDateTime')->willReturn($dateTime);
 
-        $driveItemParameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+        $driveItemResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
-        $sut = new UploadSessionProxy($graph, $uploadSession, '', $driveItemParameterDirector);
+        $sut = new UploadSessionProxy(
+            $graph,
+            $uploadSession,
+            '',
+            $driveItemResourceDefinition
+        );
+
         $this->assertSame($dateTime, $sut->expirationDateTime);
     }
 
@@ -37,9 +43,15 @@ class UploadSessionProxyTest extends TestCase
         $uploadSession = $this->createMock(UploadSession::class);
         $uploadSession->method('getNextExpectedRanges')->willReturn(['0-1', '2-3']);
 
-        $driveItemParameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+        $driveItemResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
-        $sut = new UploadSessionProxy($graph, $uploadSession, '', $driveItemParameterDirector);
+        $sut = new UploadSessionProxy(
+            $graph,
+            $uploadSession,
+            '',
+            $driveItemResourceDefinition
+        );
+
         $this->assertInternalType('array', $sut->nextExpectedRanges);
         $this->assertSame(['0-1', '2-3'], $sut->nextExpectedRanges);
     }
@@ -51,9 +63,15 @@ class UploadSessionProxyTest extends TestCase
         $uploadSession = $this->createMock(UploadSession::class);
         $uploadSession->method('getUploadUrl')->willReturn('http://uplo.ad/url');
 
-        $driveItemParameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+        $driveItemResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
-        $sut = new UploadSessionProxy($graph, $uploadSession, '', $driveItemParameterDirector);
+        $sut = new UploadSessionProxy(
+            $graph,
+            $uploadSession,
+            '',
+            $driveItemResourceDefinition
+        );
+
         $this->assertInternalType('string', $sut->uploadUrl);
         $this->assertSame('http://uplo.ad/url', $sut->uploadUrl);
     }
@@ -79,13 +97,20 @@ class UploadSessionProxyTest extends TestCase
 
         $content = str_repeat('1', 327680 + 1);
 
-        $driveItemParameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+        $driveItemResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
         $options = [
             'range_size' => 327680,
         ];
 
-        $sut    = new UploadSessionProxy($graph, $uploadSession, $content, $driveItemParameterDirector, $options);
+        $sut = new UploadSessionProxy(
+            $graph,
+            $uploadSession,
+            $content,
+            $driveItemResourceDefinition,
+            $options
+        );
+
         $actual = $sut->complete();
         $this->assertInstanceOf(DriveItemProxy::class, $actual);
         $this->assertSame('123abc', $actual->id);
@@ -112,13 +137,20 @@ class UploadSessionProxyTest extends TestCase
 
         $content = Psr7\stream_for(str_repeat('1', 327680 + 1));
 
-        $driveItemParameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+        $driveItemResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
         $options = [
             'range_size' => 327680,
         ];
 
-        $sut    = new UploadSessionProxy($graph, $uploadSession, $content, $driveItemParameterDirector, $options);
+        $sut = new UploadSessionProxy(
+            $graph,
+            $uploadSession,
+            $content,
+            $driveItemResourceDefinition,
+            $options
+        );
+
         $actual = $sut->complete();
         $this->assertInstanceOf(DriveItemProxy::class, $actual);
         $this->assertSame('123abc', $actual->id);
@@ -163,14 +195,21 @@ class UploadSessionProxyTest extends TestCase
 
         $content = str_repeat('1', 655360 + 1);
 
-        $driveItemParameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+        $driveItemResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
         $options = [
             'type'       => 'text/plain',
             'range_size' => 655360,
         ];
 
-        $sut = new UploadSessionProxy($graph, $uploadSession, $content, $driveItemParameterDirector, $options);
+        $sut = new UploadSessionProxy(
+            $graph,
+            $uploadSession,
+            $content,
+            $driveItemResourceDefinition,
+            $options
+        );
+
         $sut->complete();
     }
 
@@ -201,13 +240,20 @@ class UploadSessionProxyTest extends TestCase
 
         $content = str_repeat('1', 327680 + 1);
 
-        $driveItemParameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+        $driveItemResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
         $options = [
             'range_size' => 327680,
         ];
 
-        $sut = new UploadSessionProxy($graph, $uploadSession, $content, $driveItemParameterDirector, $options);
+        $sut = new UploadSessionProxy(
+            $graph,
+            $uploadSession,
+            $content,
+            $driveItemResourceDefinition,
+            $options
+        );
+
         $sut->complete();
     }
 
@@ -239,13 +285,20 @@ class UploadSessionProxyTest extends TestCase
 
         $content = str_repeat('1', 327680 + 1);
 
-        $driveItemParameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
+        $driveItemResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
         $options = [
             'range_size' => 327680,
         ];
 
-        $sut = new UploadSessionProxy($graph, $uploadSession, $content, $driveItemParameterDirector, $options);
+        $sut = new UploadSessionProxy(
+            $graph,
+            $uploadSession,
+            $content,
+            $driveItemResourceDefinition,
+            $options
+        );
+
         $sut->complete();
     }
 }

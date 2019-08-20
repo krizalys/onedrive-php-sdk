@@ -12,7 +12,7 @@
  * @link      https://github.com/krizalys/onedrive-php-sdk
  */
 
-namespace Krizalys\Onedrive\Parameter\Definition;
+namespace Krizalys\Onedrive\Definition\Parameter;
 
 /**
  * An interface defining the contract for a parameter definition.
