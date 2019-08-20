@@ -91,7 +91,7 @@ class UploadSessionProxy extends EntityProxy
      *        The content.
      * @param DriveItemParameterDirectorInterface $driveItemParameterDirector
      *        The drive item parameter director.
-     * @param mixed[] $options
+     * @param mixed[string] $options
      *        The options. Supported options:
      *          - `'type'` *(string)*: the MIME type of the uploaded file ;
      *          - `'range_size'` *(int)*: the range size, in bytes.

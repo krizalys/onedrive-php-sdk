@@ -41,7 +41,7 @@ class Onedrive
      *
      * @param string $clientId
      *        The client ID.
-     * @param mixed[] $options
+     * @param mixed[string] $options
      *        The options to use while creating this object. Supported options:
      *          - `'state'` *(object)*: the OneDrive client state, as returned
      *            by {@see Client::getState() getState()}. Default: `[]`.

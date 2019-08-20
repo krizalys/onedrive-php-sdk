@@ -256,7 +256,7 @@ class DriveItemProxy extends BaseItemProxy
      *
      * @param string $name
      *        The name.
-     * @param mixed[] $options
+     * @param mixed[string] $options
      *        The options. Supported options:
      *          - `'description'` *(string)*: the description of the folder
      *            created.
@@ -320,7 +320,7 @@ class DriveItemProxy extends BaseItemProxy
      * ]);
      * ```
      *
-     * @param array $options
+     * @param mixed[string] $options
      *        The options. Supported options:
      *          - `'top'` *(number)*: The number of items to retrieve. Default:
      *            `200` ;
@@ -446,9 +446,10 @@ class DriveItemProxy extends BaseItemProxy
      *        The name.
      * @param string|resource|\GuzzleHttp\Psr7\Stream $content
      *        The content.
-     * @param mixed[] $options
+     * @param mixed[string] $options
      *        The options. Supported options:
-     *          - `contentType` *(string)*: the MIME type of the uploaded file.
+     *          - `'contentType'` *(string)*: the MIME type of the uploaded
+     *            file.
      *
      * @return DriveItemProxy
      *         The drive item created.
@@ -531,7 +532,7 @@ class DriveItemProxy extends BaseItemProxy
      *        The name.
      * @param string|resource|\GuzzleHttp\Psr7\Stream $content
      *        The content.
-     * @param mixed[] $options
+     * @param mixed[string] $options
      *        The options. See UploadSession::__construct for supported options.
      *
      * @return UploadSessionProxy
@@ -615,9 +616,9 @@ class DriveItemProxy extends BaseItemProxy
      *
      * @param string $name
      *        The name.
-     * @param mixed[] $options
+     * @param mixed[string] $options
      *        The options. Supported options:
-     *          - `$description` *(string)*: the new description to set after
+     *          - `'description'` *(string)*: the new description to set after
      *            the drive item is renamed.
      *
      * @return DriveItemProxy
@@ -671,9 +672,9 @@ class DriveItemProxy extends BaseItemProxy
      *
      * @param DriveItemProxy $destinationItem
      *        The destination item.
-     * @param mixed[] $options
+     * @param mixed[string] $options
      *        The options. Supported options:
-     *          - `$name` *(string)*: the new name to set after the drive item
+     *          - `'name'` *(string)*: the new name to set after the drive item
      *            is moved.
      *
      * @return DriveItemProxy
@@ -742,9 +743,9 @@ class DriveItemProxy extends BaseItemProxy
      *
      * @param DriveItemProxy $destinationItem
      *        The destination item.
-     * @param mixed[] $options
+     * @param mixed[string] $options
      *        The options. Supported options:
-     *          - `$name` *(string)*: the name of the copied file.
+     *          - `'name'` *(string)*: the name of the copied file.
      *
      * @return string
      *         The progress URI.

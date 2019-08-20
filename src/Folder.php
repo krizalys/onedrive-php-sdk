@@ -198,7 +198,7 @@ class Folder extends DriveItem
      *        handle to an already opened file. In the latter case, the
      *        responsibility to close the handle is is left to the calling
      *        function. Default: `''`.
-     * @param mixed[] $options
+     * @param mixed[string] $options
      *        The options. Unused.
      *
      * @return File

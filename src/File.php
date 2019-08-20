@@ -54,8 +54,8 @@ class File extends DriveItem
      * Fetches the content of the OneDrive file referenced by this File
      * instance.
      *
-     * @param mixed[] $options
-     *        The extra cURL options to apply.
+     * @param mixed[string] $options
+     *        The extra cURL options to apply. Unused.
      *
      * @return string
      *         The content of the OneDrive file referenced by this `File`

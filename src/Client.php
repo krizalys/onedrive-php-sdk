@@ -113,7 +113,7 @@ class Client
      *        instance via this parameter is deprecated and will be disallowed
      *        in version 3. Passing a logger via this parameter is deprecated
      *        and will be disallowed in version 3.
-     * @param mixed[] $options
+     * @param mixed[string] $options
      *        The options to use while creating this object. Supported options:
      *          - `'state'` *(object)*: the OneDrive client state, as returned
      *            by `getState()`. Default: `[]`.
@@ -997,7 +997,7 @@ class Client
      * @param string|resource|\GuzzleHttp\Psr7\Stream $content
      *        The content of the OneDrive file to be created, as a string or as
      *        a resource to an already opened file. Default: `''`.
-     * @param mixed[] $options
+     * @param mixed[string] $options
      *        The options. Unused.
      *
      * @return File
@@ -1569,7 +1569,7 @@ class Client
      *
      * @param DriveItemProxy $item
      *        The drive item.
-     * @param mixed[] $options
+     * @param mixed[string] $options
      *        The options.
      *
      * @return mixed[]
