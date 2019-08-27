@@ -230,7 +230,6 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
     {
         self::withOnedriveSandbox(self::$driveItem, __CLASS__ . '_'  . __FUNCTION__, function (DriveItemProxy $sandbox) {
             $string = str_repeat("Test content\n", 100000);
-            $size   = strlen($string);
 
             $uploadSession = $sandbox->startUpload(
                 'Test file',
@@ -258,7 +257,6 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
             );
 
             $string = str_repeat("Test content\n", 100000);
-            $size   = strlen($string);
 
             $uploadSession = $sandbox->startUpload(
                 'Test file',
@@ -282,7 +280,6 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
             $content = str_repeat("Test content\n", 100000);
             $stream  = fopen('php://memory', 'rb+');
             fwrite($stream, $content);
-            $size = ftell($stream);
             rewind($stream);
 
             $uploadSession = $sandbox->startUpload(
@@ -316,7 +313,6 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
             $content = str_repeat("Test content\n", 100000);
             $stream  = fopen('php://memory', 'rb+');
             fwrite($stream, $content);
-            $size = ftell($stream);
             rewind($stream);
 
             $uploadSession = $sandbox->startUpload(
