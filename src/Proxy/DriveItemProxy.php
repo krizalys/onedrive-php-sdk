@@ -635,10 +635,7 @@ class DriveItemProxy extends BaseItemProxy
      * $uploadSession1 = $driveItem->startUpload(
      *     'file.txt',
      *     'Some other content',
-     *     [
-     *         'conflictBehavior' => ConflictBehavior::RENAME,
-     *         'type'             => 'text/plain',
-     *     ]
+     *     ['conflictBehavior' => ConflictBehavior::RENAME]
      * );
      *
      * $childDriveItem = $uploadSession1->complete();

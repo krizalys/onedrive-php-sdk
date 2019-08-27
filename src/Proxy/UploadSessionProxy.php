@@ -72,12 +72,6 @@ class UploadSessionProxy extends EntityProxy
 
     /**
      * @var int
-     *      The type.
-     */
-    private $type;
-
-    /**
-     * @var int
      *      The chunk size, in bytes.
      */
     private $rangeSize;
@@ -95,7 +89,6 @@ class UploadSessionProxy extends EntityProxy
      *        The drive item resource definition.
      * @param mixed[string] $options
      *        The options. Supported options:
-     *          - `'type'` *(string)*: the MIME type of the uploaded file ;
      *          - `'range_size'` *(int)*: the range size, in bytes.
      *
      * @since 2.1.0
@@ -107,13 +100,16 @@ class UploadSessionProxy extends EntityProxy
         ResourceDefinitionInterface $driveItemResourceDefinition,
         array $options = []
     ) {
+        if (array_key_exists('type', $options)) {
+            $message = 'The \'type\' option is deprecated and will be removed'
+                . ' in version 3; omit this option';
+
+            @trigger_error($message, E_USER_DEPRECATED);
+        }
+
         parent::__construct($graph, $uploadSession);
         $this->content                     = $content;
         $this->driveItemResourceDefinition = $driveItemResourceDefinition;
-
-        $this->type = array_key_exists('type', $options) ?
-            $options['type']
-            : null;
 
         $this->rangeSize = array_key_exists('range_size', $options) ?
             $options['range_size']
@@ -195,10 +191,6 @@ class UploadSessionProxy extends EntityProxy
                 'Content-Length' => $rangeSize,
                 'Content-Range'  => "bytes $rangeFirst-$rangeLast/$size",
             ];
-
-            if ($this->type !== null) {
-                $headers['Content-Type'] = $this->type;
-            }
 
             $response = $this
                 ->graph

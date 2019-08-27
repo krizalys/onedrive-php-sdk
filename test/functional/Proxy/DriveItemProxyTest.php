@@ -422,10 +422,7 @@ class DriveItemProxyTest extends TestCase
             $uploadSession = $sandbox->startUpload(
                 'Test file',
                 $string,
-                [
-                    'contentType' => 'text/plain',
-                    'description' => 'Test description',
-                ]
+                ['description' => 'Test description']
             );
 
             $this->assertUploadSessionProxy($uploadSession);
@@ -481,7 +478,6 @@ class DriveItemProxyTest extends TestCase
                 $string,
                 [
                     'conflictBehavior' => ConflictBehavior::RENAME,
-                    'contentType'      => 'text/plain',
                     'description'      => 'Test description',
                 ]
             );
@@ -514,7 +510,6 @@ class DriveItemProxyTest extends TestCase
                 $string,
                 [
                     'conflictBehavior' => ConflictBehavior::REPLACE,
-                    'contentType'      => 'text/plain',
                     'description'      => 'Test description',
                 ]
             );
@@ -542,10 +537,7 @@ class DriveItemProxyTest extends TestCase
             $uploadSession = $sandbox->startUpload(
                 'Test file',
                 $stream,
-                [
-                    'contentType' => 'text/plain',
-                    'description' => 'Test description',
-                ]
+                ['description' => 'Test description']
             );
 
             $this->assertUploadSessionProxy($uploadSession);
@@ -613,7 +605,6 @@ class DriveItemProxyTest extends TestCase
                 $stream,
                 [
                     'conflictBehavior' => ConflictBehavior::RENAME,
-                    'contentType'      => 'text/plain',
                     'description'      => 'Test description',
                 ]
             );
@@ -652,7 +643,6 @@ class DriveItemProxyTest extends TestCase
                 $stream,
                 [
                     'conflictBehavior' => ConflictBehavior::REPLACE,
-                    'contentType'      => 'text/plain',
                     'description'      => 'Test description',
                 ]
             );

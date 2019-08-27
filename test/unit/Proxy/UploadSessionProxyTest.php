@@ -258,14 +258,12 @@ class UploadSessionProxyTest extends TestCase
             ->withConsecutive(
                 [$this->callback(function ($headers) {
                     return
-                        $headers['Content-Type'] == 'text/plain'
-                        && $headers['Content-Length'] == '655360'
+                        $headers['Content-Length'] == '655360'
                         && $headers['Content-Range'] == 'bytes 0-655359/655361';
                 })],
                 [$this->callback(function ($headers) {
                     return
-                        $headers['Content-Type'] == 'text/plain'
-                        && $headers['Content-Length'] == '1'
+                        $headers['Content-Length'] == '1'
                         && $headers['Content-Range'] == 'bytes 655360-655360/655361';
                 })]
             )
@@ -285,7 +283,6 @@ class UploadSessionProxyTest extends TestCase
         $driveItemResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
         $options = [
-            'type'       => 'text/plain',
             'range_size' => 655360,
         ];
 
