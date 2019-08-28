@@ -2,6 +2,7 @@
 
 namespace Test\Unit\Krizalys\Onedrive\Proxy;
 
+use Krizalys\Onedrive\Constant\DriveType;
 use Krizalys\Onedrive\Proxy\ItemReferenceProxy;
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model\ItemReference;
@@ -37,11 +38,11 @@ class ItemReferenceProxyTest extends \PHPUnit_Framework_TestCase
         $graph = $this->createMock(Graph::class);
 
         $itemReference = $this->createMock(ItemReference::class);
-        $itemReference->method('getDriveType')->willReturn('personal');
+        $itemReference->method('getDriveType')->willReturn(DriveType::PERSONAL);
 
         $sut = new ItemReferenceProxy($graph, $itemReference);
         $this->assertInternalType('string', $sut->driveType);
-        $this->assertSame('personal', $sut->driveType);
+        $this->assertSame(DriveType::PERSONAL, $sut->driveType);
     }
 
     public function testPathShouldReturnExpectedValue()

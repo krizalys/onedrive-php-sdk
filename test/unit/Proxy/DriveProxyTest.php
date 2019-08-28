@@ -2,6 +2,7 @@
 
 namespace Test\Unit\Krizalys\Onedrive\Proxy;
 
+use Krizalys\Onedrive\Constant\DriveType;
 use Krizalys\Onedrive\Parameter\DriveItemParameterDirectorInterface;
 use Krizalys\Onedrive\Proxy\DriveItemProxy;
 use Krizalys\Onedrive\Proxy\DriveProxy;
@@ -31,13 +32,13 @@ class DriveProxyTest extends \PHPUnit_Framework_TestCase
         $graph = $this->createMock(Graph::class);
 
         $drive = $this->createMock(Drive::class);
-        $drive->method('getDriveType')->willReturn('personal');
+        $drive->method('getDriveType')->willReturn(DriveType::PERSONAL);
 
         $driveItemParameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
 
         $sut = new DriveProxy($graph, $drive, $driveItemParameterDirector);
         $this->assertInternalType('string', $sut->driveType);
-        $this->assertSame('personal', $sut->driveType);
+        $this->assertSame(DriveType::PERSONAL, $sut->driveType);
     }
 
     public function testOwnerShouldReturnExpectedValue()

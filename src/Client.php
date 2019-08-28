@@ -15,6 +15,8 @@
 namespace Krizalys\Onedrive;
 
 use GuzzleHttp\ClientInterface;
+use Krizalys\Onedrive\Constant\AccessTokenStatus;
+use Krizalys\Onedrive\Constant\SpecialFolderName;
 use Krizalys\Onedrive\Parameter\DriveItemParameterDirector;
 use Krizalys\Onedrive\Parameter\DriveItemParameterDirectorInterface;
 use Krizalys\Onedrive\Proxy\DriveItemProxy;
@@ -285,12 +287,11 @@ class Client
     /**
      * Gets the status of the current access token.
      *
+     * See {@see \Krizalys\Onedrive\Constant\AccessTokenStatus
+     * AccessTokenStatus} for the possible values returned.
+     *
      * @return int
-     *         The status of the current access token. Defined statuses:
-     *           - `0`: no access token ;
-     *           - `-1`: access token will expire soon (1 minute or less) ;
-     *           - `-2`: access token is expired ;
-     *           - `1`: access token is valid.
+     *         The status of the current access token.
      *
      * @since 1.0.0
      *
@@ -299,20 +300,20 @@ class Client
     public function getAccessTokenStatus()
     {
         if (null === $this->_state->token) {
-            return 0;
+            return AccessTokenStatus::MISSING;
         }
 
         $remaining = $this->getTokenExpire();
 
         if (0 >= $remaining) {
-            return -2;
+            return AccessTokenStatus::EXPIRED;
         }
 
         if (60 >= $remaining) {
-            return -1;
+            return AccessTokenStatus::EXPIRING;
         }
 
-        return 1;
+        return AccessTokenStatus::VALID;
     }
 
     /**
@@ -829,13 +830,11 @@ class Client
     /**
      * Gets a special folder by name.
      *
+     * See {@see \Krizalys\Onedrive\Constant\SpecialFolderName SpecialFolderName}
+     * for the parameter `$specialFolderName`' supported values.
+     *
      * @param string $specialFolderName
-     *        The special folder name. Supported values:
-     *          - `'documents'` ;
-     *          - `'photos'` ;
-     *          - `'cameraroll'` ;
-     *          - `'approot'` ;
-     *          - `'music'`.
+     *        The special folder name.
      *
      * @return DriveItemProxy
      *         The root drive item.
@@ -1160,7 +1159,7 @@ class Client
      * @since 1.0.0
      *
      * @deprecated 2.0.0 Superseded by
-     *             \Krizalys\Onedrive\Client::getSpecialFolder('cameraroll').
+     *             \Krizalys\Onedrive\Client::getSpecialFolder(\Krizalys\Onedrive\Constant\SpecialFolderName::CAMERA_ROLL).
      *
      * @see \Krizalys\Onedrive\Client::getSpecialFolder()
      */
@@ -1168,13 +1167,13 @@ class Client
     {
         $message = sprintf(
             '%s() is deprecated and will be removed in version 3; use'
-                . ' \Krizalys\Onedrive\Client::getSpecialFolder(\'cameraroll\')'
+                . ' \Krizalys\Onedrive\Client::getSpecialFolder(\Krizalys\Onedrive\Constant\SpecialFolderName::CAMERA_ROLL)'
                 . ' instead.',
             __METHOD__
         );
 
         @trigger_error($message, E_USER_DEPRECATED);
-        $item    = $this->getSpecialFolder('cameraroll');
+        $item    = $this->getSpecialFolder(SpecialFolderName::CAMERA_ROLL);
         $options = $this->buildOptions($item);
 
         return new Folder($this, $item->id, $options);
@@ -1190,7 +1189,7 @@ class Client
      * @since 1.0.0
      *
      * @deprecated 2.0.0 Superseded by
-     *             \Krizalys\Onedrive\Client::getSpecialFolder('documents').
+     *             \Krizalys\Onedrive\Client::getSpecialFolder(\Krizalys\Onedrive\Constant\SpecialFolderName::DOCUMENTS).
      *
      * @see \Krizalys\Onedrive\Client::getSpecialFolder()
      */
@@ -1198,13 +1197,13 @@ class Client
     {
         $message = sprintf(
             '%s() is deprecated and will be removed in version 3; use'
-                . ' \Krizalys\Onedrive\Client::getSpecialFolder(\'documents\')'
+                . ' \Krizalys\Onedrive\Client::getSpecialFolder(\Krizalys\Onedrive\Constant\SpecialFolderName::DOCUMENTS)'
                 . ' instead.',
             __METHOD__
         );
 
         @trigger_error($message, E_USER_DEPRECATED);
-        $item    = $this->getSpecialFolder('documents');
+        $item    = $this->getSpecialFolder(SpecialFolderName::DOCUMENTS);
         $options = $this->buildOptions($item);
 
         return new Folder($this, $item->id, $options);
@@ -1220,7 +1219,7 @@ class Client
      * @since 1.0.0
      *
      * @deprecated 2.0.0 Superseded by
-     *             \Krizalys\Onedrive\Client::getSpecialFolder().
+     *             \Krizalys\Onedrive\Client::getSpecialFolder(\Krizalys\Onedrive\Constant\SpecialFolderName::PHOTOS).
      *
      * @see \Krizalys\Onedrive\Client::getSpecialFolder()
      */
@@ -1228,13 +1227,13 @@ class Client
     {
         $message = sprintf(
             '%s() is deprecated and will be removed in version 3; use'
-                . ' \Krizalys\Onedrive\Client::getSpecialFolder(\'photos\')'
+                . ' \Krizalys\Onedrive\Client::getSpecialFolder(\Krizalys\Onedrive\Constant\SpecialFolderName::PHOTOS)'
                 . ' instead.',
             __METHOD__
         );
 
         @trigger_error($message, E_USER_DEPRECATED);
-        $item    = $this->getSpecialFolder('photos');
+        $item    = $this->getSpecialFolder(SpecialFolderName::PHOTOS);
         $options = $this->buildOptions($item);
 
         return new Folder($this, $item->id, $options);

@@ -11,6 +11,10 @@ Change log
 - Support for conflict behavior.
 - Support for description in
   `Krizalys\Onedrive\Proxy\DriveItemProxy::startUpload()`.
+- Class constants: `Krizalys\Onedrive\Constant\AccessTokenStatus`,
+  `Krizalys\Onedrive\Constant\DriveType`,
+  `Krizalys\Onedrive\Constant\QuotaStatus` and
+  `Krizalys\Onedrive\Constant\SpecialFolderName`.
 
 ### Changed
 

@@ -2,6 +2,7 @@
 
 namespace Test\Functional\Krizalys\Onedrive;
 
+use Krizalys\Onedrive\Constant\SpecialFolderName;
 use Krizalys\Onedrive\Proxy\DriveItemProxy;
 use Test\Functional\Krizalys\Onedrive\OnedriveSandboxTrait;
 
@@ -167,7 +168,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         // For some reason, this special folder does not have a SpecialFolder
         // facet.
-        if ($specialFolderName != 'approot') {
+        if ($specialFolderName != SpecialFolderName::APP_ROOT) {
             $this->assertSpecialFolderProxy($driveItem->specialFolder);
         }
     }
@@ -195,11 +196,11 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     public function specialFolderProvider()
     {
         return [
-            ['documents'],
-            ['photos'],
-            ['cameraroll'],
-            ['approot'],
-            ['music'],
+            [SpecialFolderName::DOCUMENTS],
+            [SpecialFolderName::PHOTOS],
+            [SpecialFolderName::CAMERA_ROLL],
+            [SpecialFolderName::APP_ROOT],
+            [SpecialFolderName::MUSIC],
         ];
     }
 }

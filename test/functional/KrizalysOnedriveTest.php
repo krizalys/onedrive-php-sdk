@@ -2,6 +2,7 @@
 
 namespace Test\Functional\Krizalys\Onedrive;
 
+use Krizalys\Onedrive\Constant\SpecialFolderName;
 use Krizalys\Onedrive\DriveItem;
 use Krizalys\Onedrive\File;
 use Krizalys\Onedrive\Folder;
@@ -485,7 +486,7 @@ EOF;
 
     private static function getPhotosFolder()
     {
-        return self::$client->getSpecialFolder('photos');
+        return self::$client->getSpecialFolder(SpecialFolderName::PHOTOS);
     }
 
     private static function createFolder(DriveItemProxy $item, $name)

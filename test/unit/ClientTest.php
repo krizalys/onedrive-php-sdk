@@ -5,6 +5,8 @@ namespace Test\Unit\Krizalys\Onedrive;
 use GuzzleHttp\Client as GuzzleHttpClient;
 use GuzzleHttp\ClientInterface;
 use Krizalys\Onedrive\Client;
+use Krizalys\Onedrive\Constant\AccessTokenStatus;
+use Krizalys\Onedrive\Constant\SpecialFolderName;
 use Krizalys\Onedrive\Parameter\DriveItemParameterDirectorInterface;
 use Krizalys\Onedrive\Proxy\DriveItemProxy;
 use Krizalys\Onedrive\Proxy\DriveProxy;
@@ -92,17 +94,17 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         return [
             'Fresh token' => [
                 'time'     => strtotime('1999-01-01T00:58:59Z'),
-                'expected' => 1,
+                'expected' => AccessTokenStatus::VALID,
             ],
 
             'Expiring token' => [
                 'time'     => strtotime('1999-01-01T00:59:00Z'),
-                'expected' => -1,
+                'expected' => AccessTokenStatus::EXPIRING,
             ],
 
             'Expired token' => [
                 'time'     => strtotime('1999-01-01T01:00:00Z'),
-                'expected' => -2,
+                'expected' => AccessTokenStatus::EXPIRED,
             ],
         ];
     }
@@ -463,7 +465,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             []
         );
 
-        $actual = $sut->getSpecialFolder('documents');
+        $actual = $sut->getSpecialFolder(SpecialFolderName::DOCUMENTS);
         $this->assertInstanceOf(DriveItemProxy::class, $actual);
         $this->assertSame(self::DRIVE_ITEM_ID, $actual->id);
     }

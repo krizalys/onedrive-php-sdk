@@ -3,6 +3,7 @@
 namespace Test\Functional\Krizalys\Onedrive;
 
 use GuzzleHttp\Exception\ClientException;
+use Krizalys\Onedrive\Constant\DriveType;
 use Krizalys\Onedrive\Proxy\AudioProxy;
 use Krizalys\Onedrive\Proxy\BaseItemProxy;
 use Krizalys\Onedrive\Proxy\DeletedProxy;
@@ -351,7 +352,13 @@ trait AssertionsTrait
     {
         $this->assertBaseItemProxy($drive);
         $this->assertInstanceOf(DriveProxy::class, $drive);
-        $this->assertContains($drive->driveType, ['personal', 'business', 'documentLibrary']);
+
+        $this->assertContains($drive->driveType, [
+            DriveType::PERSONAL,
+            DriveType::BUSINESS,
+            DriveType::DOCUMENT_LIBRARY,
+        ]);
+
         $this->assertInstanceOf(IdentitySetProxy::class, $drive->owner);
         $this->assertQuotaProxy($drive->quota);
 
