@@ -210,6 +210,10 @@ class DriveItemParameterDirector implements DriveItemParameterDirectorInterface
                     new HierarchicalInjector(['item', '@microsoft.graph.conflictBehavior']),
                     new ScalarSerializer()
                 ),
+                'description' => new BodyParameterDefinition(
+                    new HierarchicalInjector(['item', 'description']),
+                    new ScalarSerializer()
+                ),
             ];
         }
 

@@ -409,7 +409,10 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
             $uploadSession = $sandbox->startUpload(
                 'Test file',
                 $string,
-                ['contentType' => 'text/plain']
+                [
+                    'contentType' => 'text/plain',
+                    'description' => 'Test description',
+                ]
             );
 
             $this->assertUploadSessionProxy($uploadSession);
@@ -418,6 +421,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
             $this->assertNotNull($driveItem->parentReference);
             $this->assertEquals($sandbox->id, $driveItem->parentReference->id);
             $this->assertEquals('Test file', $driveItem->name);
+            $this->assertEquals('Test description', $driveItem->description);
             $this->assertEquals($string, $driveItem->content);
         });
     }
@@ -467,6 +471,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
                 [
                     'conflictBehavior' => ConflictBehavior::RENAME,
                     'contentType'      => 'text/plain',
+                    'description'      => 'Test description',
                 ]
             );
 
@@ -476,6 +481,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
             $this->assertNotNull($driveItem->parentReference);
             $this->assertEquals($sandbox->id, $driveItem->parentReference->id);
             $this->assertEquals('Test file 1', $driveItem->name);
+            $this->assertEquals('Test description', $driveItem->description);
             $this->assertEquals($string, $driveItem->content);
         });
     }
@@ -497,6 +503,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
                 [
                     'conflictBehavior' => ConflictBehavior::REPLACE,
                     'contentType'      => 'text/plain',
+                    'description'      => 'Test description',
                 ]
             );
 
@@ -506,6 +513,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
             $this->assertNotNull($driveItem->parentReference);
             $this->assertEquals($sandbox->id, $driveItem->parentReference->id);
             $this->assertEquals('Test file', $driveItem->name);
+            $this->assertEquals('Test description', $driveItem->description);
             $this->assertEquals($string, $driveItem->content);
         });
     }
@@ -521,7 +529,10 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
             $uploadSession = $sandbox->startUpload(
                 'Test file',
                 $stream,
-                ['contentType' => 'text/plain']
+                [
+                    'contentType' => 'text/plain',
+                    'description' => 'Test description',
+                ]
             );
 
             $this->assertUploadSessionProxy($uploadSession);
@@ -530,6 +541,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
             $this->assertNotNull($driveItem->parentReference);
             $this->assertEquals($sandbox->id, $driveItem->parentReference->id);
             $this->assertEquals('Test file', $driveItem->name);
+            $this->assertEquals('Test description', $driveItem->description);
             $this->assertEquals($content, $driveItem->content);
 
             // No need to fclose $stream; it is done internally by Guzzle when
@@ -591,6 +603,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
                 [
                     'conflictBehavior' => ConflictBehavior::RENAME,
                     'contentType'      => 'text/plain',
+                    'description'      => 'Test description',
                 ]
             );
 
@@ -600,6 +613,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
             $this->assertNotNull($driveItem->parentReference);
             $this->assertEquals($sandbox->id, $driveItem->parentReference->id);
             $this->assertEquals('Test file 1', $driveItem->name);
+            $this->assertEquals('Test description', $driveItem->description);
             $this->assertEquals($content, $driveItem->content);
 
             // No need to fclose $stream; it is done internally by Guzzle when
@@ -627,6 +641,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
                 [
                     'conflictBehavior' => ConflictBehavior::REPLACE,
                     'contentType'      => 'text/plain',
+                    'description'      => 'Test description',
                 ]
             );
 
@@ -636,6 +651,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
             $this->assertNotNull($driveItem->parentReference);
             $this->assertEquals($sandbox->id, $driveItem->parentReference->id);
             $this->assertEquals('Test file', $driveItem->name);
+            $this->assertEquals('Test description', $driveItem->description);
             $this->assertEquals($content, $driveItem->content);
 
             // No need to fclose $stream; it is done internally by Guzzle when
