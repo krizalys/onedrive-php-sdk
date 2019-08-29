@@ -31,6 +31,8 @@ use Microsoft\Graph\Model\ItemReference;
  *
  * @since 2.0.0
  *
+ * @api
+ *
  * @link https://github.com/microsoftgraph/msgraph-sdk-php/blob/dev/src/Model/ItemReference.php
  */
 class ItemReferenceProxy extends EntityProxy

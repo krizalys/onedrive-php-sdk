@@ -22,6 +22,8 @@ use Microsoft\Graph\Model\SystemFacet;
  *
  * @since 2.0.0
  *
+ * @api
+ *
  * @link https://github.com/microsoftgraph/msgraph-sdk-php/blob/dev/src/Model/SystemFacet.php
  */
 class SystemFacetProxy extends EntityProxy

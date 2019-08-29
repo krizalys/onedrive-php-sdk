@@ -29,6 +29,8 @@ use Microsoft\Graph\Model\IdentitySet;
  *
  * @since 2.0.0
  *
+ * @api
+ *
  * @link https://github.com/microsoftgraph/msgraph-sdk-php/blob/dev/src/Model/IdentitySet.php
  */
 class IdentitySetProxy extends EntityProxy

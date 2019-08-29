@@ -22,6 +22,8 @@ use Microsoft\Graph\Model\Workbook;
  *
  * @since 2.0.0
  *
+ * @api
+ *
  * @link https://github.com/microsoftgraph/msgraph-sdk-php/blob/dev/src/Model/Workbook.php
  */
 class WorkbookProxy extends EntityProxy

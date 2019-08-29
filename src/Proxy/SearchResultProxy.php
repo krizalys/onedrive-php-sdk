@@ -22,6 +22,8 @@ use Microsoft\Graph\Model\SearchResult;
  *
  * @since 2.0.0
  *
+ * @api
+ *
  * @link https://github.com/microsoftgraph/msgraph-sdk-php/blob/dev/src/Model/SearchResult.php
  */
 class SearchResultProxy extends EntityProxy

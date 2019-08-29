@@ -22,6 +22,8 @@ use Microsoft\Graph\Model\PublicationFacet;
  *
  * @since 2.0.0
  *
+ * @api
+ *
  * @link https://github.com/microsoftgraph/msgraph-sdk-php/blob/dev/src/Model/PublicationFacet.php
  */
 class PublicationFacetProxy extends EntityProxy

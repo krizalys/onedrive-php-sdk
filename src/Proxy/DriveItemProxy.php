@@ -84,6 +84,8 @@ use Microsoft\Graph\Model\UploadSession;
  *
  * @since 2.0.0
  *
+ * @api
+ *
  * @link https://github.com/microsoftgraph/msgraph-sdk-php/blob/dev/src/Model/DriveItem.php
  */
 class DriveItemProxy extends BaseItemProxy
@@ -266,6 +268,8 @@ class DriveItemProxy extends BaseItemProxy
      *
      * @since 2.0.0
      *
+     * @api
+     *
      * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_post_children?view=odsp-graph-online
      *       Create a new folder in a drive
      *
@@ -356,6 +360,8 @@ class DriveItemProxy extends BaseItemProxy
      *
      * @since 2.0.0
      *
+     * @api
+     *
      * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_list_children?view=odsp-graph-online
      *       List children of a driveItem
      *
@@ -403,6 +409,8 @@ class DriveItemProxy extends BaseItemProxy
      * Deletes this drive item.
      *
      * @since 2.0.0
+     *
+     * @api
      *
      * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_delete?view=odsp-graph-online
      *       Delete a DriveItem
@@ -455,6 +463,8 @@ class DriveItemProxy extends BaseItemProxy
      *         The drive item created.
      *
      * @since 2.0.0
+     *
+     * @api
      *
      * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_put_content?view=odsp-graph-online
      *       Upload or replace the contents of a DriveItem
@@ -540,6 +550,8 @@ class DriveItemProxy extends BaseItemProxy
      *
      * @since 2.1.0
      *
+     * @api
+     *
      * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_createuploadsession?view=odsp-graph-online
      *       Upload large files with an upload session
      *
@@ -586,6 +598,8 @@ class DriveItemProxy extends BaseItemProxy
      *
      * @since 2.0.0
      *
+     * @api
+     *
      * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_get_content?view=odsp-graph-online
      *       Download the contents of a DriveItem
      */
@@ -625,6 +639,8 @@ class DriveItemProxy extends BaseItemProxy
      *         The drive item renamed.
      *
      * @since 2.0.0
+     *
+     * @api
      *
      * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_move?view=odsp-graph-online
      *       Move a DriveItem to a new folder
@@ -681,6 +697,8 @@ class DriveItemProxy extends BaseItemProxy
      *         The drive item.
      *
      * @since 2.0.0
+     *
+     * @api
      *
      * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_move?view=odsp-graph-online
      *       Move a DriveItem to a new folder
@@ -751,6 +769,8 @@ class DriveItemProxy extends BaseItemProxy
      *         The progress URI.
      *
      * @since 2.0.0
+     *
+     * @api
      *
      * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_copy?view=odsp-graph-online
      *       Copy a DriveItem

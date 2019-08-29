@@ -33,6 +33,8 @@ use Microsoft\Graph\Model\Quota;
  *
  * @since 2.0.0
  *
+ * @api
+ *
  * @link https://github.com/microsoftgraph/msgraph-sdk-php/blob/dev/src/Model/Quota.php
  */
 class QuotaProxy extends EntityProxy

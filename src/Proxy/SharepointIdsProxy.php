@@ -22,6 +22,8 @@ use Microsoft\Graph\Model\SharepointIds;
  *
  * @since 2.0.0
  *
+ * @api
+ *
  * @link https://github.com/microsoftgraph/msgraph-sdk-php/blob/dev/src/Model/SharepointIds.php
  */
 class SharepointIdsProxy extends EntityProxy

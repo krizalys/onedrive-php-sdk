@@ -34,6 +34,8 @@ use Microsoft\Graph\Model\UploadSession;
  *
  * @since 2.1.0
  *
+ * @api
+ *
  * @link https://github.com/microsoftgraph/msgraph-sdk-php/blob/dev/src/Model/UploadSession.php
  */
 class UploadSessionProxy extends EntityProxy
@@ -155,6 +157,8 @@ class UploadSessionProxy extends EntityProxy
      *         The drive item created.
      *
      * @since 2.1.0
+     *
+     * @api
      *
      * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_createuploadsession?view=odsp-graph-online#upload-bytes-to-the-upload-session
      *       Upload bytes to the upload session

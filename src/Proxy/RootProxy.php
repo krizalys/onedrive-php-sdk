@@ -22,6 +22,8 @@ use Microsoft\Graph\Model\Root;
  *
  * @since 2.0.0
  *
+ * @api
+ *
  * @link https://github.com/microsoftgraph/msgraph-sdk-php/blob/dev/src/Model/Root.php
  */
 class RootProxy extends EntityProxy

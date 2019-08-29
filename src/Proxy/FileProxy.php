@@ -22,6 +22,8 @@ use Microsoft\Graph\Model\File;
  *
  * @since 2.0.0
  *
+ * @api
+ *
  * @link https://github.com/microsoftgraph/msgraph-sdk-php/blob/dev/src/Model/File.php
  */
 class FileProxy extends EntityProxy

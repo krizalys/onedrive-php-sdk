@@ -22,6 +22,8 @@ use Microsoft\Graph\Model\Image;
  *
  * @since 2.0.0
  *
+ * @api
+ *
  * @link https://github.com/microsoftgraph/msgraph-sdk-php/blob/dev/src/Model/Image.php
  */
 class ImageProxy extends EntityProxy

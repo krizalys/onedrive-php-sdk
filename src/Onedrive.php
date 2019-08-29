@@ -33,6 +33,8 @@ use Microsoft\Graph\Graph;
  * ```
  *
  * @since 2.3.0
+ *
+ * @api
  */
 class Onedrive
 {
@@ -48,6 +50,8 @@ class Onedrive
      *
      * @return Client
      *         The client created.
+     *
+     * @api
      */
     public static function client($clientId, array $options = [])
     {

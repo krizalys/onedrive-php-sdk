@@ -22,6 +22,8 @@ use Microsoft\Graph\Model\DriveItemVersion;
  *
  * @since 2.0.2
  *
+ * @api
+ *
  * @link https://github.com/microsoftgraph/msgraph-sdk-php/blob/dev/src/Model/DriveItemVersion.php
  */
 class DriveItemVersionProxy extends BaseItemVersionProxy

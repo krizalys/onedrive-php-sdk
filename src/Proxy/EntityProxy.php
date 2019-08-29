@@ -25,6 +25,8 @@ use Microsoft\Graph\Model\Entity;
  *
  * @since 2.0.0
  *
+ * @api
+ *
  * @link https://github.com/microsoftgraph/msgraph-sdk-php/blob/dev/src/Model/Entity.php
  */
 class EntityProxy

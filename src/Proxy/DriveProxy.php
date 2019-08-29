@@ -43,6 +43,8 @@ use Microsoft\Graph\Model\DriveItem;
  *
  * @since 2.0.0
  *
+ * @api
+ *
  * @link https://github.com/microsoftgraph/msgraph-sdk-php/blob/dev/src/Model/Drive.php
  */
 class DriveProxy extends BaseItemProxy
@@ -160,6 +162,8 @@ class DriveProxy extends BaseItemProxy
      *
      * @since 2.2.0
      *
+     * @api
+     *
      * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_get?view=odsp-graph-online
      *       Get a DriveItem resource
      */
@@ -207,6 +211,8 @@ class DriveProxy extends BaseItemProxy
      *
      * @since 2.2.0
      *
+     * @api
+     *
      * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_get?view=odsp-graph-online
      *       Get a DriveItem resource
      */
@@ -243,6 +249,8 @@ class DriveProxy extends BaseItemProxy
      *         The root.
      *
      * @since 2.0.0
+     *
+     * @api
      *
      * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_get?view=odsp-graph-online
      *       Get a DriveItem resource

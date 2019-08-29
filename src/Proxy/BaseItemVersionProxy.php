@@ -22,6 +22,8 @@ use Microsoft\Graph\Model\BaseItemVersion;
  *
  * @since 2.0.2
  *
+ * @api
+ *
  * @link https://github.com/microsoftgraph/msgraph-sdk-php/blob/dev/src/Model/BaseItemVersion.php
  */
 class BaseItemVersionProxy extends EntityProxy

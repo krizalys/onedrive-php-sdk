@@ -25,6 +25,8 @@ use Microsoft\Graph\Model\SpecialFolder;
  *
  * @since 2.0.0
  *
+ * @api
+ *
  * @link https://github.com/microsoftgraph/msgraph-sdk-php/blob/dev/src/Model/SpecialFolder.php
  */
 class SpecialFolderProxy extends EntityProxy

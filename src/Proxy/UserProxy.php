@@ -22,6 +22,8 @@ use Microsoft\Graph\Model\User;
  *
  * @since 2.0.0
  *
+ * @api
+ *
  * @link https://github.com/microsoftgraph/msgraph-sdk-php/blob/dev/src/Model/User.php
  */
 class UserProxy extends DirectoryObjectProxy

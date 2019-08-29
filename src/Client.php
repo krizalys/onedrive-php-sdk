@@ -45,6 +45,8 @@ use Microsoft\Graph\Model;
  *     Application Registration Portal}.
  *
  * @since 1.0.0
+ *
+ * @api
  */
 class Client
 {
@@ -203,6 +205,8 @@ class Client
      *         The state of this `Client` instance.
      *
      * @since 1.0.0
+     *
+     * @api
      */
     public function getState()
     {
@@ -237,6 +241,8 @@ class Client
      *         The log in URL.
      *
      * @since 1.0.0
+     *
+     * @api
      */
     public function getLogInUrl(array $scopes, $redirectUri)
     {
@@ -267,6 +273,8 @@ class Client
      *         The token expiration delay, in seconds.
      *
      * @since 1.0.0
+     *
+     * @api
      */
     public function getTokenExpire()
     {
@@ -285,6 +293,8 @@ class Client
      *           - `1`: access token is valid.
      *
      * @since 1.0.0
+     *
+     * @api
      */
     public function getAccessTokenStatus()
     {
@@ -322,6 +332,8 @@ class Client
      *         Thrown if the HTTP response body cannot be JSON-decoded.
      *
      * @since 1.0.0
+     *
+     * @api
      */
     public function obtainAccessToken($clientSecret, $code)
     {
@@ -371,6 +383,8 @@ class Client
      *        The client secret.
      *
      * @since 1.1.0
+     *
+     * @api
      */
     public function renewAccessToken($clientSecret)
     {
@@ -416,6 +430,8 @@ class Client
      *
      * @since 2.0.0
      *
+     * @api
+     *
      * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/drive_list?view=odsp-graph-online#list-the-current-users-drives
      *       List the current user's drives
      */
@@ -458,6 +474,8 @@ class Client
      *
      * @since 2.0.0
      *
+     * @api
+     *
      * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/drive_get?view=odsp-graph-online#get-current-users-onedrive
      *       Get current user's OneDrive
      */
@@ -497,6 +515,8 @@ class Client
      *
      * @since 2.0.0
      *
+     * @api
+     *
      * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/drive_get?view=odsp-graph-online#get-a-drive-by-id
      *       Get a drive by ID
      */
@@ -535,6 +555,8 @@ class Client
      *         The drive.
      *
      * @since 2.0.0
+     *
+     * @api
      *
      * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/drive_get?view=odsp-graph-online#get-a-users-onedrive
      *       Get a user's OneDrive
@@ -576,6 +598,8 @@ class Client
      *
      * @since 2.0.0
      *
+     * @api
+     *
      * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/drive_get?view=odsp-graph-online#get-the-document-library-associated-with-a-group
      *       Get the document library associated with a group
      */
@@ -615,6 +639,8 @@ class Client
      *         The drive.
      *
      * @since 2.0.0
+     *
+     * @api
      *
      * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/drive_get?view=odsp-graph-online#get-the-document-library-for-a-site
      *       Get the document library for a site
@@ -659,6 +685,8 @@ class Client
      *         The drive item.
      *
      * @since 2.0.0
+     *
+     * @api
      *
      * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_get?view=odsp-graph-online
      *       Get a DriveItem resource
@@ -728,6 +756,8 @@ class Client
      *
      * @since 2.2.0
      *
+     * @api
+     *
      * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_get?view=odsp-graph-online
      *       Get a DriveItem resource
      */
@@ -764,6 +794,8 @@ class Client
      *         The root drive item.
      *
      * @since 2.0.0
+     *
+     * @api
      *
      * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_get?view=odsp-graph-online
      *       Get a DriveItem resource
@@ -810,6 +842,8 @@ class Client
      *
      * @since 2.0.0
      *
+     * @api
+     *
      * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/drive_get_specialfolder?view=odsp-graph-online
      *       Get a special folder by name
      */
@@ -846,6 +880,8 @@ class Client
      *         The shared drive items.
      *
      * @since 2.0.0
+     *
+     * @api
      *
      * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/drive_sharedwithme?view=odsp-graph-online
      *       List items shared with the signed-in user
@@ -888,6 +924,8 @@ class Client
      *         The recent drive items.
      *
      * @since 2.0.0
+     *
+     * @api
      *
      * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/drive_recent?view=odsp-graph-online
      *       List recent files

@@ -22,6 +22,8 @@ use Microsoft\Graph\Model\Video;
  *
  * @since 2.0.0
  *
+ * @api
+ *
  * @link https://github.com/microsoftgraph/msgraph-sdk-php/blob/dev/src/Model/Video.php
  */
 class VideoProxy extends EntityProxy

@@ -22,6 +22,8 @@ use Microsoft\Graph\Model\GraphList;
  *
  * @since 2.0.0
  *
+ * @api
+ *
  * @link https://github.com/microsoftgraph/msgraph-sdk-php/blob/dev/src/Model/GraphList.php
  */
 class GraphListProxy extends BaseItemProxy
