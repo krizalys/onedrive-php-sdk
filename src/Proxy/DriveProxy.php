@@ -38,7 +38,7 @@ use Microsoft\Graph\Model\DriveItem;
  *                The list.
  * @property-read \Krizalys\Onedrive\Proxy\DriveItemProxy $root
  *                The root.
- * @property-read \Krizalys\Onedrive\Proxy\DriveItemProxy special
+ * @property-read \Krizalys\Onedrive\Proxy\DriveItemProxy $special
  *                The special.
  *
  * @since 2.0.0
