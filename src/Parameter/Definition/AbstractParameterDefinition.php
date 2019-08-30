@@ -24,10 +24,22 @@ use Krizalys\Onedrive\Serializer\SerializerInterface;
 abstract class AbstractParameterDefinition implements ParameterDefinitionInterface
 {
     /**
+     * @var string
+     *      The name.
+     */
+    protected $name;
+
+    /**
+     * @var SerializerInterface
+     *      The serializer.
+     */
+    private $serializer;
+
+    /**
      * Constructor.
      *
      * @param string $name
-     *        The header parameter name.
+     *        The name.
      * @param SerializerInterface $serializer
      *        The serializer.
      *
