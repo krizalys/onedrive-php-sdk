@@ -41,6 +41,11 @@ abstract class AbstractParameterDefinition implements ParameterDefinitionInterfa
 
     /**
      * {@inheritDoc}
+     *
+     * @return string
+     *         The serialized key.
+     *
+     * @since 2.3.0
      */
     abstract public function serializeKey();
 

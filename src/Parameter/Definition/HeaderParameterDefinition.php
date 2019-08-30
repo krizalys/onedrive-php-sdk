@@ -23,6 +23,11 @@ class HeaderParameterDefinition extends AbstractParameterDefinition
 {
     /**
      * {@inheritdoc}
+     *
+     * @return string
+     *         The serialized key.
+     *
+     * @since 2.3.0
      */
     public function serializeKey()
     {
