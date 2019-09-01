@@ -206,6 +206,20 @@ For details about classes and methods available, see the [API
 reference][api-reference] or the [project page][onedrive-php-sdk] on
 [Krizalys][krizalys].
 
+Versioning
+----------
+
+OneDrive SDK for PHP adheres to [semantic versioning][semver]: we are committed
+not to introduce breaking changes to the public API without incrementing the
+major version number. We also try to document such changes in the
+[changelog][changelog].
+
+However, we only consider symbols marked with the `@api` annotation to be
+part of the public API and subject to the Semantic Versioning requirements.
+**Other symbols are internal to this library; they may change or get removed
+regardless of the major version number. You should not rely on these in your
+code.**
+
 Testing
 -------
 
@@ -248,4 +262,6 @@ The OneDrive SDK for PHP is developed and maintained by Christophe Vidal.
 [api-reference]:              https://github.com/krizalys/onedrive-php-sdk/wiki/ApiIndex
 [onedrive-php-sdk]:           http://www.krizalys.com/software/onedrive-php-sdk
 [krizalys]:                   http://www.krizalys.com/
+[semver]:                     https://semver.org/
+[changelog]:                  https://github.com/krizalys/onedrive-php-sdk/blob/master/CHANGELOG.md
 [bsd-3-clause]:               https://opensource.org/licenses/BSD-3-Clause
