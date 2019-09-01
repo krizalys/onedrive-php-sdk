@@ -282,4 +282,60 @@ class DriveProxy extends BaseItemProxy
             $this->driveItemResourceDefinition
         );
     }
+
+    /**
+     * Creates a shared folder to a given remote drive item.
+     *
+     * @param string $name
+     *        The name.
+     * @param DriveItemProxy $remote
+     *        The remote.
+     * @param mixed[string] $options
+     *        The options.
+     *
+     * @since 2.5.0
+     *
+     * @api
+     *
+     * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/concepts/using-sharing-links?view=odsp-graph-online#add-a-shared-folder-to-the-users-drive
+     *       Add a shared folder to the user's drive
+     */
+    public function createSharedFolder($name, DriveItemProxy $remote, array $options = [])
+    {
+        $driveLocator = "/drives/{$this->id}";
+        $itemLocator  = '/root';
+        $endpoint     = "$driveLocator$itemLocator/children";
+
+        $body = [
+            'remoteItem' => [
+                '@odata.type' => 'microsoft.graph.remoteItem',
+                'id'          => $remote->id,
+
+                'parentReference' => [
+                    'driveId' => $remote->parentReference->driveId,
+                ],
+            ],
+            'name' => (string) $name,
+        ];
+
+        $response = $this
+            ->graph
+            ->createRequest('POST', $endpoint)
+            ->attachBody($body)
+            ->execute();
+
+        $status = $response->getStatus();
+
+        if ($status != 201) {
+            throw new \Exception("Unexpected status code produced by 'POST $endpoint': $status");
+        }
+
+        $driveItem = $response->getResponseAsObject(DriveItem::class);
+
+        return new DriveItemProxy(
+            $this->graph,
+            $driveItem,
+            $this->driveItemParameterDirector
+        );
+    }
 }

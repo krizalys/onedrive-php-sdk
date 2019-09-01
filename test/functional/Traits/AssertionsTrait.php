@@ -169,7 +169,9 @@ trait AssertionsTrait
             )
         );
 
-        $this->assertFileSystemInfoProxy($item->fileSystemInfo);
+        if ($item->fileSystemInfo !== null) {
+            $this->assertFileSystemInfoProxy($item->fileSystemInfo);
+        }
 
         $this->assertThat(
             $item->folder,
@@ -608,7 +610,10 @@ trait AssertionsTrait
             $this->assertFileProxy($remoteItem->file);
         }
 
-        $this->assertFileSystemInfoProxy($remoteItem->fileSystemInfo);
+        if ($remoteItem->fileSystemInfo !== null) {
+            $this->assertFileSystemInfoProxy($remoteItem->fileSystemInfo);
+        }
+
         $this->assertFolderProxy($remoteItem->folder);
 
         if ($remoteItem->lastModifiedBy !== null) {
@@ -646,11 +651,18 @@ trait AssertionsTrait
         }
 
         $this->assertIsInt($remoteItem->size);
-        $this->assertSpecialFolderProxy($remoteItem->specialFolder);
-        $this->assertIsString($remoteItem->webDavUrl);
-        $this->assertMatchesRegularExpression(self::$uriRegex, $remoteItem->webDavUrl);
+
+        if ($remoteItem->specialFolder !== null) {
+            $this->assertSpecialFolderProxy($remoteItem->specialFolder);
+        }
+
+        if ($remoteItem->webDavUrl !== null) {
+            $this->assertIsString($remoteItem->webDavUrl);
+            $this->assertRegExp(self::$uriRegex, $remoteItem->webDavUrl);
+        }
+
         $this->assertIsString($remoteItem->webUrl);
-        $this->assertMatchesRegularExpression(self::$uriRegex, $remoteItem->webUrl);
+        $this->assertRegExp(self::$uriRegex, $remoteItem->webUrl);
     }
 
     private function assertRootProxy($root)

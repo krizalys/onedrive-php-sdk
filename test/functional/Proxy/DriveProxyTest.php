@@ -71,4 +71,25 @@ class DriveProxyTest extends TestCase
             $this->assertEquals('Test file', $driveItem->name);
         });
     }
+
+    public function testCreateSharedFolderWhenNotExisting()
+    {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
+            $folder       = $sandbox->createFolder('Test folder');
+            $sharedFolder = self::$defaultDrive->createSharedFolder('Test shared folder', $folder);
+            $this->assertDriveItemProxy($sharedFolder);
+            $this->assertRemoteItemProxy($sharedFolder->remoteItem);
+        });
+    }
+
+    public function testCreateSharedFolderWhenExisting()
+    {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
+            $folder = $sandbox->createFolder('Test folder');
+            self::$defaultDrive->createSharedFolder('Test shared folder', $folder);
+            $sharedFolder = self::$defaultDrive->createSharedFolder('Test shared folder2', $folder);
+            $this->assertDriveItemProxy($sharedFolder);
+            $this->assertRemoteItemProxy($sharedFolder->remoteItem);
+        });
+    }
 }
