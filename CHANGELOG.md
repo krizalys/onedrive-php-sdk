@@ -18,6 +18,7 @@ Change log
 
 ### Changed
 
+- Modularized the functional test suite.
 - Improved usefulness of some assertions in unit tests.
 
 ### Deprecated
