@@ -4,6 +4,7 @@ namespace Test\Functional\Krizalys\Onedrive;
 
 use GuzzleHttp\Exception\ClientException;
 use Krizalys\Onedrive\Constant\DriveType;
+use Krizalys\Onedrive\Constant\SharingLinkType;
 use Krizalys\Onedrive\Proxy\AudioProxy;
 use Krizalys\Onedrive\Proxy\BaseItemProxy;
 use Krizalys\Onedrive\Proxy\DeletedProxy;
@@ -451,7 +452,7 @@ trait AssertionsTrait
     {
         $this->assertInstanceOf(SharingLinkProxy::class, $sharingLink);
 
-        if ($sharingLink->type != 'embed') {
+        if ($sharingLink->type != SharingLinkType::EMBED) {
             $this->assertIdentity($sharingLink->application);
         }
 
@@ -463,7 +464,12 @@ trait AssertionsTrait
             )
         );
 
-        $this->assertContains($sharingLink->type, ['view', 'edit', 'embed']);
+        $this->assertContains($sharingLink->type, [
+            SharingLinkType::VIEW,
+            SharingLinkType::EDIT,
+            SharingLinkType::EMBED,
+        ]);
+
         $this->assertRegExp(self::$uriRegex, $sharingLink->webUrl);
     }
 

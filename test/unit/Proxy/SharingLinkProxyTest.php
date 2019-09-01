@@ -2,6 +2,7 @@
 
 namespace Test\Unit\Krizalys\Onedrive\Proxy;
 
+use Krizalys\Onedrive\Constant\SharingLinkType;
 use Krizalys\Onedrive\Proxy\IdentityProxy;
 use Krizalys\Onedrive\Proxy\SharingLinkProxy;
 use Microsoft\Graph\Graph;
@@ -42,11 +43,11 @@ class SharingLinkProxyTest extends \PHPUnit_Framework_TestCase
         $graph = $this->createMock(Graph::class);
 
         $sharingLink = $this->createMock(SharingLink::class);
-        $sharingLink->method('getType')->willReturn('view');
+        $sharingLink->method('getType')->willReturn(SharingLinkType::VIEW);
 
         $sut = new SharingLinkProxy($graph, $sharingLink);
         $this->assertInternalType('string', $sut->type);
-        $this->assertSame('view', $sut->type);
+        $this->assertSame(SharingLinkType::VIEW, $sut->type);
     }
 
     public function testWebUrlShouldReturnExpectedValue()

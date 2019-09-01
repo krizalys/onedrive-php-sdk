@@ -913,11 +913,11 @@ class DriveItemProxy extends BaseItemProxy
     /**
      * Creates a sharing link to this drive item.
      *
+     * See {@see \Krizalys\Onedrive\Constant\SharingLinkType
+     * SharingLinkType} for supported values for the parameter `$type`.
+     *
      * @param string $type
-     *        The type. Supported values:
-     *          - `'view'` ;
-     *          - `'edit` ;
-     *          - `'embed'`.
+     *        The type.
      * @param mixed[string] $options
      *        The options. Supported values:
      *          - `'scope'` *(string)*: the scope supported values:

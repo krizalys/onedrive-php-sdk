@@ -3,6 +3,7 @@
 namespace Test\Functional\Krizalys\Onedrive\Proxy;
 
 use Krizalys\Onedrive\ConflictBehavior;
+use Krizalys\Onedrive\Constant\SharingLinkType;
 use Krizalys\Onedrive\Proxy\DriveItemProxy;
 use Test\Functional\Krizalys\Onedrive\AssertionsTrait;
 use Test\Functional\Krizalys\Onedrive\AsynchronousTrait;
@@ -846,9 +847,9 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
     public function provideLinkTypes()
     {
         return [
-            ['view'],
-            ['edit'],
-            ['embed'],
+            [SharingLinkType::VIEW],
+            [SharingLinkType::EDIT],
+            [SharingLinkType::EMBED],
         ];
     }
 }

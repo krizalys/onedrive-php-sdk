@@ -3,6 +3,7 @@
 namespace Test\Unit\Krizalys\Onedrive\Proxy;
 
 use GuzzleHttp\Psr7\Stream;
+use Krizalys\Onedrive\Constant\SharingLinkType;
 use Krizalys\Onedrive\Parameter\DriveItemParameterDirectorInterface;
 use Krizalys\Onedrive\Proxy\AudioProxy;
 use Krizalys\Onedrive\Proxy\DeletedProxy;
@@ -643,7 +644,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
         $parameterDirector = $this->createMock(DriveItemParameterDirectorInterface::class);
 
         $sut    = new DriveItemProxy($graph, $item, $parameterDirector);
-        $actual = $sut->createLink('view', []);
+        $actual = $sut->createLink(SharingLinkType::VIEW, []);
         $this->assertInstanceOf(PermissionProxy::class, $actual);
         $this->assertInstanceOf(SharingLinkProxy::class, $actual->link);
         $this->assertInternalType('string', $actual->link->scope);
