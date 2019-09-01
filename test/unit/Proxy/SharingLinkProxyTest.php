@@ -2,6 +2,7 @@
 
 namespace Test\Unit\Krizalys\Onedrive\Proxy;
 
+use Krizalys\Onedrive\Constant\SharingLinkScope;
 use Krizalys\Onedrive\Constant\SharingLinkType;
 use Krizalys\Onedrive\Proxy\IdentityProxy;
 use Krizalys\Onedrive\Proxy\SharingLinkProxy;
@@ -31,11 +32,11 @@ class SharingLinkProxyTest extends \PHPUnit_Framework_TestCase
         $graph = $this->createMock(Graph::class);
 
         $sharingLink = $this->createMock(SharingLink::class);
-        $sharingLink->method('getScope')->willReturn('anonymous');
+        $sharingLink->method('getScope')->willReturn(SharingLinkScope::ANONYMOUS);
 
         $sut = new SharingLinkProxy($graph, $sharingLink);
         $this->assertInternalType('string', $sut->scope);
-        $this->assertSame('anonymous', $sut->scope);
+        $this->assertSame(SharingLinkScope::ANONYMOUS, $sut->scope);
     }
 
     public function testTypeShouldReturnExpectedValue()

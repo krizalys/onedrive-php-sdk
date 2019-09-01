@@ -4,6 +4,7 @@ namespace Test\Functional\Krizalys\Onedrive;
 
 use GuzzleHttp\Exception\ClientException;
 use Krizalys\Onedrive\Constant\DriveType;
+use Krizalys\Onedrive\Constant\SharingLinkScope;
 use Krizalys\Onedrive\Constant\SharingLinkType;
 use Krizalys\Onedrive\Proxy\AudioProxy;
 use Krizalys\Onedrive\Proxy\BaseItemProxy;
@@ -460,7 +461,10 @@ trait AssertionsTrait
             $sharingLink->scope,
             $this->logicalOr(
                 $this->isNull(),
-                $this->contains(['anonymous', 'organization'])
+                $this->contains([
+                    SharingLinkScope::ANONYMOUS,
+                    SharingLinkScope::ORGANIZATION,
+                ])
             )
         );
 

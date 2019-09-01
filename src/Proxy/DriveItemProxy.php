@@ -916,13 +916,14 @@ class DriveItemProxy extends BaseItemProxy
      * See {@see \Krizalys\Onedrive\Constant\SharingLinkType
      * SharingLinkType} for supported values for the parameter `$type`.
      *
+     * See {@see \Krizalys\Onedrive\Constant\SharingLinkScope
+     * SharingLinkScope} for supported values for the option `'scope'`.
+     *
      * @param string $type
      *        The type.
      * @param mixed[string] $options
      *        The options. Supported values:
-     *          - `'scope'` *(string)*: the scope supported values:
-     *            - `'anonymous'` ;
-     *            - `'organization'`.
+     *          - `'scope'` *(string)*: the scope.
      *
      * @return PermissionProxy
      *         The permission.

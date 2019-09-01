@@ -3,6 +3,7 @@
 namespace Test\Unit\Krizalys\Onedrive\Proxy;
 
 use GuzzleHttp\Psr7\Stream;
+use Krizalys\Onedrive\Constant\SharingLinkScope;
 use Krizalys\Onedrive\Constant\SharingLinkType;
 use Krizalys\Onedrive\Parameter\DriveItemParameterDirectorInterface;
 use Krizalys\Onedrive\Proxy\AudioProxy;
@@ -632,7 +633,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
         $item = $this->mockDriveItem();
 
         $sharingLink = $this->createMock(SharingLink::class);
-        $sharingLink->method('getScope')->willReturn('anonymous');
+        $sharingLink->method('getScope')->willReturn(SharingLinkScope::ANONYMOUS);
 
         $permission = $this->createMock(Permission::class);
         $permission->method('getLink')->willReturn($sharingLink);
@@ -648,7 +649,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(PermissionProxy::class, $actual);
         $this->assertInstanceOf(SharingLinkProxy::class, $actual->link);
         $this->assertInternalType('string', $actual->link->scope);
-        $this->assertSame('anonymous', $actual->link->scope);
+        $this->assertSame(SharingLinkScope::ANONYMOUS, $actual->link->scope);
     }
 
     private function mockStream()
