@@ -28,7 +28,7 @@ Using the OneDrive SDK for PHP requires the following:
 For development, you also require:
 
 * A OneDrive web application configured with `http://localhost:7777/` as its
-  redirect URL
+  redirect URI
 * A WebDriver server, for example the [Selenium's Java standalone
   server][selenium-server-standalone]
 * A Chrome browser & ChromeDriver, and they must be usable by the WebDriver
@@ -50,31 +50,31 @@ Composer documentation][composer] to learn how to set it up first.
 Quick start
 -----------
 
-To use this SDK, you need to register a OneDrive application. To do this, first
-[sign in to your Microsoft account][microsoft-account-login], then visit the
-[Application Registration Portal][app-registration-portal] and [create an
-application][register-app].
+When using OneDrive SDK for PHP, you are assumed to have an application exposing
+a URL receiving user authentication data from OneDrive. Typically, this URL,
+referred to as your application's ***Redirect URI***, is a PHP script accepting
+this data to expose functionality interacting with your users' OneDrive
+contents. An example of such an application is our [functional test
+suite][functional-test-suite].
 
-Once done, your application will be assigned, among other things, an
-*Application ID*, referred to as the *Client ID*. You will be able to add
-*Application Secrets*, some of them of type *Password*, and whose values are
-referred to as *Client Secrets*. The *Client ID* and a *Client Secret* will be
-needed shortly to configure the OneDrive SDK for PHP.
+You also need to register a OneDrive application. To do this, first [sign in to
+Microsoft Azure][microsoft-azure-login], then visit [App
+registrations][app-registration-portal] and add a *registration* for your
+application. While registering your application, you are given the option to set
+its *Redirect URI*, explained above. **We currently only support *Web* redirect
+URIs.** Once created, your application is assigned an *Application (client) ID*,
+referred to as its ***Client ID***, and in *Certificate & secrets*, you need to
+add at least one ***Client secret***. **Warning: *Client Secrets* are similar to
+passwords or private keys, they allow applications to identify as yours: they
+should be handled securely and not be disclosed to third-parties.**
 
-You also need to create a web page where users will get redirected after they
-successfully signed in to their OneDrive account using this SDK. Typically, this
-page will be a PHP script where you will start to interact with the files and
-folders stored in their OneDrive account. The URL of this page should be listed
-as a *Redirect URL*, referred to as a *Redirect URI*, and will also be needed to
-configure the OneDrive SDK for PHP.
-
-Once you got your *Client ID*, a *Client Secret* and a *Redirect URI*, you can
-get started using the OneDrive SDK for PHP in three steps.
+Once you have a *Redirect URI*, a *Client ID*, and a *Client Secret*, your
+application can start using the OneDrive SDK for PHP in three steps.
 
 ### Step 1: create your configuration
 
-As you may need them from several scripts, save your *Client ID*, *Client
-Secret* and *Redirect URI* in a configuration file, returning values like this:
+As you may need them from several scripts, we recommend saving your *Client ID*,
+*Client secret* and *Redirect URI* in a configuration file, for example:
 
 ```php
 <?php
@@ -256,9 +256,9 @@ The OneDrive SDK for PHP is developed and maintained by Christophe Vidal.
 [onedrive-rest-api]:          https://docs.microsoft.com/en-us/onedrive/developer/rest-api/?view=odsp-graph-online
 [composer]:                   https://getcomposer.org/
 [selenium-server-standalone]: http://selenium-release.storage.googleapis.com/index.html
-[microsoft-account-login]:    https://login.live.com/
-[app-registration-portal]:    https://apps.dev.microsoft.com/
-[register-app]:               https://apps.dev.microsoft.com/portal/register-app
+[functional-test-suite]:      https://github.com/krizalys/onedrive-php-sdk/tree/readme/test/functional
+[microsoft-azure-login]:      https://login.microsoftonline.com/
+[app-registration-portal]:    https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade
 [api-reference]:              https://github.com/krizalys/onedrive-php-sdk/wiki/ApiIndex
 [onedrive-php-sdk]:           http://www.krizalys.com/software/onedrive-php-sdk
 [krizalys]:                   http://www.krizalys.com/
