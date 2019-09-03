@@ -299,12 +299,12 @@ class DriveItemProxy extends BaseItemProxy
             ->parameterDirector
             ->buildPostChildrenBodyParameters($options);
 
-        $body = [
+        $body = array_replace_recursive([
             'folder' => [
                 '@odata.type' => 'microsoft.graph.folder',
             ],
             'name' => (string) $name,
-        ] + $bodyParams;
+        ], $bodyParams);
 
         try {
             $response = $this
@@ -755,14 +755,14 @@ class DriveItemProxy extends BaseItemProxy
         $itemLocator  = "/items/{$this->id}";
         $endpoint     = "$driveLocator$itemLocator";
 
-        $body = [
+        $body = array_replace_recursive([
             'name' => (string) $name,
-        ];
+        ], $options);
 
         $response = $this
             ->graph
             ->createRequest('PATCH', $endpoint)
-            ->attachBody($body + $options)
+            ->attachBody($body)
             ->execute();
 
         $status = $response->getStatus();
@@ -813,16 +813,16 @@ class DriveItemProxy extends BaseItemProxy
         $itemLocator  = "/items/{$this->id}";
         $endpoint     = "$driveLocator$itemLocator";
 
-        $body = [
+        $body = array_replace_recursive([
             'parentReference' => [
                 'id' => $destinationItem->id,
             ],
-        ];
+        ], $options);
 
         $response = $this
             ->graph
             ->createRequest('PATCH', $endpoint)
-            ->attachBody($body + $options)
+            ->attachBody($body)
             ->execute();
 
         $status = $response->getStatus();
@@ -887,16 +887,16 @@ class DriveItemProxy extends BaseItemProxy
         $itemLocator  = "/items/{$this->id}";
         $endpoint     = "$driveLocator$itemLocator/copy";
 
-        $body = [
+        $body = array_replace_recursive([
             'parentReference' => [
                 'id' => $destinationItem->id,
             ],
-        ];
+        ], $options);
 
         $response = $this
             ->graph
             ->createRequest('POST', $endpoint)
-            ->attachBody($body + $options)
+            ->attachBody($body)
             ->execute();
 
         $status = $response->getStatus();
