@@ -2,7 +2,7 @@
 
 namespace Test\Functional\Krizalys\Onedrive\Proxy;
 
-use Krizalys\Onedrive\ConflictBehavior;
+use Krizalys\Onedrive\Constant\ConflictBehavior;
 use Krizalys\Onedrive\Constant\SharingLinkType;
 use Krizalys\Onedrive\Proxy\DriveItemProxy;
 use Test\Functional\Krizalys\Onedrive\AssertionsTrait;

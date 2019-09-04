@@ -21,6 +21,8 @@ namespace Krizalys\Onedrive;
  * @since 2.4.0
  *
  * @api
+ *
+ * @deprecated 2.4.1 Superseded by \Krizalys\Onedrive\Constant\ConflictBehavior.
  */
 class ConflictBehavior
 {

@@ -1,6 +1,14 @@
 Change log
 ==========
 
+[Unreleased][unreleased]
+------------------------
+
+### Changed
+
+- Deprecated `Krizalys\Onedrive\ConflictBehavior` in favor of
+  `Krizalys\Onedrive\Constant\ConflictBehavior`.
+
 [2.4.0] - 2019-09-01
 --------------------
 
