@@ -447,10 +447,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
             $sandbox->startUpload(
                 'Test file',
                 $string,
-                [
-                    'conflictBehavior' => ConflictBehavior::FAIL,
-                    'contentType'      => 'text/plain',
-                ]
+                ['conflictBehavior' => ConflictBehavior::FAIL]
             );
         });
     }
@@ -573,10 +570,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
             $sandbox->startUpload(
                 'Test file',
                 $stream,
-                [
-                    'conflictBehavior' => ConflictBehavior::FAIL,
-                    'contentType'      => 'text/plain',
-                ]
+                ['conflictBehavior' => ConflictBehavior::FAIL]
             );
 
             // No need to fclose $stream; it is done internally by Guzzle when
