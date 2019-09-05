@@ -10,6 +10,7 @@ Change log
   `Krizalys\Onedrive\Client::getLogInUrl()`.
 - Support for sending invites: see
   `Krizalys\Onedrive\Proxy\DriveItemProxy::invite()`.
+- `Krizalys\Onedrive\Proxy\HashesProxy`.
 
 ### Changed
 
