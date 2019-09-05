@@ -206,6 +206,7 @@ class DriveItemProxyTest extends TestCase
             $this->assertEquals($sandbox->id, $driveItem->parentReference->id);
             $this->assertEquals('Test file', $driveItem->name);
             $this->assertEquals('Test content', $driveItem->content);
+            $this->assertFileProxy($driveItem->file);
         });
     }
 
@@ -255,6 +256,7 @@ class DriveItemProxyTest extends TestCase
             $this->assertEquals($sandbox->id, $driveItem->parentReference->id);
             $this->assertEquals('Test file 1', $driveItem->name);
             $this->assertEquals('Test content', $driveItem->content);
+            $this->assertFileProxy($driveItem->file);
         });
     }
 
@@ -281,6 +283,7 @@ class DriveItemProxyTest extends TestCase
             $this->assertEquals($sandbox->id, $driveItem->parentReference->id);
             $this->assertEquals('Test file', $driveItem->name);
             $this->assertEquals('Test content', $driveItem->content);
+            $this->assertFileProxy($driveItem->file);
         });
     }
 
@@ -302,6 +305,7 @@ class DriveItemProxyTest extends TestCase
             $this->assertEquals($sandbox->id, $driveItem->parentReference->id);
             $this->assertEquals('Test file', $driveItem->name);
             $this->assertEquals('Test content', $driveItem->content);
+            $this->assertFileProxy($driveItem->file);
 
             // No need to fclose $content; it is done internally by Guzzle when
             // instantiating a Guzzle stream from it.
@@ -365,6 +369,7 @@ class DriveItemProxyTest extends TestCase
             $this->assertEquals($sandbox->id, $driveItem->parentReference->id);
             $this->assertEquals('test-file 1.txt', $driveItem->name);
             $this->assertEquals('Test content', $driveItem->content);
+            $this->assertFileProxy($driveItem->file);
 
             // No need to fclose $content; it is done internally by Guzzle when
             // instantiating a Guzzle stream from it.
@@ -398,6 +403,7 @@ class DriveItemProxyTest extends TestCase
             $this->assertEquals($sandbox->id, $driveItem->parentReference->id);
             $this->assertEquals('Test file', $driveItem->name);
             $this->assertEquals('Test content', $driveItem->content);
+            $this->assertFileProxy($driveItem->file);
 
             // No need to fclose $content; it is done internally by Guzzle when
             // instantiating a Guzzle stream from it.
@@ -426,6 +432,7 @@ class DriveItemProxyTest extends TestCase
             $this->assertEquals('Test file', $driveItem->name);
             $this->assertEquals('Test description', $driveItem->description);
             $this->assertEquals($string, $driveItem->content);
+            $this->assertFileProxy($driveItem->file);
         });
     }
 
@@ -483,6 +490,7 @@ class DriveItemProxyTest extends TestCase
             $this->assertEquals('Test file 1', $driveItem->name);
             $this->assertEquals('Test description', $driveItem->description);
             $this->assertEquals($string, $driveItem->content);
+            $this->assertFileProxy($driveItem->file);
         });
     }
 
@@ -515,6 +523,7 @@ class DriveItemProxyTest extends TestCase
             $this->assertEquals('Test file', $driveItem->name);
             $this->assertEquals('Test description', $driveItem->description);
             $this->assertEquals($string, $driveItem->content);
+            $this->assertFileProxy($driveItem->file);
         });
     }
 
@@ -543,6 +552,7 @@ class DriveItemProxyTest extends TestCase
             $this->assertEquals('Test file', $driveItem->name);
             $this->assertEquals('Test description', $driveItem->description);
             $this->assertEquals($content, $driveItem->content);
+            $this->assertFileProxy($driveItem->file);
 
             // No need to fclose $stream; it is done internally by Guzzle when
             // instantiating a Guzzle stream from it.
@@ -612,6 +622,7 @@ class DriveItemProxyTest extends TestCase
             $this->assertEquals('Test file 1', $driveItem->name);
             $this->assertEquals('Test description', $driveItem->description);
             $this->assertEquals($content, $driveItem->content);
+            $this->assertFileProxy($driveItem->file);
 
             // No need to fclose $stream; it is done internally by Guzzle when
             // instantiating a Guzzle stream from it.
@@ -650,6 +661,7 @@ class DriveItemProxyTest extends TestCase
             $this->assertEquals('Test file', $driveItem->name);
             $this->assertEquals('Test description', $driveItem->description);
             $this->assertEquals($content, $driveItem->content);
+            $this->assertFileProxy($driveItem->file);
 
             // No need to fclose $stream; it is done internally by Guzzle when
             // instantiating a Guzzle stream from it.

@@ -15,6 +15,7 @@ Change log
 ### Changed
 
 - Refactored parameter definition support.
+- Updated `Krizalys\Onedrive\Proxy\FileProxy`.
 
 [2.4.2] - 2019-09-16
 --------------------

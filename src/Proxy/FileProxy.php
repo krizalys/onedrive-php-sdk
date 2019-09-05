@@ -20,6 +20,11 @@ use Microsoft\Graph\Model\File;
 /**
  * A proxy to a \Microsoft\Graph\Model\File instance.
  *
+ * @property-read \Krizalys\Onedrive\Proxy\HashesProxy $hashes
+ *                The hashes.
+ * @property-read string $mimeType
+ *                The MIME type.
+ *
  * @since 2.0.0
  *
  * @api
@@ -41,5 +46,33 @@ class FileProxy extends EntityProxy
     public function __construct(Graph $graph, File $file)
     {
         parent::__construct($graph, $file);
+    }
+
+    /**
+     * Getter.
+     *
+     * @param string $name
+     *        The name.
+     *
+     * @return mixed
+     *         The value.
+     *
+     * @since 2.5.0
+     */
+    public function __get($name)
+    {
+        $file = $this->entity;
+
+        switch ($name) {
+            case 'hashes':
+                $hashes = $file->getHashes();
+                return $hashes !== null ? new HashesProxy($this->graph, $hashes) : null;
+
+            case 'mimeType':
+                return $file->getMimeType();
+
+            default:
+                return parent::__get($name);
+        }
     }
 }

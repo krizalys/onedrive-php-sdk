@@ -18,6 +18,7 @@ use Krizalys\Onedrive\Proxy\FileSystemInfoProxy;
 use Krizalys\Onedrive\Proxy\FolderProxy;
 use Krizalys\Onedrive\Proxy\GeoCoordinatesProxy;
 use Krizalys\Onedrive\Proxy\GraphListProxy;
+use Krizalys\Onedrive\Proxy\HashesProxy;
 use Krizalys\Onedrive\Proxy\IdentityProxy;
 use Krizalys\Onedrive\Proxy\IdentitySetProxy;
 use Krizalys\Onedrive\Proxy\ImageProxy;
@@ -411,6 +412,31 @@ trait AssertionsTrait
                 $this->isType('string')
             )
         );
+    }
+
+    private function assertFileProxy($file)
+    {
+        $this->assertEntityProxy($file);
+        $this->assertInstanceOf(FileProxy::class, $file);
+        $this->assertHashesProxy($file->hashes);
+        $this->assertInternalType('string', $file->mimeType);
+    }
+
+    private function assertHashesProxy($hashes)
+    {
+        $this->assertEntityProxy($hashes);
+        $this->assertInstanceOf(HashesProxy::class, $hashes);
+
+        $this->assertThat(
+            $hashes->crc32Hash,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isType('string')
+            )
+        );
+
+        $this->assertInternalType('string', $hashes->quickXorHash);
+        $this->assertInternalType('string', $hashes->sha1Hash);
     }
 
     private function assertIdentityProxy($identity)
