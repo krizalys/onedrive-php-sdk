@@ -8,7 +8,7 @@ trait OnedriveSandboxTrait
 {
     private static function withOnedriveSandbox(DriveItemProxy $root, $name, callable $callback)
     {
-        $name    = str_replace('\\', '_', $name);
+        $name    = str_replace(['\\', '::'], '_', $name);
         $suffix  = sprintf('%08X', rand(0x00000000, 0xffffffff));
         $time    = gmdate('YmdHis');
         $name    = "{$name}_{$time}_{$suffix}";

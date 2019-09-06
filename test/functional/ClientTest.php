@@ -140,7 +140,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetDriveItemByPath()
     {
-        self::withOnedriveSandbox(self::$driveItem, __CLASS__ . '_' . __FUNCTION__, function (DriveItemProxy $sandbox) {
+        self::withOnedriveSandbox(self::$driveItem, __METHOD__, function (DriveItemProxy $sandbox) {
             $sandbox->upload(
                 'Test file',
                 'Test content',

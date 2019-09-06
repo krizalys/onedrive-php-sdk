@@ -47,7 +47,7 @@ class DriveProxyTest extends \PHPUnit_Framework_TestCase
     {
         $root = self::$drive->getRoot();
 
-        self::withOnedriveSandbox($root, __CLASS__ . '_' . __FUNCTION__, function (DriveItemProxy $sandbox) {
+        self::withOnedriveSandbox($root, __METHOD__, function (DriveItemProxy $sandbox) {
             $sandbox->upload(
                 'Test file',
                 'Test content',
