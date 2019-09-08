@@ -4,6 +4,7 @@ namespace Test\Functional\Krizalys\Onedrive\Traits;
 
 use GuzzleHttp\Exception\ClientException;
 use Krizalys\Onedrive\Constant\DriveType;
+use Krizalys\Onedrive\Constant\QuotaStatus;
 use Krizalys\Onedrive\Constant\SharingLinkScope;
 use Krizalys\Onedrive\Constant\SharingLinkType;
 use Krizalys\Onedrive\Proxy\AudioProxy;
@@ -443,7 +444,14 @@ trait AssertionsTrait
         $this->assertInstanceOf(QuotaProxy::class, $quota);
         $this->assertGreaterThanOrEqual(0, $quota->deleted);
         $this->assertGreaterThanOrEqual(0, $quota->remaining);
-        $this->assertContains($quota->state, ['normal', 'nearing', 'critical', 'exceeded']);
+
+        $this->assertContains($quota->state, [
+            QuotaStatus::NORMAL,
+            QuotaStatus::NEARING,
+            QuotaStatus::CRITICAL,
+            QuotaStatus::EXCEEDED,
+        ]);
+
         $this->assertGreaterThanOrEqual(0, $quota->total);
         $this->assertGreaterThanOrEqual(0, $quota->used);
     }
