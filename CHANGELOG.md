@@ -11,6 +11,7 @@ Change log
 - Support for sending invites: see
   `Krizalys\Onedrive\Proxy\DriveItemProxy::invite()`.
 - `Krizalys\Onedrive\Proxy\HashesProxy`.
+- `Krizalys\Onedrive\Proxy\FolderViewProxy`.
 
 ### Changed
 

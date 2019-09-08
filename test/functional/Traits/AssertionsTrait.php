@@ -4,6 +4,9 @@ namespace Test\Functional\Krizalys\Onedrive\Traits;
 
 use GuzzleHttp\Exception\ClientException;
 use Krizalys\Onedrive\Constant\DriveType;
+use Krizalys\Onedrive\Constant\FolderViewSortBy;
+use Krizalys\Onedrive\Constant\FolderViewSortOrder;
+use Krizalys\Onedrive\Constant\FolderViewType;
 use Krizalys\Onedrive\Constant\QuotaStatus;
 use Krizalys\Onedrive\Constant\SharingLinkScope;
 use Krizalys\Onedrive\Constant\SharingLinkType;
@@ -16,6 +19,7 @@ use Krizalys\Onedrive\Proxy\EntityProxy;
 use Krizalys\Onedrive\Proxy\FileProxy;
 use Krizalys\Onedrive\Proxy\FileSystemInfoProxy;
 use Krizalys\Onedrive\Proxy\FolderProxy;
+use Krizalys\Onedrive\Proxy\FolderViewProxy;
 use Krizalys\Onedrive\Proxy\GeoCoordinatesProxy;
 use Krizalys\Onedrive\Proxy\GraphListProxy;
 use Krizalys\Onedrive\Proxy\HashesProxy;
@@ -420,6 +424,39 @@ trait AssertionsTrait
         $this->assertInstanceOf(FileProxy::class, $file);
         $this->assertHashesProxy($file->hashes);
         $this->assertInternalType('string', $file->mimeType);
+    }
+
+    private function assertFolderViewProxy($folderView)
+    {
+        $this->assertEntityProxy($folderView);
+        $this->assertInstanceOf(FolderViewProxy::class, $folderView);
+        $this->assertInternalType('string', $folderView->sortBy);
+
+        $this->assertContains($folderView->sortBy, [
+            FolderViewSortBy::DEFAULT_,
+            FolderViewSortBy::NAME,
+            FolderViewSortBy::TYPE,
+            FolderViewSortBy::SIZE,
+            FolderViewSortBy::TAKEN_OR_CREATED_DATE_TIME,
+            FolderViewSortBy::LAST_MODIFIED_DATE_TIME,
+            FolderViewSortBy::SEQUENCE,
+        ]);
+
+        $this->assertInternalType('string', $folderView->sortOrder);
+
+        $this->assertContains($folderView->sortOrder, [
+            FolderViewSortOrder::ASCENDING,
+            FolderViewSortOrder::DESCENDING,
+        ]);
+
+        $this->assertInternalType('string', $folderView->viewType);
+
+        $this->assertContains($folderView->viewType, [
+            FolderViewType::DEFAULT_,
+            FolderViewType::ICONS,
+            FolderViewType::DETAILS,
+            FolderViewType::THUMBNAILS,
+        ]);
     }
 
     private function assertHashesProxy($hashes)
