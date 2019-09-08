@@ -18,9 +18,9 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
     private static $client;
 
-    private static $drive;
+    private static $defaultDrive;
 
-    private static $driveItem;
+    private static $root;
 
     public static function setUpBeforeClass()
     {
@@ -54,7 +54,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     {
         $drive = self::$client->getMyDrive();
         $this->assertDriveProxy($drive);
-        self::$drive = $drive;
+        self::$defaultDrive = $drive;
     }
 
     public function testGetRoot()
@@ -67,7 +67,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($driveItem->parentReference->driveType);
         $this->assertNull($driveItem->parentReference->path);
         $this->assertRootProxy($driveItem->root);
-        self::$driveItem = $driveItem;
+        self::$root = $driveItem;
     }
 
     /**
@@ -75,7 +75,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetDriveById()
     {
-        $drive = self::$client->getDriveById(self::$drive->id);
+        $drive = self::$client->getDriveById(self::$defaultDrive->id);
         $this->assertDriveProxy($drive);
     }
 
@@ -84,7 +84,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetDriveByUser()
     {
-        $drive = self::$client->getDriveByUser(self::$drive->owner->user->id);
+        $drive = self::$client->getDriveByUser(self::$defaultDrive->owner->user->id);
         $this->assertDriveProxy($drive);
     }
 
@@ -93,7 +93,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetDriveByGroup()
     {
-        $drive = self::$client->getDriveByGroup(self::$drive->owner->user->id);
+        $drive = self::$client->getDriveByGroup(self::$defaultDrive->owner->user->id);
 
         if ($drive == $null) {
             $this->markTestSkipped('No drive by group found');
@@ -107,7 +107,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetDriveBySite()
     {
-        $drive = self::$client->getDriveBySite(self::$drive->owner->user->id);
+        $drive = self::$client->getDriveBySite(self::$defaultDrive->owner->user->id);
 
         if ($drive == $null) {
             $this->markTestSkipped('No drive by site found');
@@ -121,8 +121,16 @@ class ClientTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetDriveItemByIdWhenNotGivenDriveId()
     {
-        $driveItem = self::$client->getDriveItemById(self::$driveItem->id);
-        $this->assertDriveItemProxy($driveItem);
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
+            $driveItem = $sandbox->upload(
+                'Test file',
+                'Test content',
+                ['contentType' => 'text/plain']
+            );
+
+            $driveItem = self::$client->getDriveItemById($driveItem->id);
+            $this->assertDriveItemProxy($driveItem);
+        });
     }
 
     /**
@@ -130,12 +138,20 @@ class ClientTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetDriveItemByIdWhenGivenDriveId()
     {
-        $driveItem = self::$client->getDriveItemById(
-            self::$driveItem->parentReference->driveId,
-            self::$driveItem->id
-        );
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
+            $driveItem = $sandbox->upload(
+                'Test file',
+                'Test content',
+                ['contentType' => 'text/plain']
+            );
 
-        $this->assertDriveItemProxy($driveItem);
+            $driveItem = self::$client->getDriveItemById(
+                $driveItem->parentReference->driveId,
+                $driveItem->id
+            );
+
+            $this->assertDriveItemProxy($driveItem);
+        });
     }
 
     /**
@@ -143,7 +159,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetDriveItemByPath()
     {
-        self::withOnedriveSandbox(self::$driveItem, __METHOD__, function (DriveItemProxy $sandbox) {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $sandbox->upload(
                 'Test file',
                 'Test content',

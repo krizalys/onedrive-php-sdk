@@ -13,6 +13,7 @@ Change log
 - Deprecated `Krizalys\Onedrive\ConflictBehavior` in favor of
   `Krizalys\Onedrive\Constant\ConflictBehavior`.
 - Refactored functional tests.
+- Made functional tests less flaky.
 
 [2.4.0] - 2019-09-01
 --------------------

@@ -15,7 +15,9 @@ class DriveProxyTest extends \PHPUnit_Framework_TestCase
     use ConfigurationTrait;
     use OnedriveSandboxTrait;
 
-    private static $drive;
+    private static $defaultDrive;
+
+    private static $root;
 
     public static function setUpBeforeClass()
     {
@@ -33,28 +35,35 @@ class DriveProxyTest extends \PHPUnit_Framework_TestCase
             $secret
         );
 
-        self::$drive = $client->getMyDrive();
+        self::$defaultDrive = $client->getMyDrive();
+        self::$root         = self::$defaultDrive->getRoot();
     }
 
     public function testGetDriveItemById()
     {
-        $root      = self::$drive->getRoot();
-        $driveItem = self::$drive->getDriveItemById($root->id);
-        $this->assertDriveItemProxy($driveItem);
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
+            $driveItem = $sandbox->upload(
+                'Test file',
+                'Test content',
+                ['contentType' => 'text/plain']
+            );
+
+            $driveItem = self::$defaultDrive->getDriveItemById($driveItem->id);
+            $this->assertDriveItemProxy($driveItem);
+            $this->assertEquals('Test file', $driveItem->name);
+        });
     }
 
     public function testGetDriveItemByPath()
     {
-        $root = self::$drive->getRoot();
-
-        self::withOnedriveSandbox($root, __METHOD__, function (DriveItemProxy $sandbox) {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $sandbox->upload(
                 'Test file',
                 'Test content',
                 ['contentType' => 'text/plain']
             );
 
-            $driveItem = self::$drive->getDriveItemByPath("/{$sandbox->name}/Test file");
+            $driveItem = self::$defaultDrive->getDriveItemByPath("/{$sandbox->name}/Test file");
             $this->assertDriveItemProxy($driveItem);
             $this->assertEquals('Test file', $driveItem->name);
         });

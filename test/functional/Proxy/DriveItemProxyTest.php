@@ -21,7 +21,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
     use HttpJsonTrait;
     use OnedriveSandboxTrait;
 
-    private static $driveItem;
+    private static $root;
 
     public static function setUpBeforeClass()
     {
@@ -39,12 +39,12 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
             $secret
         );
 
-        self::$driveItem = $client->getRoot();
+        self::$root = $client->getRoot();
     }
 
     public function testCreateFolderWhenNotExisting()
     {
-        self::withOnedriveSandbox(self::$driveItem, __METHOD__, function (DriveItemProxy $sandbox) {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $driveItem = $sandbox->createFolder(
                 'Test folder',
                 ['description' => 'Test description']
@@ -66,7 +66,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateFolderWhenExistingAndFailConflictBehavior()
     {
-        self::withOnedriveSandbox(self::$driveItem, __METHOD__, function (DriveItemProxy $sandbox) {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $sandbox->createFolder('Test folder');
 
             $driveItem = $sandbox->createFolder(
@@ -78,7 +78,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateFolderWhenExistingAndRenameConflictBehavior()
     {
-        self::withOnedriveSandbox(self::$driveItem, __METHOD__, function (DriveItemProxy $sandbox) {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $sandbox->createFolder('Test folder');
 
             $driveItem = $sandbox->createFolder(
@@ -113,7 +113,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateFolderWhenExistingAndReplaceConflictBehavior()
     {
-        self::withOnedriveSandbox(self::$driveItem, __METHOD__, function (DriveItemProxy $sandbox) {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $sandbox->createFolder('Test folder');
 
             $driveItem = $sandbox->createFolder(
@@ -134,7 +134,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
 
     public function testGetChildren()
     {
-        self::withOnedriveSandbox(self::$driveItem, __METHOD__, function (DriveItemProxy $sandbox) {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $sandbox->createFolder('Test folder');
 
             for ($i = 1; $i <= 2; ++$i) {
@@ -167,7 +167,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
 
     public function testDeleteFile()
     {
-        self::withOnedriveSandbox(self::$driveItem, __METHOD__, function (DriveItemProxy $sandbox) {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $driveItem = $sandbox->upload(
                 'Test file',
                 'Test content',
@@ -182,7 +182,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
 
     public function testDeleteFolder()
     {
-        self::withOnedriveSandbox(self::$driveItem, __METHOD__, function (DriveItemProxy $sandbox) {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $driveItem = $sandbox->createFolder('Test folder');
             $driveItem->delete();
             $children = $sandbox->children;
@@ -192,7 +192,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
 
     public function testUploadStringWhenNotExisting()
     {
-        self::withOnedriveSandbox(self::$driveItem, __METHOD__, function (DriveItemProxy $sandbox) {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $driveItem = $sandbox->upload(
                 'Test file',
                 'Test content',
@@ -215,7 +215,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
      */
     public function testUploadStringWhenExistingAndFailConflictBehavior()
     {
-        self::withOnedriveSandbox(self::$driveItem, __METHOD__, function (DriveItemProxy $sandbox) {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $sandbox->upload(
                 'Test file',
                 'Test content',
@@ -232,7 +232,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
 
     public function testUploadStringWhenExistingAndRenameConflictBehavior()
     {
-        self::withOnedriveSandbox(self::$driveItem, __METHOD__, function (DriveItemProxy $sandbox) {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $sandbox->upload(
                 'Test file',
                 'Test content',
@@ -258,7 +258,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
 
     public function testUploadStringWhenExistingAndReplaceConflictBehavior()
     {
-        self::withOnedriveSandbox(self::$driveItem, __METHOD__, function (DriveItemProxy $sandbox) {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $sandbox->upload(
                 'Test file',
                 'Test content',
@@ -284,7 +284,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
 
     public function testUploadStreamWhenNotExisting()
     {
-        self::withOnedriveSandbox(self::$driveItem, __METHOD__, function (DriveItemProxy $sandbox) {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $content = fopen('php://memory', 'rb+');
             fwrite($content, 'Test content');
             rewind($content);
@@ -314,7 +314,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
      */
     public function testUploadStreamWhenExistingAndFailConflictBehavior()
     {
-        self::withOnedriveSandbox(self::$driveItem, __METHOD__, function (DriveItemProxy $sandbox) {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $sandbox->upload(
                 'Test file',
                 'Test content',
@@ -338,7 +338,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
 
     public function testUploadStreamWhenExistingAndRenameConflictBehavior()
     {
-        self::withOnedriveSandbox(self::$driveItem, __METHOD__, function (DriveItemProxy $sandbox) {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $sandbox->upload(
                 'test-file.txt',
                 'Test content',
@@ -371,7 +371,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
 
     public function testUploadStreamWhenExistingAndReplaceConflictBehavior()
     {
-        self::withOnedriveSandbox(self::$driveItem, __METHOD__, function (DriveItemProxy $sandbox) {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $sandbox->upload(
                 'Test file',
                 'Test content',
@@ -404,7 +404,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
 
     public function testStartUploadStringWhenNotExisting()
     {
-        self::withOnedriveSandbox(self::$driveItem, __METHOD__, function (DriveItemProxy $sandbox) {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $string = str_repeat("Test content\n", 100000);
 
             $uploadSession = $sandbox->startUpload(
@@ -435,7 +435,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
      */
     public function testStartUploadStringWhenExistingAndFailConflictBehavior()
     {
-        self::withOnedriveSandbox(self::$driveItem, __METHOD__, function (DriveItemProxy $sandbox) {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $sandbox->upload(
                 'Test file',
                 'Test content',
@@ -454,7 +454,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
 
     public function testStartUploadStringWhenExistingAndRenameConflictBehavior()
     {
-        self::withOnedriveSandbox(self::$driveItem, __METHOD__, function (DriveItemProxy $sandbox) {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $sandbox->upload(
                 'Test file',
                 'Test content',
@@ -486,7 +486,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
 
     public function testStartUploadStringWhenExistingAndReplaceConflictBehavior()
     {
-        self::withOnedriveSandbox(self::$driveItem, __METHOD__, function (DriveItemProxy $sandbox) {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $sandbox->upload(
                 'Test file',
                 'Test content',
@@ -518,7 +518,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
 
     public function testStartUploadStreamWhenNotExisting()
     {
-        self::withOnedriveSandbox(self::$driveItem, __METHOD__, function (DriveItemProxy $sandbox) {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $content = str_repeat("Test content\n", 100000);
             $stream  = fopen('php://memory', 'rb+');
             fwrite($stream, $content);
@@ -555,7 +555,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
      */
     public function testStartUploadStreamWhenExistingAndFailConflictBehavior()
     {
-        self::withOnedriveSandbox(self::$driveItem, __METHOD__, function (DriveItemProxy $sandbox) {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $sandbox->upload(
                 'Test file',
                 'Test content',
@@ -580,7 +580,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
 
     public function testStartUploadStreamWhenExistingAndRenameConflictBehavior()
     {
-        self::withOnedriveSandbox(self::$driveItem, __METHOD__, function (DriveItemProxy $sandbox) {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $sandbox->upload(
                 'Test file',
                 'Test content',
@@ -618,7 +618,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
 
     public function testStartUploadStreamWhenExistingAndReplaceConflictBehavior()
     {
-        self::withOnedriveSandbox(self::$driveItem, __METHOD__, function (DriveItemProxy $sandbox) {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $sandbox->upload(
                 'Test file',
                 'Test content',
@@ -656,7 +656,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
 
     public function testRename()
     {
-        self::withOnedriveSandbox(self::$driveItem, __METHOD__, function (DriveItemProxy $sandbox) {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $driveItem = $sandbox->upload(
                 'Test file',
                 'Test content',
@@ -680,7 +680,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
 
     public function testMoveFile()
     {
-        self::withOnedriveSandbox(self::$driveItem, __METHOD__, function (DriveItemProxy $sandbox) {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $driveItem = $sandbox->upload(
                 'Test file',
                 'Test content',
@@ -703,7 +703,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
 
     public function testMoveFolder()
     {
-        self::withOnedriveSandbox(self::$driveItem, __METHOD__, function (DriveItemProxy $sandbox) {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $driveItem   = $sandbox->createFolder('Test folder');
             $destination = $sandbox->createFolder('Test destination');
 
@@ -723,7 +723,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
 
     public function testCopyFile()
     {
-        self::withOnedriveSandbox(self::$driveItem, __METHOD__, function (DriveItemProxy $sandbox) {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $driveItem = $sandbox->upload(
                 'Test file',
                 'Test content',
@@ -754,7 +754,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
 
     public function testCopyFolder()
     {
-        self::withOnedriveSandbox(self::$driveItem, __METHOD__, function (DriveItemProxy $sandbox) {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $driveItem   = $sandbox->createFolder('Test folder');
             $destination = $sandbox->createFolder('Test destination');
 
@@ -783,7 +783,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateLinkToFileWhenNotExisting($type)
     {
-        self::withOnedriveSandbox(self::$driveItem, __METHOD__, function (DriveItemProxy $sandbox) use ($type) {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) use ($type) {
             $driveItem = $sandbox->upload(
                 'Test file',
                 'Test content',
@@ -800,7 +800,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateLinkToFileWhenExisting($type)
     {
-        self::withOnedriveSandbox(self::$driveItem, __METHOD__, function (DriveItemProxy $sandbox) use ($type) {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) use ($type) {
             $driveItem = $sandbox->upload(
                 'Test file',
                 'Test content',
@@ -818,7 +818,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateLinkToFolderWhenNotExisting($type)
     {
-        self::withOnedriveSandbox(self::$driveItem, __METHOD__, function (DriveItemProxy $sandbox) use ($type) {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) use ($type) {
             $driveItem  = $sandbox->createFolder('Test folder');
             $permission = $driveItem->createLink($type);
             $this->assertPermissionProxy($permission);
@@ -830,7 +830,7 @@ class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateLinkToFolderWhenExisting($type)
     {
-        self::withOnedriveSandbox(self::$driveItem, __METHOD__, function (DriveItemProxy $sandbox) use ($type) {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) use ($type) {
             $driveItem = $sandbox->createFolder('Test folder');
             $driveItem->createLink($type);
             $permission = $driveItem->createLink($type);
