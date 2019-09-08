@@ -7,6 +7,7 @@ Change log
 ### Added
 
 - Coding style documentation.
+- Support for PHP 7.4.
 
 ### Changed
 
