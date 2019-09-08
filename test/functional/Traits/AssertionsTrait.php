@@ -414,22 +414,32 @@ trait AssertionsTrait
     private function assertEntityProxy($entity)
     {
         $this->assertInstanceOf(EntityProxy::class, $entity);
-        $this->assertInternalType('string', $entity->id);
+
+        $this->assertThat(
+            $entity->id,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isType('string')
+            )
+        );
     }
 
     private function assertIdentity($identity)
     {
+        $this->assertEntityProxy($identity);
         $this->assertInstanceOf(IdentityProxy::class, $identity);
     }
 
     private function assertPermissionProxy($permission)
     {
+        $this->assertEntityProxy($permission);
         $this->assertInstanceOf(PermissionProxy::class, $permission);
         $this->assertSharingLinkProxy($permission->link);
     }
 
     private function assertQuotaProxy($quota)
     {
+        $this->assertEntityProxy($quota);
         $this->assertInstanceOf(QuotaProxy::class, $quota);
         $this->assertGreaterThanOrEqual(0, $quota->deleted);
         $this->assertGreaterThanOrEqual(0, $quota->remaining);
@@ -440,17 +450,20 @@ trait AssertionsTrait
 
     private function assertRootProxy($root)
     {
+        $this->assertEntityProxy($root);
         $this->assertInstanceOf(RootProxy::class, $root);
     }
 
     private function assertSpecialFolderProxy($specialFolder)
     {
+        $this->assertEntityProxy($specialFolder);
         $this->assertInstanceOf(SpecialFolderProxy::class, $specialFolder);
         $this->assertInternalType('string', $specialFolder->name);
     }
 
     private function assertSharingLinkProxy($sharingLink)
     {
+        $this->assertEntityProxy($sharingLink);
         $this->assertInstanceOf(SharingLinkProxy::class, $sharingLink);
 
         if ($sharingLink->type != SharingLinkType::EMBED) {
@@ -479,11 +492,13 @@ trait AssertionsTrait
 
     private function assertThumbnailProxy($thumbnail)
     {
+        $this->assertEntityProxy($thumbnail);
         $this->assertInstanceOf(ThumbnailProxy::class, $thumbnail);
     }
 
     private function assertUploadSessionProxy($uploadSession)
     {
+        $this->assertEntityProxy($uploadSession);
         $this->assertInstanceOf(UploadSessionProxy::class, $uploadSession);
         $this->assertInstanceOf(\DateTime::class, $uploadSession->expirationDateTime);
         $this->assertCount(1, $uploadSession->nextExpectedRanges);

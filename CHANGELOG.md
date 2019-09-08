@@ -4,6 +4,10 @@ Change log
 [Unreleased][unreleased]
 ------------------------
 
+### Added
+
+- Added some functional test assertions.
+
 ### Changed
 
 - Deprecated `Krizalys\Onedrive\ConflictBehavior` in favor of

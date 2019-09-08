@@ -86,7 +86,7 @@ class QuotaProxy extends EntityProxy
                 return $quota->getUsed();
 
             default:
-                throw new \Exception("Undefined property: $name");
+                return parent::__get($name);
         }
     }
 }
