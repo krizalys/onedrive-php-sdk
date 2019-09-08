@@ -1,6 +1,6 @@
 <?php
 
-namespace Test\Functional\Krizalys\Onedrive;
+namespace Test\Functional\Krizalys\Onedrive\Traits;
 
 trait AsynchronousTrait
 {

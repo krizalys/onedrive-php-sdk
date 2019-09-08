@@ -3,10 +3,10 @@
 namespace Test\Functional\Krizalys\Onedrive\Proxy;
 
 use Krizalys\Onedrive\Proxy\DriveItemProxy;
-use Test\Functional\Krizalys\Onedrive\AssertionsTrait;
-use Test\Functional\Krizalys\Onedrive\ClientFactoryTrait;
-use Test\Functional\Krizalys\Onedrive\ConfigurationTrait;
-use Test\Functional\Krizalys\Onedrive\OnedriveSandboxTrait;
+use Test\Functional\Krizalys\Onedrive\Traits\AssertionsTrait;
+use Test\Functional\Krizalys\Onedrive\Traits\ClientFactoryTrait;
+use Test\Functional\Krizalys\Onedrive\Traits\ConfigurationTrait;
+use Test\Functional\Krizalys\Onedrive\Traits\OnedriveSandboxTrait;
 
 class DriveProxyTest extends \PHPUnit_Framework_TestCase
 {

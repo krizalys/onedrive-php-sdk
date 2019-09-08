@@ -4,7 +4,10 @@ namespace Test\Functional\Krizalys\Onedrive;
 
 use Krizalys\Onedrive\Constant\SpecialFolderName;
 use Krizalys\Onedrive\Proxy\DriveItemProxy;
-use Test\Functional\Krizalys\Onedrive\OnedriveSandboxTrait;
+use Test\Functional\Krizalys\Onedrive\Traits\AssertionsTrait;
+use Test\Functional\Krizalys\Onedrive\Traits\ClientFactoryTrait;
+use Test\Functional\Krizalys\Onedrive\Traits\ConfigurationTrait;
+use Test\Functional\Krizalys\Onedrive\Traits\OnedriveSandboxTrait;
 
 class ClientTest extends \PHPUnit_Framework_TestCase
 {

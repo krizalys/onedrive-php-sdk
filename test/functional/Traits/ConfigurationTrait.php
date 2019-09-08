@@ -1,6 +1,6 @@
 <?php
 
-namespace Test\Functional\Krizalys\Onedrive;
+namespace Test\Functional\Krizalys\Onedrive\Traits;
 
 trait ConfigurationTrait
 {
@@ -9,7 +9,8 @@ trait ConfigurationTrait
     private static function getConfig($key)
     {
         if (self::$config === null) {
-            $path = sprintf('%s/config.php', __DIR__);
+            $root = dirname(__DIR__);
+            $path = sprintf('%s/config.php', $root);
 
             if (!file_exists($path)) {
                 throw new \Exception(

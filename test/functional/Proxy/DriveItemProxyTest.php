@@ -5,12 +5,12 @@ namespace Test\Functional\Krizalys\Onedrive\Proxy;
 use Krizalys\Onedrive\Constant\ConflictBehavior;
 use Krizalys\Onedrive\Constant\SharingLinkType;
 use Krizalys\Onedrive\Proxy\DriveItemProxy;
-use Test\Functional\Krizalys\Onedrive\AssertionsTrait;
-use Test\Functional\Krizalys\Onedrive\AsynchronousTrait;
-use Test\Functional\Krizalys\Onedrive\ClientFactoryTrait;
-use Test\Functional\Krizalys\Onedrive\ConfigurationTrait;
-use Test\Functional\Krizalys\Onedrive\HttpJsonTrait;
-use Test\Functional\Krizalys\Onedrive\OnedriveSandboxTrait;
+use Test\Functional\Krizalys\Onedrive\Traits\AssertionsTrait;
+use Test\Functional\Krizalys\Onedrive\Traits\AsynchronousTrait;
+use Test\Functional\Krizalys\Onedrive\Traits\ClientFactoryTrait;
+use Test\Functional\Krizalys\Onedrive\Traits\ConfigurationTrait;
+use Test\Functional\Krizalys\Onedrive\Traits\HttpJsonTrait;
+use Test\Functional\Krizalys\Onedrive\Traits\OnedriveSandboxTrait;
 
 class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
 {

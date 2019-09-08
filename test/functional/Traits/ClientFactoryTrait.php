@@ -1,6 +1,6 @@
 <?php
 
-namespace Test\Functional\Krizalys\Onedrive;
+namespace Test\Functional\Krizalys\Onedrive\Traits;
 
 use Facebook\WebDriver\WebDriver;
 use Krizalys\Onedrive\Onedrive;
@@ -42,12 +42,13 @@ trait ClientFactoryTrait
         $redirectUri             = sprintf(self::$redirectUriTemplate, $redirectUriPort);
         $authorizationRequestUri = $client->getLogInUrl(self::$scopes, $redirectUri);
         $webDriverBaseUri        = sprintf(self::$webDriverBaseUriTemplate, self::$webDriverBaseUriPort);
+        $root                    = dirname(__DIR__);
 
         $command = [
             'php',
             '-S',
             sprintf('localhost:%d', $redirectUriPort),
-            sprintf('%s/router.php', __DIR__),
+            sprintf('%s/router.php', $root),
         ];
 
         $code = self::withProcess($command, function (Process $process) use ($webDriverBaseUri, $authorizationRequestUri, $redirectUri, $username, $password) {
