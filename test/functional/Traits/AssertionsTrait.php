@@ -426,6 +426,15 @@ trait AssertionsTrait
         $this->assertInternalType('string', $file->mimeType);
     }
 
+    private function assertFolderProxy($folder)
+    {
+        $this->assertEntityProxy($folder);
+        $this->assertInstanceOf(FolderProxy::class, $folder);
+        $this->assertInternalType('int', $folder->childCount);
+        $this->assertGreaterThanOrEqual(0, $folder->childCount);
+        $this->assertFolderViewProxy($folder->view);
+    }
+
     private function assertFolderViewProxy($folderView)
     {
         $this->assertEntityProxy($folderView);

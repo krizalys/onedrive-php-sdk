@@ -57,6 +57,7 @@ class DriveItemProxyTest extends TestCase
             $this->assertEquals($sandbox->id, $driveItem->parentReference->id);
             $this->assertEquals('Test folder', $driveItem->name);
             $this->assertEquals('Test description', $driveItem->description);
+            $this->assertFolderProxy($driveItem->folder);
         });
     }
 
@@ -96,6 +97,7 @@ class DriveItemProxyTest extends TestCase
             $this->assertEquals($sandbox->id, $driveItem->parentReference->id);
             $this->assertEquals('Test folder 1', $driveItem->name);
             $this->assertEquals('Test description', $driveItem->description);
+            $this->assertFolderProxy($driveItem->folder);
 
             $driveItem = $sandbox->createFolder(
                 'Test folder',
@@ -110,6 +112,7 @@ class DriveItemProxyTest extends TestCase
             $this->assertEquals($sandbox->id, $driveItem->parentReference->id);
             $this->assertEquals('Test folder 2', $driveItem->name);
             $this->assertEquals('Test description', $driveItem->description);
+            $this->assertFolderProxy($driveItem->folder);
         });
     }
 
@@ -131,6 +134,7 @@ class DriveItemProxyTest extends TestCase
             $this->assertEquals($sandbox->id, $driveItem->parentReference->id);
             $this->assertEquals('Test folder', $driveItem->name);
             $this->assertEquals('Test description', $driveItem->description);
+            $this->assertFolderProxy($driveItem->folder);
         });
     }
 

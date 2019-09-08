@@ -20,6 +20,11 @@ use Microsoft\Graph\Model\Folder;
 /**
  * A proxy to a \Microsoft\Graph\Model\Folder instance.
  *
+ * @property-read int $childCount
+ *                The child count.
+ * @property-read \Krizalys\Onedrive\Proxy\FolderViewProxy $view
+ *                The view.
+ *
  * @since 2.0.0
  *
  * @api
@@ -41,5 +46,33 @@ class FolderProxy extends EntityProxy
     public function __construct(Graph $graph, Folder $folder)
     {
         parent::__construct($graph, $folder);
+    }
+
+    /**
+     * Getter.
+     *
+     * @param string $name
+     *        The name.
+     *
+     * @return mixed
+     *         The value.
+     *
+     * @since 2.5.0
+     */
+    public function __get($name)
+    {
+        $folder = $this->entity;
+
+        switch ($name) {
+            case 'childCount':
+                return $folder->getChildCount();
+
+            case 'view':
+                $view = $folder->getView();
+                return $view !== null ? new FolderViewProxy($this->graph, $view) : null;
+
+            default:
+                return parent::__get($name);
+        }
     }
 }
