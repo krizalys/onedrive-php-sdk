@@ -424,7 +424,7 @@ trait AssertionsTrait
         );
     }
 
-    private function assertIdentity($identity)
+    private function assertIdentityProxy($identity)
     {
         $this->assertEntityProxy($identity);
         $this->assertInstanceOf(IdentityProxy::class, $identity);
@@ -467,7 +467,7 @@ trait AssertionsTrait
         $this->assertInstanceOf(SharingLinkProxy::class, $sharingLink);
 
         if ($sharingLink->type != SharingLinkType::EMBED) {
-            $this->assertIdentity($sharingLink->application);
+            $this->assertIdentityProxy($sharingLink->application);
         }
 
         $this->assertThat(
