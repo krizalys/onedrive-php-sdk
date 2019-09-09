@@ -40,6 +40,12 @@
             "Krizalys\\Onedrive\\": "src/"
         }
     },
+    "scripts": {
+        "test:unit": "vendor/bin/phpunit --configuration test/unit",
+        "test:unit:coverage": "vendor/bin/phpunit --configuration test/unit --coverage-clover coverage.xml",
+        "test:functional": "vendor/bin/phpunit --configuration test/functional",
+        "test:functional:parallel": "vendor/bin/phpunit --configuration test/functional test/functional/KrizalysOnedriveTest.php & vendor/bin/phpunit --configuration test/functional test/functional/ClientTest.php & vendor/bin/phpunit --configuration test/functional test/functional/Proxy/DriveProxyTest.php & vendor/bin/phpunit --configuration test/functional test/functional/Proxy/DriveItemProxyTest.php & wait"
+    },
     "config": {
         "platform": {
             "ext-zip": "1.12.5"

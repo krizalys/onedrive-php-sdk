@@ -1,6 +1,13 @@
 Change log
 ==========
 
+[Unreleased][unreleased]
+------------------------
+
+### Added
+
+- Composer scripts.
+
 [2.4.1] - 2019-09-08
 --------------------
 
