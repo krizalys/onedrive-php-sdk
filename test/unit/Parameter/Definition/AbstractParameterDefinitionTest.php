@@ -5,8 +5,9 @@ namespace Test\Unit\Krizalys\Onedrive\Parameter\Definition;
 use Krizalys\Onedrive\Parameter\Injector\InjectorInterface;
 use Krizalys\Onedrive\Serializer\SerializerInterface;
 use Krizalys\Onedrive\Parameter\Definition\AbstractParameterDefinition;
+use PHPUnit\Framework\TestCase;
 
-class AbstractParameterDefinitionTest extends \PHPUnit_Framework_TestCase
+class AbstractParameterDefinitionTest extends TestCase
 {
     public function testSerializeValueShouldInteractWithItsSerializerAsExpected()
     {

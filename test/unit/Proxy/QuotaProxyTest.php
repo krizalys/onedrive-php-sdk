@@ -5,8 +5,9 @@ namespace Test\Unit\Krizalys\Onedrive\Proxy;
 use Krizalys\Onedrive\Proxy\QuotaProxy;
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model\Quota;
+use PHPUnit\Framework\TestCase;
 
-class QuotaProxyTest extends \PHPUnit_Framework_TestCase
+class QuotaProxyTest extends TestCase
 {
     public function testDeletedShouldReturnExpectedValue()
     {

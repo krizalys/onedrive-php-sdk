@@ -5,8 +5,9 @@ namespace Test\Unit\Krizalys\Onedrive\Proxy;
 use Krizalys\Onedrive\Proxy\SpecialFolderProxy;
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model\SpecialFolder;
+use PHPUnit\Framework\TestCase;
 
-class SpecialFolderProxyTest extends \PHPUnit_Framework_TestCase
+class SpecialFolderProxyTest extends TestCase
 {
     public function testNameShouldReturnExpectedValue()
     {

@@ -4,12 +4,13 @@ namespace Test\Functional\Krizalys\Onedrive;
 
 use Krizalys\Onedrive\Constant\SpecialFolderName;
 use Krizalys\Onedrive\Proxy\DriveItemProxy;
+use PHPUnit\Framework\TestCase;
 use Test\Functional\Krizalys\Onedrive\Traits\AssertionsTrait;
 use Test\Functional\Krizalys\Onedrive\Traits\ClientFactoryTrait;
 use Test\Functional\Krizalys\Onedrive\Traits\ConfigurationTrait;
 use Test\Functional\Krizalys\Onedrive\Traits\OnedriveSandboxTrait;
 
-class ClientTest extends \PHPUnit_Framework_TestCase
+class ClientTest extends TestCase
 {
     use AssertionsTrait;
     use ClientFactoryTrait;

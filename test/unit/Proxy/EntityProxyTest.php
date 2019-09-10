@@ -5,8 +5,9 @@ namespace Test\Unit\Krizalys\Onedrive\Proxy;
 use Krizalys\Onedrive\Proxy\EntityProxy;
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model\Entity;
+use PHPUnit\Framework\TestCase;
 
-class EntityProxyTest extends \PHPUnit_Framework_TestCase
+class EntityProxyTest extends TestCase
 {
     public function testIdShouldReturnExpectedValue()
     {

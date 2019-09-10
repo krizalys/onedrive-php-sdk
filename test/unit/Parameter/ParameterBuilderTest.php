@@ -4,8 +4,9 @@ namespace Test\Unit\Krizalys\Onedrive\Parameter;
 
 use Krizalys\Onedrive\Parameter\Definition\ParameterDefinitionInterface;
 use Krizalys\Onedrive\Parameter\ParameterBuilder;
+use PHPUnit\Framework\TestCase;
 
-class ParameterBuilderTest extends \PHPUnit_Framework_TestCase
+class ParameterBuilderTest extends TestCase
 {
     public function testBuildShouldReturnExpectedValue()
     {

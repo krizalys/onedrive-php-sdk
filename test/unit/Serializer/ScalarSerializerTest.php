@@ -3,8 +3,9 @@
 namespace Test\Unit\Krizalys\Onedrive\Serializer;
 
 use Krizalys\Onedrive\Serializer\ScalarSerializer;
+use PHPUnit\Framework\TestCase;
 
-class ScalarSerializerTest extends \PHPUnit_Framework_TestCase
+class ScalarSerializerTest extends TestCase
 {
     /**
      * @dataProvider valueProvider

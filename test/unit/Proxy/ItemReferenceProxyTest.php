@@ -6,8 +6,9 @@ use Krizalys\Onedrive\Constant\DriveType;
 use Krizalys\Onedrive\Proxy\ItemReferenceProxy;
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model\ItemReference;
+use PHPUnit\Framework\TestCase;
 
-class ItemReferenceProxyTest extends \PHPUnit_Framework_TestCase
+class ItemReferenceProxyTest extends TestCase
 {
     public function testIdShouldReturnExpectedValue()
     {

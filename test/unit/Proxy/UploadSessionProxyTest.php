@@ -11,8 +11,9 @@ use Microsoft\Graph\Http\GraphRequest;
 use Microsoft\Graph\Http\GraphResponse;
 use Microsoft\Graph\Model\DriveItem;
 use Microsoft\Graph\Model\UploadSession;
+use PHPUnit\Framework\TestCase;
 
-class UploadSessionProxyTest extends \PHPUnit_Framework_TestCase
+class UploadSessionProxyTest extends TestCase
 {
     public function testExpirationDateTimeShouldReturnExpectedValue()
     {

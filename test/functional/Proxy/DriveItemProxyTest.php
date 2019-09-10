@@ -5,6 +5,7 @@ namespace Test\Functional\Krizalys\Onedrive\Proxy;
 use Krizalys\Onedrive\Constant\ConflictBehavior;
 use Krizalys\Onedrive\Constant\SharingLinkType;
 use Krizalys\Onedrive\Proxy\DriveItemProxy;
+use PHPUnit\Framework\TestCase;
 use Test\Functional\Krizalys\Onedrive\Traits\AssertionsTrait;
 use Test\Functional\Krizalys\Onedrive\Traits\AsynchronousTrait;
 use Test\Functional\Krizalys\Onedrive\Traits\ClientFactoryTrait;
@@ -12,7 +13,7 @@ use Test\Functional\Krizalys\Onedrive\Traits\ConfigurationTrait;
 use Test\Functional\Krizalys\Onedrive\Traits\HttpJsonTrait;
 use Test\Functional\Krizalys\Onedrive\Traits\OnedriveSandboxTrait;
 
-class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
+class DriveItemProxyTest extends TestCase
 {
     use AssertionsTrait;
     use AsynchronousTrait;

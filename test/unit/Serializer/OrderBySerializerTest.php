@@ -3,8 +3,9 @@
 namespace Test\Unit\Krizalys\Onedrive\Serializer;
 
 use Krizalys\Onedrive\Serializer\OrderBySerializer;
+use PHPUnit\Framework\TestCase;
 
-class OrderBySerializerTest extends \PHPUnit_Framework_TestCase
+class OrderBySerializerTest extends TestCase
 {
     public function testSerializeShouldReturnExpectedValue()
     {

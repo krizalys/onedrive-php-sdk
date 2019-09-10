@@ -12,8 +12,9 @@ use Microsoft\Graph\Model\Identity;
 use Microsoft\Graph\Model\IdentitySet;
 use Microsoft\Graph\Model\ItemReference;
 use Microsoft\Graph\Model\User;
+use PHPUnit\Framework\TestCase;
 
-class BaseItemProxyTest extends \PHPUnit_Framework_TestCase
+class BaseItemProxyTest extends TestCase
 {
     public function testCreatedByShouldReturnExpectedValue()
     {

@@ -7,11 +7,12 @@ use Krizalys\Onedrive\DriveItem;
 use Krizalys\Onedrive\File;
 use Krizalys\Onedrive\Folder;
 use Krizalys\Onedrive\Proxy\DriveItemProxy;
+use PHPUnit\Framework\TestCase;
 use Test\Functional\Krizalys\Onedrive\Traits\AssertionsTrait;
 use Test\Functional\Krizalys\Onedrive\Traits\ClientFactoryTrait;
 use Test\Functional\Krizalys\Onedrive\Traits\ConfigurationTrait;
 
-class KrizalysOnedriveTest extends \PHPUnit_Framework_TestCase
+class KrizalysOnedriveTest extends TestCase
 {
     use AssertionsTrait;
     use ClientFactoryTrait;

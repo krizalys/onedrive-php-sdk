@@ -3,8 +3,9 @@
 namespace Test\Unit\Krizalys\Onedrive\Parameter\Injector;
 
 use Krizalys\Onedrive\Parameter\Injector\FlatInjector;
+use PHPUnit\Framework\TestCase;
 
-class FlatInjectorTest extends \PHPUnit_Framework_TestCase
+class FlatInjectorTest extends TestCase
 {
     /**
      * @dataProvider provideInjectReturnExpectedValueTestCases

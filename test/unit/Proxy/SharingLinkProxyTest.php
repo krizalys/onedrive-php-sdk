@@ -9,8 +9,9 @@ use Krizalys\Onedrive\Proxy\SharingLinkProxy;
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model\Identity;
 use Microsoft\Graph\Model\SharingLink;
+use PHPUnit\Framework\TestCase;
 
-class SharingLinkProxyTest extends \PHPUnit_Framework_TestCase
+class SharingLinkProxyTest extends TestCase
 {
     public function testApplicationShouldReturnExpectedValue()
     {

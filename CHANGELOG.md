@@ -8,6 +8,10 @@ Change log
 
 - Composer scripts.
 
+### Changed
+
+- Updated test suites to support newer PHPUnit versions.
+
 [2.4.1] - 2019-09-08
 --------------------
 

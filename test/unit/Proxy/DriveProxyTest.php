@@ -22,8 +22,9 @@ use Microsoft\Graph\Model\IdentitySet;
 use Microsoft\Graph\Model\Quota;
 use Microsoft\Graph\Model\SharepointIds;
 use Microsoft\Graph\Model\SystemFacet;
+use PHPUnit\Framework\TestCase;
 
-class DriveProxyTest extends \PHPUnit_Framework_TestCase
+class DriveProxyTest extends TestCase
 {
     const DRIVE_ITEM_ID = '0123';
 

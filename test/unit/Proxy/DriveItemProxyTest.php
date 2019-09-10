@@ -60,8 +60,9 @@ use Microsoft\Graph\Model\Thumbnail;
 use Microsoft\Graph\Model\UploadSession;
 use Microsoft\Graph\Model\Video;
 use Microsoft\Graph\Model\Workbook;
+use PHPUnit\Framework\TestCase;
 
-class DriveItemProxyTest extends \PHPUnit_Framework_TestCase
+class DriveItemProxyTest extends TestCase
 {
     const DRIVE_ITEM_ID     = '0123';
     const UPLOAD_SESSION_ID = '4567';
