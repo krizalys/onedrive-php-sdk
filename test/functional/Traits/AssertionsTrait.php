@@ -51,13 +51,9 @@ trait AssertionsTrait
         $this->assertEntityProxy($baseItem);
         $this->assertInstanceOf(BaseItemProxy::class, $baseItem);
 
-        $this->assertThat(
-            $baseItem->createdBy,
-            $this->logicalOr(
-                $this->isNull(),
-                $this->isInstanceOf(IdentitySetProxy::class, $baseItem->createdBy)
-            )
-        );
+        if ($baseItem->createdBy !== null) {
+            $this->assertIdentitySetProxy($baseItem->createdBy);
+        }
 
         $this->assertThat(
             $baseItem->createdDateTime,
@@ -83,13 +79,9 @@ trait AssertionsTrait
             )
         );
 
-        $this->assertThat(
-            $baseItem->lastModifiedBy,
-            $this->logicalOr(
-                $this->isNull(),
-                $this->isInstanceOf(IdentitySetProxy::class, $baseItem->createdBy)
-            )
-        );
+        if ($baseItem->createdBy !== null) {
+            $this->assertIdentitySetProxy($baseItem->createdBy);
+        }
 
         $this->assertThat(
             $baseItem->lastModifiedDateTime,
@@ -362,7 +354,7 @@ trait AssertionsTrait
             DriveType::DOCUMENT_LIBRARY,
         ]);
 
-        $this->assertInstanceOf(IdentitySetProxy::class, $drive->owner);
+        $this->assertIdentitySetProxy($drive->owner);
         $this->assertQuotaProxy($drive->quota);
 
         $this->assertThat(
@@ -440,6 +432,22 @@ trait AssertionsTrait
                 )
             )
         );
+    }
+
+    private function assertIdentitySetProxy($identitySet)
+    {
+        $this->assertEntityProxy($identitySet);
+        $this->assertInstanceOf(IdentitySetProxy::class, $identitySet);
+
+        if ($identitySet->application !== null) {
+            $this->assertIdentityProxy($identitySet->application);
+        }
+
+        if ($identitySet->device !== null) {
+            $this->assertIdentityProxy($identitySet->device);
+        }
+
+        $this->assertIdentityProxy($identitySet->user);
     }
 
     private function assertPermissionProxy($permission)
