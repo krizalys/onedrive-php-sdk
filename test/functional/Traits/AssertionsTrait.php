@@ -213,13 +213,9 @@ trait AssertionsTrait
             )
         );
 
-        $this->assertThat(
-            $item->remoteItem,
-            $this->logicalOr(
-                $this->isNull(),
-                $this->isInstanceOf(RemoteItemProxy::class)
-            )
-        );
+        if ($item->remoteItem !== null) {
+            $this->assertRemoteItemProxy($item->remoteItem);
+        }
 
         $this->assertThat(
             $item->root,
@@ -587,6 +583,72 @@ trait AssertionsTrait
 
         $this->assertGreaterThanOrEqual(0, $quota->total);
         $this->assertGreaterThanOrEqual(0, $quota->used);
+    }
+
+    private function assertRemoteItemProxy($remoteItem)
+    {
+        $this->assertEntityProxy($remoteItem);
+        $this->assertInstanceOf(RemoteItemProxy::class, $remoteItem);
+
+        if ($remoteItem->createdBy !== null) {
+            $this->assertIdentitySetProxy($remoteItem->createdBy);
+        }
+
+        $this->assertThat(
+            $remoteItem->createdDateTime,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isInstanceOf(\DateTime::class)
+            )
+        );
+
+        if ($remoteItem->file !== null) {
+            $this->assertFileProxy($remoteItem->file);
+        }
+
+        $this->assertFileSystemInfoProxy($remoteItem->fileSystemInfo);
+        $this->assertFolderProxy($remoteItem->folder);
+
+        if ($remoteItem->lastModifiedBy !== null) {
+            $this->assertIdentitySetProxy($remoteItem->lastModifiedBy);
+        }
+
+        $this->assertThat(
+            $remoteItem->lastModifiedDateTime,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isInstanceOf(\DateTime::class)
+            )
+        );
+
+        $this->assertThat(
+            $remoteItem->name,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isType('string')
+            )
+        );
+
+        if ($remoteItem->package !== null) {
+            $this->assertPackageProxy($remoteItem->package);
+        }
+
+        $this->assertItemReferenceProxy($remoteItem->parentReference);
+
+        if ($remoteItem->shared !== null) {
+            $this->assertSharedProxy($remoteItem->shared);
+        }
+
+        if ($remoteItem->sharepointIds !== null) {
+            $this->assertSharepointIdsProxy($remoteItem->sharepointIds);
+        }
+
+        $this->assertInternalType('int', $remoteItem->size);
+        $this->assertSpecialFolderProxy($remoteItem->specialFolder);
+        $this->assertInternalType('string', $remoteItem->webDavUrl);
+        $this->assertRegExp(self::$uriRegex, $remoteItem->webDavUrl);
+        $this->assertInternalType('string', $remoteItem->webUrl);
+        $this->assertRegExp(self::$uriRegex, $remoteItem->webUrl);
     }
 
     private function assertRootProxy($root)

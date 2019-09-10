@@ -22,6 +22,7 @@ Change log
 - Updated `Krizalys\Onedrive\Proxy\PackageProxy`.
 - Updated `Krizalys\Onedrive\Proxy\SharedProxy`.
 - Updated `Krizalys\Onedrive\Proxy\SharepointIdsProxy`.
+- Updated `Krizalys\Onedrive\Proxy\RemoteItemProxy`.
 
 [2.4.2] - 2019-09-16
 --------------------
