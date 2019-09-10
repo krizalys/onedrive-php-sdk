@@ -429,6 +429,17 @@ trait AssertionsTrait
     {
         $this->assertEntityProxy($identity);
         $this->assertInstanceOf(IdentityProxy::class, $identity);
+
+        $this->assertThat(
+            $identity->displayName,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->logicalAnd(
+                    $this->isType('string'),
+                    $this->logicalNot($this->equalTo(''))
+                )
+            )
+        );
     }
 
     private function assertPermissionProxy($permission)
