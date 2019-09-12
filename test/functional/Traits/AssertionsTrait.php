@@ -165,13 +165,7 @@ trait AssertionsTrait
             )
         );
 
-        $this->assertThat(
-            $item->fileSystemInfo,
-            $this->logicalOr(
-                $this->isNull(),
-                $this->isInstanceOf(FileSystemInfoProxy::class)
-            )
-        );
+        $this->assertFileSystemInfoProxy($item->fileSystemInfo);
 
         $this->assertThat(
             $item->folder,
@@ -424,6 +418,30 @@ trait AssertionsTrait
         $this->assertInstanceOf(FileProxy::class, $file);
         $this->assertHashesProxy($file->hashes);
         $this->assertInternalType('string', $file->mimeType);
+    }
+
+    private function assertFileSystemInfoProxy($fileSystemInfo)
+    {
+        $this->assertEntityProxy($fileSystemInfo);
+        $this->assertInstanceOf(FileSystemInfoProxy::class, $fileSystemInfo);
+
+        $this->assertThat(
+            $fileSystemInfo->createdDateTime,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isInstanceOf(\DateTime::class)
+            )
+        );
+
+        $this->assertThat(
+            $fileSystemInfo->lastAccessedDateTime,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isInstanceOf(\DateTime::class)
+            )
+        );
+
+        $this->assertInstanceOf(\DateTime::class, $fileSystemInfo->lastModifiedDateTime);
     }
 
     private function assertFolderProxy($folder)

@@ -20,6 +20,13 @@ use Microsoft\Graph\Model\FileSystemInfo;
 /**
  * A proxy to a \Microsoft\Graph\Model\FileSystemInfo instance.
  *
+ * @property-read \DateTime $createdDateTime
+ *                The created date/time.
+ * @property-read \DateTime $lastAccessedDateTime
+ *                The last accessed date/time.
+ * @property-read \DateTime $lastModifiedDateTime
+ *                The last modified date/time.
+ *
  * @since 2.0.0
  *
  * @api
@@ -41,5 +48,35 @@ class FileSystemInfoProxy extends EntityProxy
     public function __construct(Graph $graph, FileSystemInfo $fileSystemInfo)
     {
         parent::__construct($graph, $fileSystemInfo);
+    }
+
+    /**
+     * Getter.
+     *
+     * @param string $name
+     *        The name.
+     *
+     * @return mixed
+     *         The value.
+     *
+     * @since 2.5.0
+     */
+    public function __get($name)
+    {
+        $fileSystemInfo = $this->entity;
+
+        switch ($name) {
+            case 'createdDateTime':
+                return $fileSystemInfo->getCreatedDateTime();
+
+            case 'lastAccessedDateTime':
+                return $fileSystemInfo->getLastAccessedDateTime();
+
+            case 'lastModifiedDateTime':
+                return $fileSystemInfo->getLastModifiedDateTime();
+
+            default:
+                return parent::__get($name);
+        }
     }
 }
