@@ -20,6 +20,9 @@ use Microsoft\Graph\Model\Package;
 /**
  * A proxy to a \Microsoft\Graph\Model\Package instance.
  *
+ * @property-read string type
+ *                The type.
+ *
  * @since 2.0.0
  *
  * @api
@@ -41,5 +44,29 @@ class PackageProxy extends EntityProxy
     public function __construct(Graph $graph, Package $package)
     {
         parent::__construct($graph, $package);
+    }
+
+    /**
+     * Getter.
+     *
+     * @param string $name
+     *        The name.
+     *
+     * @return mixed
+     *         The value.
+     *
+     * @since 2.5.0
+     */
+    public function __get($name)
+    {
+        $package = $this->entity;
+
+        switch ($name) {
+            case 'type':
+                return $package->getType();
+
+            default:
+                return parent::__get($name);
+        }
     }
 }

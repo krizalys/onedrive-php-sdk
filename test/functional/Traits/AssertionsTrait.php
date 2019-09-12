@@ -7,6 +7,7 @@ use Krizalys\Onedrive\Constant\DriveType;
 use Krizalys\Onedrive\Constant\FolderViewSortBy;
 use Krizalys\Onedrive\Constant\FolderViewSortOrder;
 use Krizalys\Onedrive\Constant\FolderViewType;
+use Krizalys\Onedrive\Constant\PackageType;
 use Krizalys\Onedrive\Constant\QuotaStatus;
 use Krizalys\Onedrive\Constant\SharingLinkScope;
 use Krizalys\Onedrive\Constant\SharingLinkType;
@@ -191,13 +192,9 @@ trait AssertionsTrait
             )
         );
 
-        $this->assertThat(
-            $item->package,
-            $this->logicalOr(
-                $this->isNull(),
-                $this->isInstanceOf(PackageProxy::class)
-            )
-        );
+        if ($item->package !== null) {
+            $this->assertPackageProxy($item->package);
+        }
 
         $this->assertThat(
             $item->photo,
@@ -565,6 +562,17 @@ trait AssertionsTrait
                 $this->isType('string')
             )
         );
+    }
+
+    private function assertPackageProxy($package)
+    {
+        $this->assertEntityProxy($package);
+        $this->assertInstanceOf(PackageProxy::class, $package);
+        $this->assertInternalType('string', $package->type);
+
+        $this->assertContains($package->type, [
+            PackageType::ONENOTE,
+        ]);
     }
 
     private function assertPermissionProxy($permission)
