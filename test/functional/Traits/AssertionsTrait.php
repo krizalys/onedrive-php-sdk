@@ -9,6 +9,7 @@ use Krizalys\Onedrive\Constant\FolderViewSortOrder;
 use Krizalys\Onedrive\Constant\FolderViewType;
 use Krizalys\Onedrive\Constant\PackageType;
 use Krizalys\Onedrive\Constant\QuotaStatus;
+use Krizalys\Onedrive\Constant\SharedScope;
 use Krizalys\Onedrive\Constant\SharingLinkScope;
 use Krizalys\Onedrive\Constant\SharingLinkType;
 use Krizalys\Onedrive\Proxy\AudioProxy;
@@ -236,13 +237,9 @@ trait AssertionsTrait
             )
         );
 
-        $this->assertThat(
-            $item->shared,
-            $this->logicalOr(
-                $this->isNull(),
-                $this->isInstanceOf(SharedProxy::class)
-            )
-        );
+        if ($item->shared !== null) {
+            $this->assertSharedProxy($item->shared);
+        }
 
         $this->assertThat(
             $item->sharepointIds,
@@ -611,6 +608,32 @@ trait AssertionsTrait
         $this->assertEntityProxy($specialFolder);
         $this->assertInstanceOf(SpecialFolderProxy::class, $specialFolder);
         $this->assertInternalType('string', $specialFolder->name);
+    }
+
+    private function assertSharedProxy($shared)
+    {
+        $this->assertEntityProxy($shared);
+        $this->assertInstanceOf(SharedProxy::class, $shared);
+        $this->assertIdentitySetProxy($shared->owner);
+        $this->assertInternalType('string', $shared->scope);
+
+        $this->assertContains($shared->scope, [
+            SharedScope::ANONYMOUS,
+            SharedScope::ORGANIZATION,
+            SharedScope::USERS,
+        ]);
+
+        if ($shared->sharedBy !== null) {
+            $this->assertIdentitySetProxy($shared->sharedBy);
+        }
+
+        $this->assertThat(
+            $shared->sharedDateTime,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isInstanceOf(\DateTime::class)
+            )
+        );
     }
 
     private function assertSharingLinkProxy($sharingLink)

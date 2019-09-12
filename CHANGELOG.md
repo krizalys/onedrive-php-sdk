@@ -20,6 +20,7 @@ Change log
 - Updated `Krizalys\Onedrive\Proxy\FolderProxy`.
 - Updated `Krizalys\Onedrive\Proxy\FileSystemInfoProxy`.
 - Updated `Krizalys\Onedrive\Proxy\PackageProxy`.
+- Updated `Krizalys\Onedrive\Proxy\SharedProxy`.
 
 [2.4.2] - 2019-09-16
 --------------------
