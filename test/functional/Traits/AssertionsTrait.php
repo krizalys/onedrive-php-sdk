@@ -99,13 +99,9 @@ trait AssertionsTrait
             )
         );
 
-        $this->assertThat(
-            $baseItem->parentReference,
-            $this->logicalOr(
-                $this->isNull(),
-                $this->isInstanceOf(ItemReferenceProxy::class, $baseItem->parentReference)
-            )
-        );
+        if ($baseItem->parentReference !== null) {
+            $this->assertItemReferenceProxy($baseItem->parentReference);
+        }
 
         $this->assertThat(
             $baseItem->webUrl,
@@ -448,6 +444,37 @@ trait AssertionsTrait
         }
 
         $this->assertIdentityProxy($identitySet->user);
+    }
+
+    private function assertItemReferenceProxy($itemReference)
+    {
+        $this->assertEntityProxy($itemReference);
+        $this->assertInstanceOf(ItemReferenceProxy::class, $itemReference);
+
+        $this->assertThat(
+            $itemReference->id,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isType('string')
+            )
+        );
+
+        $this->assertInternalType('string', $itemReference->driveId);
+        $this->assertInternalType('string', $itemReference->driveType);
+
+        $this->assertContains($itemReference->driveType, [
+            DriveType::PERSONAL,
+            DriveType::BUSINESS,
+            DriveType::DOCUMENT_LIBRARY,
+        ]);
+
+        $this->assertThat(
+            $itemReference->path,
+            $this->logicalOr(
+                $this->isNull(),
+                $this->isType('string')
+            )
+        );
     }
 
     private function assertPermissionProxy($permission)
