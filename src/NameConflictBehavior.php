@@ -15,7 +15,7 @@
 namespace Krizalys\Onedrive;
 
 /**
- * The behavior to apply when an uploaded file name conflict with an existing
+ * The behavior to apply when an uploaded file name conflicts with an existing
  * one.
  *
  * @since 1.1.0

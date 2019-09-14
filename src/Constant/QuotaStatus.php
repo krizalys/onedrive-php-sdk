@@ -15,7 +15,7 @@
 namespace Krizalys\Onedrive\Constant;
 
 /**
- * The quota state.
+ * The quota status.
  *
  * @since 2.4.0
  *

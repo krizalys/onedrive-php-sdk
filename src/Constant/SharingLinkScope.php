@@ -15,7 +15,7 @@
 namespace Krizalys\Onedrive\Constant;
 
 /**
- * The sharing link type.
+ * The sharing link scope.
  *
  * @since 2.4.1
  *
