@@ -241,13 +241,9 @@ trait AssertionsTrait
             $this->assertSharedProxy($item->shared);
         }
 
-        $this->assertThat(
-            $item->sharepointIds,
-            $this->logicalOr(
-                $this->isNull(),
-                $this->isInstanceOf(SharepointIdsProxy::class)
-            )
-        );
+        if ($item->sharepointIds !== null) {
+            $this->assertSharepointIdsProxy($item->sharepointIds);
+        }
 
         $this->assertThat(
             $item->size,
@@ -346,13 +342,9 @@ trait AssertionsTrait
         $this->assertIdentitySetProxy($drive->owner);
         $this->assertQuotaProxy($drive->quota);
 
-        $this->assertThat(
-            $drive->sharePointIds,
-            $this->logicalOr(
-                $this->isNull(),
-                $this->isInstanceOf(SharepointIdsProxy::class)
-            )
-        );
+        if ($drive->sharePointIds !== null) {
+            $this->assertSharepointIdsProxy($drive->sharePointIds);
+        }
 
         $this->assertThat(
             $drive->system,
@@ -634,6 +626,19 @@ trait AssertionsTrait
                 $this->isInstanceOf(\DateTime::class)
             )
         );
+    }
+
+    private function assertSharepointIdsProxy($sharepointIds)
+    {
+        $this->assertEntityProxy($sharepointIds);
+        $this->assertInstanceOf(SharepointIdsProxy::class, $sharepointIds);
+        $this->assertInternalType('string', $sharepointIds->listId);
+        $this->assertInternalType('string', $sharepointIds->listItemId);
+        $this->assertInternalType('string', $sharepointIds->listItemUniqueId);
+        $this->assertInternalType('string', $sharepointIds->siteId);
+        $this->assertInternalType('string', $sharepointIds->siteUrl);
+        $this->assertRegExp(self::$uriRegex, $sharepointIds->siteUrl);
+        $this->assertInternalType('string', $sharepointIds->webId);
     }
 
     private function assertSharingLinkProxy($sharingLink)

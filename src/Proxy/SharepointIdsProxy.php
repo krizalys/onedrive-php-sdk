@@ -20,6 +20,19 @@ use Microsoft\Graph\Model\SharepointIds;
 /**
  * A proxy to a \Microsoft\Graph\Model\SharepointIds instance.
  *
+ * @property-read string $listId
+ *                The list ID.
+ * @property-read string $listItemId
+ *                The list item ID.
+ * @property-read string $listItemUniqueId
+ *                The list item unique ID.
+ * @property-read string $siteId
+ *                The site ID.
+ * @property-read string $siteUrl
+ *                The site URL.
+ * @property-read string $webId
+ *                The web ID.
+ *
  * @since 2.0.0
  *
  * @api
@@ -41,5 +54,44 @@ class SharepointIdsProxy extends EntityProxy
     public function __construct(Graph $graph, SharepointIds $sharepointIds)
     {
         parent::__construct($graph, $sharepointIds);
+    }
+
+    /**
+     * Getter.
+     *
+     * @param string $name
+     *        The name.
+     *
+     * @return mixed
+     *         The value.
+     *
+     * @since 2.5.0
+     */
+    public function __get($name)
+    {
+        $sharepointIds = $this->entity;
+
+        switch ($name) {
+            case 'listId':
+                return $sharepointIds->getListId();
+
+            case 'listItemId':
+                return $sharepointIds->getListItemId();
+
+            case 'listItemUniqueId':
+                return $sharepointIds->getListItemUniqueId();
+
+            case 'siteId':
+                return $sharepointIds->getSiteId();
+
+            case 'siteUrl':
+                return $sharepointIds->getSiteUrl();
+
+            case 'webId':
+                return $sharepointIds->getWebId();
+
+            default:
+                return parent::__get($name);
+        }
     }
 }
