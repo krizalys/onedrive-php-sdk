@@ -520,7 +520,7 @@ trait AssertionsTrait
         $this->assertEntityProxy($sharingLink);
         $this->assertInstanceOf(SharingLinkProxy::class, $sharingLink);
 
-        if ($sharingLink->type != SharingLinkType::EMBED) {
+        if ($sharingLink->application !== null) {
             $this->assertIdentityProxy($sharingLink->application);
         }
 
@@ -531,11 +531,13 @@ trait AssertionsTrait
             ]);
         }
 
-        $this->assertContains($sharingLink->type, [
-            SharingLinkType::VIEW,
-            SharingLinkType::EDIT,
-            SharingLinkType::EMBED,
-        ]);
+        if ($sharingLink->type !== null) {
+            $this->assertContains($sharingLink->type, [
+                SharingLinkType::VIEW,
+                SharingLinkType::EDIT,
+                SharingLinkType::EMBED,
+            ]);
+        }
 
         $this->assertRegExp(self::$uriRegex, $sharingLink->webUrl);
     }

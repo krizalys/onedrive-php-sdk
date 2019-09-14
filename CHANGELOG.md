@@ -8,6 +8,8 @@ Change log
 
 - Support for redirect URI state: see `$state` parameter in
   `Krizalys\Onedrive\Client::getLogInUrl()`.
+- Support for sending invites: see
+  `Krizalys\Onedrive\Proxy\DriveItemProxy::invite()`.
 
 ### Changed
 

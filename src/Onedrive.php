@@ -162,6 +162,26 @@ class Onedrive
                         new ParameterDefinitionCollection($parameterBuilder, [])
                     ),
                 ], []),
+                'invite' => new ResourceDefinition([
+                    'post' => new OperationDefinition(
+                        new ParameterDefinitionCollection($parameterBuilder, [
+                            'message' => new BodyParameterDefinition(
+                                new HierarchicalInjector(['message']),
+                                $scalarSerializer
+                            ),
+                            'requireSignIn' => new BodyParameterDefinition(
+                                new HierarchicalInjector(['requireSignIn']),
+                                $scalarSerializer
+                            ),
+                            'sendInvitation' => new BodyParameterDefinition(
+                                new HierarchicalInjector(['sendInvitation']),
+                                $scalarSerializer
+                            ),
+                        ]),
+                        new ParameterDefinitionCollection($parameterBuilder, []),
+                        new ParameterDefinitionCollection($parameterBuilder, [])
+                    ),
+                ], []),
             ]),
         ]);
     }

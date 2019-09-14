@@ -691,6 +691,50 @@ class DriveItemProxyTest extends TestCase
         $this->assertSame(SharingLinkScope::ANONYMOUS, $actual->link->scope);
     }
 
+    public function testInviteShouldReturnExpectedValue()
+    {
+        $permissionId1 = '1234';
+        $permissionId2 = '5678';
+
+        $permission1 = $this->createMock(Permission::class);
+        $permission1->method('getId')->willReturn($permissionId1);
+
+        $permission2 = $this->createMock(Permission::class);
+        $permission2->method('getId')->willReturn($permissionId2);
+
+        $permissions = [
+            $permission1,
+            $permission2,
+        ];
+
+        $item = $this->mockDriveItem();
+
+        $graph = $this->mockGraphWithCollectionResponse($permissions);
+
+        $parameterDefinitions = $this->createMock(ParameterDefinitionCollectionInterface::class);
+        $parameterDefinitions->method('buildOptions')->willReturn([]);
+
+        $operationDefinition = $this->createMock(OperationDefinitionInterface::class);
+        $operationDefinition->method('getBodyParameterDefinitions')->willReturn($parameterDefinitions);
+
+        $inviteResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
+        $inviteResourceDefinition->method('getOperationDefinition')->willReturn($operationDefinition);
+
+        $resourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
+        $resourceDefinition->method('getResourceDefinition')->willReturn($inviteResourceDefinition);
+
+        $sut    = new DriveItemProxy($graph, $item, $resourceDefinition);
+        $actual = $sut->invite([], [], []);
+        $this->assertInternalType('array', $actual);
+        $this->assertCount(2, $actual);
+
+        $this->assertInstanceOf(PermissionProxy::class, $actual[0]);
+        $this->assertSame($permissionId1, $actual[0]->id);
+
+        $this->assertInstanceOf(PermissionProxy::class, $actual[1]);
+        $this->assertSame($permissionId2, $actual[1]->id);
+    }
+
     private function mockStream()
     {
         $stream = $this->createMock(Stream::class);
@@ -733,6 +777,7 @@ class DriveItemProxyTest extends TestCase
         $response->method('getStatus')->willReturn('200');
         $response->method('getResponseAsObject')->willReturn($body);
         $request = $this->createMock(GraphRequest::class);
+        $request->method('attachBody')->willReturnSelf();
         $request->method('execute')->willReturn($response);
         $graph = $this->createMock(Graph::class);
         $graph->method('createCollectionRequest')->willReturn($request);

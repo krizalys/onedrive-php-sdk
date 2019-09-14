@@ -3,6 +3,7 @@
 namespace Test\Functional\Krizalys\Onedrive\Proxy;
 
 use Krizalys\Onedrive\Constant\ConflictBehavior;
+use Krizalys\Onedrive\Constant\Role;
 use Krizalys\Onedrive\Constant\SharingLinkType;
 use Krizalys\Onedrive\Proxy\DriveItemProxy;
 use PHPUnit\Framework\TestCase;
@@ -836,6 +837,55 @@ class DriveItemProxyTest extends TestCase
             $driveItem->createLink($type);
             $permission = $driveItem->createLink($type);
             $this->assertPermissionProxy($permission);
+        });
+    }
+
+    public function testInviteWhenNotExisting()
+    {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
+            $driveItem = $sandbox->createFolder('Test folder');
+            $recipient = self::getConfig('RECIPIENT');
+
+            $permissions = $driveItem->invite(
+                [$recipient],
+                [Role::READ],
+                [
+                    'message'        => 'Test message',
+                    'requireSignIn'  => true,
+                    'sendInvitation' => true,
+                ]
+            );
+
+            foreach ($permissions as $permission) {
+                $this->assertPermissionProxy($permission);
+            }
+        });
+    }
+
+    public function testInviteWhenExisting()
+    {
+        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
+            $driveItem = $sandbox->createFolder('Test folder');
+            $recipient = self::getConfig('RECIPIENT');
+
+            $driveItem->invite(
+                [$recipient],
+                [Role::READ]
+            );
+
+            $permissions = $driveItem->invite(
+                [$recipient],
+                [Role::READ],
+                [
+                    'message'        => 'Test message',
+                    'requireSignIn'  => true,
+                    'sendInvitation' => true,
+                ]
+            );
+
+            foreach ($permissions as $permission) {
+                $this->assertPermissionProxy($permission);
+            }
         });
     }
 

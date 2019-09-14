@@ -997,4 +997,99 @@ class DriveItemProxy extends BaseItemProxy
 
         return new PermissionProxy($this->graph, $permission);
     }
+
+    /**
+     * Creates a sharing invitation to this drive item.
+     *
+     * See {@see \Krizalys\Onedrive\Constant\Role Role} for supported values for
+     * the parameter `$roles`.
+     *
+     * A custom message, the sign in requirement, and the send invitation option
+     * may be given as options. For example, to invite 2 users to get read and
+     * write permissions on a given drive item, send them an invitation email
+     * with a custom message, and require them sign in to access the drive item:
+     *
+     * ```php
+     * $driveItem->invite(
+     *     [
+     *         'user1@example.com',
+     *         'user2@example.com',
+     *     ],
+     *     [
+     *         Role::READ,
+     *         Role::WRITE,
+     *     ],
+     *     [
+     *         'message'        => 'Custom invitation message',
+     *         'requireSignIn'  => true,
+     *         'sendInvitation' => true,
+     *     ]
+     * );
+     * ```
+     *
+     * @param string[] $recipients
+     *        The recipients.
+     * @param string[] $roles
+     *        The roles.
+     * @param mixed[string] $options
+     *        The options.
+     *
+     * @return PermissionProxy[]
+     *         The permissions.
+     *
+     * @since 2.5.0
+     *
+     * @api
+     *
+     * @link https://docs.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_invite?view=odsp-graph-online
+     *       Send a sharing invitation
+     */
+    public function invite(array $recipients, array $roles, array $options = [])
+    {
+        $opDef = $this->resourceDefinition
+            ->getResourceDefinition('invite')
+            ->getOperationDefinition('post');
+
+        $driveLocator = "/drives/{$this->parentReference->driveId}";
+        $itemLocator  = "/items/{$this->id}";
+        $endpoint     = "$driveLocator$itemLocator/invite";
+
+        $recipients = array_map(function ($recipient) {
+            return [
+                '@odata.type' => 'microsoft.graph.driveRecipient',
+                'email'       => $recipient,
+            ];
+        }, $recipients);
+
+        $bodyParams = $opDef
+            ->getBodyParameterDefinitions()
+            ->buildOptions($options);
+
+        $body = array_replace_recursive([
+            'roles'      => $roles,
+            'recipients' => $recipients,
+        ], $bodyParams);
+
+        $response = $this
+            ->graph
+            ->createCollectionRequest('POST', $endpoint)
+            ->attachBody($body)
+            ->execute();
+
+        $status = $response->getStatus();
+
+        if ($status != 200) {
+            throw new \Exception("Unexpected status code produced by 'POST $endpoint': $status");
+        }
+
+        $permissions = $response->getResponseAsObject(Permission::class);
+
+        if (!is_array($permissions)) {
+            return [];
+        }
+
+        return array_map(function (Permission $permission) {
+            return new PermissionProxy($this->graph, $permission);
+        }, $permissions);
+    }
 }

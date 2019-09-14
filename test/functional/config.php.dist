@@ -5,4 +5,5 @@ return [
     'SECRET'    => '<SECRET>',
     'USERNAME'  => '<ONEDRIVE_USERNAME>',
     'PASSWORD'  => '<ONEDRIVE_PASSWORD>',
+    'RECIPIENT' => '<RECIPIENT_EMAIL>',
 ];
