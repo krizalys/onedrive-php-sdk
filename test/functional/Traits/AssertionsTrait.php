@@ -524,16 +524,12 @@ trait AssertionsTrait
             $this->assertIdentityProxy($sharingLink->application);
         }
 
-        $this->assertThat(
-            $sharingLink->scope,
-            $this->logicalOr(
-                $this->isNull(),
-                $this->contains([
-                    SharingLinkScope::ANONYMOUS,
-                    SharingLinkScope::ORGANIZATION,
-                ])
-            )
-        );
+        if ($sharingLink->scope !== null) {
+            $this->assertContains($sharingLink->scope, [
+                SharingLinkScope::ANONYMOUS,
+                SharingLinkScope::ORGANIZATION,
+            ]);
+        }
 
         $this->assertContains($sharingLink->type, [
             SharingLinkType::VIEW,
