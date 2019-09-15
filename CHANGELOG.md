@@ -13,6 +13,11 @@ Change log
 - Updated test suites to support newer PHPUnit versions.
 - Upgraded to PHPUnit 7 on compatible platforms.
 
+### Fixed
+
+- `Krizalys\Onedrive\Serializer\ScalarSerializer::serialize()`: did not
+  serialize boolean values as expected.
+
 [2.4.1] - 2019-09-08
 --------------------
 

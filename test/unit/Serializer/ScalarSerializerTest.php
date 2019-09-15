@@ -23,6 +23,8 @@ class ScalarSerializerTest extends TestCase
         return [
             ['Test', 'Test'],
             [1234,   '1234'],
+            [false,  'false'],
+            [true,   'true'],
         ];
     }
 }

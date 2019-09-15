@@ -34,6 +34,10 @@ class ScalarSerializer implements SerializerInterface
      */
     public function serialize($value)
     {
+        if (is_bool($value)) {
+            return $value ? 'true' : 'false';
+        }
+
         return (string) $value;
     }
 }
