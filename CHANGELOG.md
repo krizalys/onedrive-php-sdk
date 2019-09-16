@@ -23,7 +23,7 @@ Change log
 
 ### Added
 
-- Added some functional test assertions.
+- Some functional test assertions.
 
 ### Changed
 
