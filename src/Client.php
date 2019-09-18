@@ -238,6 +238,8 @@ class Client
      *          - `'files.readwrite.all'`.
      * @param string $redirectUri
      *        The URI to which to redirect to upon successful log in.
+     * @param string $state
+     *        State parameter to be sent with other values.
      *
      * @return string
      *         The log in URL.
@@ -246,7 +248,7 @@ class Client
      *
      * @api
      */
-    public function getLogInUrl(array $scopes, $redirectUri)
+    public function getLogInUrl(array $scopes, $redirectUri, $state = false )
     {
         $redirectUri                = (string) $redirectUri;
         $this->_state->redirect_uri = $redirectUri;
@@ -258,6 +260,9 @@ class Client
             'scope'         => implode(' ', $scopes),
             'response_mode' => 'query',
         ];
+        if ( false !== $state ) {
+            $values['state'] = $state;
+        }
 
         $query = http_build_query($values, '', '&', PHP_QUERY_RFC3986);
 
