@@ -248,7 +248,7 @@ class Client
      *
      * @api
      */
-    public function getLogInUrl(array $scopes, $redirectUri, $state = false )
+    public function getLogInUrl(array $scopes, $redirectUri, $state = false)
     {
         $redirectUri                = (string) $redirectUri;
         $this->_state->redirect_uri = $redirectUri;
@@ -260,7 +260,7 @@ class Client
             'scope'         => implode(' ', $scopes),
             'response_mode' => 'query',
         ];
-        if ( false !== $state ) {
+        if (false !== $state) {
             $values['state'] = $state;
         }
 
