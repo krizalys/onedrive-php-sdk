@@ -261,7 +261,7 @@ class Client
             'response_mode' => 'query',
         ];
         if (false !== $state) {
-            $values['state'] = $state;
+            $values['state'] = (string) $state;
         }
 
         $query = http_build_query($values, '', '&', PHP_QUERY_RFC3986);
