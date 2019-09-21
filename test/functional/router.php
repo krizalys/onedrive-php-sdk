@@ -8,13 +8,13 @@ function route()
 
     if ($path == '/') {
         if (!array_key_exists('query', $components)) {
-            throw new \Exception('code not given');
+            throw new \Exception('Code not given');
         }
 
         parse_str($components['query'], $query);
-        $code   = $query['code'];
+        $query  = json_encode($query);
         $stdout = fopen('php://stdout', 'w');
-        fwrite($stdout, $code);
+        fwrite($stdout, $query);
         fclose($stdout);
     }
 

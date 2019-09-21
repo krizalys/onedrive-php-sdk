@@ -238,6 +238,10 @@ class Client
      *          - `'files.readwrite.all'`.
      * @param string $redirectUri
      *        The URI to which to redirect to upon successful log in.
+     * @param string $state
+     *        The state to pass as a query string value to the redirect URI
+     *        upon successful log in. See {@link
+     *        https://docs.microsoft.com/en-us/azure/active-directory/develop/reply-url#use-a-state-parameter "Use a state parameter" in Microsoft Azure documentation for use cases}.
      *
      * @return string
      *         The log in URL.
@@ -246,7 +250,7 @@ class Client
      *
      * @api
      */
-    public function getLogInUrl(array $scopes, $redirectUri)
+    public function getLogInUrl(array $scopes, $redirectUri, $state = null)
     {
         $redirectUri                = (string) $redirectUri;
         $this->_state->redirect_uri = $redirectUri;
@@ -258,6 +262,10 @@ class Client
             'scope'         => implode(' ', $scopes),
             'response_mode' => 'query',
         ];
+
+        if ($state !== null) {
+            $values['state'] = (string) $state;
+        }
 
         $query = http_build_query($values, '', '&', PHP_QUERY_RFC3986);
 

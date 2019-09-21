@@ -1,6 +1,14 @@
 Change log
 ==========
 
+[Unreleased][unreleased]
+------------------------
+
+### Added
+
+- Support for redirect URI state: see `$state` parameter in
+  `Krizalys\Onedrive\Client::getLogInUrl()`.
+
 [2.4.2] - 2019-09-16
 --------------------
 
