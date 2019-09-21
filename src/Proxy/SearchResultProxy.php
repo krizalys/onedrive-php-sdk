@@ -31,9 +31,9 @@ class SearchResultProxy extends EntityProxy
     /**
      * Constructor.
      *
-     * @param Graph $graph
+     * @param \Microsoft\Graph\Graph\Graph $graph
      *        The Microsoft Graph.
-     * @param SearchResult $searchResult
+     * @param \Microsoft\Graph\Model\SearchResult $searchResult
      *        The search result.
      *
      * @since 2.0.0

@@ -31,9 +31,9 @@ class SystemFacetProxy extends EntityProxy
     /**
      * Constructor.
      *
-     * @param Graph $graph
+     * @param \Microsoft\Graph\Graph\Graph $graph
      *        The Microsoft Graph.
-     * @param SystemFacet $systemFacet
+     * @param \Microsoft\Graph\Model\SystemFacet $systemFacet
      *        The system facet.
      *
      * @since 2.0.0

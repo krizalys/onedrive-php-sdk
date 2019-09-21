@@ -31,9 +31,9 @@ class WorkbookProxy extends EntityProxy
     /**
      * Constructor.
      *
-     * @param Graph $graph
+     * @param \Microsoft\Graph\Graph $graph
      *        The Microsoft Graph.
-     * @param Workbook $workbook
+     * @param \Microsoft\Graph\Model\Workbook $workbook
      *        The workbook.
      *
      * @since 2.0.0

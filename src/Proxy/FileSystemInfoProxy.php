@@ -38,9 +38,9 @@ class FileSystemInfoProxy extends EntityProxy
     /**
      * Constructor.
      *
-     * @param Graph $graph
+     * @param \Microsoft\Graph\Graph\Graph $graph
      *        The Microsoft Graph.
-     * @param FileSystemInfo $fileSystemInfo
+     * @param \Microsoft\Graph\Model\FileSystemInfo $fileSystemInfo
      *        The file system info.
      *
      * @since 2.0.0

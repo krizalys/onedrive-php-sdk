@@ -35,7 +35,7 @@ class File extends DriveItem
     /**
      * Constructor.
      *
-     * @param Client $client
+     * @param \Krizalys\Onedrive\Client $client
      *        The `Client` instance owning this DriveItem instance.
      * @param null|string $id
      *        The unique ID of the OneDrive drive item referenced by this

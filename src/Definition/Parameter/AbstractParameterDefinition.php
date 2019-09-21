@@ -25,13 +25,13 @@ use Krizalys\Onedrive\Serializer\SerializerInterface;
 abstract class AbstractParameterDefinition implements ParameterDefinitionInterface
 {
     /**
-     * @var InjectorInterface
+     * @var \Krizalys\Onedrive\Parameter\Injector\InjectorInterface
      *      The injector.
      */
     private $injector;
 
     /**
-     * @var SerializerInterface
+     * @var \Krizalys\Onedrive\Serializer\SerializerInterface
      *      The serializer.
      */
     private $serializer;
@@ -39,9 +39,9 @@ abstract class AbstractParameterDefinition implements ParameterDefinitionInterfa
     /**
      * Constructor.
      *
-     * @param InjectorInterface $injector
+     * @param \Krizalys\Onedrive\Parameter\Injector\InjectorInterface $injector
      *        The injector.
-     * @param SerializerInterface $serializer
+     * @param \Krizalys\Onedrive\Serializer\SerializerInterface $serializer
      *        The serializer.
      *
      * @since 2.3.0

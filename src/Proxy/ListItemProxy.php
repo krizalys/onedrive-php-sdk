@@ -31,9 +31,9 @@ class ListItemProxy extends BaseItemProxy
     /**
      * Constructor.
      *
-     * @param Graph $graph
+     * @param \Microsoft\Graph\Graph $graph
      *        The Microsoft Graph.
-     * @param ListItem $listItem
+     * @param \Microsoft\Graph\Model\ListItem $listItem
      *        The list item.
      *
      * @since 2.0.0

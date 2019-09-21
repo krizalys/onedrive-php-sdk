@@ -59,7 +59,7 @@ class Onedrive
      *          - `'state'` *(object)*: the OneDrive client state, as returned
      *            by {@see Client::getState() getState()}. Default: `[]`.
      *
-     * @return Client
+     * @return \Krizalys\Onedrive\Client
      *         The client created.
      *
      * @api

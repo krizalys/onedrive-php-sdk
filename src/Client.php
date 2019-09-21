@@ -440,7 +440,7 @@ class Client
     /**
      * Gets the current user's drive.
      *
-     * @return DriveProxy[]
+     * @return \Krizalys\Onedrive\Proxy\DriveProxy[]
      *         The drives.
      *
      * @since 2.0.0
@@ -484,7 +484,7 @@ class Client
     /**
      * Gets the signed in user's drive.
      *
-     * @return DriveProxy
+     * @return \Krizalys\Onedrive\Proxy\DriveProxy
      *         The drive.
      *
      * @since 2.0.0
@@ -525,7 +525,7 @@ class Client
      * @param string $driveId
      *        The drive ID.
      *
-     * @return DriveProxy
+     * @return \Krizalys\Onedrive\Proxy\DriveProxy
      *         The drive.
      *
      * @since 2.0.0
@@ -566,7 +566,7 @@ class Client
      * @param string $idOrUserPrincipalName
      *        The ID or user principal name.
      *
-     * @return DriveProxy
+     * @return \Krizalys\Onedrive\Proxy\DriveProxy
      *         The drive.
      *
      * @since 2.0.0
@@ -608,7 +608,7 @@ class Client
      * @param string $groupId
      *        The group ID.
      *
-     * @return DriveProxy
+     * @return \Krizalys\Onedrive\Proxy\DriveProxy
      *         The drive.
      *
      * @since 2.0.0
@@ -650,7 +650,7 @@ class Client
      * @param string $siteId
      *        The site ID.
      *
-     * @return DriveProxy
+     * @return \Krizalys\Onedrive\Proxy\DriveProxy
      *         The drive.
      *
      * @since 2.0.0
@@ -696,7 +696,7 @@ class Client
      *        The drive item ID. Deprecated and will be removed in version 3;
      *        Omit this parameter.
      *
-     * @return DriveItemProxy
+     * @return \Krizalys\Onedrive\Proxy\DriveItemProxy
      *         The drive item.
      *
      * @since 2.0.0
@@ -766,7 +766,7 @@ class Client
      * @param string $path
      *        The path.
      *
-     * @return DriveItemProxy
+     * @return \Krizalys\Onedrive\Proxy\DriveItemProxy
      *         The drive item.
      *
      * @since 2.2.0
@@ -805,7 +805,7 @@ class Client
     /**
      * Gets the root drive item.
      *
-     * @return DriveItemProxy
+     * @return \Krizalys\Onedrive\Proxy\DriveItemProxy
      *         The root drive item.
      *
      * @since 2.0.0
@@ -850,7 +850,7 @@ class Client
      * @param string $specialFolderName
      *        The special folder name.
      *
-     * @return DriveItemProxy
+     * @return \Krizalys\Onedrive\Proxy\DriveItemProxy
      *         The root drive item.
      *
      * @since 2.0.0
@@ -889,7 +889,7 @@ class Client
     /**
      * Gets items shared with the signed-in user.
      *
-     * @return DriveItemProxy[]
+     * @return \Krizalys\Onedrive\Proxy\DriveItemProxy[]
      *         The shared drive items.
      *
      * @since 2.0.0
@@ -933,7 +933,7 @@ class Client
     /**
      * Gets recent files.
      *
-     * @return DriveItemProxy[]
+     * @return \Krizalys\Onedrive\Proxy\DriveItemProxy[]
      *         The recent drive items.
      *
      * @since 2.0.0
@@ -992,7 +992,7 @@ class Client
      *        The description of the OneDrive folder to be created, or `null` to
      *        create it without a description. Default: `null`.
      *
-     * @return Folder
+     * @return \Krizalys\Onedrive\Folder
      *         The folder created, as a Folder instance referencing to the
      *         OneDrive folder created.
      *
@@ -1051,7 +1051,7 @@ class Client
      * @param mixed[string] $options
      *        The options. Unused.
      *
-     * @return File
+     * @return \Krizalys\Onedrive\File
      *         The file created, as File instance referencing to the OneDrive
      *         file created.
      *
@@ -1137,7 +1137,7 @@ class Client
     /**
      * Fetches the root folder from the current OneDrive account.
      *
-     * @return Folder
+     * @return \Krizalys\Onedrive\Folder
      *         The root folder, as a Folder instance referencing to the OneDrive
      *         root folder.
      *
@@ -1166,7 +1166,7 @@ class Client
     /**
      * Fetches the "Camera Roll" folder from the current OneDrive account.
      *
-     * @return Folder
+     * @return \Krizalys\Onedrive\Folder
      *         The "Camera Roll" folder, as a Folder instance referencing to the
      *         OneDrive "Camera Roll" folder.
      *
@@ -1196,7 +1196,7 @@ class Client
     /**
      * Fetches the "Documents" folder from the current OneDrive account.
      *
-     * @return Folder
+     * @return \Krizalys\Onedrive\Folder
      *         The "Documents" folder, as a Folder instance referencing to the
      *         OneDrive "Documents" folder.
      *
@@ -1226,7 +1226,7 @@ class Client
     /**
      * Fetches the "Pictures" folder from the current OneDrive account.
      *
-     * @return Folder
+     * @return \Krizalys\Onedrive\Folder
      *         The "Pictures" folder, as a Folder instance referencing to the
      *         OneDrive "Pictures" folder.
      *
@@ -1306,7 +1306,7 @@ class Client
      *        The drive item ID, or `null` to fetch the OneDrive root folder.
      *        Default: `null`.
      *
-     * @return DriveItem
+     * @return \Krizalys\Onedrive\DriveItem
      *         The drive items in the folder fetched, as DriveItem instances
      *         referencing OneDrive drive items.
      *
@@ -1600,7 +1600,7 @@ class Client
     /**
      * Checks whether a given drive item is a folder.
      *
-     * @param DriveItemProxy $item
+     * @param \Krizalys\Onedrive\Proxy\DriveItemProxy $item
      *        The drive item.
      *
      * @return bool
@@ -1618,7 +1618,7 @@ class Client
     /**
      * Builds options for legacy File and Folder constructors.
      *
-     * @param DriveItemProxy $item
+     * @param \Krizalys\Onedrive\Proxy\DriveItemProxy $item
      *        The drive item.
      * @param mixed[string] $options
      *        The options.

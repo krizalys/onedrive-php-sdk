@@ -34,9 +34,9 @@ class PackageProxy extends EntityProxy
     /**
      * Constructor.
      *
-     * @param Graph $graph
+     * @param \Microsoft\Graph\Graph $graph
      *        The Microsoft Graph.
-     * @param Package $package
+     * @param \Microsoft\Graph\Model\Package $package
      *        The package.
      *
      * @since 2.0.0

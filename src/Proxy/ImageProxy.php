@@ -31,9 +31,9 @@ class ImageProxy extends EntityProxy
     /**
      * Constructor.
      *
-     * @param Graph $graph
+     * @param \Microsoft\Graph\Graph $graph
      *        The Microsoft Graph.
-     * @param Image $image
+     * @param \Microsoft\Graph\Model\Image $image
      *        The image.
      *
      * @since 2.0.0

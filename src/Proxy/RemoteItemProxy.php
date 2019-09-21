@@ -64,9 +64,9 @@ class RemoteItemProxy extends EntityProxy
     /**
      * Constructor.
      *
-     * @param Graph $graph
+     * @param \Microsoft\Graph\Graph $graph
      *        The Microsoft Graph.
-     * @param RemoteItem $remoteItem
+     * @param \Microsoft\Graph\Model\RemoteItem $remoteItem
      *        The remote item.
      *
      * @since 2.0.0

@@ -46,7 +46,7 @@ class Folder extends DriveItem
     /**
      * Constructor.
      *
-     * @param Client $client
+     * @param \Krizalys\Onedrive\Client $client
      *        The `Client` instance owning this DriveItem instance.
      * @param null|string $id
      *        The unique ID of the OneDrive drive item referenced by this
@@ -66,7 +66,7 @@ class Folder extends DriveItem
      * Gets the drive items in the OneDrive folder referenced by this Folder
      * instance.
      *
-     * @return DriveItem[]
+     * @return \Krizalys\Onedrive\DriveItem[]
      *         The drive items in the OneDrive folder referenced by this
      *         `Folder` instance, as DriveItem instances.
      *
@@ -105,7 +105,7 @@ class Folder extends DriveItem
      * Gets the child drive items in the OneDrive folder referenced by this
      * Folder instance.
      *
-     * @return DriveItem[]
+     * @return \Krizalys\Onedrive\DriveItem[]
      *         The drive items in the OneDrive folder referenced by this
      *         `Folder` instance, as DriveItem instances.
      *
@@ -150,7 +150,7 @@ class Folder extends DriveItem
      *        The description of the OneDrive folder to be created, or `null` to
      *        create it without a description. Default: `null`.
      *
-     * @return Folder
+     * @return \Krizalys\Onedrive\Folder
      *         The folder created, as a `Folder` instance.
      *
      * @since 1.0.0
@@ -201,7 +201,7 @@ class Folder extends DriveItem
      * @param mixed[string] $options
      *        The options. Unused.
      *
-     * @return File
+     * @return \Krizalys\Onedrive\File
      *         The file created, as a File instance.
      *
      * @throws \Exception

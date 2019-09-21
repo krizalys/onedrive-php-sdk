@@ -31,9 +31,9 @@ class AudioProxy extends EntityProxy
     /**
      * Constructor.
      *
-     * @param Graph $graph
+     * @param \Microsoft\Graph\Graph $graph
      *        The Microsoft Graph.
-     * @param Audio $audio
+     * @param \Microsoft\Graph\Model\Audio $audio
      *        The audio.
      *
      * @since 2.0.0

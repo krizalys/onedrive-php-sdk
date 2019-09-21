@@ -58,9 +58,9 @@ class DriveProxy extends BaseItemProxy
     /**
      * Constructor.
      *
-     * @param Graph $graph
+     * @param \Microsoft\Graph\Graph\Graph $graph
      *        The Microsoft Graph.
-     * @param Drive $drive
+     * @param \Microsoft\Graph\Model\Drive $drive
      *        The drive.
      * @param \Krizalys\Onedrive\Definition\ResourceDefinitionInterface $driveItemResourceDefinition
      *        The drive item resource definition.
@@ -157,7 +157,7 @@ class DriveProxy extends BaseItemProxy
      * @param string $itemId
      *        The drive item ID.
      *
-     * @return DriveItemProxy
+     * @return \Krizalys\Onedrive\Proxy\DriveItemProxy
      *         The drive item.
      *
      * @since 2.2.0
@@ -206,7 +206,7 @@ class DriveProxy extends BaseItemProxy
      * @param string $path
      *        The path.
      *
-     * @return DriveItemProxy
+     * @return \Krizalys\Onedrive\Proxy\DriveItemProxy
      *         The drive item.
      *
      * @since 2.2.0
@@ -245,7 +245,7 @@ class DriveProxy extends BaseItemProxy
     /**
      * Gets the root of this instance.
      *
-     * @return DriveItemProxy
+     * @return \Krizalys\Onedrive\Proxy\DriveItemProxy
      *         The root.
      *
      * @since 2.0.0

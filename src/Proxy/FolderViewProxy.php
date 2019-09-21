@@ -38,9 +38,9 @@ class FolderViewProxy extends EntityProxy
     /**
      * Constructor.
      *
-     * @param Graph $graph
+     * @param \Microsoft\Graph\Graph $graph
      *        The Microsoft Graph.
-     * @param FolderView $folderView
+     * @param \Microsoft\Graph\Model\FolderView $folderView
      *        The folder view.
      *
      * @since 2.5.0

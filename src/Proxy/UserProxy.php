@@ -31,9 +31,9 @@ class UserProxy extends DirectoryObjectProxy
     /**
      * Constructor.
      *
-     * @param Graph $graph
+     * @param \Microsoft\Graph\Graph\Graph $graph
      *        The Microsoft Graph.
-     * @param User $user
+     * @param \Microsoft\Graph\Model\User $user
      *        The user.
      *
      * @since 2.0.0

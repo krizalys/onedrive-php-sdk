@@ -31,9 +31,9 @@ class GraphListProxy extends BaseItemProxy
     /**
      * Constructor.
      *
-     * @param Graph $graph
+     * @param \Microsoft\Graph\Graph $graph
      *        The Microsoft Graph.
-     * @param GraphList $graphList
+     * @param \Microsoft\Graph\Model\GraphList $graphList
      *        The Microsoft Graph.list.
      *
      * @since 2.0.0

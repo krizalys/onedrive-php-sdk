@@ -34,9 +34,9 @@ class IdentityProxy extends EntityProxy
     /**
      * Constructor.
      *
-     * @param Graph $graph
+     * @param \Microsoft\Graph\Graph $graph
      *        The Microsoft Graph.
-     * @param Identity $identity
+     * @param \Microsoft\Graph\Model\Identity $identity
      *        The identity.
      *
      * @since 2.0.0

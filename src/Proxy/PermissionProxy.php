@@ -34,9 +34,9 @@ class PermissionProxy extends EntityProxy
     /**
      * Constructor.
      *
-     * @param Graph $graph
+     * @param \Microsoft\Graph\Graph $graph
      *        The Microsoft Graph.
-     * @param Permission $permission
+     * @param \Microsoft\Graph\Model\Permission $permission
      *        The permission.
      *
      * @since 2.0.0

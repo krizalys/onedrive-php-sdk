@@ -40,9 +40,9 @@ class ItemReferenceProxy extends EntityProxy
     /**
      * Constructor.
      *
-     * @param Graph $graph
+     * @param \Microsoft\Graph\Graph $graph
      *        The Microsoft Graph.
-     * @param ItemReference $itemReference
+     * @param \Microsoft\Graph\Model\ItemReference $itemReference
      *        The item reference.
      *
      * @since 2.0.0

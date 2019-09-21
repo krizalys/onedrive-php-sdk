@@ -38,9 +38,9 @@ class HashesProxy extends EntityProxy
     /**
      * Constructor.
      *
-     * @param Graph $graph
+     * @param \Microsoft\Graph\Graph $graph
      *        The Microsoft Graph.
-     * @param Hashes $hashes
+     * @param \Microsoft\Graph\Model\Hashes $hashes
      *        The hashes.
      *
      * @since 2.5.0

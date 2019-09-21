@@ -85,9 +85,9 @@ class UploadSessionProxy extends EntityProxy
     /**
      * Constructor.
      *
-     * @param Graph $graph
+     * @param \Microsoft\Graph\Graph\Graph $graph
      *        The Microsoft Graph.
-     * @param UploadSession $uploadSession
+     * @param \Microsoft\Graph\Model\UploadSession $uploadSession
      *        The upload session.
      * @param string|resource|\GuzzleHttp\Psr7\Stream $content
      *        The content.
@@ -153,7 +153,7 @@ class UploadSessionProxy extends EntityProxy
     /**
      * Uploads the content in multiple ranges and completes this session.
      *
-     * @return DriveItemProxy
+     * @return \Krizalys\Onedrive\Proxy\DriveItemProxy
      *         The drive item created.
      *
      * @since 2.1.0

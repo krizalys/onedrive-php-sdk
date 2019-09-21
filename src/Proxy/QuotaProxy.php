@@ -42,9 +42,9 @@ class QuotaProxy extends EntityProxy
     /**
      * Constructor.
      *
-     * @param Graph $graph
+     * @param \Microsoft\Graph\Graph $graph
      *        The Microsoft Graph.
-     * @param Quota $quota
+     * @param \Microsoft\Graph\Model\Quota $quota
      *        The quota.
      *
      * @since 2.0.0

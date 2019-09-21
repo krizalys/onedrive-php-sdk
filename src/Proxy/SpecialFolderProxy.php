@@ -34,9 +34,9 @@ class SpecialFolderProxy extends EntityProxy
     /**
      * Constructor.
      *
-     * @param Graph $graph
+     * @param \Microsoft\Graph\Graph\Graph $graph
      *        The Microsoft Graph.
-     * @param SpecialFolder $specialFolder
+     * @param \Microsoft\Graph\Model\SpecialFolder $specialFolder
      *        The special folder.
      *
      * @since 2.0.0

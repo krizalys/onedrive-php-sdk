@@ -40,9 +40,9 @@ class SharedProxy extends EntityProxy
     /**
      * Constructor.
      *
-     * @param Graph $graph
+     * @param \Microsoft\Graph\Graph\Graph $graph
      *        The Microsoft Graph.
-     * @param Shared $shared
+     * @param \Microsoft\Graph\Model\Shared $shared
      *        The shared.
      *
      * @since 2.0.0

@@ -101,9 +101,9 @@ class DriveItemProxy extends BaseItemProxy
     /**
      * Constructor.
      *
-     * @param Graph $graph
+     * @param \Microsoft\Graph\Graph\Graph $graph
      *        The Microsoft Graph.
-     * @param DriveItem $driveItem
+     * @param \Microsoft\Graph\Model\DriveItem $driveItem
      *        The drive item.
      * @param \Krizalys\Onedrive\Definition\ResourceDefinitionInterface $resourceDefinition
      *        The resource definition.
@@ -279,7 +279,7 @@ class DriveItemProxy extends BaseItemProxy
      *            created ;
      *          - `'conflictBehavior'` *(string)*: the conflict behavior.
      *
-     * @return DriveItemProxy
+     * @return \Krizalys\Onedrive\Proxy\DriveItemProxy
      *         The drive item created.
      *
      * @since 2.0.0
@@ -398,7 +398,7 @@ class DriveItemProxy extends BaseItemProxy
      *              - `'desc'`: sorts by the given property in descending in
      *                order.
      *
-     * @return DriveItemProxy[]
+     * @return \Krizalys\Onedrive\Proxy\DriveItemProxy[]
      *         The child drive items.
      *
      * @since 2.0.0
@@ -522,7 +522,7 @@ class DriveItemProxy extends BaseItemProxy
      *          - `'contentType'` *(string)*: the MIME type of the uploaded
      *            file.
      *
-     * @return DriveItemProxy
+     * @return \Krizalys\Onedrive\Proxy\DriveItemProxy
      *         The drive item created.
      *
      * @since 2.0.0
@@ -652,7 +652,7 @@ class DriveItemProxy extends BaseItemProxy
      * @param mixed[string] $options
      *        The options. See UploadSession::__construct for supported options.
      *
-     * @return UploadSessionProxy
+     * @return \Krizalys\Onedrive\Proxy\UploadSessionProxy
      *         The upload session created.
      *
      * @since 2.1.0
@@ -767,7 +767,7 @@ class DriveItemProxy extends BaseItemProxy
      *          - `'description'` *(string)*: the new description to set after
      *            the drive item is renamed.
      *
-     * @return DriveItemProxy
+     * @return \Krizalys\Onedrive\Proxy\DriveItemProxy
      *         The drive item renamed.
      *
      * @since 2.0.0
@@ -822,14 +822,14 @@ class DriveItemProxy extends BaseItemProxy
      * );
      * ```
      *
-     * @param DriveItemProxy $destinationItem
+     * @param \Krizalys\Onedrive\Proxy\DriveItemProxy $destinationItem
      *        The destination item.
      * @param mixed[string] $options
      *        The options. Supported options:
      *          - `'name'` *(string)*: the new name to set after the drive item
      *            is moved.
      *
-     * @return DriveItemProxy
+     * @return \Krizalys\Onedrive\Proxy\DriveItemProxy
      *         The drive item.
      *
      * @since 2.0.0
@@ -899,7 +899,7 @@ class DriveItemProxy extends BaseItemProxy
      * process can be repeated recursively if support for multiple levels
      * of children is needed.
      *
-     * @param DriveItemProxy $destinationItem
+     * @param \Krizalys\Onedrive\Proxy\DriveItemProxy $destinationItem
      *        The destination item.
      * @param mixed[string] $options
      *        The options. Supported options:
@@ -961,7 +961,7 @@ class DriveItemProxy extends BaseItemProxy
      *        The options. Supported values:
      *          - `'scope'` *(string)*: the scope.
      *
-     * @return PermissionProxy
+     * @return \Krizalys\Onedrive\Proxy\PermissionProxy
      *         The permission.
      *
      * @since 2.4.0
@@ -1034,7 +1034,7 @@ class DriveItemProxy extends BaseItemProxy
      * @param mixed[string] $options
      *        The options.
      *
-     * @return PermissionProxy[]
+     * @return \Krizalys\Onedrive\Proxy\PermissionProxy[]
      *         The permissions.
      *
      * @since 2.5.0

@@ -44,9 +44,9 @@ class SharepointIdsProxy extends EntityProxy
     /**
      * Constructor.
      *
-     * @param Graph $graph
+     * @param \Microsoft\Graph\Graph\Graph $graph
      *        The Microsoft Graph.
-     * @param SharepointIds $sharepointIds
+     * @param \Microsoft\Graph\Model\SharepointIds $sharepointIds
      *        The SharePoint IDs.
      *
      * @since 2.0.0

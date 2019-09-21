@@ -31,9 +31,9 @@ class ThumbnailProxy extends EntityProxy
     /**
      * Constructor.
      *
-     * @param Graph $graph
+     * @param \Microsoft\Graph\Graph\Graph $graph
      *        The Microsoft Graph.
-     * @param Thumbnail $thumbnail
+     * @param \Microsoft\Graph\Model\Thumbnail $thumbnail
      *        The thumbnail.
      *
      * @since 2.0.0

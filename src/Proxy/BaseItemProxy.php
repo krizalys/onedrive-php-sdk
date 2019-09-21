@@ -54,9 +54,9 @@ class BaseItemProxy extends EntityProxy
     /**
      * Constructor.
      *
-     * @param Graph $graph
+     * @param \Microsoft\Graph\Graph $graph
      *        The Microsoft Graph.
-     * @param BaseItem $baseItem
+     * @param \Microsoft\Graph\Model\BaseItem $baseItem
      *        The base item.
      *
      * @since 2.0.0

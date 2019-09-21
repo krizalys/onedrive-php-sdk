@@ -31,9 +31,9 @@ class VideoProxy extends EntityProxy
     /**
      * Constructor.
      *
-     * @param Graph $graph
+     * @param \Microsoft\Graph\Graph $graph
      *        The Microsoft Graph.
-     * @param Video $video
+     * @param \Microsoft\Graph\Model\Video $video
      *        The video.
      *
      * @since 2.0.0

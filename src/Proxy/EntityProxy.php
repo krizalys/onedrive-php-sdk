@@ -32,13 +32,13 @@ use Microsoft\Graph\Model\Entity;
 class EntityProxy
 {
     /**
-     * @var Graph
+     * @var \Microsoft\Graph\Graph
      *      The Microsoft Graph.
      */
     protected $graph;
 
     /**
-     * @var Entity
+     * @var \Microsoft\Graph\Model\Entity
      *      The entity.
      */
     protected $entity;
@@ -46,9 +46,9 @@ class EntityProxy
     /**
      * Constructor.
      *
-     * @param Graph $graph
+     * @param \Microsoft\Graph\Graph $graph
      *        The Microsoft Graph.
-     * @param Entity $entity
+     * @param \Microsoft\Graph\Model\Entity $entity
      *        The entity.
      *
      * @since 2.0.0

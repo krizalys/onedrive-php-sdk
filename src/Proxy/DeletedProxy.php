@@ -31,9 +31,9 @@ class DeletedProxy extends EntityProxy
     /**
      * Constructor.
      *
-     * @param Graph $graph
+     * @param \Microsoft\Graph\Graph $graph
      *        The Microsoft Graph.
-     * @param Deleted $deleted
+     * @param \Microsoft\Graph\Model\Deleted $deleted
      *        The deleted.
      *
      * @since 2.0.0

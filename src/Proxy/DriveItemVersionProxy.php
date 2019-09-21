@@ -31,9 +31,9 @@ class DriveItemVersionProxy extends BaseItemVersionProxy
     /**
      * Constructor.
      *
-     * @param Graph $graph
+     * @param \Microsoft\Graph\Graph\Graph $graph
      *        The Microsoft Graph.
-     * @param DriveItemVersion $driveItemVersion
+     * @param \Microsoft\Graph\Model\DriveItemVersion $driveItemVersion
      *        The drive item version.
      *
      * @since 2.0.2

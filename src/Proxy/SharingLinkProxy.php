@@ -40,9 +40,9 @@ class SharingLinkProxy extends EntityProxy
     /**
      * Constructor.
      *
-     * @param Graph $graph
+     * @param \Microsoft\Graph\Graph\Graph $graph
      *        The Microsoft Graph.
-     * @param SharingLink $sharingLink
+     * @param \Microsoft\Graph\Model\SharingLink $sharingLink
      *        The sharing link.
      *
      * @since 2.4.0

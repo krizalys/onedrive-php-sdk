@@ -31,9 +31,9 @@ class GeoCoordinatesProxy extends EntityProxy
     /**
      * Constructor.
      *
-     * @param Graph $graph
+     * @param \Microsoft\Graph\Graph $graph
      *        The Microsoft Graph.
-     * @param GeoCoordinates $geoCoordinates
+     * @param \Microsoft\Graph\Model\GeoCoordinates $geoCoordinates
      *        The geo coordinates.
      *
      * @since 2.0.0

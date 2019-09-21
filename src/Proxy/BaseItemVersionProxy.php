@@ -31,9 +31,9 @@ class BaseItemVersionProxy extends EntityProxy
     /**
      * Constructor.
      *
-     * @param Graph $graph
+     * @param \Microsoft\Graph\Graph $graph
      *        The Microsoft Graph.
-     * @param BaseItemVersion $baseItemVersion
+     * @param \Microsoft\Graph\Model\BaseItemVersion $baseItemVersion
      *        The base item version.
      *
      * @since 2.0.2

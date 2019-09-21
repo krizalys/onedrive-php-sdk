@@ -39,7 +39,7 @@ namespace Krizalys\Onedrive;
 abstract class DriveItem
 {
     /**
-     * @var Client
+     * @var \Krizalys\Onedrive\Client
      *      The owning Client instance.
      */
     protected $_client;
@@ -96,7 +96,7 @@ abstract class DriveItem
     /**
      * Constructor.
      *
-     * @param Client $client
+     * @param \Krizalys\Onedrive\Client $client
      *        The `Client` instance owning this `DriveItem` instance.
      * @param null|string $id
      *        The unique ID of the OneDrive drive item referenced by this

@@ -31,9 +31,9 @@ class RootProxy extends EntityProxy
     /**
      * Constructor.
      *
-     * @param Graph $graph
+     * @param \Microsoft\Graph\Graph $graph
      *        The Microsoft Graph.
-     * @param Root $root
+     * @param \Microsoft\Graph\Model\Root $root
      *        The root.
      *
      * @since 2.0.0

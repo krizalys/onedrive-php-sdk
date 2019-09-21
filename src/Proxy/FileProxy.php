@@ -36,9 +36,9 @@ class FileProxy extends EntityProxy
     /**
      * Constructor.
      *
-     * @param Graph $graph
+     * @param \Microsoft\Graph\Graph\Graph $graph
      *        The Microsoft Graph.
-     * @param File $file
+     * @param \Microsoft\Graph\Model\File $file
      *        The file.
      *
      * @since 2.0.0
