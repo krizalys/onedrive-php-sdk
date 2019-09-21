@@ -225,6 +225,12 @@ class Client
      * After login, the browser is redirected to the given redirect URI, and a
      * code is passed as a query string parameter to this URI.
      *
+     * A user-defined value may also be passed back to this URI as a query
+     * string parameter via the `$state` parameter; see
+     * {@link https://docs.microsoft.com/en-us/azure/active-directory/develop/reply-url#use-a-state-parameter "Use a state parameter" in Microsoft Azure documentation}
+     * for example use
+     * cases.
+     *
      * The browser is also directly redirected to the given redirect URI if the
      * user is already logged in.
      *
@@ -240,8 +246,7 @@ class Client
      *        The URI to which to redirect to upon successful log in.
      * @param string $state
      *        The state to pass as a query string value to the redirect URI
-     *        upon successful log in. See {@link
-     *        https://docs.microsoft.com/en-us/azure/active-directory/develop/reply-url#use-a-state-parameter "Use a state parameter" in Microsoft Azure documentation for use cases}.
+     *        upon successful log in.
      *
      * @return string
      *         The log in URL.
