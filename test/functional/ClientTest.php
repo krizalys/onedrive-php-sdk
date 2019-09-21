@@ -3,6 +3,7 @@
 namespace Test\Functional\Krizalys\Onedrive;
 
 use Krizalys\Onedrive\Constant\SpecialFolderName;
+use Krizalys\Onedrive\Onedrive;
 use Krizalys\Onedrive\Proxy\DriveItemProxy;
 use PHPUnit\Framework\TestCase;
 use Test\Functional\Krizalys\Onedrive\Traits\AssertionsTrait;
@@ -17,6 +18,12 @@ class ClientTest extends TestCase
     use ConfigurationTrait;
     use OnedriveSandboxTrait;
 
+    private static $clientId;
+
+    private static $username;
+
+    private static $password;
+
     private static $client;
 
     private static $defaultDrive;
@@ -27,17 +34,32 @@ class ClientTest extends TestCase
     {
         parent::setUpBeforeClass();
 
-        $clientId = self::getConfig('CLIENT_ID');
-        $username = self::getConfig('USERNAME');
-        $password = self::getConfig('PASSWORD');
-        $secret   = self::getConfig('SECRET');
+        self::$clientId = self::getConfig('CLIENT_ID');
+        self::$username = self::getConfig('USERNAME');
+        self::$password = self::getConfig('PASSWORD');
+        $secret         = self::getConfig('SECRET');
 
         self::$client = self::createClient(
-            $clientId,
-            $username,
-            $password,
+            self::$clientId,
+            self::$username,
+            self::$password,
             $secret
         );
+    }
+
+    public function testAuthorizationRequest()
+    {
+        $client = Onedrive::client(self::$clientId);
+
+        $values = self::authorize(
+            $client,
+            self::$username,
+            self::$password,
+            'Test state'
+        );
+
+        $this->assertArrayHasKey('state', $values);
+        $this->assertSame('Test state', $values['state']);
     }
 
     public function testGetDrives()

@@ -6,7 +6,7 @@ use Facebook\WebDriver\WebDriver;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverExpectedCondition;
 
-trait MicrosoftOauthAuthorizationTrait
+trait MicrosoftOauthAuthenticationTrait
 {
     private static $usernameElementId = 'i0116';
 
@@ -14,7 +14,7 @@ trait MicrosoftOauthAuthorizationTrait
 
     private static $nextElementId = 'idSIButton9';
 
-    private static function requestAuthorization(
+    private static function authenticate(
         WebDriver $webDriver,
         $authorizationRequestUri,
         $redirectUri,

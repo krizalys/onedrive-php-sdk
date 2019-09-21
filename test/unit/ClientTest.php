@@ -63,8 +63,8 @@ class ClientTest extends TestCase
             'test.scope.2',
         ];
 
-        $actual = $sut->getLogInUrl($scopes, self::REDIRECT_URI);
-        $this->assertEquals('https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=' . self::CLIENT_ID . '&response_type=code&redirect_uri=http%3A%2F%2Fho.st%2Fredirect%2Furi&scope=test.scope.1%20test.scope.2&response_mode=query', $actual);
+        $actual = $sut->getLogInUrl($scopes, self::REDIRECT_URI, 'Test state');
+        $this->assertEquals('https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=' . self::CLIENT_ID . '&response_type=code&redirect_uri=http%3A%2F%2Fho.st%2Fredirect%2Furi&scope=test.scope.1%20test.scope.2&response_mode=query&state=Test%20state', $actual);
     }
 
     public function testGetTokenExpireShouldReturnExpectedValue()
