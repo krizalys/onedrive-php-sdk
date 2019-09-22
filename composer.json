@@ -4,7 +4,6 @@
     "homepage": "https://github.com/krizalys/onedrive-php-sdk",
     "license": "BSD-3-Clause",
     "prefer-stable": true,
-    "minimum-stability": "dev",
     "keywords": [
         "krizalys",
         "onedrive",
