@@ -46,7 +46,7 @@ class DriveProxyTest extends TestCase
             $driveItem = $sandbox->upload(
                 'Test file',
                 'Test content',
-                ['contentType' => 'text/plain']
+                []
             );
 
             $driveItem = self::$defaultDrive->getDriveItemById($driveItem->id);
@@ -61,7 +61,7 @@ class DriveProxyTest extends TestCase
             $sandbox->upload(
                 'Test file',
                 'Test content',
-                ['contentType' => 'text/plain']
+                []
             );
 
             $driveItem = self::$defaultDrive->getDriveItemByPath("/{$sandbox->name}/Test file");

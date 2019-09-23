@@ -17,7 +17,6 @@ namespace Krizalys\Onedrive;
 use GuzzleHttp\Client as GuzzleHttpClient;
 use Krizalys\Onedrive\Definition\OperationDefinition;
 use Krizalys\Onedrive\Definition\Parameter\BodyParameterDefinition;
-use Krizalys\Onedrive\Definition\Parameter\HeaderParameterDefinition;
 use Krizalys\Onedrive\Definition\Parameter\QueryStringParameterDefinition;
 use Krizalys\Onedrive\Definition\ResourceDefinition;
 use Krizalys\Onedrive\Definition\ServiceDefinition;
@@ -128,16 +127,7 @@ class Onedrive
                 'content' => new ResourceDefinition([
                     'put' => new OperationDefinition(
                         new ParameterDefinitionCollection($parameterBuilder, []),
-                        new ParameterDefinitionCollection($parameterBuilder, [
-                            'contentType' => new HeaderParameterDefinition(
-                                new FlatInjector('Content-Type'),
-                                $scalarSerializer
-                            ),
-                            'Content-Type' => new HeaderParameterDefinition(
-                                new FlatInjector('Content-Type'),
-                                $orderBySerializer
-                            ),
-                        ]),
+                        new ParameterDefinitionCollection($parameterBuilder, []),
                         new ParameterDefinitionCollection($parameterBuilder, [
                             'conflictBehavior' => new QueryStringParameterDefinition(
                                 new FlatInjector('@microsoft.graph.conflictBehavior'),

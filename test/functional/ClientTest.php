@@ -182,7 +182,7 @@ class ClientTest extends TestCase
             $driveItem = $sandbox->upload(
                 'Test file',
                 'Test content',
-                ['contentType' => 'text/plain']
+                []
             );
 
             $driveItem = self::$client->getDriveItemById($driveItem->id);
@@ -199,7 +199,7 @@ class ClientTest extends TestCase
             $driveItem = $sandbox->upload(
                 'Test file',
                 'Test content',
-                ['contentType' => 'text/plain']
+                []
             );
 
             $driveItem = self::$client->getDriveItemById(
@@ -220,7 +220,7 @@ class ClientTest extends TestCase
             $sandbox->upload(
                 'Test file',
                 'Test content',
-                ['contentType' => 'text/plain']
+                []
             );
 
             $driveItem = self::$client->getDriveItemByPath("/{$sandbox->name}/Test file");

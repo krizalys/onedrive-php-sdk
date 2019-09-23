@@ -508,9 +508,7 @@ EOF;
         return $item->upload(
             $name,
             $content,
-            [
-                'contentType' => 'text/plain',
-            ]
+            []
         );
     }
 

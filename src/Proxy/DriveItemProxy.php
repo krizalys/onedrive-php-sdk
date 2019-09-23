@@ -494,20 +494,13 @@ class DriveItemProxy extends BaseItemProxy
      * options, for example:
      *
      * ```php
-     * $driveItem->upload(
-     *     'file.txt',
-     *     'Some content',
-     *     ['contentType' => 'text/plain']
-     * );
+     * $driveItem->upload('file.txt', 'Some content');
      * // => Text file 'file.txt' created under $driveItem.
      *
      * $childDriveItem1 = $driveItem->upload(
      *     'file.txt',
      *     'Some other content',
-     *     [
-     *         'conflictBehavior' => ConflictBehavior::RENAME,
-     *         'contentType'      => 'text/plain',
-     *     ]
+     *     ['conflictBehavior' => ConflictBehavior::RENAME]
      * );
      * // => Text file 'file 1.txt' created under $driveItem.
      * ```
@@ -519,8 +512,6 @@ class DriveItemProxy extends BaseItemProxy
      * @param mixed[string] $options
      *        The options. Supported options:
      *          - `'conflictBehavior'` *(string)*: the conflict behavior ;
-     *          - `'contentType'` *(string)*: the MIME type of the uploaded
-     *            file.
      *
      * @return \Krizalys\Onedrive\Proxy\DriveItemProxy
      *         The drive item created.
@@ -536,9 +527,16 @@ class DriveItemProxy extends BaseItemProxy
      */
     public function upload($name, $content, array $options = [])
     {
+        if (array_key_exists('contentType', $options)) {
+            $message = 'The \'contentType\' option is deprecated and will be'
+                . ' removed in version 3; omit this option';
+
+            @trigger_error($message, E_USER_DEPRECATED);
+        }
+
         if (array_key_exists('Content-Type', $options)) {
-            $message = 'The \'Content-Type\' option is deprecated and will'
-                . ' be removed in version 3; use \'contentType\' instead';
+            $message = 'The \'Content-Type\' option is deprecated and will be'
+                . ' removed in version 3; omit this option';
 
             @trigger_error($message, E_USER_DEPRECATED);
         }
@@ -625,11 +623,7 @@ class DriveItemProxy extends BaseItemProxy
      * For example:
      *
      * ```php
-     * $driveItem->upload(
-     *     'file.txt',
-     *     'Some content',
-     *     ['contentType' => 'text/plain']
-     * );
+     * $driveItem->upload('file.txt', 'Some content');
      * // => Text file 'file.txt' created under $driveItem.
      *
      * $uploadSession1 = $driveItem->startUpload(

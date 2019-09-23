@@ -15,6 +15,8 @@ Change log
 - Removed unused stubbed methods.
 - `\Krizalys\Onedrive\Proxy\DriveItemProxy::startUpload()`: The `'type'` option
   is ignored by OneDrive & reports a notice. Omit this option.
+- `\Krizalys\Onedrive\Proxy\DriveItemProxy::upload()`: The `'contentType'`
+  option is ignored by OneDrive & reports a notice. Omit this option.
 
 [2.5.1] - 2019-10-06
 --------------------
