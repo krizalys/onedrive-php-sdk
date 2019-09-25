@@ -196,6 +196,10 @@ class Client
                 'redirect_uri' => null,
                 'token'        => null,
             ];
+        
+        if (null !== $this->_state->token) {
+            $this->graph->setAccessToken($this->_state->token->data->access_token);
+        }
     }
 
     /**
