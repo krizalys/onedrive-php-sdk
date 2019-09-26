@@ -7,6 +7,7 @@ Change log
 ### Changed
 
 - Using full error reporting when running test suites.
+- Removed the use of the Yoda style.
 
 ### Fixed
 

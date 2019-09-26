@@ -121,7 +121,7 @@ abstract class DriveItem
     {
         $options       = (object) $options;
         $this->_client = $client;
-        $this->_id     = null !== $id ? (string) $id : null;
+        $this->_id     = $id !== null ? (string) $id : null;
 
         $this->_parentId = property_exists($options, 'parent_id') ?
             (string) $options->parent_id : null;
@@ -223,7 +223,7 @@ abstract class DriveItem
      */
     public function getParentId()
     {
-        if (null === $this->_parentId) {
+        if ($this->_parentId === null) {
             $this->fetchProperties();
         }
 
@@ -242,7 +242,7 @@ abstract class DriveItem
      */
     public function getName()
     {
-        if (null === $this->_name) {
+        if ($this->_name === null) {
             $this->fetchProperties();
         }
 
@@ -261,7 +261,7 @@ abstract class DriveItem
      */
     public function getDescription()
     {
-        if (null === $this->_description) {
+        if ($this->_description === null) {
             $this->fetchProperties();
         }
 
@@ -280,7 +280,7 @@ abstract class DriveItem
      */
     public function getSize()
     {
-        if (null === $this->_size) {
+        if ($this->_size === null) {
             $this->fetchProperties();
         }
 
@@ -299,7 +299,7 @@ abstract class DriveItem
      */
     public function getSource()
     {
-        if (null === $this->_source) {
+        if ($this->_source === null) {
             $this->fetchProperties();
         }
 
@@ -318,7 +318,7 @@ abstract class DriveItem
      */
     public function getCreatedTime()
     {
-        if (null === $this->_createdTime) {
+        if ($this->_createdTime === null) {
             $this->fetchProperties();
         }
 
@@ -337,7 +337,7 @@ abstract class DriveItem
      */
     public function getUpdatedTime()
     {
-        if (null === $this->_updatedTime) {
+        if ($this->_updatedTime === null) {
             $this->fetchProperties();
         }
 
