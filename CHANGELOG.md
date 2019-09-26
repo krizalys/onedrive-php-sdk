@@ -1,6 +1,13 @@
 Change log
 ==========
 
+[Unreleased][unreleased]
+------------------------
+
+### Changed
+
+- Using full error reporting when running test suites.
+
 [2.5.0] - 2019-09-23
 --------------------
 
