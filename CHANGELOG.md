@@ -18,6 +18,7 @@ Change log
 - `\Krizalys\Onedrive\Proxy\DriveItemProxy::upload()`: The `'contentType'`
   option is ignored by OneDrive & reports a notice. Omit this option.
 - Updated Krizalys\Onedrive\Proxy\ImageProxy.
+- Updated Krizalys\Onedrive\Proxy\PhotoProxy.
 
 [2.5.1] - 2019-10-06
 --------------------
