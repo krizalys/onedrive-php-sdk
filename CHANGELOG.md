@@ -19,6 +19,7 @@ Change log
   option is ignored by OneDrive & reports a notice. Omit this option.
 - Updated Krizalys\Onedrive\Proxy\ImageProxy.
 - Updated Krizalys\Onedrive\Proxy\PhotoProxy.
+- Updated Krizalys\Onedrive\Proxy\AudioProxy.
 
 [2.5.1] - 2019-10-06
 --------------------
