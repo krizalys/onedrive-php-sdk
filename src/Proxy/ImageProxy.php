@@ -20,6 +20,11 @@ use Microsoft\Graph\Model\Image;
 /**
  * A proxy to a \Microsoft\Graph\Model\Image instance.
  *
+ * @property-read int $height
+ *                The height, in pixels.
+ * @property-read int $width
+ *                The width, in pixels.
+ *
  * @since 2.0.0
  *
  * @api
@@ -41,5 +46,32 @@ class ImageProxy extends EntityProxy
     public function __construct(Graph $graph, Image $image)
     {
         parent::__construct($graph, $image);
+    }
+
+    /**
+     * Getter.
+     *
+     * @param string $name
+     *        The name.
+     *
+     * @return mixed
+     *         The value.
+     *
+     * @since 2.6.0
+     */
+    public function __get($name)
+    {
+        $image = $this->entity;
+
+        switch ($name) {
+            case 'height':
+                return $image->getHeight();
+
+            case 'width':
+                return $image->getWidth();
+
+            default:
+                return parent::__get($name);
+        }
     }
 }
