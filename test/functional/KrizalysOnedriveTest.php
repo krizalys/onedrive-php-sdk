@@ -48,9 +48,10 @@ EOF;
     {
         $secret = self::getConfig('SECRET');
         $before = clone self::$client->getState()->token;
+        sleep(1);
         self::$client->renewAccessToken($secret);
         $after = clone self::$client->getState()->token;
-        $this->assertNotEquals($before->obtained, $after->data->obtained);
+        $this->assertNotEquals($before->obtained, $after->obtained);
         $this->assertNotEquals($before->data->access_token, $after->data->access_token);
         $this->assertNotEquals($before->data->refresh_token, $after->data->refresh_token);
     }
@@ -197,7 +198,17 @@ EOF;
         $this->assertNull($properties->from->name);
         $this->assertNull($properties->from->id);
         $this->assertContains($properties->name, ['root', 'SkyDrive']);
-        $this->assertEquals('', $properties->description);
+
+        if (property_exists($properties, 'description')) {
+            $this->fail();
+        }
+/*        $this->assertThat(
+            $properties,
+            $this->logicalNot(
+                $this->hasAttribute('description')
+            )
+        );*/
+
         $this->assertInternalType('string', $properties->parent_id);
         $this->assertGreaterThanOrEqual(0, $properties->size);
         $this->assertRegExp(self::DATETIME_REGEX, $properties->created_time);

@@ -183,7 +183,7 @@ class Folder extends DriveItem
         }
 
         $item    = $item->createFolder($name, $options);
-        $options = $client->buildOptions($item, ['parent_id' => $parentId]);
+        $options = $client->buildOptions($item, ['parent_id' => $this->_id]);
 
         return new self($client, $item->id, $options);
     }
@@ -230,7 +230,7 @@ class Folder extends DriveItem
         $item    = $client->getDriveItemById($drive->id, $this->_id);
         $options = [];
         $item    = $item->upload($name, $content, $options);
-        $options = $client->buildOptions($item, ['parent_id' => $parentId]);
+        $options = $client->buildOptions($item, ['parent_id' => $this->_id]);
 
         return new File($client, $item->id, $options);
     }

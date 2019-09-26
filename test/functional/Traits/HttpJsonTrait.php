@@ -10,7 +10,7 @@ trait HttpJsonTrait
 
     private function getAndDecode($uri)
     {
-        if ($httpClient === null) {
+        if ($this->httpClient === null) {
             $this->httpClient = new GuzzleHttpClient();
         }
 

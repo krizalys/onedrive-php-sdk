@@ -176,18 +176,19 @@ abstract class DriveItem
     {
         $result = $this->_client->fetchProperties($this->_id);
 
-        $this->_parentId = '' != $result->parent_id ?
+        $this->_parentId = property_exists($result, 'parent_id') ?
             (string) $result->parent_id : null;
 
         $this->_name = $result->name;
 
-        $this->_description = '' != $result->description ?
+        $this->_description = property_exists($result, 'description') ?
             (string) $result->description : null;
 
         $this->_size = (int) $result->size;
 
         /** @todo Handle volatile existence (eg. present only for files). */
-        $this->_source = (string) $result->source;
+        $this->_source = property_exists($result, 'source') ?
+            (string) $result->source : null;
 
         $this->_createdTime = strtotime($result->created_time);
         $this->_updatedTime = strtotime($result->updated_time);

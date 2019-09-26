@@ -8,6 +8,10 @@ Change log
 
 - Using full error reporting when running test suites.
 
+### Fixed
+
+- All PHP notices.
+
 [2.5.0] - 2019-09-23
 --------------------
 
