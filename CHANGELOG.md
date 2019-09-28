@@ -12,6 +12,8 @@ Change log
 ### Fixed
 
 - All PHP notices.
+- Passing a state via `Krizalys\Onedrive\Client::__construct()`' `'state'`
+  option did not set properly the Microsoft Graph access token.
 
 [2.5.0] - 2019-09-23
 --------------------

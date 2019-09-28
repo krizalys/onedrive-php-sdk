@@ -79,7 +79,11 @@ class ClientTest extends TestCase
                 'state' => (object) [
                     'token' => (object) [
                         'obtained' => strtotime('1999-01-01Z'),
-                        'data'     => (object) ['expires_in' => 3600],
+
+                        'data' => (object) [
+                            'access_token' => 'AcCeSs+ToKeN',
+                            'expires_in'   => 3600,
+                        ],
                     ],
                 ],
             ],
@@ -127,7 +131,11 @@ class ClientTest extends TestCase
                 'state' => (object) [
                     'token' => (object) [
                         'obtained' => strtotime('1999-01-01Z'),
-                        'data'     => (object) ['expires_in' => 3600],
+
+                        'data' => (object) [
+                            'access_token' => 'AcCeSs+ToKeN',
+                            'expires_in'   => 3600,
+                        ],
                     ],
                 ],
             ],
@@ -171,6 +179,7 @@ class ClientTest extends TestCase
 
                     'token' => (object) [
                         'obtained' => strtotime('1999-01-01Z'),
+                        'data'     => (object) ['access_token'  => 'AcCeSs+ToKeN'],
                     ],
                 ],
             ],
@@ -240,7 +249,11 @@ class ClientTest extends TestCase
                 'state' => (object) [
                     'token' => (object) [
                         'obtained' => strtotime('1999-01-01Z'),
-                        'data'     => (object) ['refresh_token' => 'ReFrEsH+ToKeN'],
+
+                        'data' => (object) [
+                            'access_token'  => 'AcCeSs+ToKeN',
+                            'refresh_token' => 'ReFrEsH+ToKeN',
+                        ],
                     ],
                 ],
             ],

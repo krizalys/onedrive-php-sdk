@@ -47,6 +47,40 @@ class ClientTest extends TestCase
         );
     }
 
+    public function testConstructor()
+    {
+        $client = Onedrive::client(self::$clientId);
+
+        $values = self::authorize(
+            $client,
+            self::$username,
+            self::$password,
+            null
+        );
+
+        if (!array_key_exists('code', $values)) {
+            throw new \Exception();
+        }
+
+        $code   = $values['code'];
+        $secret = self::getConfig('SECRET');
+        $client->obtainAccessToken($secret, $code);
+        $state = $client->getState();
+
+        $client = Onedrive::client(
+            self::$clientId,
+            ['state' => $state]
+        );
+
+        $drives = $client->getDrives();
+        $actual = count($drives);
+        $this->assertGreaterThanOrEqual(1, $actual);
+
+        foreach ($drives as $drive) {
+            $this->assertDriveProxy($drive);
+        }
+    }
+
     public function testAuthorizationRequest()
     {
         $client = Onedrive::client(self::$clientId);
