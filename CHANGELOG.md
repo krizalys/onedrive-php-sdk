@@ -20,6 +20,7 @@ Change log
 - Updated Krizalys\Onedrive\Proxy\ImageProxy.
 - Updated Krizalys\Onedrive\Proxy\PhotoProxy.
 - Updated Krizalys\Onedrive\Proxy\AudioProxy.
+- Updated Krizalys\Onedrive\Proxy\VideoProxy.
 
 [2.5.1] - 2019-10-06
 --------------------
