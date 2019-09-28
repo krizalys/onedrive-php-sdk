@@ -1,6 +1,18 @@
 Change log
 ==========
 
+[Unreleased][unreleased]
+------------------------
+
+### Changed
+
+- Using full error reporting when running test suites.
+- Removed the use of the Yoda style.
+
+### Fixed
+
+- All PHP notices.
+
 [2.5.0] - 2019-09-23
 --------------------
 

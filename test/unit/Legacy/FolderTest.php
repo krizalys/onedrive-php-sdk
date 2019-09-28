@@ -57,7 +57,7 @@ class FolderTest extends MockeryTestCase
                 $expectation
                     ->once()
                     ->withArgs(function ($level, $message, $context = []) {
-                        return LogLevel::WARNING == $level;
+                        return $level == LogLevel::WARNING;
                     });
             },
 

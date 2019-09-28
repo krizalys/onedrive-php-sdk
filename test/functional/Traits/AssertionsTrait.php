@@ -99,7 +99,7 @@ trait AssertionsTrait
         );
 
         $this->assertThat(
-            $baseName->name,
+            $baseItem->name,
             $this->logicalOr(
                 $this->isNull(),
                 $this->isType('string')
@@ -121,7 +121,7 @@ trait AssertionsTrait
         $this->assertThat(
             $baseItem->createdByUser,
             $this->logicalOr(
-                $this->isNull,
+                $this->isNull(),
                 $this->isInstanceOf(UserProxy::class)
             )
         );
@@ -129,7 +129,7 @@ trait AssertionsTrait
         $this->assertThat(
             $baseItem->lastModifiedByUser,
             $this->logicalOr(
-                $this->isNull,
+                $this->isNull(),
                 $this->isInstanceOf(UserProxy::class)
             )
         );

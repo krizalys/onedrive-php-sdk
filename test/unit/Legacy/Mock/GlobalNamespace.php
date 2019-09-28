@@ -34,7 +34,7 @@ class GlobalNamespace
 
             'fwrite' => function ($expectation) {
                 $expectation->andReturnUsing(function ($handle, $string, $length = null) {
-                    return null == $length ? strlen($string) : $length;
+                    return $length == null ? strlen($string) : $length;
                 });
             },
 

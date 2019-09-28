@@ -257,7 +257,7 @@ class ClientTest extends MockeryTestCase
                 $expectation
                     ->once()
                     ->withArgs(function ($ch, $opt, $value) {
-                        return CURLOPT_URL == $opt && 'https://apis.live.net/v5.0/me/skydrive?access_token=OlD%2FAcCeSs%2BToKeN' == $value;
+                        return $opt == CURLOPT_URL && $value == 'https://apis.live.net/v5.0/me/skydrive?access_token=OlD%2FAcCeSs%2BToKeN';
                     });
             },
 
@@ -281,7 +281,7 @@ class ClientTest extends MockeryTestCase
                 $expectation
                     ->once()
                     ->withArgs(function ($ch, $opt, $value) {
-                        return CURLOPT_URL == $opt && 'https://apis.live.net/v5.0/me/skydrive/camera_roll?access_token=OlD%2FAcCeSs%2BToKeN' == $value;
+                        return $opt == CURLOPT_URL && $value == 'https://apis.live.net/v5.0/me/skydrive/camera_roll?access_token=OlD%2FAcCeSs%2BToKeN';
                     });
             },
 
@@ -305,7 +305,7 @@ class ClientTest extends MockeryTestCase
                 $expectation
                     ->once()
                     ->withArgs(function ($ch, $opt, $value) {
-                        return CURLOPT_URL == $opt && 'https://apis.live.net/v5.0/me/skydrive/my_documents?access_token=OlD%2FAcCeSs%2BToKeN' == $value;
+                        return $opt == CURLOPT_URL && $value == 'https://apis.live.net/v5.0/me/skydrive/my_documents?access_token=OlD%2FAcCeSs%2BToKeN';
                     });
             },
 
@@ -329,7 +329,7 @@ class ClientTest extends MockeryTestCase
                 $expectation
                     ->once()
                     ->withArgs(function ($ch, $opt, $value) {
-                        return CURLOPT_URL == $opt && 'https://apis.live.net/v5.0/me/skydrive/my_photos?access_token=OlD%2FAcCeSs%2BToKeN' == $value;
+                        return $opt == CURLOPT_URL && $value == 'https://apis.live.net/v5.0/me/skydrive/my_photos?access_token=OlD%2FAcCeSs%2BToKeN';
                     });
             },
 
@@ -353,7 +353,7 @@ class ClientTest extends MockeryTestCase
                 $expectation
                     ->once()
                     ->withArgs(function ($ch, $opt, $value) {
-                        return CURLOPT_URL == $opt && 'https://apis.live.net/v5.0/me/skydrive/public_documents?access_token=OlD%2FAcCeSs%2BToKeN' == $value;
+                        return $opt == CURLOPT_URL && $value == 'https://apis.live.net/v5.0/me/skydrive/public_documents?access_token=OlD%2FAcCeSs%2BToKeN';
                     });
             },
 
@@ -397,7 +397,7 @@ class ClientTest extends MockeryTestCase
                 $expectation
                     ->once()
                     ->withArgs(function ($ch, $opt, $value) use ($expected) {
-                        return CURLOPT_URL == $opt && $expected == $value;
+                        return $opt == CURLOPT_URL && $value == $expected;
                     });
             },
 
@@ -438,7 +438,7 @@ class ClientTest extends MockeryTestCase
                 $expectation
                     ->once()
                     ->withArgs(function ($ch, $opt, $value) use ($expected) {
-                        return CURLOPT_URL == $opt && $expected == $value;
+                        return $opt == CURLOPT_URL && $value == $expected;
                     });
             },
 
@@ -467,7 +467,7 @@ class ClientTest extends MockeryTestCase
                     $expectation
                         ->once()
                         ->withArgs(function ($ch, $options) {
-                            return array_key_exists(CURLOPT_URL, $options) && 'https://apis.live.net/v5.0/file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123' == $options[CURLOPT_URL];
+                            return array_key_exists(CURLOPT_URL, $options) && $options[CURLOPT_URL] == 'https://apis.live.net/v5.0/file.ffffffffffffffff.FFFFFFFFFFFFFFFF!123';
                         });
                 },
             ],
@@ -515,7 +515,7 @@ class ClientTest extends MockeryTestCase
                     $expectation
                         ->once()
                         ->withArgs(function ($ch, $options) use ($expected) {
-                            return array_key_exists(CURLOPT_POSTFIELDS, $options) && $expected == json_decode($options[CURLOPT_POSTFIELDS])->destination;
+                            return array_key_exists(CURLOPT_POSTFIELDS, $options) && json_decode($options[CURLOPT_POSTFIELDS])->destination == $expected;
                         });
                 },
             ],
@@ -563,7 +563,7 @@ class ClientTest extends MockeryTestCase
                     $expectation
                         ->once()
                         ->withArgs(function ($ch, $options) use ($expected) {
-                            return array_key_exists(CURLOPT_POSTFIELDS, $options) && $expected == json_decode($options[CURLOPT_POSTFIELDS])->destination;
+                            return array_key_exists(CURLOPT_POSTFIELDS, $options) && json_decode($options[CURLOPT_POSTFIELDS])->destination == $expected;
                         });
                 },
             ],
@@ -591,7 +591,7 @@ class ClientTest extends MockeryTestCase
                     $expectation
                         ->once()
                         ->withArgs(function ($ch, $options) {
-                            return array_key_exists(CURLOPT_URL, $options) && 'https://apis.live.net/v5.0/file.ffffffffffffffff.FFFFFFFFFFFFFFFF!456?access_token=OlD%2FAcCeSs%2BToKeN' == $options[CURLOPT_URL];
+                            return array_key_exists(CURLOPT_URL, $options) && $options[CURLOPT_URL] == 'https://apis.live.net/v5.0/file.ffffffffffffffff.FFFFFFFFFFFFFFFF!456?access_token=OlD%2FAcCeSs%2BToKeN';
                         });
                 },
             ],
@@ -613,7 +613,7 @@ class ClientTest extends MockeryTestCase
                 $expectation
                     ->once()
                     ->withArgs(function ($ch, $opt, $value) {
-                        return CURLOPT_URL == $opt && 'https://apis.live.net/v5.0/me/skydrive/quota?access_token=OlD%2FAcCeSs%2BToKeN' == $value;
+                        return $opt == CURLOPT_URL && $value == 'https://apis.live.net/v5.0/me/skydrive/quota?access_token=OlD%2FAcCeSs%2BToKeN';
                     });
             },
 
@@ -637,7 +637,7 @@ class ClientTest extends MockeryTestCase
                 $expectation
                     ->once()
                     ->withArgs(function ($ch, $opt, $value) {
-                        return CURLOPT_URL == $opt && 'https://apis.live.net/v5.0/me?access_token=OlD%2FAcCeSs%2BToKeN' == $value;
+                        return $opt == CURLOPT_URL && $value == 'https://apis.live.net/v5.0/me?access_token=OlD%2FAcCeSs%2BToKeN';
                     });
             },
 
@@ -661,7 +661,7 @@ class ClientTest extends MockeryTestCase
                 $expectation
                     ->once()
                     ->withArgs(function ($ch, $opt, $value) {
-                        return CURLOPT_URL == $opt && 'https://apis.live.net/v5.0/me/skydrive/recent_docs?access_token=OlD%2FAcCeSs%2BToKeN' == $value;
+                        return $opt == CURLOPT_URL && $value == 'https://apis.live.net/v5.0/me/skydrive/recent_docs?access_token=OlD%2FAcCeSs%2BToKeN';
                     });
             },
 
@@ -685,7 +685,7 @@ class ClientTest extends MockeryTestCase
                 $expectation
                     ->once()
                     ->withArgs(function ($ch, $opt, $value) {
-                        return CURLOPT_URL == $opt && 'https://apis.live.net/v5.0/me/skydrive/shared?access_token=OlD%2FAcCeSs%2BToKeN' == $value;
+                        return $opt == CURLOPT_URL && $value == 'https://apis.live.net/v5.0/me/skydrive/shared?access_token=OlD%2FAcCeSs%2BToKeN';
                     });
             },
 

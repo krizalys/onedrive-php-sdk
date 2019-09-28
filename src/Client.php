@@ -317,17 +317,17 @@ class Client
      */
     public function getAccessTokenStatus()
     {
-        if (null === $this->_state->token) {
+        if ($this->_state->token === null) {
             return AccessTokenStatus::MISSING;
         }
 
         $remaining = $this->getTokenExpire();
 
-        if (0 >= $remaining) {
+        if ($remaining <= 0) {
             return AccessTokenStatus::EXPIRED;
         }
 
-        if (60 >= $remaining) {
+        if ($remaining <= 60) {
             return AccessTokenStatus::EXPIRING;
         }
 
@@ -356,7 +356,7 @@ class Client
      */
     public function obtainAccessToken($clientSecret, $code)
     {
-        if (null === $this->_state->redirect_uri) {
+        if ($this->_state->redirect_uri === null) {
             throw new \Exception(
                 'The state\'s redirect URI must be set to call'
                     . ' obtainAccessToken()'
@@ -407,7 +407,7 @@ class Client
      */
     public function renewAccessToken($clientSecret)
     {
-        if (null === $this->_state->token->data->refresh_token) {
+        if ($this->_state->token->data->refresh_token === null) {
             throw new \Exception(
                 'The refresh token is not set or no permission for'
                     . ' \'wl.offline_access\' was given to renew the token'
