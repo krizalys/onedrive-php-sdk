@@ -24,26 +24,44 @@ trait OauthAuthorizationTrait
 
     private static $maxRedirectPort = 49151;
 
-    private static $redirectUriTemplate = 'http://localhost:%d/';
+    private static $redirectUriTemplate = '%s://%s:%d/';
 
-    private static $webdriverBaseUriTemplate = 'http://localhost:%d/wd/hub';
-
-    private static $webdriverBaseUriPort = 4444;
+    private static $webdriverBaseUriTemplate = '%s://%s:%d/wd/hub';
 
     private static function authorize(Client $client, $username, $password, $state = null)
     {
+        $redirectUriAddr        = self::getConfig('REDIRECT_URI_ADDR');
+        $redirectUriScheme      = self::getConfig('REDIRECT_URI_SCHEME');
+        $redirectUriHost        = self::getConfig('REDIRECT_URI_HOST');
+        $webdriverBaseUriScheme = self::getConfig('WEBDRIVER_BASE_URI_SCHEME');
+        $webdriverBaseUriHost   = self::getConfig('WEBDRIVER_BASE_URI_HOST');
+        $webdriverBaseUriPort   = self::getConfig('WEBDRIVER_BASE_URI_PORT');
+
         // Random registered port.
         $redirectUriPort = rand(self::$minRedirectPort, self::$maxRedirectPort);
 
-        $redirectUri             = sprintf(self::$redirectUriTemplate, $redirectUriPort);
+        $redirectUri = sprintf(
+            self::$redirectUriTemplate,
+            $redirectUriScheme,
+            $redirectUriHost,
+            $redirectUriPort
+        );
+
         $authorizationRequestUri = $client->getLogInUrl(self::$scopes, $redirectUri, $state);
-        $webdriverBaseUri        = sprintf(self::$webdriverBaseUriTemplate, self::$webdriverBaseUriPort);
-        $root                    = dirname(__DIR__);
+
+        $webdriverBaseUri = sprintf(
+            self::$webdriverBaseUriTemplate,
+            $webdriverBaseUriScheme,
+            $webdriverBaseUriHost,
+            $webdriverBaseUriPort
+        );
+
+        $root = dirname(__DIR__);
 
         $command = [
             'php',
             '--server',
-            sprintf('localhost:%d', $redirectUriPort),
+            sprintf('%s:%d', $redirectUriAddr, $redirectUriPort),
             sprintf('%s/Router.php', $root),
         ];
 

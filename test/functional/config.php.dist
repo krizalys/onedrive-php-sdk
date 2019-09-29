@@ -37,4 +37,29 @@ return [
     // OneDrive does not allow sending invite to the email address of the
     // account signed in; a different email address must be provided.
     'RECIPIENT' => '',
+
+    // The redirect URI.
+    //
+    // It needs to match one of the Web Redirect URIs set on the
+    // "Authentication" page.
+
+    // The IP address of the redirect URI.
+    'REDIRECT_URI_ADDR' => '0.0.0.0',
+
+    // The scheme component of the redirect URI.
+    'REDIRECT_URI_SCHEME' => 'http',
+
+    // The host component of the redirect URI.
+    'REDIRECT_URI_HOST' => 'localhost',
+
+    // The WebDriver base URI.
+
+    // The scheme component of the WebDriver base URI.
+    'WEBDRIVER_BASE_URI_SCHEME' => 'http',
+
+    // The host component of the WebDriver base URI.
+    'WEBDRIVER_BASE_URI_HOST' => 'localhost',
+
+    // The port component of the WebDriver base URI. Typically 4444.
+    'WEBDRIVER_BASE_URI_PORT' => 4444,
 ];
