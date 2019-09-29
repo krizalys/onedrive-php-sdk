@@ -404,7 +404,7 @@ class Client
         if ($this->_state->token->data->refresh_token === null) {
             throw new \Exception(
                 'The refresh token is not set or no permission for'
-                    . ' \'wl.offline_access\' was given to renew the token'
+                    . ' \'offline_access\' was given to renew the token'
             );
         }
 
