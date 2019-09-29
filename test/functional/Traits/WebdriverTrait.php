@@ -6,27 +6,27 @@ use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 
-trait WebDriverTrait
+trait WebdriverTrait
 {
     private static $arguments = [
         '--headless',
         '--incognito',
     ];
 
-    private static function withWebDriver($webDriverBaseUri, callable $callback)
+    private static function withWebdriver($webdriverBaseUri, callable $callback)
     {
         $opts = new ChromeOptions();
         $opts->addArguments(self::$arguments);
         $caps = DesiredCapabilities::chrome();
         $caps->setCapability(ChromeOptions::CAPABILITY, $opts);
-        $webDriver = RemoteWebDriver::create($webDriverBaseUri, $caps);
+        $webdriver = RemoteWebDriver::create($webdriverBaseUri, $caps);
 
         try {
-            return $callback($webDriver);
+            return $callback($webdriver);
         } catch (\Exception $exception) {
             throw $exception;
         } finally {
-            $webDriver->quit();
+            $webdriver->quit();
         }
     }
 }

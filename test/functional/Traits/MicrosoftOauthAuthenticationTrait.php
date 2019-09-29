@@ -15,39 +15,39 @@ trait MicrosoftOauthAuthenticationTrait
     private static $nextElementId = 'idSIButton9';
 
     private static function authenticate(
-        WebDriver $webDriver,
+        WebDriver $webdriver,
         $authorizationRequestUri,
         $redirectUri,
         $username,
         $password
     ) {
-        $webDriver->get($authorizationRequestUri);
+        $webdriver->get($authorizationRequestUri);
 
         $nextElementLocator = WebDriverBy::id(self::$nextElementId);
 
         $usernameElementLocator = WebDriverBy::id(self::$usernameElementId);
-        self::findElement($webDriver, $usernameElementLocator)->sendKeys($username);
+        self::findElement($webdriver, $usernameElementLocator)->sendKeys($username);
 
-        self::findElement($webDriver, $nextElementLocator)->click();
+        self::findElement($webdriver, $nextElementLocator)->click();
 
         $passwordElementLocator = WebDriverBy::id(self::$passwordElementId);
-        self::findElement($webDriver, $passwordElementLocator)->sendKeys($password);
+        self::findElement($webdriver, $passwordElementLocator)->sendKeys($password);
 
-        self::findElement($webDriver, $nextElementLocator)->click();
+        self::findElement($webdriver, $nextElementLocator)->click();
 
         $expectedUri = preg_quote($redirectUri);
         $isMatching  = WebDriverExpectedCondition::urlMatches("|^$expectedUri|");
-        $webDriver->wait()->until($isMatching);
+        $webdriver->wait()->until($isMatching);
     }
 
-    private static function findElement(WebDriver $webDriver, WebDriverBy $locator)
+    private static function findElement(WebDriver $webdriver, WebDriverBy $locator)
     {
         $isPresent = WebDriverExpectedCondition::presenceOfElementLocated($locator);
-        $webDriver->wait()->until($isPresent);
+        $webdriver->wait()->until($isPresent);
 
         $isVisible = WebDriverExpectedCondition::visibilityOfElementLocated($locator);
-        $webDriver->wait()->until($isVisible);
+        $webdriver->wait()->until($isVisible);
 
-        return $webDriver->findElement($locator);
+        return $webdriver->findElement($locator);
     }
 }

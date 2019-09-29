@@ -10,7 +10,7 @@ trait OauthAuthorizationTrait
 {
     use MicrosoftOauthAuthenticationTrait;
     use ProcessTrait;
-    use WebDriverTrait;
+    use WebdriverTrait;
 
     private static $scopes = [
         'files.read',
@@ -26,9 +26,9 @@ trait OauthAuthorizationTrait
 
     private static $redirectUriTemplate = 'http://localhost:%d/';
 
-    private static $webDriverBaseUriTemplate = 'http://localhost:%d/wd/hub';
+    private static $webdriverBaseUriTemplate = 'http://localhost:%d/wd/hub';
 
-    private static $webDriverBaseUriPort = 4444;
+    private static $webdriverBaseUriPort = 4444;
 
     private static function authorize(Client $client, $username, $password, $state = null)
     {
@@ -37,7 +37,7 @@ trait OauthAuthorizationTrait
 
         $redirectUri             = sprintf(self::$redirectUriTemplate, $redirectUriPort);
         $authorizationRequestUri = $client->getLogInUrl(self::$scopes, $redirectUri, $state);
-        $webDriverBaseUri        = sprintf(self::$webDriverBaseUriTemplate, self::$webDriverBaseUriPort);
+        $webdriverBaseUri        = sprintf(self::$webdriverBaseUriTemplate, self::$webdriverBaseUriPort);
         $root                    = dirname(__DIR__);
 
         $command = [
@@ -47,9 +47,9 @@ trait OauthAuthorizationTrait
             sprintf('%s/Router.php', $root),
         ];
 
-        return self::withProcess($command, function (Process $process) use ($webDriverBaseUri, $authorizationRequestUri, $redirectUri, $username, $password) {
-            self::withWebDriver($webDriverBaseUri, function (WebDriver $webDriver) use ($authorizationRequestUri, $redirectUri, $username, $password) {
-                self::authenticate($webDriver, $authorizationRequestUri, $redirectUri, $username, $password);
+        return self::withProcess($command, function (Process $process) use ($webdriverBaseUri, $authorizationRequestUri, $redirectUri, $username, $password) {
+            self::withWebdriver($webdriverBaseUri, function (WebDriver $webdriver) use ($authorizationRequestUri, $redirectUri, $username, $password) {
+                self::authenticate($webdriver, $authorizationRequestUri, $redirectUri, $username, $password);
             });
 
             foreach ($process as $type => $buffer) {
