@@ -44,7 +44,7 @@ trait OauthAuthorizationTrait
             'php',
             '-S',
             sprintf('localhost:%d', $redirectUriPort),
-            sprintf('%s/router.php', $root),
+            sprintf('%s/Router.php', $root),
         ];
 
         return self::withProcess($command, function (Process $process) use ($webDriverBaseUri, $authorizationRequestUri, $redirectUri, $username, $password) {
