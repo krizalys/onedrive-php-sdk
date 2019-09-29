@@ -42,7 +42,7 @@ trait OauthAuthorizationTrait
 
         $command = [
             'php',
-            '-S',
+            '--server',
             sprintf('localhost:%d', $redirectUriPort),
             sprintf('%s/Router.php', $root),
         ];
