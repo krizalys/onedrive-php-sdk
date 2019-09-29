@@ -36,14 +36,8 @@ use Microsoft\Graph\Model;
  * $client->getRoot()->upload('hello.txt', 'Hello World!');
  * ```
  *
- * Applications are managed via Microsoft accounts. Two types of applications
- * are supported:
- *   - Microsoft identity platform (v2.0) applications, recommended for new
- *     applications; see
- *     {@link https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade "App registrations" in Microsoft Azure} ;
- *   - Live SDK applications, deprecated; see
- *     {@link https://apps.dev.microsoft.com/#/appList "My applications" in Microsoft
- *     Application Registration Portal}.
+ * Applications are managed via the Microsoft identity platform (v2.0); see
+ * {@link https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade "App registrations" in Microsoft Azure}.
  *
  * @since 1.0.0
  *
