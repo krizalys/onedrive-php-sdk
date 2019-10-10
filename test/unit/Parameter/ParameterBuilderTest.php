@@ -12,23 +12,35 @@ class ParameterBuilderTest extends TestCase
     {
         $parameterDefinition1 = $this->createMock(ParameterDefinitionInterface::class);
 
-        $parameterDefinition1->method('serializeValue')->willReturnCallback(function ($value) {
-            return "Serialized $value";
-        });
+        $parameterDefinition1
+            ->expects($this->atLeastOnce())
+            ->method('serializeValue')
+            ->willReturnCallback(function ($value) {
+                return "Serialized $value";
+            });
 
-        $parameterDefinition1->method('injectValue')->willReturnCallback(function (array $values, $value) {
-            return $values + [$value => $value];
-        });
+        $parameterDefinition1
+            ->expects($this->atLeastOnce())
+            ->method('injectValue')
+            ->willReturnCallback(function (array $values, $value) {
+                return $values + [$value => $value];
+            });
 
         $parameterDefinition2 = $this->createMock(ParameterDefinitionInterface::class);
 
-        $parameterDefinition2->method('serializeValue')->willReturnCallback(function ($value) {
-            return "Serialized $value";
-        });
+        $parameterDefinition2
+            ->expects($this->atLeastOnce())
+            ->method('serializeValue')
+            ->willReturnCallback(function ($value) {
+                return "Serialized $value";
+            });
 
-        $parameterDefinition2->method('injectValue')->willReturnCallback(function (array $values, $value) {
-            return $values + [$value => $value];
-        });
+        $parameterDefinition2
+            ->expects($this->atLeastOnce())
+            ->method('injectValue')
+            ->willReturnCallback(function (array $values, $value) {
+                return $values + [$value => $value];
+            });
 
         $sut = new ParameterBuilder();
 

@@ -33,7 +33,11 @@ class DriveProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $drive = $this->createMock(Drive::class);
-        $drive->method('getDriveType')->willReturn(DriveType::PERSONAL);
+
+        $drive
+            ->expects($this->atLeastOnce())
+            ->method('getDriveType')
+            ->willReturn(DriveType::PERSONAL);
 
         $driveItemResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
@@ -47,13 +51,25 @@ class DriveProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $identity = $this->createMock(Identity::class);
-        $identity->method('getDisplayName')->willReturn('Display Name');
+
+        $identity
+            ->expects($this->atLeastOnce())
+            ->method('getDisplayName')
+            ->willReturn('Display Name');
 
         $identitySet = $this->createMock(IdentitySet::class);
-        $identitySet->method('getUser')->willReturn($identity);
+
+        $identitySet
+            ->expects($this->atLeastOnce())
+            ->method('getUser')
+            ->willReturn($identity);
 
         $drive = $this->createMock(Drive::class);
-        $drive->method('getOwner')->willReturn($identitySet);
+
+        $drive
+            ->expects($this->atLeastOnce())
+            ->method('getOwner')
+            ->willReturn($identitySet);
 
         $driveItemResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
@@ -67,10 +83,18 @@ class DriveProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $quota = $this->createMock(Quota::class);
-        $quota->method('getTotal')->willReturn(1234);
+
+        $quota
+            ->expects($this->atLeastOnce())
+            ->method('getTotal')
+            ->willReturn(1234);
 
         $drive = $this->createMock(Drive::class);
-        $drive->method('getQuota')->willReturn($quota);
+
+        $drive
+            ->expects($this->atLeastOnce())
+            ->method('getQuota')
+            ->willReturn($quota);
 
         $driveItemResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
@@ -86,7 +110,11 @@ class DriveProxyTest extends TestCase
         $sharepointIds = $this->createMock(SharepointIds::class);
 
         $drive = $this->createMock(Drive::class);
-        $drive->method('getSharePointIds')->willReturn($sharepointIds);
+
+        $drive
+            ->expects($this->atLeastOnce())
+            ->method('getSharePointIds')
+            ->willReturn($sharepointIds);
 
         $driveItemResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
@@ -101,7 +129,11 @@ class DriveProxyTest extends TestCase
         $systemFacet = $this->createMock(SystemFacet::class);
 
         $drive = $this->createMock(Drive::class);
-        $drive->method('getSystem')->willReturn($systemFacet);
+
+        $drive
+            ->expects($this->atLeastOnce())
+            ->method('getSystem')
+            ->willReturn($systemFacet);
 
         $driveItemResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
@@ -114,10 +146,18 @@ class DriveProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $item1 = $this->createMock(DriveItem::class);
-        $item1->method('getId')->willReturn('0001');
+
+        $item1
+            ->expects($this->atLeastOnce())
+            ->method('getId')
+            ->willReturn('0001');
 
         $item2 = $this->createMock(DriveItem::class);
-        $item2->method('getId')->willReturn('0002');
+
+        $item2
+            ->expects($this->atLeastOnce())
+            ->method('getId')
+            ->willReturn('0002');
 
         $items = [
             $item1,
@@ -125,7 +165,11 @@ class DriveProxyTest extends TestCase
         ];
 
         $drive = $this->createMock(Drive::class);
-        $drive->method('getItems')->willReturn($items);
+
+        $drive
+            ->expects($this->atLeastOnce())
+            ->method('getItems')
+            ->willReturn($items);
 
         $driveItemResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
@@ -149,7 +193,11 @@ class DriveProxyTest extends TestCase
         $graphList = $this->createMock(GraphList::class);
 
         $drive = $this->createMock(Drive::class);
-        $drive->method('getList')->willReturn($graphList);
+
+        $drive
+            ->expects($this->atLeastOnce())
+            ->method('getList')
+            ->willReturn($graphList);
 
         $driveItemResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
@@ -162,10 +210,18 @@ class DriveProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $driveItem = $this->createMock(DriveItem::class);
-        $driveItem->method('getId')->willReturn('1234');
+
+        $driveItem
+            ->expects($this->atLeastOnce())
+            ->method('getId')
+            ->willReturn('1234');
 
         $drive = $this->createMock(Drive::class);
-        $drive->method('getRoot')->willReturn($driveItem);
+
+        $drive
+            ->expects($this->atLeastOnce())
+            ->method('getRoot')
+            ->willReturn($driveItem);
 
         $driveItemResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
@@ -179,10 +235,17 @@ class DriveProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $driveItem = $this->createMock(DriveItem::class);
-        $driveItem->method('getId')->willReturn('1234');
+
+        $driveItem
+            ->expects($this->atLeastOnce())
+            ->method('getId')
+            ->willReturn('1234');
 
         $drive = $this->createMock(Drive::class);
-        $drive->method('getSpecial')->willReturn($driveItem);
+        $drive
+            ->expects($this->atLeastOnce())
+            ->method('getSpecial')
+            ->willReturn($driveItem);
 
         $driveItemResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
@@ -194,17 +257,37 @@ class DriveProxyTest extends TestCase
     public function testGetDriveItemByIdShouldReturnExpectedValue()
     {
         $item = $this->createMock(DriveItem::class);
-        $item->method('getId')->willReturn(self::DRIVE_ITEM_ID);
+
+        $item
+            ->expects($this->atLeastOnce())
+            ->method('getId')
+            ->willReturn(self::DRIVE_ITEM_ID);
 
         $response = $this->createMock(GraphResponse::class);
-        $response->method('getStatus')->willReturn('200');
-        $response->method('getResponseAsObject')->willReturn($item);
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getStatus')
+            ->willReturn('200');
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getResponseAsObject')
+            ->willReturn($item);
 
         $request = $this->createMock(GraphRequest::class);
-        $request->method('execute')->willReturn($response);
+
+        $request
+            ->expects($this->atLeastOnce())
+            ->method('execute')
+            ->willReturn($response);
 
         $graph = $this->createMock(Graph::class);
-        $graph->method('createRequest')->willReturn($request);
+
+        $graph
+            ->expects($this->atLeastOnce())
+            ->method('createRequest')
+            ->willReturn($request);
 
         $drive  = $this->createMock(Drive::class);
 
@@ -219,17 +302,37 @@ class DriveProxyTest extends TestCase
     public function testGetDriveItemByPathShouldReturnExpectedValue()
     {
         $item = $this->createMock(DriveItem::class);
-        $item->method('getId')->willReturn(self::DRIVE_ITEM_ID);
+
+        $item
+            ->expects($this->atLeastOnce())
+            ->method('getId')
+            ->willReturn(self::DRIVE_ITEM_ID);
 
         $response = $this->createMock(GraphResponse::class);
-        $response->method('getStatus')->willReturn('200');
-        $response->method('getResponseAsObject')->willReturn($item);
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getStatus')
+            ->willReturn('200');
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getResponseAsObject')
+            ->willReturn($item);
 
         $request = $this->createMock(GraphRequest::class);
-        $request->method('execute')->willReturn($response);
+
+        $request
+            ->expects($this->atLeastOnce())
+            ->method('execute')
+            ->willReturn($response);
 
         $graph = $this->createMock(Graph::class);
-        $graph->method('createRequest')->willReturn($request);
+
+        $graph
+            ->expects($this->atLeastOnce())
+            ->method('createRequest')
+            ->willReturn($request);
 
         $drive = $this->createMock(Drive::class);
 
@@ -244,17 +347,37 @@ class DriveProxyTest extends TestCase
     public function testGetRootShouldReturnExpectedValue()
     {
         $item = $this->createMock(DriveItem::class);
-        $item->method('getId')->willReturn(self::DRIVE_ITEM_ID);
+
+        $item
+            ->expects($this->atLeastOnce())
+            ->method('getId')
+            ->willReturn(self::DRIVE_ITEM_ID);
 
         $response = $this->createMock(GraphResponse::class);
-        $response->method('getStatus')->willReturn('200');
-        $response->method('getResponseAsObject')->willReturn($item);
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getStatus')
+            ->willReturn('200');
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getResponseAsObject')
+            ->willReturn($item);
 
         $request = $this->createMock(GraphRequest::class);
-        $request->method('execute')->willReturn($response);
+
+        $request
+            ->expects($this->atLeastOnce())
+            ->method('execute')
+            ->willReturn($response);
 
         $graph = $this->createMock(Graph::class);
-        $graph->method('createRequest')->willReturn($request);
+
+        $graph
+            ->expects($this->atLeastOnce())
+            ->method('createRequest')
+            ->willReturn($request);
 
         $drive = $this->createMock(Drive::class);
 

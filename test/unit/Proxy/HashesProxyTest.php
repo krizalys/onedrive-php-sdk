@@ -14,7 +14,11 @@ class HashesProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $hashes = $this->createMock(Hashes::class);
-        $hashes->method('getCrc32Hash')->willReturn('1234');
+
+        $hashes
+            ->expects($this->atLeastOnce())
+            ->method('getCrc32Hash')
+            ->willReturn('1234');
 
         $sut = new HashesProxy($graph, $hashes);
         $this->assertInternalType('string', $sut->crc32Hash);
@@ -26,7 +30,11 @@ class HashesProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $hashes = $this->createMock(Hashes::class);
-        $hashes->method('getQuickXorHash')->willReturn('1234');
+
+        $hashes
+            ->expects($this->atLeastOnce())
+            ->method('getQuickXorHash')
+            ->willReturn('1234');
 
         $sut = new HashesProxy($graph, $hashes);
         $this->assertInternalType('string', $sut->quickXorHash);
@@ -38,7 +46,11 @@ class HashesProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $hashes = $this->createMock(Hashes::class);
-        $hashes->method('getSha1Hash')->willReturn('1234');
+
+        $hashes
+            ->expects($this->atLeastOnce())
+            ->method('getSha1Hash')
+            ->willReturn('1234');
 
         $sut = new HashesProxy($graph, $hashes);
         $this->assertInternalType('string', $sut->sha1Hash);

@@ -22,7 +22,11 @@ class UploadSessionProxyTest extends TestCase
         $dateTime = new \DateTime();
 
         $uploadSession = $this->createMock(UploadSession::class);
-        $uploadSession->method('getExpirationDateTime')->willReturn($dateTime);
+
+        $uploadSession
+            ->expects($this->atLeastOnce())
+            ->method('getExpirationDateTime')
+            ->willReturn($dateTime);
 
         $driveItemResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
@@ -41,7 +45,11 @@ class UploadSessionProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $uploadSession = $this->createMock(UploadSession::class);
-        $uploadSession->method('getNextExpectedRanges')->willReturn(['0-1', '2-3']);
+
+        $uploadSession
+            ->expects($this->atLeastOnce())
+            ->method('getNextExpectedRanges')
+            ->willReturn(['0-1', '2-3']);
 
         $driveItemResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
@@ -61,7 +69,11 @@ class UploadSessionProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $uploadSession = $this->createMock(UploadSession::class);
-        $uploadSession->method('getUploadUrl')->willReturn('http://uplo.ad/url');
+
+        $uploadSession
+            ->expects($this->atLeastOnce())
+            ->method('getUploadUrl')
+            ->willReturn('http://uplo.ad/url');
 
         $driveItemResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
@@ -79,19 +91,47 @@ class UploadSessionProxyTest extends TestCase
     public function testCompleteWithStringContentShouldReturnExpectedValue()
     {
         $item = $this->createMock(DriveItem::class);
-        $item->method('getId')->willReturn('123abc');
+
+        $item
+            ->expects($this->atLeastOnce())
+            ->method('getId')
+            ->willReturn('123abc');
 
         $response = $this->createMock(GraphResponse::class);
-        $response->method('getStatus')->will($this->onConsecutiveCalls(202, 201));
-        $response->method('getResponseAsObject')->willReturn($item);
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getStatus')
+            ->will($this->onConsecutiveCalls(202, 201));
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getResponseAsObject')
+            ->willReturn($item);
 
         $request = $this->createMock(GraphRequest::class);
-        $request->method('addHeaders')->willReturnSelf();
-        $request->method('attachBody')->willReturnSelf();
-        $request->method('execute')->willReturn($response);
+
+        $request
+            ->expects($this->atLeastOnce())
+            ->method('addHeaders')
+            ->willReturnSelf();
+
+        $request
+            ->expects($this->atLeastOnce())
+            ->method('attachBody')
+            ->willReturnSelf();
+
+        $request
+            ->expects($this->atLeastOnce())
+            ->method('execute')
+            ->willReturn($response);
 
         $graph = $this->createMock(Graph::class);
-        $graph->method('createRequest')->willReturn($request);
+
+        $graph
+            ->expects($this->atLeastOnce())
+            ->method('createRequest')
+            ->willReturn($request);
 
         $uploadSession = $this->createMock(UploadSession::class);
 
@@ -119,19 +159,47 @@ class UploadSessionProxyTest extends TestCase
     public function testCompleteWithStreamContentShouldReturnExpectedValue()
     {
         $item = $this->createMock(DriveItem::class);
-        $item->method('getId')->willReturn('123abc');
+
+        $item
+            ->expects($this->atLeastOnce())
+            ->method('getId')
+            ->willReturn('123abc');
 
         $response = $this->createMock(GraphResponse::class);
-        $response->method('getStatus')->will($this->onConsecutiveCalls(202, 201));
-        $response->method('getResponseAsObject')->willReturn($item);
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getStatus')
+            ->will($this->onConsecutiveCalls(202, 201));
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getResponseAsObject')
+            ->willReturn($item);
 
         $request = $this->createMock(GraphRequest::class);
-        $request->method('addHeaders')->willReturnSelf();
-        $request->method('attachBody')->willReturnSelf();
-        $request->method('execute')->willReturn($response);
+
+        $request
+            ->expects($this->atLeastOnce())
+            ->method('addHeaders')
+            ->willReturnSelf();
+
+        $request
+            ->expects($this->atLeastOnce())
+            ->method('attachBody')
+            ->willReturnSelf();
+
+        $request
+            ->expects($this->atLeastOnce())
+            ->method('execute')
+            ->willReturn($response);
 
         $graph = $this->createMock(Graph::class);
-        $graph->method('createRequest')->willReturn($request);
+
+        $graph
+            ->expects($this->atLeastOnce())
+            ->method('createRequest')
+            ->willReturn($request);
 
         $uploadSession = $this->createMock(UploadSession::class);
 
@@ -159,15 +227,30 @@ class UploadSessionProxyTest extends TestCase
     public function testCompleteContentShouldSendExpectedHeaders()
     {
         $item = $this->createMock(DriveItem::class);
-        $item->method('getId')->willReturn('123abc');
 
         $response = $this->createMock(GraphResponse::class);
-        $response->method('getStatus')->will($this->onConsecutiveCalls(202, 201));
-        $response->method('getResponseAsObject')->willReturn($item);
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getStatus')
+            ->will($this->onConsecutiveCalls(202, 201));
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getResponseAsObject')
+            ->willReturn($item);
 
         $request = $this->createMock(GraphRequest::class);
-        $request->method('attachBody')->willReturnSelf();
-        $request->method('execute')->willReturn($response);
+
+        $request
+            ->expects($this->atLeastOnce())
+            ->method('attachBody')
+            ->willReturnSelf();
+
+        $request
+            ->expects($this->atLeastOnce())
+            ->method('execute')
+            ->willReturn($response);
 
         $request
             ->expects($this->exactly(2))
@@ -189,7 +272,11 @@ class UploadSessionProxyTest extends TestCase
             ->willReturnSelf();
 
         $graph = $this->createMock(Graph::class);
-        $graph->method('createRequest')->willReturn($request);
+
+        $graph
+            ->expects($this->atLeastOnce())
+            ->method('createRequest')
+            ->willReturn($request);
 
         $uploadSession = $this->createMock(UploadSession::class);
 
@@ -222,19 +309,37 @@ class UploadSessionProxyTest extends TestCase
     public function testCompleteShouldThrowFileNotCreatedException()
     {
         $item = $this->createMock(DriveItem::class);
-        $item->method('getId')->willReturn('123abc');
 
         $response = $this->createMock(GraphResponse::class);
-        $response->method('getStatus')->will($this->onConsecutiveCalls(202, 202));
-        $response->method('getResponseAsObject')->willReturn($item);
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getStatus')
+            ->will($this->onConsecutiveCalls(202, 202));
 
         $request = $this->createMock(GraphRequest::class);
-        $request->method('addHeaders')->willReturnSelf();
-        $request->method('attachBody')->willReturnSelf();
-        $request->method('execute')->willReturn($response);
+
+        $request
+            ->expects($this->atLeastOnce())
+            ->method('addHeaders')
+            ->willReturnSelf();
+
+        $request
+            ->expects($this->atLeastOnce())
+            ->method('attachBody')
+            ->willReturnSelf();
+
+        $request
+            ->expects($this->atLeastOnce())
+            ->method('execute')
+            ->willReturn($response);
 
         $graph = $this->createMock(Graph::class);
-        $graph->method('createRequest')->willReturn($request);
+
+        $graph
+            ->expects($this->atLeastOnce())
+            ->method('createRequest')
+            ->willReturn($request);
 
         $uploadSession = $this->createMock(UploadSession::class);
 
@@ -266,22 +371,44 @@ class UploadSessionProxyTest extends TestCase
     public function testCompleteShouldThrowUnexpectedStatusCodeException()
     {
         $item = $this->createMock(DriveItem::class);
-        $item->method('getId')->willReturn('123abc');
 
         $response = $this->createMock(GraphResponse::class);
-        $response->method('getStatus')->will($this->onConsecutiveCalls(202, 503));
-        $response->method('getResponseAsObject')->willReturn($item);
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getStatus')
+            ->will($this->onConsecutiveCalls(202, 503));
 
         $request = $this->createMock(GraphRequest::class);
-        $request->method('addHeaders')->willReturnSelf();
-        $request->method('attachBody')->willReturnSelf();
-        $request->method('execute')->willReturn($response);
+
+        $request
+            ->expects($this->atLeastOnce())
+            ->method('addHeaders')
+            ->willReturnSelf();
+
+        $request
+            ->expects($this->atLeastOnce())
+            ->method('attachBody')
+            ->willReturnSelf();
+
+        $request
+            ->expects($this->atLeastOnce())
+            ->method('execute')
+            ->willReturn($response);
 
         $graph = $this->createMock(Graph::class);
-        $graph->method('createRequest')->willReturn($request);
+
+        $graph
+            ->expects($this->atLeastOnce())
+            ->method('createRequest')
+            ->willReturn($request);
 
         $uploadSession = $this->createMock(UploadSession::class);
-        $uploadSession->method('getUploadUrl')->willReturn('http://uplo.ad/url');
+
+        $uploadSession
+            ->expects($this->atLeastOnce())
+            ->method('getUploadUrl')
+            ->willReturn('http://uplo.ad/url');
 
         $content = str_repeat('1', 327680 + 1);
 

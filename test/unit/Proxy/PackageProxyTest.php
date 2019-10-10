@@ -15,7 +15,11 @@ class PackageProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $package = $this->createMock(Package::class);
-        $package->method('getType')->willReturn(PackageType::ONENOTE);
+
+        $package
+            ->expects($this->atLeastOnce())
+            ->method('getType')
+            ->willReturn(PackageType::ONENOTE);
 
         $sut = new PackageProxy($graph, $package);
         $this->assertInternalType('string', $sut->type);

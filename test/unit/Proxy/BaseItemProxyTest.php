@@ -21,13 +21,25 @@ class BaseItemProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $identity = $this->createMock(Identity::class);
-        $identity->method('getDisplayName')->willReturn('Display Name');
+
+        $identity
+            ->expects($this->atLeastOnce())
+            ->method('getDisplayName')
+            ->willReturn('Display Name');
 
         $identitySet = $this->createMock(IdentitySet::class);
-        $identitySet->method('getUser')->willReturn($identity);
+
+        $identitySet
+            ->expects($this->atLeastOnce())
+            ->method('getUser')
+            ->willReturn($identity);
 
         $baseItem = $this->createMock(BaseItem::class);
-        $baseItem->method('getCreatedBy')->willReturn($identitySet);
+
+        $baseItem
+            ->expects($this->atLeastOnce())
+            ->method('getCreatedBy')
+            ->willReturn($identitySet);
 
         $sut = new BaseItemProxy($graph, $baseItem);
         $this->assertInstanceOf(IdentitySetProxy::class, $sut->createdBy);
@@ -41,7 +53,11 @@ class BaseItemProxyTest extends TestCase
         $dateTime = new \DateTime();
 
         $baseItem = $this->createMock(BaseItem::class);
-        $baseItem->method('getCreatedDateTime')->willReturn($dateTime);
+
+        $baseItem
+            ->expects($this->atLeastOnce())
+            ->method('getCreatedDateTime')
+            ->willReturn($dateTime);
 
         $sut = new BaseItemProxy($graph, $baseItem);
         $this->assertSame($dateTime, $sut->createdDateTime);
@@ -52,7 +68,11 @@ class BaseItemProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $baseItem = $this->createMock(BaseItem::class);
-        $baseItem->method('getDescription')->willReturn('Description');
+
+        $baseItem
+            ->expects($this->atLeastOnce())
+            ->method('getDescription')
+            ->willReturn('Description');
 
         $sut = new BaseItemProxy($graph, $baseItem);
         $this->assertInternalType('string', $sut->description);
@@ -64,7 +84,11 @@ class BaseItemProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $baseItem = $this->createMock(BaseItem::class);
-        $baseItem->method('getETag')->willReturn('1234');
+
+        $baseItem
+            ->expects($this->atLeastOnce())
+            ->method('getETag')
+            ->willReturn('1234');
 
         $sut = new BaseItemProxy($graph, $baseItem);
         $this->assertInternalType('string', $sut->eTag);
@@ -76,13 +100,25 @@ class BaseItemProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $identity = $this->createMock(Identity::class);
-        $identity->method('getDisplayName')->willReturn('Display Name');
+
+        $identity
+            ->expects($this->atLeastOnce())
+            ->method('getDisplayName')
+            ->willReturn('Display Name');
 
         $identitySet = $this->createMock(IdentitySet::class);
-        $identitySet->method('getUser')->willReturn($identity);
+
+        $identitySet
+            ->expects($this->atLeastOnce())
+            ->method('getUser')
+            ->willReturn($identity);
 
         $baseItem = $this->createMock(BaseItem::class);
-        $baseItem->method('getLastModifiedBy')->willReturn($identitySet);
+
+        $baseItem
+            ->expects($this->atLeastOnce())
+            ->method('getLastModifiedBy')
+            ->willReturn($identitySet);
 
         $sut = new BaseItemProxy($graph, $baseItem);
         $this->assertInstanceOf(IdentitySetProxy::class, $sut->lastModifiedBy);
@@ -96,7 +132,11 @@ class BaseItemProxyTest extends TestCase
         $dateTime = new \DateTime();
 
         $baseItem = $this->createMock(BaseItem::class);
-        $baseItem->method('getLastModifiedDateTime')->willReturn($dateTime);
+
+        $baseItem
+            ->expects($this->atLeastOnce())
+            ->method('getLastModifiedDateTime')
+            ->willReturn($dateTime);
 
         $sut = new BaseItemProxy($graph, $baseItem);
         $this->assertSame($dateTime, $sut->lastModifiedDateTime);
@@ -107,7 +147,11 @@ class BaseItemProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $baseItem = $this->createMock(BaseItem::class);
-        $baseItem->method('getName')->willReturn('Name');
+
+        $baseItem
+            ->expects($this->atLeastOnce())
+            ->method('getName')
+            ->willReturn('Name');
 
         $sut = new BaseItemProxy($graph, $baseItem);
         $this->assertInternalType('string', $sut->name);
@@ -119,10 +163,18 @@ class BaseItemProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $itemReference = $this->createMock(ItemReference::class);
-        $itemReference->method('getId')->willReturn('1234');
+
+        $itemReference
+            ->expects($this->atLeastOnce())
+            ->method('getId')
+            ->willReturn('1234');
 
         $baseItem = $this->createMock(BaseItem::class);
-        $baseItem->method('getParentReference')->willReturn($itemReference);
+
+        $baseItem
+            ->expects($this->atLeastOnce())
+            ->method('getParentReference')
+            ->willReturn($itemReference);
 
         $sut = new BaseItemProxy($graph, $baseItem);
         $this->assertInstanceOf(ItemReferenceProxy::class, $sut->parentReference);
@@ -134,7 +186,11 @@ class BaseItemProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $baseItem = $this->createMock(BaseItem::class);
-        $baseItem->method('getWebUrl')->willReturn('http://w.eb/url');
+
+        $baseItem
+            ->expects($this->atLeastOnce())
+            ->method('getWebUrl')
+            ->willReturn('http://w.eb/url');
 
         $sut = new BaseItemProxy($graph, $baseItem);
         $this->assertInternalType('string', $sut->webUrl);
@@ -148,7 +204,11 @@ class BaseItemProxyTest extends TestCase
         $user = $this->createMock(User::class);
 
         $baseItem = $this->createMock(BaseItem::class);
-        $baseItem->method('getCreatedByUser')->willReturn($user);
+
+        $baseItem
+            ->expects($this->atLeastOnce())
+            ->method('getCreatedByUser')
+            ->willReturn($user);
 
         $sut = new BaseItemProxy($graph, $baseItem);
         $this->assertInstanceOf(UserProxy::class, $sut->createdByUser);
@@ -161,7 +221,11 @@ class BaseItemProxyTest extends TestCase
         $user = $this->createMock(User::class);
 
         $baseItem = $this->createMock(BaseItem::class);
-        $baseItem->method('getLastModifiedByUser')->willReturn($user);
+
+        $baseItem
+            ->expects($this->atLeastOnce())
+            ->method('getLastModifiedByUser')
+            ->willReturn($user);
 
         $sut = new BaseItemProxy($graph, $baseItem);
         $this->assertInstanceOf(UserProxy::class, $sut->lastModifiedByUser);

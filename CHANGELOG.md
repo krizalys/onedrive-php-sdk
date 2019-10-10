@@ -12,6 +12,7 @@ Change log
 
 - Reduced unit tests interdependencies.
 - Revised the CONTRIBUTING file and now using it as pull request template.
+- Removed unused stubbed methods.
 
 [2.5.1] - 2019-10-06
 --------------------

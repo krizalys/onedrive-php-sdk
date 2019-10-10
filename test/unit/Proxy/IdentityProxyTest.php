@@ -14,7 +14,11 @@ class IdentityProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $identity = $this->createMock(Identity::class);
-        $identity->method('getDisplayName')->willReturn('Display Name');
+
+        $identity
+            ->expects($this->atLeastOnce())
+            ->method('getDisplayName')
+            ->willReturn('Display Name');
 
         $sut = new IdentityProxy($graph, $identity);
         $this->assertInternalType('string', $sut->displayName);

@@ -17,13 +17,25 @@ class SharedProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $identity = $this->createMock(Identity::class);
-        $identity->method('getDisplayName')->willReturn('Display Name');
+
+        $identity
+            ->expects($this->atLeastOnce())
+            ->method('getDisplayName')
+            ->willReturn('Display Name');
 
         $identitySet = $this->createMock(IdentitySet::class);
-        $identitySet->method('getApplication')->willReturn($identity);
+
+        $identitySet
+            ->expects($this->atLeastOnce())
+            ->method('getApplication')
+            ->willReturn($identity);
 
         $shared = $this->createMock(Shared::class);
-        $shared->method('getOwner')->willReturn($identitySet);
+
+        $shared
+            ->expects($this->atLeastOnce())
+            ->method('getOwner')
+            ->willReturn($identitySet);
 
         $sut = new SharedProxy($graph, $shared);
         $this->assertInternalType('string', $sut->owner->application->displayName);
@@ -35,7 +47,11 @@ class SharedProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $shared = $this->createMock(Shared::class);
-        $shared->method('getScope')->willReturn(SharedScope::ANONYMOUS);
+
+        $shared
+            ->expects($this->atLeastOnce())
+            ->method('getScope')
+            ->willReturn(SharedScope::ANONYMOUS);
 
         $sut = new SharedProxy($graph, $shared);
         $this->assertInternalType('string', $sut->scope);
@@ -47,13 +63,25 @@ class SharedProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $identity = $this->createMock(Identity::class);
-        $identity->method('getDisplayName')->willReturn('Display Name');
+
+        $identity
+            ->expects($this->atLeastOnce())
+            ->method('getDisplayName')
+            ->willReturn('Display Name');
 
         $identitySet = $this->createMock(IdentitySet::class);
-        $identitySet->method('getApplication')->willReturn($identity);
+
+        $identitySet
+            ->expects($this->atLeastOnce())
+            ->method('getApplication')
+            ->willReturn($identity);
 
         $shared = $this->createMock(Shared::class);
-        $shared->method('getSharedBy')->willReturn($identitySet);
+
+        $shared
+            ->expects($this->atLeastOnce())
+            ->method('getSharedBy')
+            ->willReturn($identitySet);
 
         $sut = new SharedProxy($graph, $shared);
         $this->assertInternalType('string', $sut->sharedBy->application->displayName);
@@ -67,7 +95,11 @@ class SharedProxyTest extends TestCase
         $dateTime = new \DateTime();
 
         $shared = $this->createMock(Shared::class);
-        $shared->method('getSharedDateTime')->willReturn($dateTime);
+
+        $shared
+            ->expects($this->atLeastOnce())
+            ->method('getSharedDateTime')
+            ->willReturn($dateTime);
 
         $sut = new SharedProxy($graph, $shared);
         $this->assertSame($dateTime, $sut->sharedDateTime);

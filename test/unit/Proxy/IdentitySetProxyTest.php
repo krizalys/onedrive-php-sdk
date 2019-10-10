@@ -16,10 +16,18 @@ class IdentitySetProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $identity = $this->createMock(Identity::class);
-        $identity->method('getDisplayName')->willReturn('Display Name');
+
+        $identity
+            ->expects($this->atLeastOnce())
+            ->method('getDisplayName')
+            ->willReturn('Display Name');
 
         $identitySet = $this->createMock(IdentitySet::class);
-        $identitySet->method('getApplication')->willReturn($identity);
+
+        $identitySet
+            ->expects($this->atLeastOnce())
+            ->method('getApplication')
+            ->willReturn($identity);
 
         $sut = new IdentitySetProxy($graph, $identitySet);
         $this->assertInstanceOf(IdentityProxy::class, $sut->application);
@@ -31,10 +39,18 @@ class IdentitySetProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $identity = $this->createMock(Identity::class);
-        $identity->method('getDisplayName')->willReturn('Display Name');
+
+        $identity
+            ->expects($this->atLeastOnce())
+            ->method('getDisplayName')
+            ->willReturn('Display Name');
 
         $identitySet = $this->createMock(IdentitySet::class);
-        $identitySet->method('getDevice')->willReturn($identity);
+
+        $identitySet
+            ->expects($this->atLeastOnce())
+            ->method('getDevice')
+            ->willReturn($identity);
 
         $sut = new IdentitySetProxy($graph, $identitySet);
         $this->assertInstanceOf(IdentityProxy::class, $sut->device);
@@ -46,10 +62,18 @@ class IdentitySetProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $identity = $this->createMock(Identity::class);
-        $identity->method('getDisplayName')->willReturn('Display Name');
+
+        $identity
+            ->expects($this->atLeastOnce())
+            ->method('getDisplayName')
+            ->willReturn('Display Name');
 
         $identitySet = $this->createMock(IdentitySet::class);
-        $identitySet->method('getUser')->willReturn($identity);
+
+        $identitySet
+            ->expects($this->atLeastOnce())
+            ->method('getUser')
+            ->willReturn($identity);
 
         $sut = new IdentitySetProxy($graph, $identitySet);
         $this->assertInstanceOf(IdentityProxy::class, $sut->user);

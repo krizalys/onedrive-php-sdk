@@ -162,10 +162,13 @@ class ClientTest extends TestCase
             $receivedOptions = $options;
             $response        = $this->createMock(ResponseInterface::class);
 
-            $response->method('getBody')->willReturn(json_encode([
-                'access_token' => 'AcCeSs+ToKeN',
-                'key'          => 'value',
-            ]));
+            $response
+                ->expects($this->atLeastOnce())
+                ->method('getBody')
+                ->willReturn(json_encode([
+                    'access_token' => 'AcCeSs+ToKeN',
+                    'key'          => 'value',
+                ]));
 
             return $response;
         };
@@ -234,10 +237,13 @@ class ClientTest extends TestCase
             $receivedOptions = $options;
             $response        = $this->createMock(ResponseInterface::class);
 
-            $response->method('getBody')->willReturn(json_encode([
-                'access_token' => 'AcCeSs+ToKeN',
-                'key'          => 'value',
-            ]));
+            $response
+                ->expects($this->atLeastOnce())
+                ->method('getBody')
+                ->willReturn(json_encode([
+                    'access_token' => 'AcCeSs+ToKeN',
+                    'key'          => 'value',
+                ]));
 
             return $response;
         };
@@ -294,24 +300,48 @@ class ClientTest extends TestCase
     public function testGetDrivesShouldReturnExpectedValue()
     {
         $drive = $this->createMock(Drive::class);
-        $drive->method('getId')->willReturn(self::DRIVE_ID);
+
+        $drive
+            ->expects($this->atLeastOnce())
+            ->method('getId')
+            ->willReturn(self::DRIVE_ID);
 
         $response = $this->createMock(GraphResponse::class);
-        $response->method('getStatus')->willReturn('200');
-        $response->method('getResponseAsObject')->willReturn([$drive]);
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getStatus')
+            ->willReturn('200');
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getResponseAsObject')
+            ->willReturn([$drive]);
 
         $request = $this->createMock(GraphRequest::class);
-        $request->method('execute')->willReturn($response);
+
+        $request
+            ->expects($this->atLeastOnce())
+            ->method('execute')
+            ->willReturn($response);
 
         $graph = $this->createMock(Graph::class);
-        $graph->method('createCollectionRequest')->willReturn($request);
+
+        $graph
+            ->expects($this->atLeastOnce())
+            ->method('createCollectionRequest')
+            ->willReturn($request);
 
         $httpClient = $this->createMock(ClientInterface::class);
 
         $resourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
         $serviceDefinition = $this->createMock(ServiceDefinitionInterface::class);
-        $serviceDefinition->method('getResourceDefinition')->willReturn($resourceDefinition);
+
+        $serviceDefinition
+            ->expects($this->atLeastOnce())
+            ->method('getResourceDefinition')
+            ->willReturn($resourceDefinition);
 
         $sut = new Client(
             self::CLIENT_ID,
@@ -334,24 +364,48 @@ class ClientTest extends TestCase
     public function testGetMyDriveShouldReturnExpectedValue()
     {
         $drive = $this->createMock(Drive::class);
-        $drive->method('getId')->willReturn(self::DRIVE_ID);
+
+        $drive
+            ->expects($this->atLeastOnce())
+            ->method('getId')
+            ->willReturn(self::DRIVE_ID);
 
         $response = $this->createMock(GraphResponse::class);
-        $response->method('getStatus')->willReturn('200');
-        $response->method('getResponseAsObject')->willReturn($drive);
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getStatus')
+            ->willReturn('200');
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getResponseAsObject')
+            ->willReturn($drive);
 
         $request = $this->createMock(GraphRequest::class);
-        $request->method('execute')->willReturn($response);
+
+        $request
+            ->expects($this->atLeastOnce())
+            ->method('execute')
+            ->willReturn($response);
 
         $graph = $this->createMock(Graph::class);
-        $graph->method('createRequest')->willReturn($request);
+
+        $graph
+            ->expects($this->atLeastOnce())
+            ->method('createRequest')
+            ->willReturn($request);
 
         $httpClient = $this->createMock(ClientInterface::class);
 
         $resourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
         $serviceDefinition = $this->createMock(ServiceDefinitionInterface::class);
-        $serviceDefinition->method('getResourceDefinition')->willReturn($resourceDefinition);
+
+        $serviceDefinition
+            ->expects($this->atLeastOnce())
+            ->method('getResourceDefinition')
+            ->willReturn($resourceDefinition);
 
         $sut = new Client(
             self::CLIENT_ID,
@@ -369,24 +423,48 @@ class ClientTest extends TestCase
     public function testGetDriveByIdShouldReturnExpectedValue()
     {
         $drive = $this->createMock(Drive::class);
-        $drive->method('getId')->willReturn(self::DRIVE_ID);
+
+        $drive
+            ->expects($this->atLeastOnce())
+            ->method('getId')
+            ->willReturn(self::DRIVE_ID);
 
         $response = $this->createMock(GraphResponse::class);
-        $response->method('getStatus')->willReturn('200');
-        $response->method('getResponseAsObject')->willReturn($drive);
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getStatus')
+            ->willReturn('200');
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getResponseAsObject')
+            ->willReturn($drive);
 
         $request = $this->createMock(GraphRequest::class);
-        $request->method('execute')->willReturn($response);
+
+        $request
+            ->expects($this->atLeastOnce())
+            ->method('execute')
+            ->willReturn($response);
 
         $graph = $this->createMock(Graph::class);
-        $graph->method('createRequest')->willReturn($request);
+
+        $graph
+            ->expects($this->atLeastOnce())
+            ->method('createRequest')
+            ->willReturn($request);
 
         $httpClient = $this->createMock(ClientInterface::class);
 
         $resourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
         $serviceDefinition = $this->createMock(ServiceDefinitionInterface::class);
-        $serviceDefinition->method('getResourceDefinition')->willReturn($resourceDefinition);
+
+        $serviceDefinition
+            ->expects($this->atLeastOnce())
+            ->method('getResourceDefinition')
+            ->willReturn($resourceDefinition);
 
         $sut = new Client(
             self::CLIENT_ID,
@@ -404,24 +482,48 @@ class ClientTest extends TestCase
     public function testGetDriveByUserShouldReturnExpectedValue()
     {
         $drive = $this->createMock(Drive::class);
-        $drive->method('getId')->willReturn(self::DRIVE_ID);
+
+        $drive
+            ->expects($this->atLeastOnce())
+            ->method('getId')
+            ->willReturn(self::DRIVE_ID);
 
         $response = $this->createMock(GraphResponse::class);
-        $response->method('getStatus')->willReturn('200');
-        $response->method('getResponseAsObject')->willReturn($drive);
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getStatus')
+            ->willReturn('200');
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getResponseAsObject')
+            ->willReturn($drive);
 
         $request = $this->createMock(GraphRequest::class);
-        $request->method('execute')->willReturn($response);
+
+        $request
+            ->expects($this->atLeastOnce())
+            ->method('execute')
+            ->willReturn($response);
 
         $graph = $this->createMock(Graph::class);
-        $graph->method('createRequest')->willReturn($request);
+
+        $graph
+            ->expects($this->atLeastOnce())
+            ->method('createRequest')
+            ->willReturn($request);
 
         $httpClient = $this->createMock(ClientInterface::class);
 
         $resourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
         $serviceDefinition = $this->createMock(ServiceDefinitionInterface::class);
-        $serviceDefinition->method('getResourceDefinition')->willReturn($resourceDefinition);
+
+        $serviceDefinition
+            ->expects($this->atLeastOnce())
+            ->method('getResourceDefinition')
+            ->willReturn($resourceDefinition);
 
         $sut = new Client(
             self::CLIENT_ID,
@@ -439,24 +541,48 @@ class ClientTest extends TestCase
     public function testGetDriveByGroupShouldReturnExpectedValue()
     {
         $drive = $this->createMock(Drive::class);
-        $drive->method('getId')->willReturn(self::DRIVE_ID);
+
+        $drive
+            ->expects($this->atLeastOnce())
+            ->method('getId')
+            ->willReturn(self::DRIVE_ID);
 
         $response = $this->createMock(GraphResponse::class);
-        $response->method('getStatus')->willReturn('200');
-        $response->method('getResponseAsObject')->willReturn($drive);
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getStatus')
+            ->willReturn('200');
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getResponseAsObject')
+            ->willReturn($drive);
 
         $request = $this->createMock(GraphRequest::class);
-        $request->method('execute')->willReturn($response);
+
+        $request
+            ->expects($this->atLeastOnce())
+            ->method('execute')
+            ->willReturn($response);
 
         $graph = $this->createMock(Graph::class);
-        $graph->method('createRequest')->willReturn($request);
+
+        $graph
+            ->expects($this->atLeastOnce())
+            ->method('createRequest')
+            ->willReturn($request);
 
         $httpClient = $this->createMock(ClientInterface::class);
 
         $resourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
         $serviceDefinition = $this->createMock(ServiceDefinitionInterface::class);
-        $serviceDefinition->method('getResourceDefinition')->willReturn($resourceDefinition);
+
+        $serviceDefinition
+            ->expects($this->atLeastOnce())
+            ->method('getResourceDefinition')
+            ->willReturn($resourceDefinition);
 
         $sut = new Client(
             self::CLIENT_ID,
@@ -474,24 +600,48 @@ class ClientTest extends TestCase
     public function testGetDriveBySiteShouldReturnExpectedValue()
     {
         $drive = $this->createMock(Drive::class);
-        $drive->method('getId')->willReturn(self::DRIVE_ID);
+
+        $drive
+            ->expects($this->atLeastOnce())
+            ->method('getId')
+            ->willReturn(self::DRIVE_ID);
 
         $response = $this->createMock(GraphResponse::class);
-        $response->method('getStatus')->willReturn('200');
-        $response->method('getResponseAsObject')->willReturn($drive);
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getStatus')
+            ->willReturn('200');
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getResponseAsObject')
+            ->willReturn($drive);
 
         $request = $this->createMock(GraphRequest::class);
-        $request->method('execute')->willReturn($response);
+
+        $request
+            ->expects($this->atLeastOnce())
+            ->method('execute')
+            ->willReturn($response);
 
         $graph = $this->createMock(Graph::class);
-        $graph->method('createRequest')->willReturn($request);
+
+        $graph
+            ->expects($this->atLeastOnce())
+            ->method('createRequest')
+            ->willReturn($request);
 
         $httpClient = $this->createMock(ClientInterface::class);
 
         $resourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
         $serviceDefinition = $this->createMock(ServiceDefinitionInterface::class);
-        $serviceDefinition->method('getResourceDefinition')->willReturn($resourceDefinition);
+
+        $serviceDefinition
+            ->expects($this->atLeastOnce())
+            ->method('getResourceDefinition')
+            ->willReturn($resourceDefinition);
 
         $sut = new Client(
             self::CLIENT_ID,
@@ -509,24 +659,48 @@ class ClientTest extends TestCase
     public function testGetDriveItemByIdShouldReturnExpectedValue()
     {
         $item = $this->createMock(DriveItem::class);
-        $item->method('getId')->willReturn(self::DRIVE_ITEM_ID);
+
+        $item
+            ->expects($this->atLeastOnce())
+            ->method('getId')
+            ->willReturn(self::DRIVE_ITEM_ID);
 
         $response = $this->createMock(GraphResponse::class);
-        $response->method('getStatus')->willReturn('200');
-        $response->method('getResponseAsObject')->willReturn($item);
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getStatus')
+            ->willReturn('200');
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getResponseAsObject')
+            ->willReturn($item);
 
         $request = $this->createMock(GraphRequest::class);
-        $request->method('execute')->willReturn($response);
+
+        $request
+            ->expects($this->atLeastOnce())
+            ->method('execute')
+            ->willReturn($response);
 
         $graph = $this->createMock(Graph::class);
-        $graph->method('createRequest')->willReturn($request);
+
+        $graph
+            ->expects($this->atLeastOnce())
+            ->method('createRequest')
+            ->willReturn($request);
 
         $httpClient = $this->createMock(ClientInterface::class);
 
         $resourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
         $serviceDefinition = $this->createMock(ServiceDefinitionInterface::class);
-        $serviceDefinition->method('getResourceDefinition')->willReturn($resourceDefinition);
+
+        $serviceDefinition
+            ->expects($this->atLeastOnce())
+            ->method('getResourceDefinition')
+            ->willReturn($resourceDefinition);
 
         $sut = new Client(
             self::CLIENT_ID,
@@ -544,24 +718,48 @@ class ClientTest extends TestCase
     public function testGetRootShouldReturnExpectedValue()
     {
         $item = $this->createMock(DriveItem::class);
-        $item->method('getId')->willReturn(self::DRIVE_ITEM_ID);
+
+        $item
+            ->expects($this->atLeastOnce())
+            ->method('getId')
+            ->willReturn(self::DRIVE_ITEM_ID);
 
         $response = $this->createMock(GraphResponse::class);
-        $response->method('getStatus')->willReturn('200');
-        $response->method('getResponseAsObject')->willReturn($item);
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getStatus')
+            ->willReturn('200');
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getResponseAsObject')
+            ->willReturn($item);
 
         $request = $this->createMock(GraphRequest::class);
-        $request->method('execute')->willReturn($response);
+
+        $request
+            ->expects($this->atLeastOnce())
+            ->method('execute')
+            ->willReturn($response);
 
         $graph = $this->createMock(Graph::class);
-        $graph->method('createRequest')->willReturn($request);
+
+        $graph
+            ->expects($this->atLeastOnce())
+            ->method('createRequest')
+            ->willReturn($request);
 
         $httpClient = $this->createMock(ClientInterface::class);
 
         $resourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
         $serviceDefinition = $this->createMock(ServiceDefinitionInterface::class);
-        $serviceDefinition->method('getResourceDefinition')->willReturn($resourceDefinition);
+
+        $serviceDefinition
+            ->expects($this->atLeastOnce())
+            ->method('getResourceDefinition')
+            ->willReturn($resourceDefinition);
 
         $sut = new Client(
             self::CLIENT_ID,
@@ -579,24 +777,48 @@ class ClientTest extends TestCase
     public function testGetSpecialFolderShouldReturnExpectedValue()
     {
         $item = $this->createMock(DriveItem::class);
-        $item->method('getId')->willReturn(self::DRIVE_ITEM_ID);
+
+        $item
+            ->expects($this->atLeastOnce())
+            ->method('getId')
+            ->willReturn(self::DRIVE_ITEM_ID);
 
         $response = $this->createMock(GraphResponse::class);
-        $response->method('getStatus')->willReturn('200');
-        $response->method('getResponseAsObject')->willReturn($item);
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getStatus')
+            ->willReturn('200');
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getResponseAsObject')
+            ->willReturn($item);
 
         $request = $this->createMock(GraphRequest::class);
-        $request->method('execute')->willReturn($response);
+
+        $request
+            ->expects($this->atLeastOnce())
+            ->method('execute')
+            ->willReturn($response);
 
         $graph = $this->createMock(Graph::class);
-        $graph->method('createRequest')->willReturn($request);
+
+        $graph
+            ->expects($this->atLeastOnce())
+            ->method('createRequest')
+            ->willReturn($request);
 
         $httpClient = $this->createMock(ClientInterface::class);
 
         $resourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
         $serviceDefinition = $this->createMock(ServiceDefinitionInterface::class);
-        $serviceDefinition->method('getResourceDefinition')->willReturn($resourceDefinition);
+
+        $serviceDefinition
+            ->expects($this->atLeastOnce())
+            ->method('getResourceDefinition')
+            ->willReturn($resourceDefinition);
 
         $sut = new Client(
             self::CLIENT_ID,
@@ -614,24 +836,48 @@ class ClientTest extends TestCase
     public function testGetSharedShouldReturnExpectedValue()
     {
         $item = $this->createMock(DriveItem::class);
-        $item->method('getId')->willReturn(self::DRIVE_ITEM_ID);
+
+        $item
+            ->expects($this->atLeastOnce())
+            ->method('getId')
+            ->willReturn(self::DRIVE_ITEM_ID);
 
         $response = $this->createMock(GraphResponse::class);
-        $response->method('getStatus')->willReturn('200');
-        $response->method('getResponseAsObject')->willReturn([$item]);
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getStatus')
+            ->willReturn('200');
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getResponseAsObject')
+            ->willReturn([$item]);
 
         $request = $this->createMock(GraphRequest::class);
-        $request->method('execute')->willReturn($response);
+
+        $request
+            ->expects($this->atLeastOnce())
+            ->method('execute')
+            ->willReturn($response);
 
         $graph = $this->createMock(Graph::class);
-        $graph->method('createCollectionRequest')->willReturn($request);
+
+        $graph
+            ->expects($this->atLeastOnce())
+            ->method('createCollectionRequest')
+            ->willReturn($request);
 
         $httpClient = $this->createMock(ClientInterface::class);
 
         $resourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
         $serviceDefinition = $this->createMock(ServiceDefinitionInterface::class);
-        $serviceDefinition->method('getResourceDefinition')->willReturn($resourceDefinition);
+
+        $serviceDefinition
+            ->expects($this->atLeastOnce())
+            ->method('getResourceDefinition')
+            ->willReturn($resourceDefinition);
 
         $sut = new Client(
             self::CLIENT_ID,
@@ -652,24 +898,48 @@ class ClientTest extends TestCase
     public function testGetRecentShouldReturnExpectedValue()
     {
         $item = $this->createMock(DriveItem::class);
-        $item->method('getId')->willReturn(self::DRIVE_ITEM_ID);
+
+        $item
+            ->expects($this->atLeastOnce())
+            ->method('getId')
+            ->willReturn(self::DRIVE_ITEM_ID);
 
         $response = $this->createMock(GraphResponse::class);
-        $response->method('getStatus')->willReturn('200');
-        $response->method('getResponseAsObject')->willReturn([$item]);
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getStatus')
+            ->willReturn('200');
+
+        $response
+            ->expects($this->atLeastOnce())
+            ->method('getResponseAsObject')
+            ->willReturn([$item]);
 
         $request = $this->createMock(GraphRequest::class);
-        $request->method('execute')->willReturn($response);
+
+        $request
+            ->expects($this->atLeastOnce())
+            ->method('execute')
+            ->willReturn($response);
 
         $graph = $this->createMock(Graph::class);
-        $graph->method('createCollectionRequest')->willReturn($request);
+
+        $graph
+            ->expects($this->atLeastOnce())
+            ->method('createCollectionRequest')
+            ->willReturn($request);
 
         $httpClient = $this->createMock(ClientInterface::class);
 
         $resourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
         $serviceDefinition = $this->createMock(ServiceDefinitionInterface::class);
-        $serviceDefinition->method('getResourceDefinition')->willReturn($resourceDefinition);
+
+        $serviceDefinition
+            ->expects($this->atLeastOnce())
+            ->method('getResourceDefinition')
+            ->willReturn($resourceDefinition);
 
         $sut = new Client(
             self::CLIENT_ID,

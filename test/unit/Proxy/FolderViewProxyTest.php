@@ -14,7 +14,11 @@ class FolderViewProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $folderView = $this->createMock(FolderView::class);
-        $folderView->method('getSortBy')->willReturn('sort_by');
+
+        $folderView
+            ->expects($this->atLeastOnce())
+            ->method('getSortBy')
+            ->willReturn('sort_by');
 
         $sut = new FolderViewProxy($graph, $folderView);
         $this->assertInternalType('string', $sut->sortBy);
@@ -26,7 +30,11 @@ class FolderViewProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $folderView = $this->createMock(FolderView::class);
-        $folderView->method('getSortOrder')->willReturn('sort_order');
+
+        $folderView
+            ->expects($this->atLeastOnce())
+            ->method('getSortOrder')
+            ->willReturn('sort_order');
 
         $sut = new FolderViewProxy($graph, $folderView);
         $this->assertInternalType('string', $sut->sortOrder);
@@ -38,7 +46,11 @@ class FolderViewProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $folderView = $this->createMock(FolderView::class);
-        $folderView->method('getViewType')->willReturn('view_type');
+
+        $folderView
+            ->expects($this->atLeastOnce())
+            ->method('getViewType')
+            ->willReturn('view_type');
 
         $sut = new FolderViewProxy($graph, $folderView);
         $this->assertInternalType('string', $sut->viewType);

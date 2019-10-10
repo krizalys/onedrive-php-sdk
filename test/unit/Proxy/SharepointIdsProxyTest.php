@@ -14,7 +14,11 @@ class SharepointIdsProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $sharepointIds = $this->createMock(SharepointIds::class);
-        $sharepointIds->method('getListId')->willReturn('1234');
+
+        $sharepointIds
+            ->expects($this->atLeastOnce())
+            ->method('getListId')
+            ->willReturn('1234');
 
         $sut = new SharepointIdsProxy($graph, $sharepointIds);
         $this->assertInternalType('string', $sut->listId);
@@ -26,7 +30,11 @@ class SharepointIdsProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $sharepointIds = $this->createMock(SharepointIds::class);
-        $sharepointIds->method('getListItemId')->willReturn('1234');
+
+        $sharepointIds
+            ->expects($this->atLeastOnce())
+            ->method('getListItemId')
+            ->willReturn('1234');
 
         $sut = new SharepointIdsProxy($graph, $sharepointIds);
         $this->assertInternalType('string', $sut->listItemId);
@@ -38,7 +46,11 @@ class SharepointIdsProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $sharepointIds = $this->createMock(SharepointIds::class);
-        $sharepointIds->method('getListItemUniqueId')->willReturn('1234');
+
+        $sharepointIds
+            ->expects($this->atLeastOnce())
+            ->method('getListItemUniqueId')
+            ->willReturn('1234');
 
         $sut = new SharepointIdsProxy($graph, $sharepointIds);
         $this->assertInternalType('string', $sut->listItemUniqueId);
@@ -50,7 +62,11 @@ class SharepointIdsProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $sharepointIds = $this->createMock(SharepointIds::class);
-        $sharepointIds->method('getSiteId')->willReturn('1234');
+
+        $sharepointIds
+            ->expects($this->atLeastOnce())
+            ->method('getSiteId')
+            ->willReturn('1234');
 
         $sut = new SharepointIdsProxy($graph, $sharepointIds);
         $this->assertInternalType('string', $sut->siteId);
@@ -62,7 +78,11 @@ class SharepointIdsProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $sharepointIds = $this->createMock(SharepointIds::class);
-        $sharepointIds->method('getSiteUrl')->willReturn('http://si.te/url');
+
+        $sharepointIds
+            ->expects($this->atLeastOnce())
+            ->method('getSiteUrl')
+            ->willReturn('http://si.te/url');
 
         $sut = new SharepointIdsProxy($graph, $sharepointIds);
         $this->assertInternalType('string', $sut->siteUrl);
@@ -74,7 +94,11 @@ class SharepointIdsProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $sharepointIds = $this->createMock(SharepointIds::class);
-        $sharepointIds->method('getWebId')->willReturn('1234');
+
+        $sharepointIds
+            ->expects($this->atLeastOnce())
+            ->method('getWebId')
+            ->willReturn('1234');
 
         $sut = new SharepointIdsProxy($graph, $sharepointIds);
         $this->assertInternalType('string', $sut->webId);

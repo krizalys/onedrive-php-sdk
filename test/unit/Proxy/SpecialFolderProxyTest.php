@@ -14,7 +14,11 @@ class SpecialFolderProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $specialFolder = $this->createMock(SpecialFolder::class);
-        $specialFolder->method('getName')->willReturn('Name');
+
+        $specialFolder
+            ->expects($this->atLeastOnce())
+            ->method('getName')
+            ->willReturn('Name');
 
         $sut = new SpecialFolderProxy($graph, $specialFolder);
         $this->assertInternalType('string', $sut->name);

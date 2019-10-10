@@ -16,7 +16,11 @@ class FileSystemInfoProxyTest extends TestCase
         $dateTime = new \DateTime();
 
         $fileSystemInfo = $this->createMock(FileSystemInfo::class);
-        $fileSystemInfo->method('getCreatedDateTime')->willReturn($dateTime);
+
+        $fileSystemInfo
+            ->expects($this->atLeastOnce())
+            ->method('getCreatedDateTime')
+            ->willReturn($dateTime);
 
         $sut = new FileSystemInfoProxy($graph, $fileSystemInfo);
         $this->assertSame($dateTime, $sut->createdDateTime);
@@ -29,7 +33,11 @@ class FileSystemInfoProxyTest extends TestCase
         $dateTime = new \DateTime();
 
         $fileSystemInfo = $this->createMock(FileSystemInfo::class);
-        $fileSystemInfo->method('getLastAccessedDateTime')->willReturn($dateTime);
+
+        $fileSystemInfo
+            ->expects($this->atLeastOnce())
+            ->method('getLastAccessedDateTime')
+            ->willReturn($dateTime);
 
         $sut = new FileSystemInfoProxy($graph, $fileSystemInfo);
         $this->assertSame($dateTime, $sut->lastAccessedDateTime);
@@ -42,7 +50,11 @@ class FileSystemInfoProxyTest extends TestCase
         $dateTime = new \DateTime();
 
         $fileSystemInfo = $this->createMock(FileSystemInfo::class);
-        $fileSystemInfo->method('getLastModifiedDateTime')->willReturn($dateTime);
+
+        $fileSystemInfo
+            ->expects($this->atLeastOnce())
+            ->method('getLastModifiedDateTime')
+            ->willReturn($dateTime);
 
         $sut = new FileSystemInfoProxy($graph, $fileSystemInfo);
         $this->assertSame($dateTime, $sut->lastModifiedDateTime);

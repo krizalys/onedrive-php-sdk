@@ -33,13 +33,25 @@ class RemoteItemProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $identity = $this->createMock(Identity::class);
-        $identity->method('getDisplayName')->willReturn('Display Name');
+
+        $identity
+            ->expects($this->atLeastOnce())
+            ->method('getDisplayName')
+            ->willReturn('Display Name');
 
         $identitySet = $this->createMock(IdentitySet::class);
-        $identitySet->method('getUser')->willReturn($identity);
+
+        $identitySet
+            ->expects($this->atLeastOnce())
+            ->method('getUser')
+            ->willReturn($identity);
 
         $remoteItem = $this->createMock(RemoteItem::class);
-        $remoteItem->method('getCreatedBy')->willReturn($identitySet);
+
+        $remoteItem
+            ->expects($this->atLeastOnce())
+            ->method('getCreatedBy')
+            ->willReturn($identitySet);
 
         $sut = new RemoteItemProxy($graph, $remoteItem);
         $this->assertInstanceOf(IdentitySetProxy::class, $sut->createdBy);
@@ -53,7 +65,11 @@ class RemoteItemProxyTest extends TestCase
         $dateTime = new \DateTime();
 
         $remoteItem = $this->createMock(RemoteItem::class);
-        $remoteItem->method('getCreatedDateTime')->willReturn($dateTime);
+
+        $remoteItem
+            ->expects($this->atLeastOnce())
+            ->method('getCreatedDateTime')
+            ->willReturn($dateTime);
 
         $sut = new RemoteItemProxy($graph, $remoteItem);
         $this->assertSame($dateTime, $sut->createdDateTime);
@@ -66,7 +82,11 @@ class RemoteItemProxyTest extends TestCase
         $file = $this->createMock(File::class);
 
         $remoteItem = $this->createMock(RemoteItem::class);
-        $remoteItem->method('getFile')->willReturn($file);
+
+        $remoteItem
+            ->expects($this->atLeastOnce())
+            ->method('getFile')
+            ->willReturn($file);
 
         $sut = new RemoteItemProxy($graph, $remoteItem);
         $this->assertInstanceOf(FileProxy::class, $sut->file);
@@ -79,7 +99,11 @@ class RemoteItemProxyTest extends TestCase
         $fileSystemInfo = $this->createMock(FileSystemInfo::class);
 
         $remoteItem = $this->createMock(RemoteItem::class);
-        $remoteItem->method('getFileSystemInfo')->willReturn($fileSystemInfo);
+
+        $remoteItem
+            ->expects($this->atLeastOnce())
+            ->method('getFileSystemInfo')
+            ->willReturn($fileSystemInfo);
 
         $sut = new RemoteItemProxy($graph, $remoteItem);
         $this->assertInstanceOf(FileSystemInfoProxy::class, $sut->fileSystemInfo);
@@ -92,7 +116,11 @@ class RemoteItemProxyTest extends TestCase
         $folder = $this->createMock(Folder::class);
 
         $remoteItem = $this->createMock(RemoteItem::class);
-        $remoteItem->method('getFolder')->willReturn($folder);
+
+        $remoteItem
+            ->expects($this->atLeastOnce())
+            ->method('getFolder')
+            ->willReturn($folder);
 
         $sut = new RemoteItemProxy($graph, $remoteItem);
         $this->assertInstanceOf(FolderProxy::class, $sut->folder);
@@ -103,13 +131,25 @@ class RemoteItemProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $identity = $this->createMock(Identity::class);
-        $identity->method('getDisplayName')->willReturn('Display Name');
+
+        $identity
+            ->expects($this->atLeastOnce())
+            ->method('getDisplayName')
+            ->willReturn('Display Name');
 
         $identitySet = $this->createMock(IdentitySet::class);
-        $identitySet->method('getUser')->willReturn($identity);
+
+        $identitySet
+            ->expects($this->atLeastOnce())
+            ->method('getUser')
+            ->willReturn($identity);
 
         $remoteItem = $this->createMock(RemoteItem::class);
-        $remoteItem->method('getLastModifiedBy')->willReturn($identitySet);
+
+        $remoteItem
+            ->expects($this->atLeastOnce())
+            ->method('getLastModifiedBy')
+            ->willReturn($identitySet);
 
         $sut = new RemoteItemProxy($graph, $remoteItem);
         $this->assertInstanceOf(IdentitySetProxy::class, $sut->lastModifiedBy);
@@ -123,7 +163,11 @@ class RemoteItemProxyTest extends TestCase
         $dateTime = new \DateTime();
 
         $remoteItem = $this->createMock(RemoteItem::class);
-        $remoteItem->method('getLastModifiedDateTime')->willReturn($dateTime);
+
+        $remoteItem
+            ->expects($this->atLeastOnce())
+            ->method('getLastModifiedDateTime')
+            ->willReturn($dateTime);
 
         $sut = new RemoteItemProxy($graph, $remoteItem);
         $this->assertSame($dateTime, $sut->lastModifiedDateTime);
@@ -134,7 +178,11 @@ class RemoteItemProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $remoteItem = $this->createMock(RemoteItem::class);
-        $remoteItem->method('getName')->willReturn('Name');
+
+        $remoteItem
+            ->expects($this->atLeastOnce())
+            ->method('getName')
+            ->willReturn('Name');
 
         $sut = new RemoteItemProxy($graph, $remoteItem);
         $this->assertInternalType('string', $sut->name);
@@ -148,7 +196,11 @@ class RemoteItemProxyTest extends TestCase
         $package = $this->createMock(Package::class);
 
         $remoteItem = $this->createMock(RemoteItem::class);
-        $remoteItem->method('getPackage')->willReturn($package);
+
+        $remoteItem
+            ->expects($this->atLeastOnce())
+            ->method('getPackage')
+            ->willReturn($package);
 
         $sut = new RemoteItemProxy($graph, $remoteItem);
         $this->assertInstanceOf(PackageProxy::class, $sut->package);
@@ -159,10 +211,18 @@ class RemoteItemProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $itemReference = $this->createMock(ItemReference::class);
-        $itemReference->method('getId')->willReturn('1234');
+
+        $itemReference
+            ->expects($this->atLeastOnce())
+            ->method('getId')
+            ->willReturn('1234');
 
         $remoteItem = $this->createMock(RemoteItem::class);
-        $remoteItem->method('getParentReference')->willReturn($itemReference);
+
+        $remoteItem
+            ->expects($this->atLeastOnce())
+            ->method('getParentReference')
+            ->willReturn($itemReference);
 
         $sut = new RemoteItemProxy($graph, $remoteItem);
         $this->assertInstanceOf(ItemReferenceProxy::class, $sut->parentReference);
@@ -176,7 +236,11 @@ class RemoteItemProxyTest extends TestCase
         $shared = $this->createMock(Shared::class);
 
         $remoteItem = $this->createMock(RemoteItem::class);
-        $remoteItem->method('getShared')->willReturn($shared);
+
+        $remoteItem
+            ->expects($this->atLeastOnce())
+            ->method('getShared')
+            ->willReturn($shared);
 
         $sut = new RemoteItemProxy($graph, $remoteItem);
         $this->assertInstanceOf(SharedProxy::class, $sut->shared);
@@ -189,7 +253,11 @@ class RemoteItemProxyTest extends TestCase
         $sharepointIds = $this->createMock(SharepointIds::class);
 
         $remoteItem = $this->createMock(RemoteItem::class);
-        $remoteItem->method('getSharepointIds')->willReturn($sharepointIds);
+
+        $remoteItem
+            ->expects($this->atLeastOnce())
+            ->method('getSharepointIds')
+            ->willReturn($sharepointIds);
 
         $sut = new RemoteItemProxy($graph, $remoteItem);
         $this->assertInstanceOf(SharepointIdsProxy::class, $sut->sharepointIds);
@@ -200,7 +268,11 @@ class RemoteItemProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $remoteItem = $this->createMock(RemoteItem::class);
-        $remoteItem->method('getSize')->willReturn(1234);
+
+        $remoteItem
+            ->expects($this->atLeastOnce())
+            ->method('getSize')
+            ->willReturn(1234);
 
         $sut = new RemoteItemProxy($graph, $remoteItem);
         $this->assertInternalType('int', $sut->size);
@@ -214,7 +286,11 @@ class RemoteItemProxyTest extends TestCase
         $specialFolder = $this->createMock(SpecialFolder::class);
 
         $remoteItem = $this->createMock(RemoteItem::class);
-        $remoteItem->method('getSpecialFolder')->willReturn($specialFolder);
+
+        $remoteItem
+            ->expects($this->atLeastOnce())
+            ->method('getSpecialFolder')
+            ->willReturn($specialFolder);
 
         $sut = new RemoteItemProxy($graph, $remoteItem);
         $this->assertInstanceOf(SpecialFolderProxy::class, $sut->specialFolder);
@@ -225,7 +301,11 @@ class RemoteItemProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $remoteItem = $this->createMock(RemoteItem::class);
-        $remoteItem->method('getWebDavUrl')->willReturn('http://webd.av/url');
+
+        $remoteItem
+            ->expects($this->atLeastOnce())
+            ->method('getWebDavUrl')
+            ->willReturn('http://webd.av/url');
 
         $sut = new RemoteItemProxy($graph, $remoteItem);
         $this->assertInternalType('string', $sut->webDavUrl);
@@ -237,7 +317,11 @@ class RemoteItemProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $remoteItem = $this->createMock(RemoteItem::class);
-        $remoteItem->method('getWebUrl')->willReturn('http://w.eb/url');
+
+        $remoteItem
+            ->expects($this->atLeastOnce())
+            ->method('getWebUrl')
+            ->willReturn('http://w.eb/url');
 
         $sut = new RemoteItemProxy($graph, $remoteItem);
         $this->assertInternalType('string', $sut->webUrl);
