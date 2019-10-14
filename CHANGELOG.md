@@ -4,6 +4,10 @@ Change log
 [Unreleased][unreleased]
 ------------------------
 
+### Added
+
+- Coding style documentation.
+
 ### Changed
 
 - Reduced unit tests interdependencies.

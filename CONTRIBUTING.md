@@ -5,7 +5,7 @@ We welcome your contributions!
 
 Please make sure to follow these guidelines to support a merge:
 
-* [ ] I have adopted the general coding style
+* [ ] I have adopted the [coding style][coding-style]
 * [ ] I have added consistent [PHPDoc][phpdoc] documentation to symbols I added
 * [ ] I have fixed an issue and I added [unit test case(s)][unit-tests]
 * [ ] I have added a feature and I added [functional test
@@ -17,6 +17,7 @@ maintainers for exceptional cases
 
 Thank you for helping us making this project better!
 
+[coding-style]:     https://github.com/krizalys/onedrive-php-sdk/tree/master/doc/CodingStyle.md
 [functional-tests]: https://github.com/krizalys/onedrive-php-sdk/tree/master/test/functional
 [phpdoc]:           https://www.phpdoc.org/
 [unit-tests]:       https://github.com/krizalys/onedrive-php-sdk/tree/master/test/unit
