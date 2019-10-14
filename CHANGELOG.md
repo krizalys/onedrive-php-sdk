@@ -1,6 +1,13 @@
 Change log
 ==========
 
+[Unreleased][unreleased]
+------------------------
+
+### Changed
+
+- Reduced unit tests interdependencies.
+
 [2.5.1] - 2019-10-06
 --------------------
 

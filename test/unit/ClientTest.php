@@ -36,7 +36,7 @@ class ClientTest extends TestCase
      */
     public function testConstructorWithNullGraphShouldThrowException()
     {
-        $graph      = $this->mockGraph();
+        $graph      = $this->createMock(Graph::class);
         $httpClient = $this->createMock(ClientInterface::class);
 
         $serviceDefinition = $this->createMock(ServiceDefinitionInterface::class);
@@ -46,7 +46,7 @@ class ClientTest extends TestCase
 
     public function testGetLogInUrlShouldReturnExpectedValue()
     {
-        $graph      = $this->mockGraph();
+        $graph      = $this->createMock(Graph::class);
         $httpClient = $this->createMock(ClientInterface::class);
 
         $serviceDefinition = $this->createMock(ServiceDefinitionInterface::class);
@@ -89,7 +89,7 @@ class ClientTest extends TestCase
             ],
         ];
 
-        $graph  = $this->mockGraph();
+        $graph  = $this->createMock(Graph::class);
         $sut    = $this->createClient($graph, $options);
         $actual = $sut->getTokenExpire();
         $this->assertSame(3599, $actual);
@@ -141,7 +141,7 @@ class ClientTest extends TestCase
             ],
         ];
 
-        $graph  = $this->mockGraph();
+        $graph  = $this->createMock(Graph::class);
         $sut    = $this->createClient($graph, $options);
         $actual = $sut->getAccessTokenStatus();
         $this->assertEquals($expected, $actual);
@@ -185,7 +185,7 @@ class ClientTest extends TestCase
             ],
         ];
 
-        $graph = $this->mockGraph();
+        $graph = $this->createMock(Graph::class);
         $sut   = $this->createClient($graph, $options);
         $sut->obtainAccessToken(self::CLIENT_SECRET, self::AUTH_CODE);
         $this->assertSame('https://login.microsoftonline.com/common/oauth2/v2.0/token', $receivedUri);
@@ -259,7 +259,7 @@ class ClientTest extends TestCase
             ],
         ];
 
-        $graph  = $this->mockGraph();
+        $graph  = $this->createMock(Graph::class);
         $sut    = $this->createClient($graph, $options);
         $sut->renewAccessToken(self::CLIENT_SECRET);
 
@@ -293,8 +293,19 @@ class ClientTest extends TestCase
 
     public function testGetDrivesShouldReturnExpectedValue()
     {
-        $drive      = $this->mockDrive(self::DRIVE_ID);
-        $graph      = $this->mockGraphWithCollectionResponse([$drive]);
+        $drive = $this->createMock(Drive::class);
+        $drive->method('getId')->willReturn(self::DRIVE_ID);
+
+        $response = $this->createMock(GraphResponse::class);
+        $response->method('getStatus')->willReturn('200');
+        $response->method('getResponseAsObject')->willReturn([$drive]);
+
+        $request = $this->createMock(GraphRequest::class);
+        $request->method('execute')->willReturn($response);
+
+        $graph = $this->createMock(Graph::class);
+        $graph->method('createCollectionRequest')->willReturn($request);
+
         $httpClient = $this->createMock(ClientInterface::class);
 
         $resourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
@@ -322,8 +333,19 @@ class ClientTest extends TestCase
 
     public function testGetMyDriveShouldReturnExpectedValue()
     {
-        $drive      = $this->mockDrive(self::DRIVE_ID);
-        $graph      = $this->mockGraphWithResponse($drive);
+        $drive = $this->createMock(Drive::class);
+        $drive->method('getId')->willReturn(self::DRIVE_ID);
+
+        $response = $this->createMock(GraphResponse::class);
+        $response->method('getStatus')->willReturn('200');
+        $response->method('getResponseAsObject')->willReturn($drive);
+
+        $request = $this->createMock(GraphRequest::class);
+        $request->method('execute')->willReturn($response);
+
+        $graph = $this->createMock(Graph::class);
+        $graph->method('createRequest')->willReturn($request);
+
         $httpClient = $this->createMock(ClientInterface::class);
 
         $resourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
@@ -346,8 +368,19 @@ class ClientTest extends TestCase
 
     public function testGetDriveByIdShouldReturnExpectedValue()
     {
-        $drive      = $this->mockDrive(self::DRIVE_ID);
-        $graph      = $this->mockGraphWithResponse($drive);
+        $drive = $this->createMock(Drive::class);
+        $drive->method('getId')->willReturn(self::DRIVE_ID);
+
+        $response = $this->createMock(GraphResponse::class);
+        $response->method('getStatus')->willReturn('200');
+        $response->method('getResponseAsObject')->willReturn($drive);
+
+        $request = $this->createMock(GraphRequest::class);
+        $request->method('execute')->willReturn($response);
+
+        $graph = $this->createMock(Graph::class);
+        $graph->method('createRequest')->willReturn($request);
+
         $httpClient = $this->createMock(ClientInterface::class);
 
         $resourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
@@ -370,8 +403,19 @@ class ClientTest extends TestCase
 
     public function testGetDriveByUserShouldReturnExpectedValue()
     {
-        $drive      = $this->mockDrive(self::DRIVE_ID);
-        $graph      = $this->mockGraphWithResponse($drive);
+        $drive = $this->createMock(Drive::class);
+        $drive->method('getId')->willReturn(self::DRIVE_ID);
+
+        $response = $this->createMock(GraphResponse::class);
+        $response->method('getStatus')->willReturn('200');
+        $response->method('getResponseAsObject')->willReturn($drive);
+
+        $request = $this->createMock(GraphRequest::class);
+        $request->method('execute')->willReturn($response);
+
+        $graph = $this->createMock(Graph::class);
+        $graph->method('createRequest')->willReturn($request);
+
         $httpClient = $this->createMock(ClientInterface::class);
 
         $resourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
@@ -394,8 +438,19 @@ class ClientTest extends TestCase
 
     public function testGetDriveByGroupShouldReturnExpectedValue()
     {
-        $drive      = $this->mockDrive(self::DRIVE_ID);
-        $graph      = $this->mockGraphWithResponse($drive);
+        $drive = $this->createMock(Drive::class);
+        $drive->method('getId')->willReturn(self::DRIVE_ID);
+
+        $response = $this->createMock(GraphResponse::class);
+        $response->method('getStatus')->willReturn('200');
+        $response->method('getResponseAsObject')->willReturn($drive);
+
+        $request = $this->createMock(GraphRequest::class);
+        $request->method('execute')->willReturn($response);
+
+        $graph = $this->createMock(Graph::class);
+        $graph->method('createRequest')->willReturn($request);
+
         $httpClient = $this->createMock(ClientInterface::class);
 
         $resourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
@@ -418,8 +473,19 @@ class ClientTest extends TestCase
 
     public function testGetDriveBySiteShouldReturnExpectedValue()
     {
-        $drive      = $this->mockDrive(self::DRIVE_ID);
-        $graph      = $this->mockGraphWithResponse($drive);
+        $drive = $this->createMock(Drive::class);
+        $drive->method('getId')->willReturn(self::DRIVE_ID);
+
+        $response = $this->createMock(GraphResponse::class);
+        $response->method('getStatus')->willReturn('200');
+        $response->method('getResponseAsObject')->willReturn($drive);
+
+        $request = $this->createMock(GraphRequest::class);
+        $request->method('execute')->willReturn($response);
+
+        $graph = $this->createMock(Graph::class);
+        $graph->method('createRequest')->willReturn($request);
+
         $httpClient = $this->createMock(ClientInterface::class);
 
         $resourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
@@ -442,8 +508,19 @@ class ClientTest extends TestCase
 
     public function testGetDriveItemByIdShouldReturnExpectedValue()
     {
-        $item       = $this->mockDriveItem(self::DRIVE_ITEM_ID);
-        $graph      = $this->mockGraphWithResponse($item);
+        $item = $this->createMock(DriveItem::class);
+        $item->method('getId')->willReturn(self::DRIVE_ITEM_ID);
+
+        $response = $this->createMock(GraphResponse::class);
+        $response->method('getStatus')->willReturn('200');
+        $response->method('getResponseAsObject')->willReturn($item);
+
+        $request = $this->createMock(GraphRequest::class);
+        $request->method('execute')->willReturn($response);
+
+        $graph = $this->createMock(Graph::class);
+        $graph->method('createRequest')->willReturn($request);
+
         $httpClient = $this->createMock(ClientInterface::class);
 
         $resourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
@@ -466,8 +543,19 @@ class ClientTest extends TestCase
 
     public function testGetRootShouldReturnExpectedValue()
     {
-        $item       = $this->mockDriveItem(self::DRIVE_ITEM_ID);
-        $graph      = $this->mockGraphWithResponse($item);
+        $item = $this->createMock(DriveItem::class);
+        $item->method('getId')->willReturn(self::DRIVE_ITEM_ID);
+
+        $response = $this->createMock(GraphResponse::class);
+        $response->method('getStatus')->willReturn('200');
+        $response->method('getResponseAsObject')->willReturn($item);
+
+        $request = $this->createMock(GraphRequest::class);
+        $request->method('execute')->willReturn($response);
+
+        $graph = $this->createMock(Graph::class);
+        $graph->method('createRequest')->willReturn($request);
+
         $httpClient = $this->createMock(ClientInterface::class);
 
         $resourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
@@ -490,8 +578,19 @@ class ClientTest extends TestCase
 
     public function testGetSpecialFolderShouldReturnExpectedValue()
     {
-        $item       = $this->mockDriveItem(self::DRIVE_ITEM_ID);
-        $graph      = $this->mockGraphWithResponse($item);
+        $item = $this->createMock(DriveItem::class);
+        $item->method('getId')->willReturn(self::DRIVE_ITEM_ID);
+
+        $response = $this->createMock(GraphResponse::class);
+        $response->method('getStatus')->willReturn('200');
+        $response->method('getResponseAsObject')->willReturn($item);
+
+        $request = $this->createMock(GraphRequest::class);
+        $request->method('execute')->willReturn($response);
+
+        $graph = $this->createMock(Graph::class);
+        $graph->method('createRequest')->willReturn($request);
+
         $httpClient = $this->createMock(ClientInterface::class);
 
         $resourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
@@ -514,8 +613,19 @@ class ClientTest extends TestCase
 
     public function testGetSharedShouldReturnExpectedValue()
     {
-        $item       = $this->mockDriveItem(self::DRIVE_ITEM_ID);
-        $graph      = $this->mockGraphWithCollectionResponse([$item]);
+        $item = $this->createMock(DriveItem::class);
+        $item->method('getId')->willReturn(self::DRIVE_ITEM_ID);
+
+        $response = $this->createMock(GraphResponse::class);
+        $response->method('getStatus')->willReturn('200');
+        $response->method('getResponseAsObject')->willReturn([$item]);
+
+        $request = $this->createMock(GraphRequest::class);
+        $request->method('execute')->willReturn($response);
+
+        $graph = $this->createMock(Graph::class);
+        $graph->method('createCollectionRequest')->willReturn($request);
+
         $httpClient = $this->createMock(ClientInterface::class);
 
         $resourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
@@ -541,8 +651,19 @@ class ClientTest extends TestCase
 
     public function testGetRecentShouldReturnExpectedValue()
     {
-        $item       = $this->mockDriveItem(self::DRIVE_ITEM_ID);
-        $graph      = $this->mockGraphWithCollectionResponse([$item]);
+        $item = $this->createMock(DriveItem::class);
+        $item->method('getId')->willReturn(self::DRIVE_ITEM_ID);
+
+        $response = $this->createMock(GraphResponse::class);
+        $response->method('getStatus')->willReturn('200');
+        $response->method('getResponseAsObject')->willReturn([$item]);
+
+        $request = $this->createMock(GraphRequest::class);
+        $request->method('execute')->willReturn($response);
+
+        $graph = $this->createMock(Graph::class);
+        $graph->method('createCollectionRequest')->willReturn($request);
+
         $httpClient = $this->createMock(ClientInterface::class);
 
         $resourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
@@ -585,53 +706,6 @@ class ClientTest extends TestCase
             $serviceDefinition,
             $options
         );
-    }
-
-    private function mockGraph()
-    {
-        return $this->createMock(Graph::class);
-    }
-
-    private function mockGraphWithResponse($payload)
-    {
-        $response = $this->createMock(GraphResponse::class);
-        $response->method('getStatus')->willReturn('200');
-        $response->method('getResponseAsObject')->willReturn($payload);
-        $request = $this->createMock(GraphRequest::class);
-        $request->method('execute')->willReturn($response);
-        $graph = $this->createMock(Graph::class);
-        $graph->method('createRequest')->willReturn($request);
-
-        return $graph;
-    }
-
-    private function mockGraphWithCollectionResponse($payload)
-    {
-        $response = $this->createMock(GraphResponse::class);
-        $response->method('getStatus')->willReturn('200');
-        $response->method('getResponseAsObject')->willReturn($payload);
-        $request = $this->createMock(GraphRequest::class);
-        $request->method('execute')->willReturn($response);
-        $graph = $this->createMock(Graph::class);
-        $graph->method('createCollectionRequest')->willReturn($request);
-
-        return $graph;
-    }
-
-    private function mockDrive($id)
-    {
-        $drive = $this->createMock(Drive::class);
-        $drive->method('getId')->willReturn($id);
-
-        return $drive;
-    }
-
-    private function mockDriveItem($id)
-    {
-        $item = $this->createMock(DriveItem::class);
-        $item->method('getId')->willReturn($id);
-
-        return $item;
     }
 }
 

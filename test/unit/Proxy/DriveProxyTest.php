@@ -113,9 +113,15 @@ class DriveProxyTest extends TestCase
     {
         $graph = $this->createMock(Graph::class);
 
+        $item1 = $this->createMock(DriveItem::class);
+        $item1->method('getId')->willReturn('0001');
+
+        $item2 = $this->createMock(DriveItem::class);
+        $item2->method('getId')->willReturn('0002');
+
         $items = [
-            $this->mockDriveItem('0001'),
-            $this->mockDriveItem('0002'),
+            $item1,
+            $item2,
         ];
 
         $drive = $this->createMock(Drive::class);
@@ -187,9 +193,18 @@ class DriveProxyTest extends TestCase
 
     public function testGetDriveItemByIdShouldReturnExpectedValue()
     {
-        $item = $this->mockDriveItem(self::DRIVE_ITEM_ID);
+        $item = $this->createMock(DriveItem::class);
+        $item->method('getId')->willReturn(self::DRIVE_ITEM_ID);
 
-        $graph = $this->mockGraphWithResponse($item);
+        $response = $this->createMock(GraphResponse::class);
+        $response->method('getStatus')->willReturn('200');
+        $response->method('getResponseAsObject')->willReturn($item);
+
+        $request = $this->createMock(GraphRequest::class);
+        $request->method('execute')->willReturn($response);
+
+        $graph = $this->createMock(Graph::class);
+        $graph->method('createRequest')->willReturn($request);
 
         $drive  = $this->createMock(Drive::class);
 
@@ -203,9 +218,18 @@ class DriveProxyTest extends TestCase
 
     public function testGetDriveItemByPathShouldReturnExpectedValue()
     {
-        $item = $this->mockDriveItem(self::DRIVE_ITEM_ID);
+        $item = $this->createMock(DriveItem::class);
+        $item->method('getId')->willReturn(self::DRIVE_ITEM_ID);
 
-        $graph = $this->mockGraphWithResponse($item);
+        $response = $this->createMock(GraphResponse::class);
+        $response->method('getStatus')->willReturn('200');
+        $response->method('getResponseAsObject')->willReturn($item);
+
+        $request = $this->createMock(GraphRequest::class);
+        $request->method('execute')->willReturn($response);
+
+        $graph = $this->createMock(Graph::class);
+        $graph->method('createRequest')->willReturn($request);
 
         $drive = $this->createMock(Drive::class);
 
@@ -219,9 +243,18 @@ class DriveProxyTest extends TestCase
 
     public function testGetRootShouldReturnExpectedValue()
     {
-        $item = $this->mockDriveItem(self::DRIVE_ITEM_ID);
+        $item = $this->createMock(DriveItem::class);
+        $item->method('getId')->willReturn(self::DRIVE_ITEM_ID);
 
-        $graph = $this->mockGraphWithResponse($item);
+        $response = $this->createMock(GraphResponse::class);
+        $response->method('getStatus')->willReturn('200');
+        $response->method('getResponseAsObject')->willReturn($item);
+
+        $request = $this->createMock(GraphRequest::class);
+        $request->method('execute')->willReturn($response);
+
+        $graph = $this->createMock(Graph::class);
+        $graph->method('createRequest')->willReturn($request);
 
         $drive = $this->createMock(Drive::class);
 
@@ -231,28 +264,5 @@ class DriveProxyTest extends TestCase
         $actual = $sut->getRoot();
         $this->assertInstanceOf(DriveItemProxy::class, $actual);
         $this->assertSame(self::DRIVE_ITEM_ID, $actual->id);
-    }
-
-    private function mockGraphWithResponse($payload)
-    {
-        $response = $this->createMock(GraphResponse::class);
-        $response->method('getStatus')->willReturn('200');
-        $response->method('getResponseAsObject')->willReturn($payload);
-
-        $request = $this->createMock(GraphRequest::class);
-        $request->method('execute')->willReturn($response);
-
-        $graph = $this->createMock(Graph::class);
-        $graph->method('createRequest')->willReturn($request);
-
-        return $graph;
-    }
-
-    private function mockDriveItem($id)
-    {
-        $item = $this->createMock(DriveItem::class);
-        $item->method('getId')->willReturn($id);
-
-        return $item;
     }
 }

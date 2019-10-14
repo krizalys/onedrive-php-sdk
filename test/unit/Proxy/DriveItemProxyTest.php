@@ -480,13 +480,31 @@ class DriveItemProxyTest extends TestCase
 
     public function testCreateFolderShouldReturnExpectedValue()
     {
-        $item = $this->mockDriveItem();
+        $itemReference = $this->createMock(ItemReference::class);
+        $itemReference->method('getDriveId')->willReturn('');
 
-        $childItem = $this->mockDriveItem(['id' => self::DRIVE_ITEM_ID]);
+        $item = $this->createMock(DriveItem::class);
+        $item->method('getParentReference')->willReturn($itemReference);
 
-        $response = $this->mockResponse(201, ['body' => $childItem]);
+        $itemReference = $this->createMock(ItemReference::class);
+        $itemReference->method('getDriveId')->willReturn('');
 
-        $graph = $this->mockGraph($response);
+        $childItem = $this->createMock(DriveItem::class);
+        $childItem->method('getParentReference')->willReturn($itemReference);
+        $childItem->method('getId')->willReturn(self::DRIVE_ITEM_ID);
+
+        $response = $this->createMock(GraphResponse::class);
+        $response->method('getStatus')->willReturn('201');
+        $response->method('getResponseAsObject')->willReturn($childItem);
+
+        $request = $this->createMock(GraphRequest::class);
+        $request->method('addHeaders')->willReturnSelf();
+        $request->method('attachBody')->willReturnSelf();
+        $request->method('setReturnType')->willReturnSelf();
+        $request->method('execute')->willReturn($response);
+
+        $graph = $this->createMock(Graph::class);
+        $graph->method('createRequest')->willReturn($request);
 
         $parameterDefinitions = $this->createMock(ParameterDefinitionCollectionInterface::class);
         $parameterDefinitions->method('buildOptions')->willReturn([]);
@@ -508,14 +526,38 @@ class DriveItemProxyTest extends TestCase
 
     public function testGetChildrenShouldReturnExpectedValue()
     {
+        $itemReference = $this->createMock(ItemReference::class);
+        $itemReference->method('getDriveId')->willReturn('');
+
+        $childItem1 = $this->createMock(DriveItem::class);
+        $childItem1->method('getParentReference')->willReturn($itemReference);
+        $childItem1->method('getId')->willReturn('0001');
+
+        $childItem2 = $this->createMock(DriveItem::class);
+        $childItem2->method('getParentReference')->willReturn($itemReference);
+        $childItem2->method('getId')->willReturn('0002');
+
         $childItems = [
-            $this->mockDriveItem(['id' => '0001']),
-            $this->mockDriveItem(['id' => '0002']),
+            $childItem1,
+            $childItem2,
         ];
 
-        $item = $this->mockDriveItem();
+        $itemReference = $this->createMock(ItemReference::class);
+        $itemReference->method('getDriveId')->willReturn('');
 
-        $graph = $this->mockGraphWithCollectionResponse($childItems);
+        $item = $this->createMock(DriveItem::class);
+        $item->method('getParentReference')->willReturn($itemReference);
+
+        $response = $this->createMock(GraphResponse::class);
+        $response->method('getStatus')->willReturn('200');
+        $response->method('getResponseAsObject')->willReturn($childItems);
+
+        $request = $this->createMock(GraphRequest::class);
+        $request->method('attachBody')->willReturnSelf();
+        $request->method('execute')->willReturn($response);
+
+        $graph = $this->createMock(Graph::class);
+        $graph->method('createCollectionRequest')->willReturn($request);
 
         $parameterDefinitions = $this->createMock(ParameterDefinitionCollectionInterface::class);
 
@@ -543,13 +585,31 @@ class DriveItemProxyTest extends TestCase
 
     public function testUploadShouldReturnExpectedValue()
     {
-        $item = $this->mockDriveItem();
+        $itemReference = $this->createMock(ItemReference::class);
+        $itemReference->method('getDriveId')->willReturn('');
 
-        $childItem = $this->mockDriveItem(['id' => self::DRIVE_ITEM_ID]);
+        $item = $this->createMock(DriveItem::class);
+        $item->method('getParentReference')->willReturn($itemReference);
 
-        $response = $this->mockResponse(201, ['body' => $childItem]);
+        $itemReference = $this->createMock(ItemReference::class);
+        $itemReference->method('getDriveId')->willReturn('');
 
-        $graph = $this->mockGraph($response);
+        $childItem = $this->createMock(DriveItem::class);
+        $childItem->method('getParentReference')->willReturn($itemReference);
+        $childItem->method('getId')->willReturn(self::DRIVE_ITEM_ID);
+
+        $response = $this->createMock(GraphResponse::class);
+        $response->method('getStatus')->willReturn('201');
+        $response->method('getResponseAsObject')->willReturn($childItem);
+
+        $request = $this->createMock(GraphRequest::class);
+        $request->method('addHeaders')->willReturnSelf();
+        $request->method('attachBody')->willReturnSelf();
+        $request->method('setReturnType')->willReturnSelf();
+        $request->method('execute')->willReturn($response);
+
+        $graph = $this->createMock(Graph::class);
+        $graph->method('createRequest')->willReturn($request);
 
         $parameterDefinitions = $this->createMock(ParameterDefinitionCollectionInterface::class);
 
@@ -571,13 +631,27 @@ class DriveItemProxyTest extends TestCase
 
     public function testStartUploadShouldReturnExpectedValue()
     {
-        $item = $this->mockDriveItem();
+        $itemReference = $this->createMock(ItemReference::class);
+        $itemReference->method('getDriveId')->willReturn('');
 
-        $uploadSession = $this->mockUploadSession(['id' => self::UPLOAD_SESSION_ID]);
+        $item = $this->createMock(DriveItem::class);
+        $item->method('getParentReference')->willReturn($itemReference);
 
-        $response = $this->mockResponse(200, ['body' => $uploadSession]);
+        $uploadSession = $this->createMock(UploadSession::class);
+        $uploadSession->method('getId')->willReturn(self::UPLOAD_SESSION_ID);
 
-        $graph = $this->mockGraph($response);
+        $response = $this->createMock(GraphResponse::class);
+        $response->method('getStatus')->willReturn('200');
+        $response->method('getResponseAsObject')->willReturn($uploadSession);
+
+        $request = $this->createMock(GraphRequest::class);
+        $request->method('addHeaders')->willReturnSelf();
+        $request->method('attachBody')->willReturnSelf();
+        $request->method('setReturnType')->willReturnSelf();
+        $request->method('execute')->willReturn($response);
+
+        $graph = $this->createMock(Graph::class);
+        $graph->method('createRequest')->willReturn($request);
 
         $parameterDefinitions = $this->createMock(ParameterDefinitionCollectionInterface::class);
 
@@ -598,11 +672,22 @@ class DriveItemProxyTest extends TestCase
 
     public function testDownloadShouldReturnExpectedValue()
     {
-        $item = $this->mockDriveItem();
+        $itemReference = $this->createMock(ItemReference::class);
+        $itemReference->method('getDriveId')->willReturn('');
 
-        $stream = $this->mockStream();
+        $item = $this->createMock(DriveItem::class);
+        $item->method('getParentReference')->willReturn($itemReference);
 
-        $graph = $this->mockGraph($stream);
+        $stream = $this->createMock(Stream::class);
+
+        $request = $this->createMock(GraphRequest::class);
+        $request->method('addHeaders')->willReturnSelf();
+        $request->method('attachBody')->willReturnSelf();
+        $request->method('setReturnType')->willReturnSelf();
+        $request->method('execute')->willReturn($stream);
+
+        $graph = $this->createMock(Graph::class);
+        $graph->method('createRequest')->willReturn($request);
 
         $resourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
@@ -613,13 +698,31 @@ class DriveItemProxyTest extends TestCase
 
     public function testRenameShouldReturnExpectedValue()
     {
-        $item = $this->mockDriveItem();
+        $itemReference = $this->createMock(ItemReference::class);
+        $itemReference->method('getDriveId')->willReturn('');
 
-        $renamedItem = $this->mockDriveItem(['id' => self::DRIVE_ITEM_ID]);
+        $item = $this->createMock(DriveItem::class);
+        $item->method('getParentReference')->willReturn($itemReference);
 
-        $response = $this->mockResponse(200, ['body' => $renamedItem]);
+        $itemReference = $this->createMock(ItemReference::class);
+        $itemReference->method('getDriveId')->willReturn('');
 
-        $graph = $this->mockGraph($response);
+        $renamedItem = $this->createMock(DriveItem::class);
+        $renamedItem->method('getParentReference')->willReturn($itemReference);
+        $renamedItem->method('getId')->willReturn(self::DRIVE_ITEM_ID);
+
+        $response = $this->createMock(GraphResponse::class);
+        $response->method('getStatus')->willReturn('200');
+        $response->method('getResponseAsObject')->willReturn($renamedItem);
+
+        $request = $this->createMock(GraphRequest::class);
+        $request->method('addHeaders')->willReturnSelf();
+        $request->method('attachBody')->willReturnSelf();
+        $request->method('setReturnType')->willReturnSelf();
+        $request->method('execute')->willReturn($response);
+
+        $graph = $this->createMock(Graph::class);
+        $graph->method('createRequest')->willReturn($request);
 
         $resourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
@@ -631,15 +734,33 @@ class DriveItemProxyTest extends TestCase
 
     public function testMoveShouldReturnExpectedValue()
     {
-        $item = $this->mockDriveItem();
+        $itemReference = $this->createMock(ItemReference::class);
+        $itemReference->method('getDriveId')->willReturn('');
 
-        $movedItem = $this->mockDriveItem(['id' => self::DRIVE_ITEM_ID]);
+        $item = $this->createMock(DriveItem::class);
+        $item->method('getParentReference')->willReturn($itemReference);
 
-        $destinationItem = $this->mockDriveItemProxy();
+        $itemReference = $this->createMock(ItemReference::class);
+        $itemReference->method('getDriveId')->willReturn('');
 
-        $response = $this->mockResponse(200, ['body' => $movedItem]);
+        $movedItem = $this->createMock(DriveItem::class);
+        $movedItem->method('getParentReference')->willReturn($itemReference);
+        $movedItem->method('getId')->willReturn(self::DRIVE_ITEM_ID);
 
-        $graph = $this->mockGraph($response);
+        $destinationItem = $this->createMock(DriveItemProxy::class);
+
+        $response = $this->createMock(GraphResponse::class);
+        $response->method('getStatus')->willReturn('200');
+        $response->method('getResponseAsObject')->willReturn($movedItem);
+
+        $request = $this->createMock(GraphRequest::class);
+        $request->method('addHeaders')->willReturnSelf();
+        $request->method('attachBody')->willReturnSelf();
+        $request->method('setReturnType')->willReturnSelf();
+        $request->method('execute')->willReturn($response);
+
+        $graph = $this->createMock(Graph::class);
+        $graph->method('createRequest')->willReturn($request);
 
         $resourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
@@ -651,13 +772,26 @@ class DriveItemProxyTest extends TestCase
 
     public function testCopyShouldReturnExpectedValue()
     {
-        $item = $this->mockDriveItem();
+        $itemReference = $this->createMock(ItemReference::class);
+        $itemReference->method('getDriveId')->willReturn('');
 
-        $destinationItem = $this->mockDriveItemProxy();
+        $item = $this->createMock(DriveItem::class);
+        $item->method('getParentReference')->willReturn($itemReference);
 
-        $response = $this->mockResponse(202, ['headers' => ['Location' => ['http://progre.ss/url']]]);
+        $destinationItem = $this->createMock(DriveItemProxy::class);
 
-        $graph = $this->mockGraph($response);
+        $response = $this->createMock(GraphResponse::class);
+        $response->method('getStatus')->willReturn('202');
+        $response->method('getHeaders')->willReturn(['Location' => ['http://progre.ss/url']]);
+
+        $request = $this->createMock(GraphRequest::class);
+        $request->method('addHeaders')->willReturnSelf();
+        $request->method('attachBody')->willReturnSelf();
+        $request->method('setReturnType')->willReturnSelf();
+        $request->method('execute')->willReturn($response);
+
+        $graph = $this->createMock(Graph::class);
+        $graph->method('createRequest')->willReturn($request);
 
         $resourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
@@ -669,7 +803,11 @@ class DriveItemProxyTest extends TestCase
 
     public function testCreateLinkShouldReturnExpectedValue()
     {
-        $item = $this->mockDriveItem();
+        $itemReference = $this->createMock(ItemReference::class);
+        $itemReference->method('getDriveId')->willReturn('');
+
+        $item = $this->createMock(DriveItem::class);
+        $item->method('getParentReference')->willReturn($itemReference);
 
         $sharingLink = $this->createMock(SharingLink::class);
         $sharingLink->method('getScope')->willReturn(SharingLinkScope::ANONYMOUS);
@@ -677,9 +815,18 @@ class DriveItemProxyTest extends TestCase
         $permission = $this->createMock(Permission::class);
         $permission->method('getLink')->willReturn($sharingLink);
 
-        $response = $this->mockResponse(201, ['body' => $permission]);
+        $response = $this->createMock(GraphResponse::class);
+        $response->method('getStatus')->willReturn('201');
+        $response->method('getResponseAsObject')->willReturn($permission);
 
-        $graph = $this->mockGraph($response);
+        $request = $this->createMock(GraphRequest::class);
+        $request->method('addHeaders')->willReturnSelf();
+        $request->method('attachBody')->willReturnSelf();
+        $request->method('setReturnType')->willReturnSelf();
+        $request->method('execute')->willReturn($response);
+
+        $graph = $this->createMock(Graph::class);
+        $graph->method('createRequest')->willReturn($request);
 
         $resourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
@@ -707,9 +854,22 @@ class DriveItemProxyTest extends TestCase
             $permission2,
         ];
 
-        $item = $this->mockDriveItem();
+        $itemReference = $this->createMock(ItemReference::class);
+        $itemReference->method('getDriveId')->willReturn('');
 
-        $graph = $this->mockGraphWithCollectionResponse($permissions);
+        $item = $this->createMock(DriveItem::class);
+        $item->method('getParentReference')->willReturn($itemReference);
+
+        $response = $this->createMock(GraphResponse::class);
+        $response->method('getStatus')->willReturn('200');
+        $response->method('getResponseAsObject')->willReturn($permissions);
+
+        $request = $this->createMock(GraphRequest::class);
+        $request->method('attachBody')->willReturnSelf();
+        $request->method('execute')->willReturn($response);
+
+        $graph = $this->createMock(Graph::class);
+        $graph->method('createCollectionRequest')->willReturn($request);
 
         $parameterDefinitions = $this->createMock(ParameterDefinitionCollectionInterface::class);
         $parameterDefinitions->method('buildOptions')->willReturn([]);
@@ -733,87 +893,5 @@ class DriveItemProxyTest extends TestCase
 
         $this->assertInstanceOf(PermissionProxy::class, $actual[1]);
         $this->assertSame($permissionId2, $actual[1]->id);
-    }
-
-    private function mockStream()
-    {
-        $stream = $this->createMock(Stream::class);
-
-        return $stream;
-    }
-
-    private function mockResponse($status, array $options = [])
-    {
-        $response = $this->createMock(GraphResponse::class);
-        $response->method('getStatus')->willReturn((string) $status);
-
-        if (array_key_exists('headers', $options)) {
-            $response->method('getHeaders')->willReturn($options['headers']);
-        }
-
-        if (array_key_exists('body', $options)) {
-            $response->method('getResponseAsObject')->willReturn($options['body']);
-        }
-
-        return $response;
-    }
-
-    private function mockGraph($response)
-    {
-        $request = $this->createMock(GraphRequest::class);
-        $request->method('addHeaders')->willReturnSelf();
-        $request->method('attachBody')->willReturnSelf();
-        $request->method('setReturnType')->willReturnSelf();
-        $request->method('execute')->willReturn($response);
-        $graph = $this->createMock(Graph::class);
-        $graph->method('createRequest')->willReturn($request);
-
-        return $graph;
-    }
-
-    private function mockGraphWithCollectionResponse(array $body)
-    {
-        $response = $this->createMock(GraphResponse::class);
-        $response->method('getStatus')->willReturn('200');
-        $response->method('getResponseAsObject')->willReturn($body);
-        $request = $this->createMock(GraphRequest::class);
-        $request->method('attachBody')->willReturnSelf();
-        $request->method('execute')->willReturn($response);
-        $graph = $this->createMock(Graph::class);
-        $graph->method('createCollectionRequest')->willReturn($request);
-
-        return $graph;
-    }
-
-    private function mockDriveItem(array $options = [])
-    {
-        $itemReference = $this->createMock(ItemReference::class);
-        $itemReference->method('getDriveId')->willReturn('');
-        $item = $this->createMock(DriveItem::class);
-        $item->method('getParentReference')->willReturn($itemReference);
-
-        if (array_key_exists('id', $options)) {
-            $item->method('getId')->willReturn($options['id']);
-        }
-
-        return $item;
-    }
-
-    private function mockDriveItemProxy()
-    {
-        $driveItemProxy = $this->createMock(DriveItemProxy::class);
-
-        return $driveItemProxy;
-    }
-
-    private function mockUploadSession(array $options = [])
-    {
-        $uploadSession = $this->createMock(UploadSession::class);
-
-        if (array_key_exists('id', $options)) {
-            $uploadSession->method('getId')->willReturn($options['id']);
-        }
-
-        return $uploadSession;
     }
 }
