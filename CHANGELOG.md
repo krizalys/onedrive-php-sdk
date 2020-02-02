@@ -21,6 +21,7 @@ Change log
 - Updated Krizalys\Onedrive\Proxy\PhotoProxy.
 - Updated Krizalys\Onedrive\Proxy\AudioProxy.
 - Updated Krizalys\Onedrive\Proxy\VideoProxy.
+- Updated dependency on facebook/webdriver to php-webdriver/webdriver.
 
 [2.5.1] - 2019-10-06
 --------------------
