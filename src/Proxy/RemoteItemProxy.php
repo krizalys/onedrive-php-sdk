@@ -7,7 +7,7 @@
  * that was distributed with this source code.
  *
  * @author    Christophe Vidal
- * @copyright 2008-2019 Christophe Vidal (http://www.krizalys.com)
+ * @copyright 2008-2020 Christophe Vidal (http://www.krizalys.com)
  * @license   https://opensource.org/licenses/BSD-3-Clause 3-Clause BSD License
  * @link      https://github.com/krizalys/onedrive-php-sdk
  */
