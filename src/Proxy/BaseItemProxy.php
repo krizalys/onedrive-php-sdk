@@ -36,7 +36,7 @@ use Microsoft\Graph\Model\BaseItem;
  *                The name.
  * @property-read \Krizalys\Onedrive\Proxy\ItemReferenceProxy $parentReference
  *                The parent reference.
- * @property-read \Krizalys\Onedrive\Proxy\UserProxy $webUrl
+ * @property-read string $webUrl
  *                The web URL.
  * @property-read \Krizalys\Onedrive\Proxy\UserProxy $createdByUser
  *                The "created by" user.
