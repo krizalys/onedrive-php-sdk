@@ -102,13 +102,6 @@ class UploadSessionProxy extends EntityProxy
         ResourceDefinitionInterface $driveItemResourceDefinition,
         array $options = []
     ) {
-        if (array_key_exists('type', $options)) {
-            $message = 'The \'type\' option is deprecated and will be removed'
-                . ' in version 3; omit this option';
-
-            @trigger_error($message, E_USER_DEPRECATED);
-        }
-
         parent::__construct($graph, $uploadSession);
         $this->content                     = $content;
         $this->driveItemResourceDefinition = $driveItemResourceDefinition;
