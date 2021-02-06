@@ -217,8 +217,8 @@ class DriveItemProxyTest extends TestCase
     /**
      * @expectedException \Krizalys\Onedrive\Exception\ConflictException
      *
-     * @expectedExceptionMessage There is already a drive item named "Test
-     *                           folder" in this folder
+     * @expectedExceptionMessage There is already a drive item named
+     *                           "Test%20file" in this folder
      */
     public function testUploadStringWhenExistingAndFailConflictBehavior()
     {
@@ -313,8 +313,8 @@ class DriveItemProxyTest extends TestCase
     /**
      * @expectedException \Krizalys\Onedrive\Exception\ConflictException
      *
-     * @expectedExceptionMessage There is already a drive item named "Test
-     *                           folder" in this folder
+     * @expectedExceptionMessage There is already a drive item named
+     *                           "Test%20file" in this folder
      */
     public function testUploadStreamWhenExistingAndFailConflictBehavior()
     {
@@ -428,8 +428,8 @@ class DriveItemProxyTest extends TestCase
     /**
      * @expectedException \Krizalys\Onedrive\Exception\ConflictException
      *
-     * @expectedExceptionMessage There is already a drive item named "Test
-     *                           folder" in this folder
+     * @expectedExceptionMessage There is already a drive item named
+     *                           "Test%20file" in this folder
      */
     public function testStartUploadStringWhenExistingAndFailConflictBehavior()
     {
@@ -546,8 +546,8 @@ class DriveItemProxyTest extends TestCase
     /**
      * @expectedException \Krizalys\Onedrive\Exception\ConflictException
      *
-     * @expectedExceptionMessage There is already a drive item named "Test
-     *                           folder" in this folder
+     * @expectedExceptionMessage There is already a drive item named
+     *                           "Test%20file" in this folder
      */
     public function testStartUploadStreamWhenExistingAndFailConflictBehavior()
     {
