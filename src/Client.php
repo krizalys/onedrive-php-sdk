@@ -93,7 +93,7 @@ class Client
      * @var object
      *      The OAuth state (token, etc...).
      */
-    private $_state;
+    private $state;
 
     /**
      * Constructor.
@@ -185,14 +185,14 @@ class Client
         $this->httpClient        = $httpClient;
         $this->serviceDefinition = $serviceDefinition;
 
-        $this->_state = array_key_exists('state', $options)
+        $this->state = array_key_exists('state', $options)
             ? $options['state'] : (object) [
                 'redirect_uri' => null,
                 'token'        => null,
             ];
 
-        if ($this->_state->token !== null) {
-            $this->graph->setAccessToken($this->_state->token->data->access_token);
+        if ($this->state->token !== null) {
+            $this->graph->setAccessToken($this->state->token->data->access_token);
         }
     }
 
@@ -211,7 +211,7 @@ class Client
      */
     public function getState()
     {
-        return $this->_state;
+        return $this->state;
     }
 
     /**
@@ -256,8 +256,8 @@ class Client
      */
     public function getLogInUrl(array $scopes, $redirectUri, $state = null)
     {
-        $redirectUri                = (string) $redirectUri;
-        $this->_state->redirect_uri = $redirectUri;
+        $redirectUri               = (string) $redirectUri;
+        $this->state->redirect_uri = $redirectUri;
 
         $values = [
             'client_id'     => $this->clientId,
@@ -292,8 +292,8 @@ class Client
      */
     public function getTokenExpire()
     {
-        return $this->_state->token->obtained
-            + $this->_state->token->data->expires_in - time();
+        return $this->state->token->obtained
+            + $this->state->token->data->expires_in - time();
     }
 
     /**
@@ -311,7 +311,7 @@ class Client
      */
     public function getAccessTokenStatus()
     {
-        if ($this->_state->token === null) {
+        if ($this->state->token === null) {
             return AccessTokenStatus::MISSING;
         }
 
@@ -350,7 +350,7 @@ class Client
      */
     public function obtainAccessToken($clientSecret, $code)
     {
-        if ($this->_state->redirect_uri === null) {
+        if ($this->state->redirect_uri === null) {
             throw new \Exception(
                 'The state\'s redirect URI must be set to call'
                     . ' obtainAccessToken()'
@@ -359,7 +359,7 @@ class Client
 
         $values = [
             'client_id'     => $this->clientId,
-            'redirect_uri'  => $this->_state->redirect_uri,
+            'redirect_uri'  => $this->state->redirect_uri,
             'client_secret' => (string) $clientSecret,
             'code'          => (string) $code,
             'grant_type'    => 'authorization_code',
@@ -377,14 +377,14 @@ class Client
             throw new \Exception('json_decode() failed');
         }
 
-        $this->_state->redirect_uri = null;
+        $this->state->redirect_uri = null;
 
-        $this->_state->token = (object) [
+        $this->state->token = (object) [
             'obtained' => time(),
             'data'     => $data,
         ];
 
-        $this->graph->setAccessToken($this->_state->token->data->access_token);
+        $this->graph->setAccessToken($this->state->token->data->access_token);
     }
 
     /**
@@ -401,7 +401,7 @@ class Client
      */
     public function renewAccessToken($clientSecret)
     {
-        if ($this->_state->token->data->refresh_token === null) {
+        if ($this->state->token->data->refresh_token === null) {
             throw new \Exception(
                 'The refresh token is not set or no permission for'
                     . ' \'offline_access\' was given to renew the token'
@@ -412,7 +412,7 @@ class Client
             'client_id'     => $this->clientId,
             'client_secret' => $clientSecret,
             'grant_type'    => 'refresh_token',
-            'refresh_token' => $this->_state->token->data->refresh_token,
+            'refresh_token' => $this->state->token->data->refresh_token,
         ];
 
         $response = $this->httpClient->post(
@@ -427,12 +427,12 @@ class Client
             throw new \Exception('json_decode() failed');
         }
 
-        $this->_state->token = (object) [
+        $this->state->token = (object) [
             'obtained' => time(),
             'data'     => $data,
         ];
 
-        $this->graph->setAccessToken($this->_state->token->data->access_token);
+        $this->graph->setAccessToken($this->state->token->data->access_token);
     }
 
     /**

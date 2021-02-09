@@ -71,7 +71,7 @@ class File extends DriveItem
      */
     public function fetchContent(array $options = [])
     {
-        $client = $this->_client;
+        $client = $this->client;
 
         $message = sprintf(
             '%s() is deprecated and will be removed in version 3;'
@@ -82,7 +82,7 @@ class File extends DriveItem
 
         @trigger_error($message, E_USER_DEPRECATED);
         $drive = $client->getMyDrive();
-        $item  = $client->getDriveItemById($drive->id, $this->_id);
+        $item  = $client->getDriveItemById($drive->id, $this->id);
 
         return (string) $item->content;
     }
@@ -107,7 +107,7 @@ class File extends DriveItem
      */
     public function copy($destinationId = null)
     {
-        $client = $this->_client;
+        $client = $this->client;
 
         $message = sprintf(
             '%s() is deprecated and will be removed in version 3;'
@@ -118,7 +118,7 @@ class File extends DriveItem
 
         @trigger_error($message, E_USER_DEPRECATED);
         $drive           = $client->getMyDrive();
-        $item            = $client->getDriveItemById($drive->id, $this->_id);
+        $item            = $client->getDriveItemById($drive->id, $this->id);
         $destinationItem = $client->getDriveItemById($drive->id, $destinationId);
 
         return $item->copy($destinationItem);

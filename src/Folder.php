@@ -79,7 +79,7 @@ class Folder extends DriveItem
      */
     public function fetchDriveItems()
     {
-        $client = $this->_client;
+        $client = $this->client;
 
         $message = sprintf(
             '%s() is deprecated and will be removed in version 3;'
@@ -90,10 +90,10 @@ class Folder extends DriveItem
 
         @trigger_error($message, E_USER_DEPRECATED);
         $drive = $client->getMyDrive();
-        $item  = $client->getDriveItemById($drive->id, $this->_id);
+        $item  = $client->getDriveItemById($drive->id, $this->id);
 
         return array_map(function (DriveItemProxy $item) use ($client) {
-            $options = $client->buildOptions($item, ['parent_id' => $this->_id]);
+            $options = $client->buildOptions($item, ['parent_id' => $this->id]);
 
             return $client->isFolder($item) ?
                 new self($client, $item->id, $options)
@@ -118,7 +118,7 @@ class Folder extends DriveItem
      */
     public function fetchChildDriveItems()
     {
-        $client = $this->_client;
+        $client = $this->client;
 
         $message = sprintf(
             '%s() is deprecated and will be removed in version 3;'
@@ -129,10 +129,10 @@ class Folder extends DriveItem
 
         @trigger_error($message, E_USER_DEPRECATED);
         $drive = $client->getMyDrive();
-        $item  = $client->getDriveItemById($drive->id, $this->_id);
+        $item  = $client->getDriveItemById($drive->id, $this->id);
 
         return array_map(function (DriveItemProxy $item) use ($client) {
-            $options = $client->buildOptions($item, ['parent_id' => $this->_id]);
+            $options = $client->buildOptions($item, ['parent_id' => $this->id]);
 
             return $client->isFolder($item) ?
                 new self($client, $item->id, $options)
@@ -162,7 +162,7 @@ class Folder extends DriveItem
      */
     public function createFolder($name, $description = null)
     {
-        $client = $this->_client;
+        $client = $this->client;
 
         $message = sprintf(
             '%s() is deprecated and will be removed in version 3;'
@@ -173,7 +173,7 @@ class Folder extends DriveItem
 
         @trigger_error($message, E_USER_DEPRECATED);
         $drive   = $client->getMyDrive();
-        $item    = $client->getDriveItemById($drive->id, $this->_id);
+        $item    = $client->getDriveItemById($drive->id, $this->id);
         $options = [];
 
         if ($description !== null) {
@@ -183,7 +183,7 @@ class Folder extends DriveItem
         }
 
         $item    = $item->createFolder($name, $options);
-        $options = $client->buildOptions($item, ['parent_id' => $this->_id]);
+        $options = $client->buildOptions($item, ['parent_id' => $this->id]);
 
         return new self($client, $item->id, $options);
     }
@@ -216,7 +216,7 @@ class Folder extends DriveItem
      */
     public function createFile($name, $content = '', array $options = [])
     {
-        $client = $this->_client;
+        $client = $this->client;
 
         $message = sprintf(
             '%s() is deprecated and will be removed in version 3;'
@@ -227,10 +227,10 @@ class Folder extends DriveItem
 
         @trigger_error($message, E_USER_DEPRECATED);
         $drive   = $client->getMyDrive();
-        $item    = $client->getDriveItemById($drive->id, $this->_id);
+        $item    = $client->getDriveItemById($drive->id, $this->id);
         $options = [];
         $item    = $item->upload($name, $content, $options);
-        $options = $client->buildOptions($item, ['parent_id' => $this->_id]);
+        $options = $client->buildOptions($item, ['parent_id' => $this->id]);
 
         return new File($client, $item->id, $options);
     }
