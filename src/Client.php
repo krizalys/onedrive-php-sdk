@@ -84,7 +84,7 @@ class Client
     private $serviceDefinition;
 
     /**
-     * @var object
+     * @var \Krizalys\Onedrive\ClientState
      *      The OAuth state (token, etc...).
      */
     private $state;
@@ -102,8 +102,9 @@ class Client
      *        The service definition.
      * @param mixed[string] $options
      *        The options to use while creating this object. Supported options:
-     *          - `'state'` *(object)*: the OneDrive client state, as returned
-     *            by `getState()`. Default: `[]`.
+     *          - `'state'` *(\Krizalys\Onedrive\ClientState)*: the OneDrive
+     *            client state, as returned by `getState()`. Default: `new
+     *            ClientState()`.
      *
      * @throws \Exception
      *         Thrown if `$clientId` is `null`.
@@ -127,10 +128,7 @@ class Client
         $this->serviceDefinition = $serviceDefinition;
 
         $this->state = array_key_exists('state', $options)
-            ? $options['state'] : (object) [
-                'redirect_uri' => null,
-                'token'        => null,
-            ];
+            ? $options['state'] : new ClientState();
 
         if ($this->state->token !== null) {
             $this->graph->setAccessToken($this->state->token->data->access_token);
@@ -143,7 +141,7 @@ class Client
      * Typically saved in the session and passed back to the `Client`
      * constructor for further requests.
      *
-     * @return object
+     * @return \Krizalys\Onedrive\ClientState
      *         The state of this `Client` instance.
      *
      * @since 1.0.0
@@ -197,8 +195,8 @@ class Client
      */
     public function getLogInUrl(array $scopes, $redirectUri, $state = null)
     {
-        $redirectUri               = (string) $redirectUri;
-        $this->state->redirect_uri = $redirectUri;
+        $redirectUri              = (string) $redirectUri;
+        $this->state->redirectUri = $redirectUri;
 
         $values = [
             'client_id'     => $this->clientId,
@@ -291,7 +289,7 @@ class Client
      */
     public function obtainAccessToken($clientSecret, $code)
     {
-        if ($this->state->redirect_uri === null) {
+        if ($this->state->redirectUri === null) {
             throw new \Exception(
                 'The state\'s redirect URI must be set to call'
                     . ' obtainAccessToken()'
@@ -300,7 +298,7 @@ class Client
 
         $values = [
             'client_id'     => $this->clientId,
-            'redirect_uri'  => $this->state->redirect_uri,
+            'redirect_uri'  => $this->state->redirectUri,
             'client_secret' => (string) $clientSecret,
             'code'          => (string) $code,
             'grant_type'    => 'authorization_code',
@@ -318,7 +316,7 @@ class Client
             throw new \Exception('json_decode() failed');
         }
 
-        $this->state->redirect_uri = null;
+        $this->state->redirectUri = null;
 
         $this->state->token = (object) [
             'obtained' => time(),
