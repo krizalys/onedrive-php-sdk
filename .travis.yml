@@ -5,6 +5,8 @@ php:
   - '7.4'
   - '8.0'
 
+dist: bionic
+
 env:
   global:
     - XDEBUG_MODE=coverage
