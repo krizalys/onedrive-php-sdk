@@ -4,6 +4,10 @@ Change log
 [Unreleased][unreleased]
 ------------------------
 
+### Added
+
+- Support for PHP 8.0.
+
 ### Removed
 
 - Support for PHP 5.6, PHP 7.0, PHP 7.1, and PHP 7.2.
