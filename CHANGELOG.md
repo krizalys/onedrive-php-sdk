@@ -8,6 +8,8 @@ Change log
 
 - Support for PHP 8.0.
 - Paratest to run test suites in parallel.
+- `ClientState` to pass existing state (redirect URI & OAuth token) to a client
+being instantiated.
 
 ### Changed
 

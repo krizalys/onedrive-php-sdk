@@ -7,6 +7,7 @@ namespace Test\Unit\Krizalys\Onedrive;
 use GuzzleHttp\Client as GuzzleHttpClient;
 use GuzzleHttp\ClientInterface;
 use Krizalys\Onedrive\Client;
+use Krizalys\Onedrive\ClientState;
 use Krizalys\Onedrive\Constant\AccessTokenStatus;
 use Krizalys\Onedrive\Constant\SpecialFolderName;
 use Krizalys\Onedrive\Definition\ResourceDefinitionInterface;
@@ -174,18 +175,19 @@ class ClientTest extends TestCase
             return $response;
         };
 
+        $state              = new ClientState();
+        $state->redirectUri = self::REDIRECT_URI;
+
+        $state->token = (object) [
+            'obtained' => strtotime('1999-01-01Z'),
+            'data'     => (object) ['access_token'  => 'AcCeSs+ToKeN'],
+        ];
+
         $options = [
             'httpClient' => $httpClient,
 
             'options' => [
-                'state' => (object) [
-                    'redirect_uri' => self::REDIRECT_URI,
-
-                    'token' => (object) [
-                        'obtained' => strtotime('1999-01-01Z'),
-                        'data'     => (object) ['access_token'  => 'AcCeSs+ToKeN'],
-                    ],
-                ],
+                'state' => $state,
             ],
         ];
 
@@ -207,20 +209,19 @@ class ClientTest extends TestCase
             ]
         );
 
-        $actual = $sut->getState();
+        $actual   = $sut->getState();
+        $expected = new ClientState();
 
-        $this->assertEquals((object) [
-            'redirect_uri' => null,
+        $expected->token = (object) [
+            'obtained' => strtotime('1999-01-01Z'),
 
-            'token' => (object) [
-                'obtained' => strtotime('1999-01-01Z'),
-
-                'data' => (object) [
-                    'access_token' => 'AcCeSs+ToKeN',
-                    'key'          => 'value',
-                ],
+            'data' => (object) [
+                'access_token' => 'AcCeSs+ToKeN',
+                'key'          => 'value',
             ],
-        ], $actual);
+        ];
+
+        $this->assertEquals($expected, $actual);
     }
 
     public function testRenewAccessTokenShouldSetExpectedState()
