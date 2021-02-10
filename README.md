@@ -7,7 +7,7 @@ OneDrive SDK for PHP
 [![Code Coverage](https://codecov.io/gh/krizalys/onedrive-php-sdk/branch/master/graph/badge.svg)](https://codecov.io/gh/krizalys/onedrive-php-sdk)
 [![StyleCI](https://styleci.io/repos/23994489/shield?style=flat)](https://styleci.io/repos/23994489)
 
-OneDrive SDK for PHP is an open source library that allows [PHP][php]
+The **OneDrive SDK for PHP** is an open source library that allows [PHP][php]
 applications to interact programmatically with the [OneDrive REST
 API][onedrive-rest-api].
 
@@ -19,20 +19,20 @@ Requirements
 
 Using the OneDrive SDK for PHP requires the following:
 
-* [PHP][php] 5.6 or newer
-* [Composer][composer] 1.0.0-alpha10 or newer
-* Basic PHP knowledge
+* [PHP][php] 5.6 or newer ;
+* [Composer][composer] or a manual install of the dependencies mentioned in
+  `composer.json`.
 
 ### Testing
 
-For development, you also require:
+Running its functional tests also require:
 
 * A OneDrive web application configured with `http://localhost:7777/` as its
-  redirect URI
+  redirect URI ;
 * A WebDriver server, for example the [Selenium's Java standalone
-  server][selenium-server-standalone]
+  server][selenium-server-standalone] ;
 * A Chrome browser & ChromeDriver, and they must be usable by the WebDriver
-  server
+  server.
 
 Installation
 ------------
@@ -45,30 +45,32 @@ composer require krizalys/onedrive-php-sdk
 ```
 
 If you are not already using Composer in your PHP project, refer to [the
-Composer documentation][composer] to learn how to set it up first.
+Composer documentation][composer] to learn how to set it up.
 
 Quick start
 -----------
 
-When using OneDrive SDK for PHP, you are assumed to have an application exposing
-a URL receiving user authentication data from OneDrive. Typically, this URL,
-referred to as your application's ***Redirect URI***, is a PHP script accepting
-this data to expose functionality interacting with your users' OneDrive
-contents. An example of such an application is our [functional test
-suite][functional-test-suite].
+To use the OneDrive SDK for PHP, you require a web application exposing a URL
+initiating the authorization flow. Typically, this URL, referred to as your web
+application's ***Redirect URI***, is a PHP script requesting an authorization
+token. This token is required whenever your web application interacts with your
+users' OneDrive contents and may be reused across multiple calls. An example of
+such a web application is our [functional test suite][functional-test-suite].
 
-You also need to register a OneDrive application. To do this, first [sign in to
-Microsoft Azure][microsoft-azure-login], then visit [App
+You also require a OneDrive application. To register such an application, first
+[sign in to Microsoft Azure][microsoft-azure-login], then visit [App
 registrations][app-registration-portal] and add a *registration* for your
-application. While registering your application, you are given the option to set
-its *Redirect URI*, explained above. **We currently only support *Web* redirect
-URIs.** Once created, your application is assigned an *Application (client) ID*,
-referred to as its ***Client ID***, and in *Certificate & secrets*, you need to
-add at least one ***Client secret***. **Warning: *Client Secrets* are similar to
-passwords or private keys, they allow applications to identify as yours: they
-should be handled securely and not be disclosed to third-parties.**
+application. While registering your application, you need to set its *Redirect
+URI*, explained above. **We currently only support *Web* redirect
+URIs.**
 
-Once you have a *Redirect URI*, a *Client ID*, and a *Client Secret*, your
+Once created, your application is assigned an *Application (client) ID*,
+referred to as its ***Client ID***. In *Certificate & secrets*, you also need to
+add at least one ***Client secret***. **Warning: *Client Secrets* are similar to
+passwords or private keys by allowing an application to identify as yours:
+therefore, *Client Secrets* should be kept private.**
+
+Once you have a *Redirect URI*, a *Client ID*, and a *Client Secret*, your web
 application can start using the OneDrive SDK for PHP in three steps.
 
 ### Step 1: create your configuration
@@ -76,9 +78,10 @@ application can start using the OneDrive SDK for PHP in three steps.
 As you may need them from several scripts, we recommend saving your *Client ID*,
 *Client secret* and *Redirect URI* in a configuration file, for example:
 
+#### `config.php`
+
 ```php
 <?php
-// config.php
 
 return [
     /**
@@ -100,14 +103,14 @@ return [
 
 ### Step 2: direct your users to the sign in page
 
-This script is responsible for, given a set of privileges, fetching a login URL
-from the OneDrive API. It then needs to guide the users to this URL so they
-initiate their log in and privilege granting process. The script should look
-like this:
+This script is responsible for, given a set of privileges, fetching a log in URL
+from the OneDrive API. It needs to direct users to this URL to initiate their
+log in and privilege granting process. The script should look like this:
+
+#### `index.php`
 
 ```php
 <?php
-// index.php
 
 ($config = include __DIR__ . '/config.php') or die('Configuration file not found');
 require_once __DIR__ . '/vendor/autoload.php';
@@ -138,26 +141,27 @@ header("Location: $url");
 
 ### Step 3: get an OAuth access token
 
-After the users follow this URL, they are required to sign in using a valid
-Microsoft account, and they are asked whether they agree to allow your
+After the users follow this URL, they are required to sign into their
+Microsoft account, and they are asked whether they agree to allow your web
 application to access their OneDrive account.
 
-If they do, they are redirected back to your *Redirect URI* and a code is passed
-in the query string of this URL. The script residing at this URL essentially:
+If they do, they are redirected to your *Redirect URI* and a `code` is passed in
+the query string of this URL. The script at this URL essentially:
 
 1. Instantiates a `Client` from your configuration and the state from previous
-   instantiations
-2. Obtains an OAuth access token using `Client::obtainAccessToken()`
-   passing it the code received
-3. May start interacting with the files and folders stored in their OneDrive
-   account, or delegates this responsibility to other scripts instantiating a
-   `Client` from the same state
+   instantiations ;
+2. Obtains an OAuth access token using `Client::obtainAccessToken()`,
+   passing it the `code` received ;
+3. Starts interacting with the files and folders stored in their OneDrive
+   account, or delegates this responsibility to other scripts which in turn may
+   spawn other `Client` instances from the same state.
 
-It typically looks like (replace `/path/to` by the appropriate values):
+It typically looks like this (replace `/path/to` by the appropriate values):
+
+#### `redirect.php`
 
 ```php
 <?php
-// redirect.php
 
 ($config = include __DIR__ . '/config.php') or die('Configuration file not found');
 require_once __DIR__ . '/vendor/autoload.php';
@@ -209,16 +213,16 @@ reference][api-reference] or the [project page][onedrive-php-sdk] on
 Versioning
 ----------
 
-OneDrive SDK for PHP adheres to [semantic versioning][semver]: we are committed
+OneDrive SDK for PHP adheres to [Semantic Versioning][semver]: we are committed
 not to introduce breaking changes to the public API without incrementing the
 major version number. We also try to document such changes in the
 [changelog][changelog].
 
 However, we only consider symbols marked with the `@api` annotation to be
-part of the public API and subject to the Semantic Versioning requirements.
-**Other symbols are internal to this library; they may change or get removed
-regardless of the major version number. You should not rely on these in your
-code.**
+part of the public API and subject to Semantic Versioning requirements. **Other
+symbols are considered internal and may change or get removed without a major
+version increment.** To avoid breaking changes, use only symbols from the public
+API in your code.
 
 Testing
 -------
