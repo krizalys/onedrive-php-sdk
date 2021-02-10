@@ -44,9 +44,18 @@ class File extends DriveItem
      *        The options. See DriveItem::__construct() for supported options.
      *
      * @since 1.0.0
+     *
+     * @deprecated 2.7.0 Superseded by \Krizalys\Onedrive\Proxy\FileProxy.
      */
     public function __construct(Client $client, $id, $options = [])
     {
+        $message = sprintf(
+            '%s() is deprecated and will be removed in version 3;'
+                . ' use \Krizalys\Onedrive\Proxy\FileProxy instead',
+            __METHOD__
+        );
+
+        @trigger_error($message, E_USER_DEPRECATED);
         parent::__construct($client, $id, $options);
     }
 

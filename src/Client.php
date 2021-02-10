@@ -1610,6 +1610,13 @@ class Client
      */
     public function isFolder(DriveItemProxy $item)
     {
+        $message = sprintf(
+            '%s() is deprecated and will be removed in version 3',
+            __METHOD__
+        );
+
+        @trigger_error($message, E_USER_DEPRECATED);
+
         return $item->folder !== null || $item->specialFolder !== null;
     }
 
@@ -1630,6 +1637,13 @@ class Client
      */
     public function buildOptions(DriveItemProxy $item, array $options = [])
     {
+        $message = sprintf(
+            '%s() is deprecated and will be removed in version 3',
+            __METHOD__
+        );
+
+        @trigger_error($message, E_USER_DEPRECATED);
+
         $defaultOptions = [
             'from' => (object) [
                 'name' => null,

@@ -40,6 +40,14 @@ class Folder extends DriveItem
      */
     public function isFolder()
     {
+        $message = sprintf(
+            '%s() is deprecated and will be removed in version 3;'
+                . ' use \Krizalys\Onedrive\Proxy\DriveItemProxy::folder instead',
+            __METHOD__
+        );
+
+        @trigger_error($message, E_USER_DEPRECATED);
+
         return true;
     }
 
@@ -56,9 +64,18 @@ class Folder extends DriveItem
      *        The options. See DriveItem::__construct() for supported options.
      *
      * @since 1.0.0
+     *
+     * @deprecated 2.7.0 Superseded by \Krizalys\Onedrive\Proxy\FolderProxy.
      */
     public function __construct(Client $client, $id = null, $options = [])
     {
+        $message = sprintf(
+            '%s() is deprecated and will be removed in version 3;'
+                . ' use \Krizalys\Onedrive\Proxy\FolderProxy instead',
+            __METHOD__
+        );
+
+        @trigger_error($message, E_USER_DEPRECATED);
         parent::__construct($client, $id, $options);
     }
 
