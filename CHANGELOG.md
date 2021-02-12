@@ -7,6 +7,7 @@ Change log
 ### Changed
 
 - Unified PHPUnit configuration files into a single configuration.
+- Refactoring.
 
 [2.6.0] - 2020-02-02
 --------------------
