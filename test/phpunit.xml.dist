@@ -2,7 +2,6 @@
 <phpunit
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/5.7/phpunit.xsd"
-  bootstrap="bootstrap.php"
   colors="true"
 >
   <php>
@@ -10,8 +9,11 @@
   </php>
 
   <testsuites>
-    <testsuite name="Unit test suite">
-      <directory>.</directory>
+    <testsuite name="Functional tests">
+      <directory>functional</directory>
+    </testsuite>
+    <testsuite name="Unit tests">
+      <directory>unit</directory>
     </testsuite>
   </testsuites>
 
@@ -23,9 +25,10 @@
 
   <filter>
     <whitelist>
-      <directory>../../src</directory>
+      <directory>../src</directory>
       <exclude>
-        <directory>.</directory>
+        <directory>functional</directory>
+        <directory>unit</directory>
       </exclude>
     </whitelist>
   </filter>

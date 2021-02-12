@@ -240,7 +240,7 @@ To run the functional test suite:
    4444):
 
    ```sh
-   vendor/bin/phpunit --configuration test/functional
+   vendor/bin/phpunit --configuration test --testsuite 'Functional tests' --bootstrap test/functional/bootstrap.php
    ```
 
 4. Repeat step 3 as needed.
