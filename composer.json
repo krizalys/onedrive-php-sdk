@@ -40,10 +40,10 @@
         }
     },
     "scripts": {
-        "test:unit": "vendor/bin/phpunit --configuration test --testsuite 'Unit tests' --bootstrap test/unit/bootstrap.php",
-        "test:unit:coverage": "vendor/bin/phpunit --configuration test --testsuite 'Unit tests' --bootstrap test/unit/bootstrap.php --coverage-clover coverage.xml",
         "test:functional": "vendor/bin/phpunit --configuration test --testsuite 'Functional tests' --bootstrap test/functional/bootstrap.php",
-        "test:functional:parallel": "vendor/bin/phpunit --configuration test --testsuite 'Functional tests' --bootstrap test/functional/bootstrap.php test/functional/KrizalysOnedriveTest.php & vendor/bin/phpunit --configuration test --testsuite 'Functional tests' --bootstrap test/functional/bootstrap.php test/functional/ClientTest.php & vendor/bin/phpunit --configuration test --testsuite 'Functional tests' --bootstrap test/functional/bootstrap.php test/functional/Proxy/DriveProxyTest.php & vendor/bin/phpunit --configuration test --testsuite 'Functional tests' --bootstrap test/functional/bootstrap.php test/functional/Proxy/DriveItemProxyTest.php & wait"
+        "test:functional:parallel": "vendor/bin/phpunit --configuration test --testsuite 'Functional tests' --bootstrap test/functional/bootstrap.php test/functional/KrizalysOnedriveTest.php & vendor/bin/phpunit --configuration test --testsuite 'Functional tests' --bootstrap test/functional/bootstrap.php test/functional/ClientTest.php & vendor/bin/phpunit --configuration test --testsuite 'Functional tests' --bootstrap test/functional/bootstrap.php test/functional/Proxy/DriveProxyTest.php & vendor/bin/phpunit --configuration test --testsuite 'Functional tests' --bootstrap test/functional/bootstrap.php test/functional/Proxy/DriveItemProxyTest.php & wait",
+        "test:unit": "vendor/bin/phpunit --configuration test --testsuite 'Unit tests' --bootstrap test/unit/bootstrap.php",
+        "test:unit:coverage": "vendor/bin/phpunit --configuration test --testsuite 'Unit tests' --bootstrap test/unit/bootstrap.php --coverage-clover coverage.xml"
     },
     "config": {
         "platform": {
