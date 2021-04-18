@@ -34,6 +34,16 @@ return [
     // The password of the account.
     'PASSWORD' => '',
 
+    // The group ID to use when running relevant test cases.
+    //
+    // These tests will be skipped if not set.
+    'GROUP_ID' => '',
+
+    // The site ID to use when running relevant test cases.
+    //
+    // These tests will be skipped if not set.
+    'SITE_ID' => '',
+
     // The email address to send invites to when running relevant test cases.
     //
     // OneDrive does not allow sending invite to the email address of the

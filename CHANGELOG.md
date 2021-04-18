@@ -1,6 +1,14 @@
 Change log
 ==========
 
+[Unreleased][unreleased]
+------------------------
+
+### Fixed
+
+- Functional tests with group or site requirements use group or site ID from the
+configuration and are skipped if not set.
+
 [3.0.0] - 2021-02-12
 --------------------
 

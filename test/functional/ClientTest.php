@@ -152,7 +152,13 @@ class ClientTest extends TestCase
      */
     public function testGetDriveByGroup()
     {
-        $drive = self::$client->getDriveByGroup(self::$defaultDrive->owner->user->id);
+        $groupId = $this->getConfig('GROUP_ID');
+
+        if (empty($groupId)) {
+            $this->markTestSkipped('No group ID set');
+        }
+
+        $drive = self::$client->getDriveByGroup($groupId);
 
         if ($drive == $null) {
             $this->markTestSkipped('No drive by group found');
@@ -166,7 +172,13 @@ class ClientTest extends TestCase
      */
     public function testGetDriveBySite()
     {
-        $drive = self::$client->getDriveBySite(self::$defaultDrive->owner->user->id);
+        $siteId = $this->getConfig('SITE_ID');
+
+        if (empty($siteId)) {
+            $this->markTestSkipped('No site ID set');
+        }
+
+        $drive = self::$client->getDriveBySite($siteId);
 
         if ($drive == $null) {
             $this->markTestSkipped('No drive by site found');
