@@ -985,7 +985,7 @@ class ClientMock extends GuzzleHttpClient
 {
     public $postCallback;
 
-    public function post($uri, array $options = [])
+    public function post($uri, array $options = []): ResponseInterface
     {
         $function = $this->postCallback;
 

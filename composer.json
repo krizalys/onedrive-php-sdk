@@ -24,7 +24,7 @@
     },
     "require": {
         "php": ">=7.3",
-        "guzzlehttp/guzzle": "^6.3.3",
+        "guzzlehttp/guzzle": ">=6.3.3",
         "microsoft/microsoft-graph": "^1.7.0"
     },
     "require-dev": {

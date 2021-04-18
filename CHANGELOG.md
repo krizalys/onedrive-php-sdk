@@ -4,6 +4,10 @@ Change log
 [Unreleased][unreleased]
 ------------------------
 
+### Added
+
+- Support for Guzzle 7.
+
 ### Fixed
 
 - Functional tests with group or site requirements use group or site ID from the
