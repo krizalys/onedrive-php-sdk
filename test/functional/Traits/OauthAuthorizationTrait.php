@@ -95,7 +95,7 @@ trait OauthAuthorizationTrait
             $line = json_decode($line, true);
 
             if ($line !== null || json_last_error() == JSON_ERROR_NONE) {
-                 return $line;
+                return $line;
             }
         }
 
