@@ -23,7 +23,7 @@
         "source": "https://github.com/krizalys/onedrive-php-sdk"
     },
     "require": {
-        "php": ">=7.3",
+        "php": ">=7.3|^8.0",
         "guzzlehttp/guzzle": ">=6.3.3",
         "microsoft/microsoft-graph": "^1.7.0"
     },
