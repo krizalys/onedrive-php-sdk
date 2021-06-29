@@ -886,11 +886,29 @@ class Client
         }, $driveItems);
     }
     
-    public function setAuthUrl($url) {
+    /**
+     * Sets the auth_url
+     *
+     *
+     * @since 2.0.0
+     *
+     * @api
+     */
+    public function setAuthUrl($url)
+    {
         $this->auth_url = $url;
     }
     
-    public function setTokenUrl($url) {
+    /**
+     * Sets the token_url
+     *
+     *
+     * @since 2.0.0
+     *
+     * @api
+     */
+    public function setTokenUrl($url)
+    {
         $this->token_url = $url;
     }
 }
