@@ -885,9 +885,9 @@ class Client
             );
         }, $driveItems);
     }
-    
+
     /**
-     * Sets the auth_url
+     * Sets the auth_url.
      *
      *
      * @since 2.0.0
@@ -898,9 +898,9 @@ class Client
     {
         $this->auth_url = $url;
     }
-    
+
     /**
-     * Sets the token_url
+     * Sets the token_url.
      *
      *
      * @since 2.0.0
