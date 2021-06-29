@@ -51,13 +51,13 @@ class Client
      * @var string
      *      The base URL for authorization requests.
      */
-    private auth_url = 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize';
+    private $auth_url = 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize';
 
     /**
      * @var string
      *      The base URL for token requests.
      */
-    private token_url = 'https://login.microsoftonline.com/common/oauth2/v2.0/token';
+    private $token_url = 'https://login.microsoftonline.com/common/oauth2/v2.0/token';
 
     /**
      * @var string
