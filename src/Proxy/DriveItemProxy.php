@@ -553,7 +553,7 @@ class DriveItemProxy extends BaseItemProxy
 
         $body = $content instanceof Stream ?
             $content
-            : Psr7\stream_for($content);
+            : Psr7\Utils::streamFor($content);
 
         try {
             $response = $this
