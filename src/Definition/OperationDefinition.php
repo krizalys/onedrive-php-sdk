@@ -47,7 +47,7 @@ class OperationDefinition implements OperationDefinitionInterface
      *
      * @since 2.5.0
      */
-    private $queryStringParameterDefinition;
+    private $queryStringParameterDefinitions;
 
     /**
      * Constructor.
