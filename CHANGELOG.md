@@ -1,6 +1,15 @@
 Change log
 ==========
 
+[3.1.1] - 2023-03-29
+--------------------
+
+### Fixed
+
+- Fixed the incorrect variable name $queryStringParameterDefinition in class `\Krizalys\Onedrive\Definition\OperationDefinition` (#109).
+- The functional test suite was not working after a change in OneDrive
+authentication flow.
+
 [3.1.0] - 2021-04-18
 --------------------
 
@@ -375,7 +384,8 @@ as the official PHP Docker image.
 
 - Support for SSL.
 
-[unreleased]:    https://github.com/krizalys/onedrive-php-sdk/compare/3.1.0...HEAD
+[unreleased]:    https://github.com/krizalys/onedrive-php-sdk/compare/3.1.1...HEAD
+[3.1.1]:         https://github.com/krizalys/onedrive-php-sdk/compare/3.1.0...3.1.1
 [3.1.0]:         https://github.com/krizalys/onedrive-php-sdk/compare/3.0.0...3.1.0
 [3.0.0]:         https://github.com/krizalys/onedrive-php-sdk/compare/2.7.0...3.0.0
 [2.7.0]:         https://github.com/krizalys/onedrive-php-sdk/compare/2.6.0...2.7.0
