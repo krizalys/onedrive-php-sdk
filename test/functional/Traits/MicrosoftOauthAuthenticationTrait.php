@@ -27,18 +27,25 @@ trait MicrosoftOauthAuthenticationTrait
 
         $nextElementLocator = WebDriverBy::id(self::$nextElementId);
 
+        // Langed on "Sign in" page, submitting username & clicking "Next"...
         $usernameElementLocator = WebDriverBy::id(self::$usernameElementId);
         self::findElement($webdriver, $usernameElementLocator)->sendKeys($username);
 
+        // Clicking "Next".
         self::findElement($webdriver, $nextElementLocator)->click();
 
+        // Landed on "Enter password" page, submitting password & clicking "Sign
+        // in"...
         $passwordElementLocator = WebDriverBy::id(self::$passwordElementId);
         self::findElement($webdriver, $passwordElementLocator)->sendKeys($password);
+        self::findElement($webdriver, $nextElementLocator)->click();
 
+        // Landed on "Stay signed in?" page, clicking "Yes"...
         self::findElement($webdriver, $nextElementLocator)->click();
 
         $expectedUri = preg_quote($redirectUri);
         $isMatching  = WebDriverExpectedCondition::urlMatches("|^$expectedUri|");
+
         $webdriver->wait()->until($isMatching);
     }
 
