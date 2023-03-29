@@ -29,8 +29,8 @@ Running its functional tests also require:
 
 * A OneDrive web application configured with `http://localhost:7777/` as its
   redirect URI ;
-* A WebDriver server, for example the [Selenium's Java standalone
-  server][selenium-server-standalone] ;
+* A WebDriver server, for example the [Selenium Server
+  (Grid)][selenium-server] ;
 * A Chrome browser & ChromeDriver, and they must be usable by the WebDriver
   server.
 
@@ -233,7 +233,7 @@ To run the functional test suite:
 2. Run your WebDriver server, for example:
 
    ```sh
-   java -jar selenium-server-standalone-3.141.59.jar
+   java -jar selenium-server-4.8.3.jar standalone
    ```
 
 3. Run the functional test suite (it assumes that WebDriver listening on port
@@ -256,16 +256,16 @@ Credits
 
 The OneDrive SDK for PHP is developed and maintained by Christophe Vidal.
 
-[php]:                        http://php.net/
-[onedrive-rest-api]:          https://docs.microsoft.com/en-us/onedrive/developer/rest-api/?view=odsp-graph-online
-[composer]:                   https://getcomposer.org/
-[selenium-server-standalone]: http://selenium-release.storage.googleapis.com/index.html
-[functional-test-suite]:      https://github.com/krizalys/onedrive-php-sdk/tree/readme/test/functional
-[microsoft-azure-login]:      https://login.microsoftonline.com/
-[app-registration-portal]:    https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade
-[api-reference]:              https://github.com/krizalys/onedrive-php-sdk/wiki/ApiIndex
-[onedrive-php-sdk]:           http://www.krizalys.com/software/onedrive-php-sdk
-[krizalys]:                   http://www.krizalys.com/
-[semver]:                     https://semver.org/
-[changelog]:                  https://github.com/krizalys/onedrive-php-sdk/blob/master/CHANGELOG.md
-[bsd-3-clause]:               https://opensource.org/licenses/BSD-3-Clause
+[php]:                     http://php.net/
+[onedrive-rest-api]:       https://docs.microsoft.com/en-us/onedrive/developer/rest-api/?view=odsp-graph-online
+[composer]:                https://getcomposer.org/
+[selenium-server]:         https://www.selenium.dev/downloads/
+[functional-test-suite]:   https://github.com/krizalys/onedrive-php-sdk/tree/readme/test/functional
+[microsoft-azure-login]:   https://login.microsoftonline.com/
+[app-registration-portal]: https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade
+[api-reference]:           https://github.com/krizalys/onedrive-php-sdk/wiki/ApiIndex
+[onedrive-php-sdk]:        http://www.krizalys.com/software/onedrive-php-sdk
+[krizalys]:                http://www.krizalys.com/
+[semver]:                  https://semver.org/
+[changelog]:               https://github.com/krizalys/onedrive-php-sdk/blob/master/CHANGELOG.md
+[bsd-3-clause]:            https://opensource.org/licenses/BSD-3-Clause
