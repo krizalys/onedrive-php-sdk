@@ -160,7 +160,7 @@ class UploadSessionProxy extends EntityProxy
     {
         $stream = $this->content instanceof Stream ?
             $this->content
-            : Psr7\stream_for($this->content);
+            : Psr7\Utils::streamFor($this->content);
 
         if ($this->rangeSize !== null) {
             $rangeSize = $this->rangeSize;

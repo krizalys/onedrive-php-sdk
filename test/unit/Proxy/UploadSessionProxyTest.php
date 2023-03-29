@@ -205,7 +205,7 @@ class UploadSessionProxyTest extends TestCase
 
         $uploadSession = $this->createMock(UploadSession::class);
 
-        $content = Psr7\stream_for(str_repeat('1', 327680 + 1));
+        $content = Psr7\Utils::streamFor(str_repeat('1', 327680 + 1));
 
         $driveItemResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
