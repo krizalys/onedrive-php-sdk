@@ -1,12 +1,13 @@
 Change log
 ==========
 
-[Unreleased][unreleased]
-------------------------
+[3.2.0] - 2023-03-31
+--------------------
 
 ### Added
 
 - Support for PHP 8.1.
+- Support for PHP 8.2.
 
 [3.1.1] - 2023-03-29
 --------------------
@@ -391,7 +392,8 @@ as the official PHP Docker image.
 
 - Support for SSL.
 
-[unreleased]:    https://github.com/krizalys/onedrive-php-sdk/compare/3.1.1...HEAD
+[unreleased]:    https://github.com/krizalys/onedrive-php-sdk/compare/3.2.0...HEAD
+[3.2.0]:         https://github.com/krizalys/onedrive-php-sdk/compare/3.1.1...3.2.0
 [3.1.1]:         https://github.com/krizalys/onedrive-php-sdk/compare/3.1.0...3.1.1
 [3.1.0]:         https://github.com/krizalys/onedrive-php-sdk/compare/3.0.0...3.1.0
 [3.0.0]:         https://github.com/krizalys/onedrive-php-sdk/compare/2.7.0...3.0.0
