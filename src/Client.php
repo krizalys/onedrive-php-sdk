@@ -51,13 +51,13 @@ class Client
      * @var string
      *      The base URL for authorization requests.
      */
-    const AUTH_URL = 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize';
+    private $auth_url = 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize';
 
     /**
      * @var string
      *      The base URL for token requests.
      */
-    const TOKEN_URL = 'https://login.microsoftonline.com/common/oauth2/v2.0/token';
+    private $token_url = 'https://login.microsoftonline.com/common/oauth2/v2.0/token';
 
     /**
      * @var string
@@ -216,7 +216,7 @@ class Client
         // redirected to the redirect URI, with a code passed in the query
         // string (the name of the variable is "code"). This is suitable for
         // PHP.
-        return self::AUTH_URL . "?$query";
+        return $this->auth_url . "?$query";
     }
 
     /**
@@ -305,7 +305,7 @@ class Client
         ];
 
         $response = $this->httpClient->post(
-            self::TOKEN_URL,
+            $this->token_url,
             ['form_params' => $values]
         );
 
@@ -355,7 +355,7 @@ class Client
         ];
 
         $response = $this->httpClient->post(
-            self::TOKEN_URL,
+            $this->token_url,
             ['form_params' => $values]
         );
 
@@ -884,5 +884,31 @@ class Client
                 $this->serviceDefinition->getResourceDefinition('driveItem')
             );
         }, $driveItems);
+    }
+
+    /**
+     * Sets the auth_url.
+     *
+     *
+     * @since 2.0.0
+     *
+     * @api
+     */
+    public function setAuthUrl($url)
+    {
+        $this->auth_url = $url;
+    }
+
+    /**
+     * Sets the token_url.
+     *
+     *
+     * @since 2.0.0
+     *
+     * @api
+     */
+    public function setTokenUrl($url)
+    {
+        $this->token_url = $url;
     }
 }
