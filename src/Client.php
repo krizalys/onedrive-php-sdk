@@ -289,7 +289,7 @@ class Client
      */
     public function obtainAccessToken($clientSecret, $code)
     {
-        if ($this->state->redirectUri === null) {
+        if ($this->state->__get("redirectUri") === null) {
             throw new \Exception(
                 'The state\'s redirect URI must be set to call'
                     . ' obtainAccessToken()'

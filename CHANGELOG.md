@@ -1,6 +1,13 @@
 Change log
 ==========
 
+[3.2.1] - 2023-08-20
+--------------------
+
+### Fixed
+
+- Calling a private variable "redirectUri" is replaced by getting the value of this one using the __get() method
+
 [3.2.0] - 2023-03-31
 --------------------
 
