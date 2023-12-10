@@ -43,7 +43,7 @@ class EntityProxy
      * @var \Microsoft\Graph\Model\Entity
      *      The entity.
      */
-    protected $entity;
+    public $entity;
 
     /**
      * Constructor.
